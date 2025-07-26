@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Datos vs Información - Modelado en Hana</title>
+    <style>
+        @page {
+            margin: 2cm;
+            size: A4;
+        }
+        
+        body {
+            font-family: 'Georgia', serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 210mm;
+            margin: 0 auto;
+            padding: 20px;
+            background: white;
+        }
+        
+        .header {
+            text-align: center;
+            border-bottom: 3px solid #2c3e50;
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+        
+        h1 {
+            color: #2c3e50;
+            font-size: 28px;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .subtitle {
+            color: #7f8c8d;
+            font-size: 16px;
+            font-style: italic;
+        }
+        
+        h2 {
+            color: #34495e;
+            font-size: 20px;
+            margin-top: 30px;
+            margin-bottom: 15px;
+            border-left: 4px solid #3498db;
+            padding-left: 15px;
+        }
+        
+        h3 {
+            color: #2980b9;
+            font-size: 16px;
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+        
+        p {
+            text-align: justify;
+            margin-bottom: 12px;
+        }
+        
+        .definition-box {
+            background-color: #ecf0f1;
+            border-left: 5px solid #e74c3c;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 0 5px 5px 0;
+        }
+        
+        .example-box {
+            background-color: #e8f5e8;
+            border: 1px solid #27ae60;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+        }
+        
+        .important-note {
+            background-color: #fff3cd;
+            border: 1px solid #ffc107;
+            padding: 12px;
+            margin: 15px 0;
+            border-radius: 5px;
+            font-weight: 500;
+        }
+        
+        ul, ol {
+            margin-left: 20px;
+            margin-bottom: 15px;
+        }
+        
+        li {
+            margin-bottom: 8px;
+        }
+        
+        .data-types-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        
+        .data-types-table th,
+        .data-types-table td {
+            border: 1px solid #bdc3c7;
+            padding: 10px;
+            text-align: left;
+        }
+        
+        .data-types-table th {
+            background-color: #34495e;
+            color: white;
+            font-weight: bold;
+        }
+        
+        .data-types-table tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+        
+        .page-break {
+            page-break-before: always;
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #bdc3c7;
+            color: #7f8c8d;
+            font-size: 12px;
+        }
+        
+        @media print {
+            body {
+                margin: 0;
+                padding: 0;
+            }
+            
+            .page-break {
+                page-break-before: always;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Datos vs Información</h1>
+        <p class="subtitle">Curso de Modelado en Hana - Clase 2</p>
+    </div>
+
+    <h2>Introducción</h2>
+    <p>En esta clase analizaremos la diferencia fundamental entre datos e información, dos conceptos que frecuentemente se confunden pero que tienen características y propósitos distintos en el ámbito de las bases de datos y el análisis de información.</p>
+
+    <div class="definition-box">
+        <h3>Definición Clave</h3>
+        <p><strong>Base de datos:</strong> No es más que un conjunto de datos que están almacenados para su uso en el futuro. El resultado del procesamiento de esos datos es la información.</p>
+    </div>
+
+    <h2>Los Datos</h2>
+    
+    <h3>¿Qué son los datos?</h3>
+    <p>Los datos son elementos individuales que por sí solos no constituyen información en el sentido útil de la palabra. No permiten la adopción de la decisión más conveniente, ya que no aportan los conocimientos necesarios para ello. Solo tras su adecuado procesamiento se proporciona el conocimiento adecuado para poder ser considerados como información.</p>
+
+    <div class="example-box">
+        <h3>Ejemplo Práctico</h3>
+        <p>Si tenemos una tabla con los siguientes campos:</p>
+        <ul>
+            <li>Nombre de una persona</li>
+            <li>Apellido</li>
+            <li>Número de teléfono</li>
+            <li>Año de nacimiento</li>
+        </ul>
+        <p>Cada uno de estos elementos por separado son <strong>datos</strong>. Un nombre por sí solo, un apellido por sí solo, no constituyen información útil.</p>
+    </div>
+
+    <h3>Tipos de Datos</h3>
+    <p>Los datos se pueden catalogar en diferentes tipos, lo que limita qué valores pueden tomar y qué operaciones podemos realizar con ellos:</p>
+
+    <table class="data-types-table">
+        <thead>
+            <tr>
+                <th>Tipo de Dato</th>
+                <th>Descripción</th>
+                <th>Ejemplos</th>
+                <th>Consideraciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>Carácter</strong></td>
+                <td>Dígitos individuales (números, letras u otros caracteres)</td>
+                <td>DNI, número de teléfono</td>
+                <td>Los números no sirven para operaciones matemáticas</td>
+            </tr>
+            <tr>
+                <td><strong>Cadenas (String)</strong></td>
+                <td>Unión de múltiples caracteres</td>
+                <td>Nombres, descripciones</td>
+                <td>Tipo complejo formado por tipos carácter</td>
+            </tr>
+            <tr>
+                <td><strong>Numérico</strong></td>
+                <td>Números que permiten operaciones matemáticas</td>
+                <td>Enteros: 1, 2, 3<br>Decimales: 1.5, 2.7</td>
+                <td>Diferentes rangos según el subtipo</td>
+            </tr>
+            <tr>
+                <td><strong>Booleano</strong></td>
+                <td>Valores lógicos</td>
+                <td>true/false, 1/0, verdadero/falso</td>
+                <td>Expresión más básica de la informática</td>
+            </tr>
+            <tr>
+                <td><strong>Fecha</strong></td>
+                <td>Almacenamiento de fechas y tiempos</td>
+                <td>01/01/2024, 15:30:00</td>
+                <td>Permite operaciones temporales</td>
+            </tr>
+            <tr>
+                <td><strong>Binario</strong></td>
+                <td>Información en código binario</td>
+                <td>Vídeos, audios, documentos</td>
+                <td>Alto consumo de recursos</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="important-note">
+        <strong>Nota Importante:</strong> La elección correcta del tipo de dato es crucial para optimizar el uso de memoria y mejorar el rendimiento. En big data, cada optimización mínima puede traducirse en grandes diferencias de tiempo de procesamiento.
+    </div>
+
+    <div class="page-break"></div>
+
+    <h2>La Información</h2>
+
+    <h3>¿Qué es la información?</h3>
+    <p>Para que una información sea útil, es necesario que facilite al responsable de la toma de decisiones una idea clara y completa de la situación, de forma que le aporte una base sobre la que decidir.</p>
+
+    <div class="definition-box">
+        <p>La información no es simplemente datos procesados. Podemos procesar los datos de mil maneras y que aún así no sea información, dado que no nos aporta nada útil para la toma de decisiones.</p>
+    </div>
+
+    <div class="example-box">
+        <h3>Transformación de Datos a Información</h3>
+        <p>Si realizamos una consulta y extraemos datos de múltiples tablas:</p>
+        <ul>
+            <li>Nombre + Apellido</li>
+            <li>Edad calculada</li>
+            <li>Dirección</li>
+            <li>Sueldo</li>
+        </ul>
+        <p>Y los presentamos de forma que nos permitan conocer que "una persona de X edad que vive en tal sitio tiene un sueldo de tal cantidad", entonces hemos convertido los datos en <strong>información</strong>.</p>
+    </div>
+
+    <h3>Cualidades de una Buena Información</h3>
+
+    <h3>1. Precisión</h3>
+    <p>La precisión depende del objetivo de la aplicación:</p>
+    <ul>
+        <li><strong>Programa de almacenamiento:</strong> Precisión útil con números enteros (20 muebles, 50 regletas)</li>
+        <li><strong>Aplicación científica:</strong> Necesaria precisión mayor con muchos decimales (peso atómico)</li>
+    </ul>
+
+    <h3>2. Exactitud</h3>
+    <p>Si la información no es exacta, puede llevarnos a cometer errores. Es necesario cotejar y confirmar la información buscando fuentes que la verifiquen.</p>
+
+    <div class="example-box">
+        <h3>Ejemplo: Código Postal en Supermercados</h3>
+        <p>Cuando en un supermercado preguntan el código postal, es para realizar estudios de clientela. Esta información funciona siempre y cuando los clientes proporcionen datos correctos. Si mienten, la información resultante llevará a conclusiones erróneas.</p>
+    </div>
+
+    <h3>3. Oportunidad</h3>
+    <p>La información debe estar disponible en el momento y lugar indicado con suficiente calidad para resolver un problema.</p>
+
+    <div class="example-box">
+        <h3>Ejemplo: Tienda de Ropa</h3>
+        <p><strong>Análisis Humano:</strong> Un dependiente ve entrar a un joven con melena, pendientes, vaqueros, camiseta de grupo musical y cazadora de cuero. Procesa estos datos y los convierte en información para orientar al cliente hacia la sección juvenil.</p>
+        <p><strong>Análisis Automatizado:</strong> El mismo proceso debe realizarse por ordenador mientras el cliente está en la tienda. Si la información se obtiene después de que el cliente se vaya, no sirve para nada.</p>
+    </div>
+
+    <h3>4. Integridad</h3>
+    <p>La información debe ser lo más completa posible. Es una cuestión de contexto.</p>
+    <p><strong>Ejemplo:</strong> Saber que un hombre se llama "Juan Pastor" no dice gran cosa. Saber que Juan Pastor vive en determinada ciudad, calle, tiene un sueldo estimado y ciertos hábitos de compra, nos da información mucho más completa para tomar decisiones adecuadas.</p>
+
+    <h3>5. Significatividad</h3>
+    <p>Debe ser clara y relevante. El exceso de datos o datos irrelevantes también pueden ser un problema. La información procesada debe ser:</p>
+    <ul>
+        <li>Concreta</li>
+        <li>Concisa</li>
+        <li>Fácil de interpretar</li>
+        <li>Aprovechable</li>
+    </ul>
+
+    <div class="important-note">
+        <strong>Recordatorio:</strong> La información es el resultado del procesamiento de los datos. Para que todas estas cualidades se cumplan, debemos tener especial cuidado en la recopilación, limpieza y verificación de los datos.
+    </div>
+
+    <h2>Consideraciones de Rendimiento</h2>
+    <p>En este curso trabajaremos con volúmenes de datos pequeños porque las herramientas y operaciones no dependen del volumen, sino de la lógica y el razonamiento adecuado. Sin embargo, es importante entender que:</p>
+
+    <ul>
+        <li>El volumen de datos solo afecta al tiempo de procesamiento</li>
+        <li>Algo que funciona bien con pocos datos puede no ser óptimo con grandes volúmenes</li>
+        <li>En big data, cada milésima de segundo de optimización puede convertirse en minutos de diferencia</li>
+        <li>Es necesario utilizar herramientas de análisis para identificar qué partes del proceso necesitan mejora</li>
+    </ul>
+
+    <h2>Conclusiones</h2>
+    <p>La distinción entre datos e información es fundamental para el modelado de bases de datos:</p>
+
+    <ul>
+        <li><strong>Los datos</strong> son elementos individuales sin contexto que, por sí solos, no permiten tomar decisiones</li>
+        <li><strong>La información</strong> es el resultado del procesamiento adecuado de los datos, que debe cumplir criterios de precisión, exactitud, oportunidad, integridad y significatividad</li>
+        <li>La elección correcta de tipos de datos impacta directamente en el rendimiento y la eficiencia del sistema</li>
+        <li>El objetivo final es convertir datos en información útil para la toma de decisiones</li>
+    </ul>
+
+    <div class="footer">
+        <p>Curso de Modelado en Hana - Clase 2: Datos vs Información</p>
+    </div>
+</body>
+</html>

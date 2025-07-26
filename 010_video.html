@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Curso de Formación en Modelado SAPHAN - Diagramas Entidad-Relación</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f8f9fa;
+            color: #333;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            margin: 0 0 10px 0;
+            font-size: 2.2em;
+        }
+        
+        .header p {
+            margin: 0;
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+        
+        .content {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        h2 {
+            color: #667eea;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 10px;
+            margin-top: 30px;
+        }
+        
+        h3 {
+            color: #764ba2;
+            margin-top: 25px;
+            margin-bottom: 15px;
+        }
+        
+        .highlight-box {
+            background: linear-gradient(135deg, #667eea10, #764ba210);
+            border-left: 4px solid #667eea;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+        
+        .example-box {
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+        }
+        
+        .definition {
+            background: #e8f5e8;
+            border-left: 4px solid #28a745;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+        }
+        
+        ul, ol {
+            padding-left: 25px;
+        }
+        
+        li {
+            margin-bottom: 8px;
+        }
+        
+        strong {
+            color: #495057;
+        }
+        
+        .section-divider {
+            border: none;
+            height: 2px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            margin: 40px 0;
+            border-radius: 2px;
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            padding: 20px;
+            color: #6c757d;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Curso de Formación en Modelado SAPHAN</h1>
+        <p>Introducción a los Diagramas Entidad-Relación</p>
+    </div>
+
+    <div class="content">
+        <h2>1. Introducción al Modelo Entidad-Relación</h2>
+        
+        <div class="definition">
+            <strong>Definición:</strong> Un modelo entidad-relación es un tipo de diagrama de flujo que ilustra cómo las entidades (elementos de la realidad) se relacionan entre sí dentro de un sistema.
+        </div>
+        
+        <p>Se trata de una colección de herramientas conceptuales para la descripción de:</p>
+        <ul>
+            <li>Datos</li>
+            <li>Relaciones entre los datos</li>
+            <li>Semántica de los datos</li>
+            <li>Restricciones de los datos</li>
+        </ul>
+
+        <div class="highlight-box">
+            <strong>Importante:</strong> Pensar en estos diagramas como una simple representación esquemática de cómo se van a almacenar los datos en la base de datos, su distribución y sus características.
+        </div>
+
+        <h3>Características del Modelo Entidad-Relación</h3>
+        <ul>
+            <li><strong>Modelo de alto nivel:</strong> No tiene en cuenta aspectos técnicos de implementación</li>
+            <li><strong>Representación conceptual:</strong> Solo realiza la representación esquemática de los datos</li>
+            <li><strong>Enfoque en eficiencia:</strong> Busca conseguir un sistema lo más eficiente posible</li>
+        </ul>
+
+        <hr class="section-divider">
+
+        <h2>2. Modelo Relacional vs. Modelo Entidad-Relación</h2>
+        
+        <div class="example-box">
+            <h4>Modelo Entidad-Relación (Alto Nivel)</h4>
+            <ul>
+                <li>Representación conceptual</li>
+                <li>No considera aspectos técnicos</li>
+                <li>Primer paso en el diseño</li>
+            </ul>
+        </div>
+
+        <div class="example-box">
+            <h4>Modelo Relacional (Nivel Inferior)</h4>
+            <ul>
+                <li>Colección de tablas</li>
+                <li>Presenta datos y relaciones</li>
+                <li>Segundo paso en el diseño</li>
+                <li>Considera aspectos técnicos de implementación</li>
+            </ul>
+        </div>
+
+        <div class="highlight-box">
+            <strong>Nota importante:</strong> Un esquema entidad-relación no se puede implementar directamente en una base de datos. Para ello existe el modelo relacional, que convierte y normaliza el esquema entidad-relación en tablas con estructura y relaciones implementables.
+        </div>
+
+        <hr class="section-divider">
+
+        <h2>3. Conceptos Fundamentales</h2>
+
+        <h3>3.1 Entidades</h3>
+        <div class="definition">
+            <strong>Entidad:</strong> Elemento del mundo real que es distinguible de todos los demás. Puede ser una persona, un árbol, un coche, una casa, un aula, etc.
+        </div>
+
+        <p><strong>Conjunto de entidades:</strong> Conjunto de entidades que comparten los mismos atributos.</p>
+        
+        <div class="example-box">
+            <strong>Ejemplo:</strong>
+            <ul>
+                <li><strong>Conjunto de entidades:</strong> Árboles</li>
+                <li><strong>Entidad individual:</strong> Cada uno de los árboles específicos</li>
+                <li><strong>Condición:</strong> Todos los árboles deben tener los mismos atributos</li>
+            </ul>
+        </div>
+
+        <h4>Tipos de Entidades</h4>
+        <ul>
+            <li><strong>Entidades fuertes:</strong> Funcionan de forma totalmente independiente</li>
+            <li><strong>Entidades débiles:</strong> Tienen dependencia de otras entidades (se representan con rectángulo de línea doble)</li>
+        </ul>
+
+        <h3>3.2 Atributos</h3>
+        <div class="definition">
+            <strong>Atributo:</strong> Describe propiedades de cada miembro del conjunto de entidades. Se convierten en las columnas de las tablas.
+        </div>
+
+        <h4>Tipos de Atributos</h4>
+        <ol>
+            <li><strong>Simples:</strong> No contienen otros atributos (ej: nombre)</li>
+            <li><strong>Compuestos:</strong> Incluyen otros atributos simples (ej: dirección postal)</li>
+            <li><strong>Multivalorados:</strong> Pueden tomar muchos valores para una misma entidad (ej: números de teléfono)</li>
+            <li><strong>Derivados/Calculados:</strong> Su valor se calcula a través de operaciones con otros atributos</li>
+            <li><strong>Nulos:</strong> Atributos para los que se desconoce su valor o no existe</li>
+        </ol>
+
+        <h3>3.3 Relaciones</h3>
+        <div class="definition">
+            <strong>Relación:</strong> Establece un punto de unión y coherencia entre los atributos de diferentes conjuntos de entidades.
+        </div>
+
+        <p>Representan las formas en que se relacionan nuestras entidades. Ejemplo: En un concesionario, la relación "venta" conecta vendedores con coches.</p>
+
+        <h3>3.4 Identificadores (Claves Primarias)</h3>
+        <div class="definition">
+            <strong>Identificador:</strong> Atributo que puede identificar un único registro dentro del conjunto de entidades de forma única.
+        </div>
+
+        <h4>Características de los Identificadores</h4>
+        <ul>
+            <li>No puede haber dos registros con el mismo identificador</li>
+            <li>Puede ser un identificador compuesto (varios atributos)</li>
+            <li>Todas las entidades deben tener al menos un identificador</li>
+            <li>Se representa subrayando el nombre del atributo</li>
+        </ul>
+
+        <hr class="section-divider">
+
+        <h2>4. Representación Gráfica</h2>
+
+        <div class="example-box">
+            <h4>Elementos Gráficos</h4>
+            <ul>
+                <li><strong>Entidades:</strong> Rectángulo con el nombre en el interior</li>
+                <li><strong>Atributos:</strong> Elipse con el nombre del atributo</li>
+                <li><strong>Atributos multivalorados:</strong> Elipse doble</li>
+                <li><strong>Identificadores:</strong> Elipse con nombre subrayado</li>
+                <li><strong>Relaciones:</strong> Rombo con el nombre de la relación (generalmente un verbo)</li>
+                <li><strong>Entidades débiles:</strong> Rectángulo doble</li>
+            </ul>
+        </div>
+
+        <hr class="section-divider">
+
+        <h2>5. Cardinalidad de las Relaciones</h2>
+
+        <p>La cardinalidad expresa de qué manera se relacionan las entidades entre sí.</p>
+
+        <h3>5.1 Relación Uno a Uno (1:1)</h3>
+        <div class="example-box">
+            <p><strong>Definición:</strong> Una entidad A se asocia con solamente una entidad B y viceversa.</p>
+            <p><strong>Ejemplo:</strong> Un coche y su tarjeta de circulación, una persona y su número de DNI.</p>
+        </div>
+
+        <h3>5.2 Relación Uno a Varios (1:N)</h3>
+        <div class="example-box">
+            <p><strong>Definición:</strong> Un elemento de la entidad A se asocia con uno o más elementos de la entidad B, pero cada elemento de B solo se relaciona con un único elemento de A.</p>
+            <p><strong>Ejemplo:</strong> Un vendedor puede vender varios coches, pero cada coche es vendido por un solo vendedor.</p>
+        </div>
+
+        <h3>5.3 Relación Muchos a Muchos (N:M)</h3>
+        <div class="example-box">
+            <p><strong>Definición:</strong> La entidad A se asocia con una o más entidades B y viceversa.</p>
+            <p><strong>Ejemplo:</strong> Estudiantes y asignaturas. Un estudiante puede estar matriculado en varias asignaturas y una asignatura puede ser estudiada por varios estudiantes.</p>
+        </div>
+
+        <div class="highlight-box">
+            <strong>Importante:</strong> En las bases de datos relacionales no se puede implementar directamente la relación N:M. Se debe convertir en una nueva tabla relacionada a ambas entidades con relaciones 1:N.
+        </div>
+
+        <hr class="section-divider">
+
+        <h2>6. Metodología de Desarrollo</h2>
+
+        <h3>Pasos para crear un Diagrama Entidad-Relación</h3>
+        <ol>
+            <li><strong>Partir de una descripción textual</strong> (conversación con cliente o documento escrito)</li>
+            <li><strong>Identificar sustantivos</strong> → Candidatos a entidades o atributos</li>
+            <li><strong>Identificar verbos</strong> → Posibles relaciones</li>
+            <li><strong>Analizar frases</strong> → Determinar cardinalidad de las relaciones</li>
+            <li><strong>Elaborar el diagrama</strong> → Representación gráfica</li>
+            <li><strong>Añadir documentación adicional</strong> → Lista de atributos y restricciones no representables</li>
+        </ol>
+
+        <h3>Ejemplo Práctico: Concesionario</h3>
+        <div class="example-box">
+            <p><strong>Descripción:</strong> "Necesitamos crear una base de datos para llevar el control de nuestro concesionario. Queremos almacenar los datos de nuestros vehículos para facilitar la búsqueda del más adecuado para cada cliente. Necesitaríamos la matrícula, el color, la cilindrada, los caballos de vapor y el tipo de combustible. También queremos guardar los datos de nuestros vendedores: nombre, apellidos, DNI, dirección y teléfono. En las ventas, necesitaríamos saber qué coche se ha vendido, qué vendedor participó y el importe."</p>
+            
+            <h4>Análisis:</h4>
+            <ul>
+                <li><strong>Entidades identificadas:</strong> Vehículos, Vendedores, Ventas</li>
+                <li><strong>Atributos de Vehículos:</strong> matrícula, color, cilindrada, caballos de vapor, tipo de combustible</li>
+                <li><strong>Atributos de Vendedores:</strong> nombre, apellidos, DNI, dirección, teléfono</li>
+                <li><strong>Atributos de Ventas:</strong> coche, vendedor, importe</li>
+                <li><strong>Relaciones:</strong> "registrar ventas", "ha vendido"</li>
+            </ul>
+        </div>
+
+        <hr class="section-divider">
+
+        <h2>7. Restricciones</h2>
+
+        <div class="definition">
+            <strong>Restricciones:</strong> Condiciones que obligan al cumplimiento de ciertos comportamientos en la base de datos.
+        </div>
+
+        <p>Las restricciones sirven para:</p>
+        <ul>
+            <li>Mantener la integridad de los datos</li>
+            <li>Lograr una mejor organización</li>
+            <li>Establecer reglas de negocio</li>
+        </ul>
+
+        <hr class="section-divider">
+
+        <h2>8. Resumen Final</h2>
+
+        <div class="highlight-box">
+            <h4>Puntos Clave del Modelo Entidad-Relación</h4>
+            <ul>
+                <li>Representa la realidad a través de un esquema gráfico</li>
+                <li>Emplea terminologías de entidades, atributos y relaciones</li>
+                <li>Es un paso previo e indispensable para el modelo relacional</li>
+                <li>Permite una comprensión clara de los requisitos del sistema</li>
+                <li>Facilita la comunicación entre desarrolladores y clientes</li>
+            </ul>
+        </div>
+
+        <div class="example-box">
+            <h4>Herramientas Disponibles</h4>
+            <p>Existen cientos de aplicaciones tanto gratuitas como de pago para crear estos diagramas. La elección de la herramienta (software especializado, Paint, papel y lápiz) depende de la preferencia personal de cada desarrollador.</p>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>Fin de la primera clase - Próximo tema: Práctica con diagramas Entidad-Relación</p>
+    </div>
+</body>
+</html>

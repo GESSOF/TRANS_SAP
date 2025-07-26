@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VIDEO 9 - Modelado de Datos en Hana</title>
+    <style>
+        body {
+            font-family: 'Times New Roman', Times, serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 40px;
+            color: #333;
+            background: white;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            border-bottom: 3px solid #2c3e50;
+            padding-bottom: 20px;
+        }
+        
+        h1 {
+            color: #2c3e50;
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            color: #7f8c8d;
+            font-size: 18px;
+            font-style: italic;
+        }
+        
+        h2 {
+            color: #34495e;
+            font-size: 22px;
+            margin-top: 30px;
+            margin-bottom: 15px;
+            border-left: 4px solid #3498db;
+            padding-left: 15px;
+        }
+        
+        h3 {
+            color: #2c3e50;
+            font-size: 18px;
+            margin-top: 25px;
+            margin-bottom: 12px;
+        }
+        
+        p {
+            text-align: justify;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+        
+        .highlight {
+            background-color: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 10px 15px;
+            margin: 20px 0;
+            border-radius: 0 5px 5px 0;
+        }
+        
+        .definition {
+            background-color: #e8f4fd;
+            border: 1px solid #bee5eb;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        
+        .definition strong {
+            color: #0056b3;
+        }
+        
+        ul {
+            margin: 15px 0;
+            padding-left: 20px;
+        }
+        
+        li {
+            margin-bottom: 8px;
+            text-align: justify;
+        }
+        
+        .section {
+            margin-bottom: 30px;
+        }
+        
+        .footer {
+            margin-top: 50px;
+            padding-top: 20px;
+            border-top: 1px solid #ddd;
+            text-align: center;
+            color: #666;
+            font-size: 12px;
+        }
+        
+        @media print {
+            body { margin: 0; padding: 20px; }
+            .container { max-width: none; }
+            h1 { page-break-after: avoid; }
+            h2 { page-break-after: avoid; }
+            .section { page-break-inside: avoid; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>VIDEO 9: MODELADO DE DATOS</h1>
+            <div class="subtitle">Curso de Modelado en SAP HANA</div>
+        </div>
+
+        <div class="highlight">
+            <strong>Nota:</strong> Esta conferencia comenzará a grabarse. El modelado de datos es uno de los pasos más importantes al iniciar el desarrollo de cualquier proyecto, ya que constituye la estructura sobre la que se apoyará toda la aplicación.
+        </div>
+
+        <div class="section">
+            <h2>1. INTRODUCCIÓN AL MODELADO DE DATOS</h2>
+            
+            <p>El modelado de datos representa el corazón de todo aplicativo que necesite almacenar y consultar datos. Si el diseño de nuestra base de datos es deficiente, todo lo que construyamos sobre ella será también deficiente. Por ello, es fundamental tomarse el tiempo necesario y utilizar las metodologías correctas, ya que posteriormente será más complicado corregir errores.</p>
+            
+            <p>El modelado debe servir como una guía general, mostrando un esquema de alto nivel que sea totalmente independiente de la base de datos o metodología utilizada para implementarlo. En esta fase, únicamente nos preocupamos por la estructura de los datos, sin considerar aún la tecnología específica a utilizar.</p>
+            
+            <div class="definition">
+                <strong>Definición:</strong> Los modelos muestran la estructura lógica de la base de datos, incluidas las relaciones y limitaciones que determinan cómo se almacenan los datos y cómo se accede a ellos. Por lo general se implementan de forma gráfica para facilitar su comprensión.
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>2. EVOLUCIÓN HISTÓRICA DE LOS MODELOS DE DATOS</h2>
+            
+            <p>A lo largo de la historia de las bases de datos, se han implementado distintas tecnologías, dando lugar a diferentes modelos:</p>
+            
+            <h3>2.1 Modelo Jerárquico</h3>
+            <p>Utiliza una estructura tipo árbol donde cada nodo puede tener únicamente un nodo padre. Esta estructura es familiar y se utiliza en ciertos objetos de base de datos actuales.</p>
+            
+            <h3>2.2 Modelo en Red</h3>
+            <p>Similar al modelo jerárquico, pero con la diferencia fundamental de que cada nodo puede tener más de un nodo padre, lo que permite mayor flexibilidad en el manejo de la información.</p>
+            
+            <h3>2.3 Modelo Orientado a Objetos</h3>
+            <p>Representa la información en forma de objetos de programación. Su principal ventaja es que no requiere realizar joins entre tablas, ya que puede recuperar objetos directamente mediante punteros, ofreciendo un rendimiento superior en ciertos entornos.</p>
+            
+            <h3>2.4 Modelo Relacional</h3>
+            <p>Este modelo marcó un antes y un después en el mundo de las bases de datos. Se basa en la organización de datos en tablas relacionadas entre sí.</p>
+            
+            <h3>2.5 Modelo Transaccional</h3>
+            <p>Permite llevar a cabo un gran número de transacciones cortas en línea, con procesado de consultas más rápido, manteniendo la integridad de datos en entornos de acceso múltiple.</p>
+        </div>
+
+        <div class="section">
+            <h2>3. COMPONENTES DEL MODELO RELACIONAL</h2>
+            
+            <h3>3.1 Entidades</h3>
+            <div class="definition">
+                <strong>Entidades:</strong> Representación de un objeto existente en el mundo real. Se convertirán en las tablas de nuestro sistema de almacenaje.
+            </div>
+            
+            <h3>3.2 Atributos</h3>
+            <div class="definition">
+                <strong>Atributos:</strong> Características que definen o identifican a una entidad. Se convertirán en las columnas que almacenarán los datos en las tablas.
+            </div>
+            
+            <h3>3.3 Relaciones</h3>
+            <div class="definition">
+                <strong>Relaciones:</strong> Vínculo que define una dependencia entre varias entidades. Constituye la gran potencia de las bases de datos relacionales.
+            </div>
+            
+            <h3>3.4 Cardinalidad</h3>
+            <div class="definition">
+                <strong>Cardinalidad:</strong> Especifica el funcionamiento de la relación, indicando si un registro de una tabla puede relacionarse con uno solo de otra tabla o con múltiples registros.
+            </div>
+            
+            <h3>3.5 Claves</h3>
+            <div class="definition">
+                <strong>Claves:</strong> Atributo de una entidad que distingue cada registro del conjunto de forma unívoca. Principalmente se refiere a la clave primaria.
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>4. PROCESO DE DISEÑO DE BASE DE DATOS</h2>
+            
+            <p>El diseño de una base de datos es el proceso en el que determinamos la organización de la misma, incluidas su estructura, contenido e incluso las aplicaciones que se han de desarrollar. Se considera una disciplina estable con métodos y técnicas propios.</p>
+            
+            <div class="highlight">
+                <strong>Importante:</strong> Los términos "base de datos" y "tabla" no son sinónimos. Una base de datos relacional almacena su información en una o más tablas relacionadas.
+            </div>
+            
+            <h3>4.1 Pasos del Proceso de Diseño</h3>
+            
+            <ul>
+                <li><strong>Determinar la finalidad de la base de datos:</strong> Es fundamental conocer qué funcionalidad queremos que tenga para estructurar adecuadamente el almacenamiento de información.</li>
+                
+                <li><strong>Buscar y organizar la información necesaria:</strong> Tener la información almacenada de manera organizada, ocupando el menor espacio posible y con acceso sencillo.</li>
+                
+                <li><strong>Dividir la información en tablas:</strong> Regla básica de las bases de datos relacionales: la información debe poder representarse siempre en forma de tabla.</li>
+                
+                <li><strong>Convertir los elementos de información en columnas:</strong> Cada dato que queramos introducir o consultar será una columna de una tabla.</li>
+                
+                <li><strong>No incluir datos calculados:</strong> Evitar redundancia de datos que pueden obtenerse mediante cálculos de columnas existentes.</li>
+                
+                <li><strong>Almacenar la información en sus partes lógicas más pequeñas:</strong> Por ejemplo, separar nombre, primer apellido y segundo apellido en campos independientes para mayor flexibilidad.</li>
+                
+                <li><strong>Especificar claves principales:</strong> Toda tabla debe tener un campo clave que permita distinguir un registro de otro de manera única.</li>
+                
+                <li><strong>Definir relaciones entre las tablas:</strong> Identificar los campos de unión y cómo se relacionan para complementar información.</li>
+                
+                <li><strong>Ajustar el diseño:</strong> Adaptar el modelo según necesidades y carencias identificadas.</li>
+                
+                <li><strong>Aplicar las reglas de normalización:</strong> Proceso que se desarrollará en detalle con el modelo relacional.</li>
+            </ul>
+        </div>
+
+        <div class="section">
+            <h2>5. EJEMPLOS PRÁCTICOS</h2>
+            
+            <h3>5.1 Ejemplo de Datos Calculados - Información Personal</h3>
+            <p>En lugar de tener una columna con "nombre completo", es preferible tener:</p>
+            <ul>
+                <li>Campo: Nombre</li>
+                <li>Campo: Primer Apellido</li>
+                <li>Campo: Segundo Apellido</li>
+            </ul>
+            <p>Esto permite mayor flexibilidad en el uso de los datos y evita redundancia.</p>
+            
+            <h3>5.2 Ejemplo de Datos Calculados - Facturación</h3>
+            <p>En un detalle de compra:</p>
+            <ul>
+                <li>Producto: Tijeras</li>
+                <li>Precio unitario: 5€</li>
+                <li>Cantidad: 3 unidades</li>
+                <li>Total: 15€ (DATO CALCULADO - no almacenar)</li>
+            </ul>
+            <p>El total se calcula multiplicando precio × cantidad, por lo que no debe almacenarse como columna independiente.</p>
+        </div>
+
+        <div class="section">
+            <h2>6. PRÓXIMOS TEMAS</h2>
+            
+            <p>En las siguientes sesiones del curso se abordarán:</p>
+            <ul>
+                <li><strong>Modelo Entidad-Relación:</strong> Introducción con las partes básicas y diagramación.</li>
+                <li><strong>Modelo Relacional:</strong> Conversión del modelo entidad-relación en una estructura implementable físicamente en la base de datos.</li>
+                <li><strong>Reglas de Normalización:</strong> Aplicación práctica con ejemplos detallados.</li>
+            </ul>
+        </div>
+
+        <div class="footer">
+            <p>Documento generado a partir de la transcripción del VIDEO 9 - Curso de Modelado en SAP HANA</p>
+            <p>Material educativo para uso académico</p>
+        </div>
+    </div>
+
+    <script>
+        // Función para generar PDF
+        function generatePDF() {
+            window.print();
+        }
+        
+        // Agregar botón de descarga
+        document.addEventListener('DOMContentLoaded', function() {
+            const button = document.createElement('button');
+            button.textContent = 'Descargar como PDF';
+            button.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: #3498db;
+                color: white;
+                border: none;
+                padding: 10px 20px;
+                border-radius: 5px;
+                cursor: pointer;
+                z-index: 1000;
+                font-size: 14px;
+            `;
+            button.onclick = generatePDF;
+            document.body.appendChild(button);
+        });
+    </script>
+</body>
+</html>

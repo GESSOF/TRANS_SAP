@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clase 2 - Modelado en Sabana: 10 Ejercicios Completos</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f8f9fa;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2rem;
+            border-radius: 10px;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 2.5rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        .header p {
+            margin: 0.5rem 0 0 0;
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+        .content-section {
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+        h2 {
+            color: #667eea;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 0.5rem;
+            margin-top: 0;
+        }
+        h3 {
+            color: #764ba2;
+            margin-top: 1.5rem;
+        }
+        .exercise {
+            background: #f8f9ff;
+            border-left: 4px solid #667eea;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: 0 8px 8px 0;
+        }
+        .exercise-title {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 1rem;
+        }
+        .entities {
+            background: #e8f5e8;
+            padding: 1rem;
+            border-radius: 5px;
+            margin: 1rem 0;
+        }
+        .entities h4 {
+            margin-top: 0;
+            color: #2e7d2e;
+        }
+        .entity-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        .entity {
+            background: white;
+            padding: 1rem;
+            border-radius: 5px;
+            border: 2px solid #2e7d2e;
+        }
+        .entity-name {
+            font-weight: bold;
+            color: #2e7d2e;
+            margin-bottom: 0.5rem;
+        }
+        .attributes {
+            font-size: 0.9rem;
+        }
+        .pk {
+            font-weight: bold;
+            color: #d63384;
+        }
+        .fk {
+            font-style: italic;
+            color: #6f42c1;
+        }
+        .tables-section {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+        }
+        .table {
+            background: white;
+            border: 2px solid #495057;
+            border-radius: 5px;
+            margin: 1rem 0;
+            overflow: hidden;
+        }
+        .table-header {
+            background: #495057;
+            color: white;
+            padding: 0.8rem;
+            font-weight: bold;
+            text-align: center;
+        }
+        .table-row {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr;
+            border-bottom: 1px solid #dee2e6;
+        }
+        .table-row:last-child {
+            border-bottom: none;
+        }
+        .table-cell {
+            padding: 0.8rem;
+            border-right: 1px solid #dee2e6;
+        }
+        .table-cell:last-child {
+            border-right: none;
+        }
+        .table-row:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+        .relationships {
+            background: #d1ecf1;
+            border: 1px solid #bee5eb;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+        }
+        .relationship {
+            margin: 0.5rem 0;
+            padding: 0.5rem;
+            background: white;
+            border-radius: 3px;
+        }
+        .note {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 5px;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+        .note-icon {
+            color: #856404;
+            font-weight: bold;
+        }
+        .step {
+            counter-increment: step-counter;
+            position: relative;
+            padding-left: 3rem;
+            margin: 1.5rem 0;
+        }
+        .step::before {
+            content: counter(step-counter);
+            position: absolute;
+            left: 0;
+            top: 0;
+            background: #667eea;
+            color: white;
+            width: 2rem;
+            height: 2rem;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+        .steps-container {
+            counter-reset: step-counter;
+        }
+        .video-info {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+        .video-link {
+            display: inline-block;
+            background: #28a745;
+            color: white;
+            padding: 0.8rem 2rem;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-top: 1rem;
+            transition: background-color 0.3s;
+        }
+        .video-link:hover {
+            background: #218838;
+        }
+        @media print {
+            body { background: white; }
+            .header { background: #667eea !important; }
+            .video-info { display: none; }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Clase 2 - Modelado en Sabana</h1>
+        <p>10 Ejercicios Completos de Modelado de Base de Datos</p>
+    </div>
+
+    <div class="video-info">
+        <h3>📹 Video Original</h3>
+        <p>Este documento está basado en la clase de YouTube sobre modelado en Sabana</p>
+        <a href="https://www.youtube.com/watch?v=PMfeSPMnudM" target="_blank" class="video-link">
+            Ver Video en YouTube
+        </a>
+    </div>
+
+    <div class="content-section">
+        <h2>🎯 Objetivos de la Clase</h2>
+        <p>En esta clase aprenderemos a:</p>
+        <ul>
+            <li>Analizar textos y extraer entidades, atributos y relaciones</li>
+            <li>Crear diseños entidad-relación a partir de enunciados</li>
+            <li>Convertir esquemas entidad-relación a modelo relacional</li>
+            <li>Preparar el modelo para implementación en base de datos</li>
+        </ul>
+    </div>
+
+    <div class="content-section">
+        <h2>📚 Metodología de Trabajo</h2>
+        <div class="steps-container">
+            <div class="step">
+                <strong>Análisis del texto:</strong> Identificar sustantivos que representen entidades y sus atributos correspondientes.
+            </div>
+            <div class="step">
+                <strong>Identificación de entidades:</strong> Extraer los objetos de la realidad sobre los que necesitamos guardar información.
+            </div>
+            <div class="step">
+                <strong>Definición de atributos:</strong> Determinar qué datos necesitamos almacenar para cada entidad.
+            </div>
+            <div class="step">
+                <strong>Establecimiento de relaciones:</strong> Definir cómo se conectan las entidades entre sí.
+            </div>
+            <div class="step">
+                <strong>Conversión a modelo relacional:</strong> Transformar el diagrama entidad-relación en tablas relacionales.
+            </div>
+        </div>
+    </div>
+
+    <div class="exercise">
+        <div class="exercise-title">🏢 Ejercicio 1: Sistema de Empresa (Clientes, Artículos y Pedidos)</div>
+        
+        <h3>📋 Enunciado</h3>
+        <p><strong>Contexto:</strong> Crear una base de datos para una pequeña empresa que debe contener información acerca de clientes, artículos y pedidos.</p>
+
+        <div class="entities">
+            <h4>🏗️ Entidades Identificadas</h4>
+            <div class="entity-list">
+                <div class="entity">
+                    <div class="entity-name">CLIENTES</div>
+                    <div class="attributes">
+                        • <span class="pk">ID_Cliente</span> (PK)<br>
+                        • Saldo<br>
+                        • Límite_Crédito<br>
+                        • Descuento
+                    </div>
+                </div>
+                <div class="entity">
+                    <div class="entity-name">ARTÍCULOS</div>
+                    <div class="attributes">
+                        • <span class="pk">ID_Artículo</span> (PK)<br>
+                        • Descripción<br>
+                        • <span class="fk">ID_Fábrica</span> (FK)
+                    </div>
+                </div>
+                <div class="entity">
+                    <div class="entity-name">PEDIDOS</div>
+                    <div class="attributes">
+                        • <span class="pk">ID_Pedido</span> (PK)<br>
+                        • Dirección_Envío<br>
+                        • Fecha<br>
+                        • <span class="fk">ID_Cliente</span> (FK)
+                    </div>
+                </div>
+                <div class="entity">
+                    <div class="entity-name">FÁBRICAS</div>
+                    <div class="attributes">
+                        • <span class="pk">ID_Fábrica</span> (PK)<br>
+                        • Teléfono<br>
+                        • Existencias<br>
+                        • Alternativa
+                    </div>
+                </div>
+                <div class="entity">
+                    <div class="entity-name">CUERPO_PEDIDOS</div>
+                    <div class="attributes">
+                        • <span class="pk">ID_Pedido</span> (PK, FK)<br>
+                        • <span class="pk">ID_Artículo</span> (PK, FK)<br>
+                        • Cantidad
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="relationships">
+            <h4>🔗 Relaciones</h4>
+            <div class="relationship"><strong>Clientes REALIZAN Pedidos:</strong> 1:N (Un cliente puede realizar varios pedidos)</div>
+            <div class="relationship"><strong>Pedidos SE COMPONEN DE Artículos:</strong> N:M (Un pedido puede tener varios artículos, un artículo puede estar en varios pedidos)</div>
+            <div class="relationship"><strong>Fábricas FABRICAN Artículos:</strong> 1:N (Una fábrica puede fabricar varios artículos)</div>
+        </div>
+
+        <div class="tables-section">
+            <h4>📊 Modelo Relacional - Tablas Resultantes</h4>
+            
+            <div class="table">
+                <div class="table-header">CLIENTES</div>
+                <div class="table-row">
+                    <div class="table-cell"><strong>Campo</strong></div>
+                    <div class="table-cell"><strong>Tipo</strong></div>
+                    <div class="table-cell"><strong>Clave</strong></div>
+                </div>
+                <div class="table-row">
+                    <div class="table-cell">ID_Cliente</div>
+                    <div class="table-cell">Entero</div>
+                    <div class="table-cell">PK</div>
+                </div>
+                <div class="table-row">
+                    <div class="table-cell">Saldo</div>
+                    <div class="table-cell">Decimal</div>
+                    <div class="table-cell">-</div>
+                </div>
+                <div class="table-row">
+                    <div class="table-cell">Límite_Crédito</div>
+                    <div class="table-cell">Entero</div>
+                    <div class="table-cell">-</div>
+                </div>
+                <div class="table-row">
+                    <div class="table-cell">Descuento</div>
+                    <div class="table-cell">Entero</div>
+                    <div class="table-cell">-</div>
+                </div>
+            </div>
+
+            <div class="table">
+                <div class="table-header">PEDIDOS</div>
+                <div class="table-row">
+                    <div class="table-cell"><strong>Campo</strong></div>
+                    <div class="table-cell"><strong>Tipo</strong></div>
+                    <div class="table-cell"><strong>Clave</strong></div>
+                </div>
+                <div class="table-row">
+                    <div class="table-cell">ID_Pedido</div>
+                    <div class="table-cell">Entero</div>
+                    <div class="table-cell">PK</div>
+                </div>
+                <div class="table-row">
+                    <div class="table-cell">Dirección_Envío</div>
+                    <div class="table-cell">String</div>
+                    <div class="table-cell">-</div>
+                </div>
+                <div class="table-row">
+                    <div class="table-cell">Fecha</div>
+                    <div class="table-cell">Fecha</div>
+                    <div class="table-cell">-</div>
+                </div>
+                <div class="table-row">
+                    <div class="table-cell">ID_Cliente</div>
+                    <div class="table-cell">Entero</div>
+                    <div class="table-cell">FK</div>
+                </div>
+            </div>
+
+            <div class="table">
+                <div class="table-header">CUERPO_PEDIDOS</div>
+                <div class="table-row">
+                    <div class="table-cell"><strong>Campo</strong></div>
+                    <div class="table-cell"><strong>Tipo</strong></div>
+                    <div class="table-cell"><strong>Clave</strong></div>
+                </div>
+                <div class="table-row">
+                    <div class="table-cell">ID_Pedido</div>
+                    <div class="table-cell">Entero</div>
+                    <div class="table-cell">PK, FK</div>
+                </div>
+                <div class="table-row">
+                    <div class="table-cell">ID_Artículo</div>
+                    <div class="table-cell">Entero</div>
+                    <div class="table-cell">PK, FK</div>
+                </div>
+                <div class="table-row">
+                    <div class="table-cell">Cantidad</div>
+                    <div class="table-cell">Entero</div>
+                    <div class="table-cell">-</div>
+                </div>
+            </div>
+
+            <div class="table">
+                <div class="table-header">ARTÍCULOS</div>
+                <div class="table-row">
+                    <div class="table-cell"><strong>Campo</strong></div>
+                    <div class="table-cell"><strong>Tipo</strong></div>
+                    <div class="table-cell"><strong>Clave</strong></div>
+                </div>
+                <div class="table-row">
+                    <div class="table-cell">ID_Artículo</div>
+                    <div class="table-cell">Entero</div>
+                    <div class="table-cell">PK</div>
+                </div>
+                <div class="table-row">
+                    <div class="table-cell">Descripción</div>
+                    <div class="table-cell">String</div>
+                    <div class="table-cell">-</div>
+                </div>
+                <div class="table-row">
+                    <div class="table-cell">ID_Fábrica</div>
+                    <div class="table-cell">Entero</div>
+                    <div class="table-cell">FK</div>
+                </div>
+            </div>
+
+            <div class="table">
+                <div class="table-header">FÁBRICAS</div>
+                <div class="table-row">
+                    <div class="table-cell"><strong>Campo</strong></div>
+                    <div class="table-cell"><strong>Tipo</strong></div>
+                    <div class="table-cell"><strong>Clave</strong></div>
+                </div>
+                <div class="table-row">
+                    <div class="table-cell">ID_Fábrica</div>
+                    <div class="table-cell">Entero</div>
+                    <div class="table-cell">PK</div>
+                </div>
+                <div class="table-row">
+                    <div class="table-cell">Teléfono</div>
+                    <div class="table-cell">Alfanumérico</div>
+                    <div class="table-cell">-</div>
+                </div>
+                <div class="table-row">
+                    <div class="table-cell">Existencias</div>
+                    <div class="table-cell">Entero</div>
+                    <div class="table-cell">-</div>
+                </div>
+                <div class="table-row">
+                    <div class="table-cell">Alternativa</div>
+                    <div class="table-cell">Booleano</div>
+                    <div class="table-cell">-</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="exercise">
+        <div class="exercise-title">🏪 Ejercicio 2: Sistema de Ventas</div>
+        
+        <h3>📋 Enunciado</h3>
+        <p><strong>Contexto:</strong> Base de datos para apoyar la gestión de un sistema de ventas. La empresa necesita llevar control de proveedores, clientes, productos y ventas.</p>
+
+        <div class="entities">
+            <h4>🏗️ Entidades Identificadas</h4>
+            <div class="entity-list">
+                <div class="entity">
+                    <div class="entity-name">PROVEEDORES</div>
+                    <div class="attributes">
+                        • <span class="pk">ID_Proveedor</span> (PK)<br>
+                        • Nombre<br>
+                        • Calle<br>
+                        • Número<br>
+                        • Comuna<br>
+                        • Ciudad<br>
+                        • Teléfono<br>
+                        • Web
+                    </div>
+                </div>
+                <div class="entity">
+                    <div class="entity-name">CLIENTES</div>
+                    <div class="attributes">
+                        • <span class="pk">ID_Cliente</span> (PK)<br>
+                        • Nombre<br>
+                        • Calle<br>
+                        • Número<br>
+                        • Comuna<br>
+                        • Ciudad
+                    </div>
+                </div>
+                <div class="entity">
+                    <div class="entity-name">PRODUCTOS</div>
+                    <div class="attributes">
+                        • <span class="pk">ID_Producto</span> (PK)<br>
+                        • Nombre<br>
+                        • Precio<br>
+                        • Stock<br>
+                        • <span class="fk">ID_Proveedor</span> (FK)<br>
+                        • <span class="fk">ID_Categoría</span> (FK)
+                    </div>
+                </div>
+                <div class="entity">
+                    <div class="entity-name">CATEGORÍAS</div>
+                    <div class="attributes">
+                        • <span class="pk">ID_Categoría</span> (PK)<br>
+                        • Nombre<br>
+                        • Descripción
+                    </div>
+                </div>
+                <div class="entity">
+                    <div class="entity-name">VENTAS</div>
+                    <div class="attributes">
+                        • <span class="pk">ID_Venta</span> (PK)<br>
+                        • Fecha<br>
+                        • Descuento<br>
+                        • Monto<br>
+                        • <span class="fk">ID_Cliente</span> (FK)
+                    </div>
+                </div>
+                <div class="entity">
+                    <div class="entity-name">TELÉFONOS</div>
+                    <div class="attributes">
+                        • <span class="pk">Número</span> (PK)<br>
+                        • <span class="fk">ID_Cliente</span> (FK)
+                    </div>
+                </div>
+                <div class="entity">
+                    <div class="entity-name">CONTIENEN</div>
+                    <div class="attributes">
+                        • <span class="pk">ID_Producto</span> (PK, FK)<br>
+                        • <span class="pk">ID_Venta</span> (PK, FK)<br>
+                        • Cantidad
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="relationships">
+            <h4>🔗 Relaciones</h4>
+            <div class="relationship"><strong>Proveedores PROVEEN Productos:</strong> 1:N (Un proveedor puede proveer varios productos)</div>
+            <div class="relationship"><strong>Productos PERTENECEN A Categorías:</strong> N:1 (Varios productos pueden pertenecer a una categoría)</div>
+            <div class="relationship"><strong>Clientes REALIZAN Ventas:</strong> 1:N (Un cliente puede realizar varias ventas)</div>
+            <div class="relationship"><strong>Ventas CONTIENEN Productos:</strong> N:M (Una venta puede contener varios productos, un producto puede estar en varias ventas)</div>
+            <div class="relationship"><strong>Clientes TIENEN Teléfonos:</strong> 1:N (Un cliente puede tener varios teléfonos)</div>
+        </div>
+
+        <div class="note">
+            <span class="note-icon">💡 Nota Importante:</span> 
+            <p>En este ejercicio se crea una entidad débil "TELÉFONOS" porque un cliente puede tener varios números de contacto. La dirección se desglosa en componentes (calle, número, comuna, ciudad) para mayor granularidad en la información.</p>
+        </div>
+    </div>
+
+    <div class="content-section">
+        <h2>🔍 Puntos Clave del Análisis</h2>
+        
+        <h3>Identificación de Entidades</h3>
+        <ul>
+            <li><strong>Sustantivos principales:</strong> Buscar palabras que representen objetos o conceptos sobre los que necesitamos almacenar información</li>
+            <li><strong>Campos únicos:</strong> Identificar atributos que puedan servir como claves primarias</li>
+            <li><strong>Entidades débiles:</strong> Reconocer cuando una entidad depende de otra para su existencia</li>
+        </ul>
+
+        <h3>Definición de Atributos</h3>
+        <ul>
+            <li><strong>Campos calculados:</strong> Evitar almacenar datos que se puedan calcular a partir de otros</li>
+            <li><strong>Tipos de datos:</strong> Elegir el tipo más apropiado (entero, decimal, string, booleano, etc.)</li>
+            <li><strong>Normalización:</strong> Evitar duplicidad de información entre tablas</li>
+        </ul>
+
+        <h3>Establecimiento de Relaciones</h3>
+        <ul>
+            <li><strong>Cardinalidad 1:N:</strong> El lado "1" transfiere su clave primaria al lado "N"</li>
+            <li><strong>Cardinalidad N:M:</strong> Se crea una tabla intermedia con las claves primarias de ambas entidades</li>
+            <li><strong>Integridad referencial:</strong> Considerar acciones al eliminar registros relacionados</li>
+        </ul>
+    </div>
+
+    <div class="content-section">
+        <h2>✅ Recomendaciones Finales</h2>
+        
+        <div class="note">
+            <span class="note-icon">📝 Proceso Recomendado:</span>
+            <ol>
+                <li>Leer completamente el enunciado antes de comenzar</li>
+                <li>Subrayar sustantivos y posibles entidades</li>
+                <li>Identificar atributos de cada entidad</li>
+                <li>Determinar claves primarias</li>
+                <li>Establecer relaciones y cardinalidades</li>
+                <li>Revisar el texto para verificar que no falta información</li>
+                <li>Convertir a modelo relacional</li>
+                <li>Documentar acciones referenciales y restricciones adicionales</li>
+            </ol>
+        </div>
+
+        <div class="note">
+            <span class="note-icon">⚠️ Errores Comunes:</span>
+            <ul>
+                <li>Duplicar información entre tablas relacionadas</li>
+                <li>No identificar correctamente las relaciones N:M</li>
+                <li>Olvidar transferir claves foráneas en relaciones 1:N</li>
+                <li>Usar tipos de datos incorrectos</li>
+                <li>No considerar la granularidad adecuada de los datos</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="content-section">
+        <h2>📚 Recursos Adicionales</h2>
+        <p>Para completar tu aprendizaje, recuerda:</p>
+        <ul>
+            <li>Realizar el cuestionario correspondiente a esta clase</li>
+            <li>Completar el ejercicio práctico relacionado</li>
+            <li>Consultar dudas por email si es necesario</li>
+            <li>Practicar con enunciados similares para dominar la técnica</li>
+        </ul>
+        
+        <div class="note">
+            <span class="note-icon">📧 Contacto:</span>
+            Si tienes dudas sobre estos ejercicios, puedes consultarlas por email para recibir ayuda adicional y resolverlas de forma ágil.
+        </div>
+    </div>
+</body>
+</html>
