@@ -3,322 +3,915 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Datos vs Información - Modelado en Hana</title>
+    <title>Curso SAP HANA - Datos vs Información</title>
     <style>
-        @page {
-            margin: 2cm;
-            size: A4;
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
-        
+
         body {
-            font-family: 'Georgia', serif;
-            line-height: 1.6;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
             color: #333;
-            max-width: 210mm;
+        }
+
+        .container {
+            max-width: 1400px;
             margin: 0 auto;
             padding: 20px;
-            background: white;
         }
-        
+
         .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
             text-align: center;
-            border-bottom: 3px solid #2c3e50;
-            padding-bottom: 20px;
+        }
+
+        .header h1 {
+            color: #2c3e50;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header p {
+            color: #666;
+            font-size: 1.2em;
+        }
+
+        .dashboard {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 30px;
             margin-bottom: 30px;
         }
-        
-        h1 {
+
+        .sidebar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            height: fit-content;
+            position: sticky;
+            top: 20px;
+        }
+
+        .sidebar h3 {
             color: #2c3e50;
-            font-size: 28px;
-            margin-bottom: 10px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #667eea;
         }
-        
-        .subtitle {
-            color: #7f8c8d;
-            font-size: 16px;
-            font-style: italic;
+
+        .nav-item {
+            padding: 12px 20px;
+            margin: 5px 0;
+            background: linear-gradient(45deg, #f8f9fa, #e9ecef);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-left: 4px solid transparent;
+            font-size: 0.9em;
         }
-        
-        h2 {
-            color: #34495e;
-            font-size: 20px;
-            margin-top: 30px;
-            margin-bottom: 15px;
-            border-left: 4px solid #3498db;
-            padding-left: 15px;
+
+        .nav-item:hover {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            transform: translateX(10px);
+            border-left-color: #fff;
         }
-        
-        h3 {
-            color: #2980b9;
-            font-size: 16px;
-            margin-top: 20px;
-            margin-bottom: 10px;
+
+        .nav-item.active {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border-left-color: #fff;
         }
-        
-        p {
-            text-align: justify;
-            margin-bottom: 12px;
-        }
-        
-        .definition-box {
-            background-color: #ecf0f1;
-            border-left: 5px solid #e74c3c;
+
+        .mobile-menu-toggle {
+            display: none;
+            background: rgba(255, 255, 255, 0.95);
+            border: none;
             padding: 15px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            font-size: 1.2em;
+            cursor: pointer;
+            width: 100%;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .content {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .section {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .section h2 {
+            color: #2c3e50;
+            font-size: 2em;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #667eea;
+        }
+
+        .concept-card {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-radius: 15px;
+            padding: 25px;
             margin: 20px 0;
-            border-radius: 0 5px 5px 0;
+            border-left: 5px solid #667eea;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease;
         }
-        
-        .example-box {
-            background-color: #e8f5e8;
-            border: 1px solid #27ae60;
-            padding: 15px;
-            margin: 15px 0;
-            border-radius: 5px;
+
+        .concept-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
         }
-        
-        .important-note {
-            background-color: #fff3cd;
-            border: 1px solid #ffc107;
-            padding: 12px;
-            margin: 15px 0;
-            border-radius: 5px;
-            font-weight: 500;
+
+        .concept-card h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 1.4em;
         }
-        
-        ul, ol {
-            margin-left: 20px;
+
+        .concept-card p {
+            line-height: 1.8;
+            color: #555;
             margin-bottom: 15px;
         }
-        
-        li {
-            margin-bottom: 8px;
+
+        .concept-card ul {
+            margin-left: 20px;
+            margin-top: 10px;
         }
-        
+
+        .concept-card li {
+            margin: 8px 0;
+            color: #555;
+        }
+
+        .definition-box {
+            background: linear-gradient(135deg, #fff3cd, #ffeaa7);
+            border-radius: 15px;
+            padding: 25px;
+            margin: 20px 0;
+            border-left: 5px solid #f39c12;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        .definition-box h3 {
+            color: #856404;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        .definition-box p {
+            color: #856404;
+            line-height: 1.8;
+            margin-bottom: 10px;
+        }
+
+        .example-box {
+            background: linear-gradient(135deg, #e8f5e8, #d4edda);
+            border-radius: 15px;
+            padding: 25px;
+            margin: 20px 0;
+            border-left: 5px solid #27ae60;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        .example-box h3 {
+            color: #155724;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        .example-box p {
+            color: #155724;
+            line-height: 1.8;
+            margin-bottom: 10px;
+        }
+
+        .example-box ul {
+            margin-left: 20px;
+            margin-top: 10px;
+        }
+
+        .example-box li {
+            margin: 8px 0;
+            color: #155724;
+        }
+
         .data-types-table {
             width: 100%;
             border-collapse: collapse;
             margin: 20px 0;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            border-radius: 15px;
+            overflow: hidden;
+            background: white;
         }
-        
+
         .data-types-table th,
         .data-types-table td {
-            border: 1px solid #bdc3c7;
-            padding: 10px;
+            padding: 15px;
             text-align: left;
+            border-bottom: 1px solid #e9ecef;
         }
-        
+
         .data-types-table th {
-            background-color: #34495e;
+            background: linear-gradient(45deg, #667eea, #764ba2);
             color: white;
             font-weight: bold;
+            font-size: 0.9em;
         }
-        
+
         .data-types-table tr:nth-child(even) {
             background-color: #f8f9fa;
         }
-        
-        .page-break {
-            page-break-before: always;
+
+        .data-types-table tr:hover {
+            background-color: #e3f2fd;
+            transition: background-color 0.3s ease;
         }
-        
-        .footer {
+
+        .important-note {
+            background: linear-gradient(135deg, #ffebee, #ffcdd2);
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+            border-left: 5px solid #e74c3c;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        .important-note strong {
+            color: #c62828;
+        }
+
+        .important-note p {
+            color: #c62828;
+            line-height: 1.8;
+            margin-top: 10px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
             text-align: center;
-            margin-top: 40px;
-            padding-top: 20px;
-            border-top: 1px solid #bdc3c7;
-            color: #7f8c8d;
-            font-size: 12px;
+            transition: transform 0.3s ease;
         }
-        
-        @media print {
-            body {
-                margin: 0;
-                padding: 0;
+
+        .stat-card:hover {
+            transform: scale(1.05);
+        }
+
+        .stat-number {
+            font-size: 2.5em;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .progress-bar {
+            background: #e9ecef;
+            border-radius: 10px;
+            padding: 3px;
+            margin: 20px 0;
+        }
+
+        .progress {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            height: 20px;
+            border-radius: 8px;
+            transition: width 0.5s ease;
+        }
+
+        .quality-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .quality-card {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+
+        .quality-card:hover {
+            transform: scale(1.05);
+        }
+
+        .quality-card h4 {
+            font-size: 1.2em;
+            margin-bottom: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+
+            .header {
+                padding: 20px;
+                margin-bottom: 20px;
+            }
+
+            .header h1 {
+                font-size: 1.8em;
+            }
+
+            .dashboard {
+                grid-template-columns: 1fr;
+                gap: 20px;
             }
             
-            .page-break {
-                page-break-before: always;
+            .sidebar {
+                position: static;
+                padding: 20px;
+                order: 2;
+            }
+
+            .mobile-menu-toggle {
+                display: block;
+                order: 1;
+            }
+
+            .sidebar.mobile-hidden {
+                display: none;
+            }
+
+            .content {
+                padding: 20px;
+                order: 3;
+            }
+
+            .section h2 {
+                font-size: 1.5em;
+            }
+
+            .concept-card, .definition-box, .example-box {
+                padding: 20px;
+                margin: 15px 0;
+            }
+
+            .data-types-table {
+                font-size: 0.85em;
+            }
+
+            .data-types-table th,
+            .data-types-table td {
+                padding: 10px 8px;
+            }
+
+            .stats-grid, .quality-grid {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+
+            .nav-item {
+                padding: 15px 20px;
+                font-size: 1em;
+                text-align: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .header h1 {
+                font-size: 1.5em;
+            }
+
+            .content {
+                padding: 15px;
+            }
+
+            .concept-card, .definition-box, .example-box {
+                padding: 15px;
+            }
+
+            .data-types-table {
+                font-size: 0.75em;
+            }
+
+            .data-types-table th,
+            .data-types-table td {
+                padding: 8px 5px;
             }
         }
     </style>
 </head>
 <body>
-    <div class="header">
-        <h1>Datos vs Información</h1>
-        <p class="subtitle">Curso de Modelado en Hana - Clase 2</p>
+    <div class="container">
+        <header class="header">
+            <img src="https://gessof.cl/wp-content/uploads/2025/05/Logo-minimalista-con-simbolismo-global.png" alt="Gessof Logo" style="height: 80px; margin-bottom: 20px; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.1));">
+            <h1>Curso SAP HANA</h1>
+            <h2 style="color: #667eea; font-size: 1.5em; margin: 10px 0; font-weight: 600;">VIDEO 008</h2>
+            <p>Datos vs Información - Modelado en Hana</p>
+            <div class="progress-bar">
+                <div class="progress" style="width: 100%"></div>
+            </div>
+        </header>
+
+        <div class="dashboard">
+            <button class="mobile-menu-toggle" onclick="toggleMobileMenu()">
+                📋 Menú de Contenidos
+            </button>
+
+            <nav class="sidebar" id="sidebar">
+                <h3>Contenidos del Módulo</h3>
+                <div class="nav-item active" onclick="showSection('overview')">📋 Resumen General</div>
+                <div class="nav-item" onclick="showSection('introduction')">🚀 Introducción</div>
+                <div class="nav-item" onclick="showSection('data')">📊 Los Datos</div>
+                <div class="nav-item" onclick="showSection('data-types')">🔧 Tipos de Datos</div>
+                <div class="nav-item" onclick="showSection('information')">💡 La Información</div>
+                <div class="nav-item" onclick="showSection('qualities')">⭐ Cualidades</div>
+                <div class="nav-item" onclick="showSection('performance')">🚀 Rendimiento</div>
+                <div class="nav-item" onclick="showSection('conclusions')">🎯 Conclusiones</div>
+            </nav>
+
+            <main class="content">
+                <section id="overview" class="section active">
+                    <h2>📋 Resumen General del Módulo</h2>
+                    
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-number">2</div>
+                            <div>Conceptos Principales</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number">6</div>
+                            <div>Tipos de Datos</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number">5</div>
+                            <div>Cualidades de Información</div>
+                        </div>
+                    </div>
+
+                    <div class="concept-card">
+                        <h3>🎯 Objetivos del Módulo</h3>
+                        <p>En esta clase analizaremos la diferencia fundamental entre <strong>datos</strong> e <strong>información</strong>, dos conceptos que frecuentemente se confunden pero que tienen características y propósitos distintos en el ámbito de las bases de datos y el análisis de información.</p>
+                    </div>
+
+                    <div class="definition-box">
+                        <h3>🔑 Definición Clave</h3>
+                        <p><strong>Base de datos:</strong> No es más que un conjunto de datos que están almacenados para su uso en el futuro. El resultado del procesamiento de esos datos es la información.</p>
+                    </div>
+
+                    <div class="concept-card">
+                        <h3>📚 Contenido del Módulo</h3>
+                        <ul>
+                            <li><strong>Los Datos:</strong> Definición, características y tipos</li>
+                            <li><strong>La Información:</strong> Transformación y valor agregado</li>
+                            <li><strong>Cualidades:</strong> Precisión, exactitud, oportunidad, integridad y significatividad</li>
+                            <li><strong>Consideraciones de rendimiento</strong> en big data</li>
+                        </ul>
+                    </div>
+                </section>
+
+                <section id="introduction" class="section">
+                    <h2>🚀 Introducción</h2>
+                    
+                    <div class="concept-card">
+                        <h3>🎯 Propósito del Módulo</h3>
+                        <p>En esta clase analizaremos la diferencia fundamental entre datos e información, dos conceptos que frecuentemente se confunden pero que tienen características y propósitos distintos en el ámbito de las bases de datos y el análisis de información.</p>
+                    </div>
+
+                    <div class="definition-box">
+                        <h3>💡 Concepto Fundamental</h3>
+                        <p><strong>Base de datos:</strong> No es más que un conjunto de datos que están almacenados para su uso en el futuro. El resultado del procesamiento de esos datos es la información.</p>
+                    </div>
+
+                    <div class="concept-card">
+                        <h3>🔄 Proceso de Transformación</h3>
+                        <p>El objetivo principal de cualquier sistema de base de datos es transformar <strong>datos brutos</strong> en <strong>información útil</strong> que permita la toma de decisiones informadas.</p>
+                        
+                        <div style="display: flex; justify-content: space-around; align-items: center; margin: 20px 0; flex-wrap: wrap;">
+                            <div style="text-align: center; margin: 10px;">
+                                <div style="width: 100px; height: 100px; background: linear-gradient(135deg, #95a5a6, #7f8c8d); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; margin: 0 auto 10px;">📊</div>
+                                <p><strong>DATOS</strong><br>Elementos individuales</p>
+                            </div>
+                            <div style="text-align: center; margin: 10px;">
+                                <div style="font-size: 2em; color: #667eea;">→</div>
+                                <p><strong>PROCESAMIENTO</strong></p>
+                            </div>
+                            <div style="text-align: center; margin: 10px;">
+                                <div style="width: 100px; height: 100px; background: linear-gradient(135deg, #27ae60, #2ecc71); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; margin: 0 auto 10px;">💡</div>
+                                <p><strong>INFORMACIÓN</strong><br>Conocimiento útil</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="data" class="section">
+                    <h2>📊 Los Datos</h2>
+                    
+                    <div class="concept-card">
+                        <h3>🔍 ¿Qué son los datos?</h3>
+                        <p>Los datos son <strong>elementos individuales</strong> que por sí solos no constituyen información en el sentido útil de la palabra. No permiten la adopción de la decisión más conveniente, ya que no aportan los conocimientos necesarios para ello.</p>
+                        <p>Solo tras su <strong>adecuado procesamiento</strong> se proporciona el conocimiento adecuado para poder ser considerados como información.</p>
+                    </div>
+
+                    <div class="example-box">
+                        <h3>📝 Ejemplo Práctico</h3>
+                        <p>Si tenemos una tabla con los siguientes campos:</p>
+                        <ul>
+                            <li><strong>Nombre de una persona</strong></li>
+                            <li><strong>Apellido</strong></li>
+                            <li><strong>Número de teléfono</strong></li>
+                            <li><strong>Año de nacimiento</strong></li>
+                        </ul>
+                        <p>Cada uno de estos elementos por separado son <strong>datos</strong>. Un nombre por sí solo, un apellido por sí solo, no constituyen información útil.</p>
+                    </div>
+
+                    <div class="concept-card">
+                        <h3>🔑 Características de los Datos</h3>
+                        <ul>
+                            <li><strong>Atomicidad:</strong> Son elementos indivisibles</li>
+                            <li><strong>Sin contexto:</strong> Por sí solos no tienen significado</li>
+                            <li><strong>Requieren procesamiento:</strong> Necesitan ser transformados</li>
+                            <li><strong>Materia prima:</strong> Base para generar información</li>
+                        </ul>
+                    </div>
+                </section>
+
+                <section id="data-types" class="section">
+                    <h2>🔧 Tipos de Datos</h2>
+                    
+                    <div class="concept-card">
+                        <h3>📋 Clasificación de Datos</h3>
+                        <p>Los datos se pueden catalogar en diferentes tipos, lo que <strong>limita qué valores pueden tomar</strong> y <strong>qué operaciones podemos realizar</strong> con ellos.</p>
+                    </div>
+
+                    <table class="data-types-table">
+                        <thead>
+                            <tr>
+                                <th>Tipo de Dato</th>
+                                <th>Descripción</th>
+                                <th>Ejemplos</th>
+                                <th>Consideraciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Carácter</strong></td>
+                                <td>Dígitos individuales (números, letras u otros caracteres)</td>
+                                <td>DNI, número de teléfono</td>
+                                <td>Los números no sirven para operaciones matemáticas</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Cadenas (String)</strong></td>
+                                <td>Unión de múltiples caracteres</td>
+                                <td>Nombres, descripciones</td>
+                                <td>Tipo complejo formado por tipos carácter</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Numérico</strong></td>
+                                <td>Números que permiten operaciones matemáticas</td>
+                                <td>Enteros: 1, 2, 3<br>Decimales: 1.5, 2.7</td>
+                                <td>Diferentes rangos según el subtipo</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Booleano</strong></td>
+                                <td>Valores lógicos</td>
+                                <td>true/false, 1/0, verdadero/falso</td>
+                                <td>Expresión más básica de la informática</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Fecha</strong></td>
+                                <td>Almacenamiento de fechas y tiempos</td>
+                                <td>01/01/2024, 15:30:00</td>
+                                <td>Permite operaciones temporales</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Binario</strong></td>
+                                <td>Información en código binario</td>
+                                <td>Vídeos, audios, documentos</td>
+                                <td>Alto consumo de recursos</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="important-note">
+                        <strong>Nota Importante:</strong>
+                        <p>La elección correcta del tipo de dato es crucial para optimizar el uso de memoria y mejorar el rendimiento. En big data, cada optimización mínima puede traducirse en grandes diferencias de tiempo de procesamiento.</p>
+                    </div>
+                </section>
+
+                <section id="information" class="section">
+                    <h2>💡 La Información</h2>
+                    
+                    <div class="concept-card">
+                        <h3>🎯 ¿Qué es la información?</h3>
+                        <p>Para que una información sea útil, es necesario que facilite al responsable de la toma de decisiones una <strong>idea clara y completa de la situación</strong>, de forma que le aporte una base sobre la que decidir.</p>
+                    </div>
+
+                    <div class="definition-box">
+                        <h3>⚠️ Concepto Clave</h3>
+                        <p>La información no es simplemente datos procesados. Podemos procesar los datos de mil maneras y que aún así no sea información, dado que no nos aporta nada útil para la toma de decisiones.</p>
+                    </div>
+
+                    <div class="example-box">
+                        <h3>🔄 Transformación de Datos a Información</h3>
+                        <p>Si realizamos una consulta y extraemos datos de múltiples tablas:</p>
+                        <ul>
+                            <li><strong>Nombre + Apellido</strong></li>
+                            <li><strong>Edad calculada</strong></li>
+                            <li><strong>Dirección</strong></li>
+                            <li><strong>Sueldo</strong></li>
+                        </ul>
+                        <p>Y los presentamos de forma que nos permitan conocer que <strong>"una persona de X edad que vive en tal sitio tiene un sueldo de tal cantidad"</strong>, entonces hemos convertido los datos en <strong>información</strong>.</p>
+                    </div>
+
+                    <div class="concept-card">
+                        <h3>🎯 Valor de la Información</h3>
+                        <p>La información tiene valor cuando:</p>
+                        <ul>
+                            <li><strong>Reduce la incertidumbre</strong> en la toma de decisiones</li>
+                            <li><strong>Proporciona contexto</strong> a los datos individuales</li>
+                            <li><strong>Permite acciones</strong> basadas en conocimiento</li>
+                            <li><strong>Mejora la comprensión</strong> de una situación</li>
+                        </ul>
+                    </div>
+                </section>
+
+                <section id="qualities" class="section">
+                    <h2>⭐ Cualidades de una Buena Información</h2>
+                    
+                    <div class="quality-grid">
+                        <div class="quality-card">
+                            <h4>🎯 Precisión</h4>
+                            <p>Adaptada al objetivo</p>
+                        </div>
+                        <div class="quality-card">
+                            <h4>✅ Exactitud</h4>
+                            <p>Información verificable</p>
+                        </div>
+                        <div class="quality-card">
+                            <h4>⏰ Oportunidad</h4>
+                            <p>En el momento correcto</p>
+                        </div>
+                        <div class="quality-card">
+                            <h4>🔗 Integridad</h4>
+                            <p>Información completa</p>
+                        </div>
+                        <div class="quality-card">
+                            <h4>💡 Significatividad</h4>
+                            <p>Clara y relevante</p>
+                        </div>
+                    </div>
+
+                    <div class="concept-card">
+                        <h3>🎯 1. Precisión</h3>
+                        <p>La precisión depende del <strong>objetivo de la aplicación</strong>:</p>
+                        <ul>
+                            <li><strong>Programa de almacenamiento:</strong> Precisión útil con números enteros (20 muebles, 50 regletas)</li>
+                            <li><strong>Aplicación científica:</strong> Necesaria precisión mayor con muchos decimales (peso atómico)</li>
+                        </ul>
+                    </div>
+
+                    <div class="concept-card">
+                        <h3>✅ 2. Exactitud</h3>
+                        <p>Si la información no es exacta, puede llevarnos a cometer errores. Es necesario <strong>cotejar y confirmar</strong> la información buscando fuentes que la verifiquen.</p>
+                        
+                        <div class="example-box">
+                            <h4>📍 Ejemplo: Código Postal en Supermercados</h4>
+                            <p>Cuando en un supermercado preguntan el código postal, es para realizar estudios de clientela. Esta información funciona siempre y cuando los clientes proporcionen datos correctos. Si mienten, la información resultante llevará a conclusiones erróneas.</p>
+                        </div>
+                    </div>
+
+                    <div class="concept-card">
+                        <h3>⏰ 3. Oportunidad</h3>
+                        <p>La información debe estar disponible en el <strong>momento y lugar indicado</strong> con suficiente calidad para resolver un problema.</p>
+                        
+                        <div class="example-box">
+                            <h4>👕 Ejemplo: Tienda de Ropa</h4>
+                            <p><strong>Análisis Humano:</strong> Un dependiente ve entrar a un joven con melena, pendientes, vaqueros, camiseta de grupo musical y cazadora de cuero. Procesa estos datos y los convierte en información para orientar al cliente hacia la sección juvenil.</p>
+                            <p><strong>Análisis Automatizado:</strong> El mismo proceso debe realizarse por ordenador mientras el cliente está en la tienda. Si la información se obtiene después de que el cliente se vaya, no sirve para nada.</p>
+                        </div>
+                    </div>
+
+                    <div class="concept-card">
+                        <h3>🔗 4. Integridad</h3>
+                        <p>La información debe ser lo más <strong>completa posible</strong>. Es una cuestión de contexto.</p>
+                        <p><strong>Ejemplo:</strong> Saber que un hombre se llama "Juan Pastor" no dice gran cosa. Saber que Juan Pastor vive en determinada ciudad, calle, tiene un sueldo estimado y ciertos hábitos de compra, nos da información mucho más completa para tomar decisiones adecuadas.</p>
+                    </div>
+
+                    <div class="concept-card">
+                        <h3>💡 5. Significatividad</h3>
+                        <p>Debe ser <strong>clara y relevante</strong>. El exceso de datos o datos irrelevantes también pueden ser un problema. La información procesada debe ser:</p>
+                        <ul>
+                            <li><strong>Concreta</strong></li>
+                            <li><strong>Concisa</strong></li>
+                            <li><strong>Fácil de interpretar</strong></li>
+                            <li><strong>Aprovechable</strong></li>
+                        </ul>
+                    </div>
+
+                    <div class="important-note">
+                        <strong>Recordatorio:</strong>
+                        <p>La información es el resultado del procesamiento de los datos. Para que todas estas cualidades se cumplan, debemos tener especial cuidado en la recopilación, limpieza y verificación de los datos.</p>
+                    </div>
+                </section>
+
+                <section id="performance" class="section">
+                    <h2>🚀 Consideraciones de Rendimiento</h2>
+                    
+                    <div class="concept-card">
+                        <h3>📚 Enfoque del Curso</h3>
+                        <p>En este curso trabajaremos con <strong>volúmenes de datos pequeños</strong> porque las herramientas y operaciones no dependen del volumen, sino de la <strong>lógica y el razonamiento adecuado</strong>.</p>
+                    </div>
+
+                    <div class="concept-card">
+                        <h3>📊 Impacto del Volumen de Datos</h3>
+                        <ul>
+                            <li>El volumen de datos solo afecta al <strong>tiempo de procesamiento</strong></li>
+                            <li>Algo que funciona bien con pocos datos puede <strong>no ser óptimo</strong> con grandes volúmenes</li>
+                            <li>En big data, cada milésima de segundo de optimización puede convertirse en <strong>minutos de diferencia</strong></li>
+                            <li>Es necesario utilizar herramientas de análisis para identificar qué partes del proceso necesitan mejora</li>
+                        </ul>
+                    </div>
+
+                    <div class="important-note">
+                        <strong>Optimización en Big Data:</strong>
+                        <p>En entornos de grandes volúmenes, la elección correcta del tipo de dato y las estrategias de procesamiento pueden marcar la diferencia entre procesos que toman minutos versus horas de ejecución.</p>
+                    </div>
+
+                    <div class="concept-card">
+                        <h3>🔧 Mejores Prácticas</h3>
+                        <ul>
+                            <li><strong>Elegir tipos de datos apropiados</strong> desde el diseño inicial</li>
+                            <li><strong>Implementar índices eficientes</strong> para consultas frecuentes</li>
+                            <li><strong>Monitorear el rendimiento</strong> constantemente</li>
+                            <li><strong>Optimizar consultas</strong> antes de escalar volúmenes</li>
+                        </ul>
+                    </div>
+                </section>
+
+                <section id="conclusions" class="section">
+                    <h2>🎯 Conclusiones</h2>
+                    
+                    <div class="concept-card">
+                        <h3>📋 Resumen de Conceptos</h3>
+                        <p>La distinción entre datos e información es fundamental para el modelado de bases de datos:</p>
+                    </div>
+
+                    <div class="quality-grid">
+                        <div class="quality-card">
+                            <h4>📊 DATOS</h4>
+                            <p>Elementos individuales sin contexto</p>
+                        </div>
+                        <div class="quality-card">
+                            <h4>💡 INFORMACIÓN</h4>
+                            <p>Datos procesados con valor</p>
+                        </div>
+                    </div>
+
+                    <div class="concept-card">
+                        <h3>🔑 Puntos Clave</h3>
+                        <ul>
+                            <li><strong>Los datos</strong> son elementos individuales sin contexto que, por sí solos, no permiten tomar decisiones</li>
+                            <li><strong>La información</strong> es el resultado del procesamiento adecuado de los datos, que debe cumplir criterios de precisión, exactitud, oportunidad, integridad y significatividad</li>
+                            <li>La elección correcta de <strong>tipos de datos</strong> impacta directamente en el rendimiento y la eficiencia del sistema</li>
+                            <li>El objetivo final es <strong>convertir datos en información útil</strong> para la toma de decisiones</li>
+                        </ul>
+                    </div>
+
+                    <div class="definition-box">
+                        <h3>🎯 Objetivo Final</h3>
+                        <p>El propósito fundamental de cualquier sistema de gestión de bases de datos es <strong>transformar datos brutos en información valiosa</strong> que facilite la toma de decisiones informadas y estratégicas.</p>
+                    </div>
+
+                    <div class="concept-card">
+                        <h3>🚀 Próximos Pasos</h3>
+                        <p>Con estos fundamentos claros sobre la diferencia entre datos e información, estamos preparados para avanzar hacia aspectos más técnicos del modelado en SAP HANA, donde aplicaremos estos conceptos en situaciones prácticas.</p>
+                    </div>
+                </section>
+            </main>
+        </div>
     </div>
 
-    <h2>Introducción</h2>
-    <p>En esta clase analizaremos la diferencia fundamental entre datos e información, dos conceptos que frecuentemente se confunden pero que tienen características y propósitos distintos en el ámbito de las bases de datos y el análisis de información.</p>
+    <script>
+        function showSection(sectionId) {
+            // Ocultar todas las secciones
+            const sections = document.querySelectorAll('.section');
+            sections.forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            // Mostrar la sección seleccionada
+            document.getElementById(sectionId).classList.add('active');
+            
+            // Actualizar navegación
+            const navItems = document.querySelectorAll('.nav-item');
+            navItems.forEach(item => {
+                item.classList.remove('active');
+            });
+            
+            // Marcar el elemento activo
+            event.target.classList.add('active');
+            
+            // Scroll al inicio del contenido
+            document.querySelector('.content').scrollTop = 0;
 
-    <div class="definition-box">
-        <h3>Definición Clave</h3>
-        <p><strong>Base de datos:</strong> No es más que un conjunto de datos que están almacenados para su uso en el futuro. El resultado del procesamiento de esos datos es la información.</p>
-    </div>
+            // En móviles, ocultar el menú después de seleccionar
+            if (window.innerWidth <= 768) {
+                const sidebar = document.getElementById('sidebar');
+                sidebar.classList.add('mobile-hidden');
+                
+                const toggleButton = document.querySelector('.mobile-menu-toggle');
+                toggleButton.textContent = '📋 Menú de Contenidos';
+            }
+        }
 
-    <h2>Los Datos</h2>
-    
-    <h3>¿Qué son los datos?</h3>
-    <p>Los datos son elementos individuales que por sí solos no constituyen información en el sentido útil de la palabra. No permiten la adopción de la decisión más conveniente, ya que no aportan los conocimientos necesarios para ello. Solo tras su adecuado procesamiento se proporciona el conocimiento adecuado para poder ser considerados como información.</p>
+        function toggleMobileMenu() {
+            const sidebar = document.getElementById('sidebar');
+            const toggleButton = document.querySelector('.mobile-menu-toggle');
+            
+            if (sidebar.classList.contains('mobile-hidden')) {
+                sidebar.classList.remove('mobile-hidden');
+                toggleButton.textContent = '❌ Cerrar Menú';
+            } else {
+                sidebar.classList.add('mobile-hidden');
+                toggleButton.textContent = '📋 Menú de Contenidos';
+            }
+        }
 
-    <div class="example-box">
-        <h3>Ejemplo Práctico</h3>
-        <p>Si tenemos una tabla con los siguientes campos:</p>
-        <ul>
-            <li>Nombre de una persona</li>
-            <li>Apellido</li>
-            <li>Número de teléfono</li>
-            <li>Año de nacimiento</li>
-        </ul>
-        <p>Cada uno de estos elementos por separado son <strong>datos</strong>. Un nombre por sí solo, un apellido por sí solo, no constituyen información útil.</p>
-    </div>
+        // Inicializar en móviles
+        document.addEventListener('DOMContentLoaded', function() {
+            if (window.innerWidth <= 768) {
+                const sidebar = document.getElementById('sidebar');
+                sidebar.classList.add('mobile-hidden');
+            }
 
-    <h3>Tipos de Datos</h3>
-    <p>Los datos se pueden catalogar en diferentes tipos, lo que limita qué valores pueden tomar y qué operaciones podemos realizar con ellos:</p>
+            // Animación de entrada
+            const cards = document.querySelectorAll('.concept-card, .definition-box, .example-box');
+            cards.forEach((card, index) => {
+                setTimeout(() => {
+                    card.style.opacity = '0';
+                    card.style.transform = 'translateY(20px)';
+                    card.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+                    
+                    setTimeout(() => {
+                        card.style.opacity = '1';
+                        card.style.transform = 'translateY(0)';
+                    }, 100);
+                }, index * 100);
+            });
+        });
 
-    <table class="data-types-table">
-        <thead>
-            <tr>
-                <th>Tipo de Dato</th>
-                <th>Descripción</th>
-                <th>Ejemplos</th>
-                <th>Consideraciones</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td><strong>Carácter</strong></td>
-                <td>Dígitos individuales (números, letras u otros caracteres)</td>
-                <td>DNI, número de teléfono</td>
-                <td>Los números no sirven para operaciones matemáticas</td>
-            </tr>
-            <tr>
-                <td><strong>Cadenas (String)</strong></td>
-                <td>Unión de múltiples caracteres</td>
-                <td>Nombres, descripciones</td>
-                <td>Tipo complejo formado por tipos carácter</td>
-            </tr>
-            <tr>
-                <td><strong>Numérico</strong></td>
-                <td>Números que permiten operaciones matemáticas</td>
-                <td>Enteros: 1, 2, 3<br>Decimales: 1.5, 2.7</td>
-                <td>Diferentes rangos según el subtipo</td>
-            </tr>
-            <tr>
-                <td><strong>Booleano</strong></td>
-                <td>Valores lógicos</td>
-                <td>true/false, 1/0, verdadero/falso</td>
-                <td>Expresión más básica de la informática</td>
-            </tr>
-            <tr>
-                <td><strong>Fecha</strong></td>
-                <td>Almacenamiento de fechas y tiempos</td>
-                <td>01/01/2024, 15:30:00</td>
-                <td>Permite operaciones temporales</td>
-            </tr>
-            <tr>
-                <td><strong>Binario</strong></td>
-                <td>Información en código binario</td>
-                <td>Vídeos, audios, documentos</td>
-                <td>Alto consumo de recursos</td>
-            </tr>
-        </tbody>
-    </table>
-
-    <div class="important-note">
-        <strong>Nota Importante:</strong> La elección correcta del tipo de dato es crucial para optimizar el uso de memoria y mejorar el rendimiento. En big data, cada optimización mínima puede traducirse en grandes diferencias de tiempo de procesamiento.
-    </div>
-
-    <div class="page-break"></div>
-
-    <h2>La Información</h2>
-
-    <h3>¿Qué es la información?</h3>
-    <p>Para que una información sea útil, es necesario que facilite al responsable de la toma de decisiones una idea clara y completa de la situación, de forma que le aporte una base sobre la que decidir.</p>
-
-    <div class="definition-box">
-        <p>La información no es simplemente datos procesados. Podemos procesar los datos de mil maneras y que aún así no sea información, dado que no nos aporta nada útil para la toma de decisiones.</p>
-    </div>
-
-    <div class="example-box">
-        <h3>Transformación de Datos a Información</h3>
-        <p>Si realizamos una consulta y extraemos datos de múltiples tablas:</p>
-        <ul>
-            <li>Nombre + Apellido</li>
-            <li>Edad calculada</li>
-            <li>Dirección</li>
-            <li>Sueldo</li>
-        </ul>
-        <p>Y los presentamos de forma que nos permitan conocer que "una persona de X edad que vive en tal sitio tiene un sueldo de tal cantidad", entonces hemos convertido los datos en <strong>información</strong>.</p>
-    </div>
-
-    <h3>Cualidades de una Buena Información</h3>
-
-    <h3>1. Precisión</h3>
-    <p>La precisión depende del objetivo de la aplicación:</p>
-    <ul>
-        <li><strong>Programa de almacenamiento:</strong> Precisión útil con números enteros (20 muebles, 50 regletas)</li>
-        <li><strong>Aplicación científica:</strong> Necesaria precisión mayor con muchos decimales (peso atómico)</li>
-    </ul>
-
-    <h3>2. Exactitud</h3>
-    <p>Si la información no es exacta, puede llevarnos a cometer errores. Es necesario cotejar y confirmar la información buscando fuentes que la verifiquen.</p>
-
-    <div class="example-box">
-        <h3>Ejemplo: Código Postal en Supermercados</h3>
-        <p>Cuando en un supermercado preguntan el código postal, es para realizar estudios de clientela. Esta información funciona siempre y cuando los clientes proporcionen datos correctos. Si mienten, la información resultante llevará a conclusiones erróneas.</p>
-    </div>
-
-    <h3>3. Oportunidad</h3>
-    <p>La información debe estar disponible en el momento y lugar indicado con suficiente calidad para resolver un problema.</p>
-
-    <div class="example-box">
-        <h3>Ejemplo: Tienda de Ropa</h3>
-        <p><strong>Análisis Humano:</strong> Un dependiente ve entrar a un joven con melena, pendientes, vaqueros, camiseta de grupo musical y cazadora de cuero. Procesa estos datos y los convierte en información para orientar al cliente hacia la sección juvenil.</p>
-        <p><strong>Análisis Automatizado:</strong> El mismo proceso debe realizarse por ordenador mientras el cliente está en la tienda. Si la información se obtiene después de que el cliente se vaya, no sirve para nada.</p>
-    </div>
-
-    <h3>4. Integridad</h3>
-    <p>La información debe ser lo más completa posible. Es una cuestión de contexto.</p>
-    <p><strong>Ejemplo:</strong> Saber que un hombre se llama "Juan Pastor" no dice gran cosa. Saber que Juan Pastor vive en determinada ciudad, calle, tiene un sueldo estimado y ciertos hábitos de compra, nos da información mucho más completa para tomar decisiones adecuadas.</p>
-
-    <h3>5. Significatividad</h3>
-    <p>Debe ser clara y relevante. El exceso de datos o datos irrelevantes también pueden ser un problema. La información procesada debe ser:</p>
-    <ul>
-        <li>Concreta</li>
-        <li>Concisa</li>
-        <li>Fácil de interpretar</li>
-        <li>Aprovechable</li>
-    </ul>
-
-    <div class="important-note">
-        <strong>Recordatorio:</strong> La información es el resultado del procesamiento de los datos. Para que todas estas cualidades se cumplan, debemos tener especial cuidado en la recopilación, limpieza y verificación de los datos.
-    </div>
-
-    <h2>Consideraciones de Rendimiento</h2>
-    <p>En este curso trabajaremos con volúmenes de datos pequeños porque las herramientas y operaciones no dependen del volumen, sino de la lógica y el razonamiento adecuado. Sin embargo, es importante entender que:</p>
-
-    <ul>
-        <li>El volumen de datos solo afecta al tiempo de procesamiento</li>
-        <li>Algo que funciona bien con pocos datos puede no ser óptimo con grandes volúmenes</li>
-        <li>En big data, cada milésima de segundo de optimización puede convertirse en minutos de diferencia</li>
-        <li>Es necesario utilizar herramientas de análisis para identificar qué partes del proceso necesitan mejora</li>
-    </ul>
-
-    <h2>Conclusiones</h2>
-    <p>La distinción entre datos e información es fundamental para el modelado de bases de datos:</p>
-
-    <ul>
-        <li><strong>Los datos</strong> son elementos individuales sin contexto que, por sí solos, no permiten tomar decisiones</li>
-        <li><strong>La información</strong> es el resultado del procesamiento adecuado de los datos, que debe cumplir criterios de precisión, exactitud, oportunidad, integridad y significatividad</li>
-        <li>La elección correcta de tipos de datos impacta directamente en el rendimiento y la eficiencia del sistema</li>
-        <li>El objetivo final es convertir datos en información útil para la toma de decisiones</li>
-    </ul>
-
-    <div class="footer">
-        <p>Curso de Modelado en Hana - Clase 2: Datos vs Información</p>
-    </div>
+        // Manejar cambios de tamaño de ventana
+        window.addEventListener('resize', function() {
+            const sidebar = document.getElementById('sidebar');
+            const toggleButton = document.querySelector('.mobile-menu-toggle');
+            
+            if (window.innerWidth > 768) {
+                sidebar.classList.remove('mobile-hidden');
+                toggleButton.textContent = '📋 Menú de Contenidos';
+            } else if (window.innerWidth <= 768 && !sidebar.classList.contains('mobile-hidden')) {
+                sidebar.classList.add('mobile-hidden');
+            }
+        });
+    </script>
 </body>
 </html>

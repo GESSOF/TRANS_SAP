@@ -3,629 +3,1286 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Clase 2 - Modelado en Sabana: 10 Ejercicios Completos</title>
+    <title>Curso SAP HANA - 10 Ejercicios Completos de Modelado</title>
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            max-width: 1200px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1400px;
             margin: 0 auto;
             padding: 20px;
-            line-height: 1.6;
-            color: #333;
-            background-color: #f8f9fa;
         }
+
         .header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 2rem;
-            border-radius: 10px;
-            margin-bottom: 2rem;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
             text-align: center;
         }
+
         .header h1 {
-            margin: 0;
-            font-size: 2.5rem;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            color: #2c3e50;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
+
         .header p {
-            margin: 0.5rem 0 0 0;
-            font-size: 1.2rem;
-            opacity: 0.9;
+            color: #666;
+            font-size: 1.2em;
         }
-        .content-section {
-            background: white;
-            padding: 2rem;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            margin-bottom: 2rem;
-        }
-        h2 {
-            color: #667eea;
-            border-bottom: 3px solid #667eea;
-            padding-bottom: 0.5rem;
-            margin-top: 0;
-        }
-        h3 {
-            color: #764ba2;
-            margin-top: 1.5rem;
-        }
-        .exercise {
-            background: #f8f9ff;
-            border-left: 4px solid #667eea;
-            padding: 1.5rem;
-            margin: 1.5rem 0;
-            border-radius: 0 8px 8px 0;
-        }
-        .exercise-title {
-            font-size: 1.3rem;
+
+        .video-badge {
+            background: linear-gradient(45deg, #28a745, #20c997);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 25px;
             font-weight: bold;
-            color: #667eea;
-            margin-bottom: 1rem;
+            margin: 10px 0;
+            display: inline-block;
         }
-        .entities {
-            background: #e8f5e8;
-            padding: 1rem;
-            border-radius: 5px;
-            margin: 1rem 0;
-        }
-        .entities h4 {
-            margin-top: 0;
-            color: #2e7d2e;
-        }
-        .entity-list {
+
+        .dashboard {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1rem;
-            margin-top: 1rem;
+            grid-template-columns: 300px 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
         }
-        .entity {
+
+        .sidebar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            height: fit-content;
+            position: sticky;
+            top: 20px;
+        }
+
+        .sidebar h3 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #667eea;
+        }
+
+        .nav-item {
+            padding: 12px 20px;
+            margin: 5px 0;
+            background: linear-gradient(45deg, #f8f9fa, #e9ecef);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-left: 4px solid transparent;
+            font-size: 0.9em;
+        }
+
+        .nav-item:hover {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            transform: translateX(10px);
+            border-left-color: #fff;
+        }
+
+        .nav-item.active {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border-left-color: #fff;
+        }
+
+        .mobile-menu-toggle {
+            display: none;
+            background: rgba(255, 255, 255, 0.95);
+            border: none;
+            padding: 15px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            font-size: 1.2em;
+            cursor: pointer;
+            width: 100%;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .content {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .section {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .section h2 {
+            color: #2c3e50;
+            font-size: 2em;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #667eea;
+        }
+
+        .concept-card {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-radius: 15px;
+            padding: 25px;
+            margin: 20px 0;
+            border-left: 5px solid #667eea;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease;
+        }
+
+        .concept-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .concept-card h3, .concept-card h4 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 1.4em;
+        }
+
+        .concept-card p {
+            line-height: 1.8;
+            color: #555;
+            margin-bottom: 15px;
+        }
+
+        .concept-card ul, .concept-card ol {
+            margin-left: 20px;
+            margin-top: 10px;
+        }
+
+        .concept-card li {
+            margin: 8px 0;
+            color: #555;
+        }
+
+        .exercise-box {
+            background: linear-gradient(135deg, #f8f9ff 0%, #e6f3ff 100%);
+            border-radius: 15px;
+            padding: 25px;
+            margin: 20px 0;
+            border-left: 5px solid #007bff;
+            box-shadow: 0 5px 20px rgba(0, 123, 255, 0.1);
+        }
+
+        .exercise-title {
+            color: #007bff;
+            font-size: 1.5em;
+            font-weight: bold;
+            margin-bottom: 20px;
+            padding: 15px;
             background: white;
-            padding: 1rem;
-            border-radius: 5px;
-            border: 2px solid #2e7d2e;
+            border-radius: 10px;
+            border: 2px solid #007bff;
         }
+
+        .entities-section {
+            background: linear-gradient(135deg, #e8f5e8, #d4edda);
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+            border-left: 5px solid #28a745;
+        }
+
+        .entities-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .entity-card {
+            background: white;
+            border: 2px solid #28a745;
+            border-radius: 10px;
+            padding: 15px;
+            box-shadow: 0 3px 10px rgba(40, 167, 69, 0.2);
+        }
+
         .entity-name {
-            font-weight: bold;
-            color: #2e7d2e;
-            margin-bottom: 0.5rem;
-        }
-        .attributes {
-            font-size: 0.9rem;
-        }
-        .pk {
-            font-weight: bold;
-            color: #d63384;
-        }
-        .fk {
-            font-style: italic;
-            color: #6f42c1;
-        }
-        .tables-section {
-            background: #fff3cd;
-            border: 1px solid #ffeaa7;
+            background: #28a745;
+            color: white;
+            padding: 8px 12px;
             border-radius: 8px;
-            padding: 1.5rem;
-            margin: 1.5rem 0;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 10px;
         }
-        .table {
+
+        .attributes {
+            font-size: 0.9em;
+            line-height: 1.6;
+        }
+
+        .pk {
+            color: #dc3545;
+            font-weight: bold;
+        }
+
+        .fk {
+            color: #6f42c1;
+            font-style: italic;
+        }
+
+        .relationships-section {
+            background: linear-gradient(135deg, #d1ecf1, #b8daff);
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+            border-left: 5px solid #17a2b8;
+        }
+
+        .relationship-item {
+            background: white;
+            padding: 10px 15px;
+            margin: 8px 0;
+            border-radius: 8px;
+            border-left: 3px solid #17a2b8;
+        }
+
+        .tables-section {
+            background: linear-gradient(135deg, #fff3cd, #ffeaa7);
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+            border-left: 5px solid #ffc107;
+        }
+
+        .table-container {
             background: white;
             border: 2px solid #495057;
-            border-radius: 5px;
-            margin: 1rem 0;
+            border-radius: 10px;
+            margin: 15px 0;
             overflow: hidden;
+            box-shadow: 0 3px 10px rgba(73, 80, 87, 0.2);
         }
+
         .table-header {
-            background: #495057;
+            background: linear-gradient(45deg, #495057, #6c757d);
             color: white;
-            padding: 0.8rem;
+            padding: 12px;
             font-weight: bold;
             text-align: center;
+            font-size: 1.1em;
         }
+
         .table-row {
             display: grid;
             grid-template-columns: 2fr 1fr 1fr;
             border-bottom: 1px solid #dee2e6;
         }
+
         .table-row:last-child {
             border-bottom: none;
         }
+
         .table-cell {
-            padding: 0.8rem;
+            padding: 12px;
             border-right: 1px solid #dee2e6;
         }
+
         .table-cell:last-child {
             border-right: none;
         }
+
         .table-row:nth-child(even) {
             background-color: #f8f9fa;
         }
-        .relationships {
-            background: #d1ecf1;
-            border: 1px solid #bee5eb;
-            border-radius: 8px;
-            padding: 1.5rem;
-            margin: 1.5rem 0;
+
+        .table-row:hover {
+            background-color: #e3f2fd;
         }
-        .relationship {
-            margin: 0.5rem 0;
-            padding: 0.5rem;
-            background: white;
-            border-radius: 3px;
+
+        .methodology-box {
+            background: linear-gradient(135deg, #fff9c4, #fff59d);
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+            border-left: 5px solid #ff9800;
         }
-        .note {
-            background: #fff3cd;
-            border: 1px solid #ffeaa7;
-            border-radius: 5px;
-            padding: 1rem;
-            margin: 1rem 0;
+
+        .step-container {
+            counter-reset: step-counter;
         }
-        .note-icon {
-            color: #856404;
-            font-weight: bold;
-        }
+
         .step {
             counter-increment: step-counter;
             position: relative;
-            padding-left: 3rem;
-            margin: 1.5rem 0;
+            padding-left: 60px;
+            margin: 20px 0;
+            background: white;
+            padding: 20px 20px 20px 60px;
+            border-radius: 10px;
+            border-left: 4px solid #ff9800;
         }
+
         .step::before {
             content: counter(step-counter);
             position: absolute;
-            left: 0;
-            top: 0;
-            background: #667eea;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: linear-gradient(45deg, #ff9800, #f57c00);
             color: white;
-            width: 2rem;
-            height: 2rem;
+            width: 30px;
+            height: 30px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             font-weight: bold;
+            font-size: 0.9em;
         }
-        .steps-container {
-            counter-reset: step-counter;
+
+        .important-note {
+            background: linear-gradient(135deg, #ffebee, #ffcdd2);
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+            border-left: 5px solid #e74c3c;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
         }
-        .video-info {
-            background: #d4edda;
-            border: 1px solid #c3e6cb;
-            border-radius: 8px;
-            padding: 1.5rem;
-            margin-bottom: 2rem;
+
+        .important-note strong {
+            color: #c62828;
+        }
+
+        .important-note p, .important-note ul, .important-note ol {
+            color: #c62828;
+            line-height: 1.8;
+            margin-top: 10px;
+        }
+
+        .important-note li {
+            margin: 8px 0;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
             text-align: center;
+            transition: transform 0.3s ease;
         }
+
+        .stat-card:hover {
+            transform: scale(1.05);
+        }
+
+        .stat-number {
+            font-size: 2.5em;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .progress-bar {
+            background: #e9ecef;
+            border-radius: 10px;
+            padding: 3px;
+            margin: 20px 0;
+        }
+
+        .progress {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            height: 20px;
+            border-radius: 8px;
+            transition: width 0.5s ease;
+        }
+
         .video-link {
             display: inline-block;
-            background: #28a745;
+            background: linear-gradient(45deg, #28a745, #20c997);
             color: white;
-            padding: 0.8rem 2rem;
+            padding: 12px 24px;
             text-decoration: none;
-            border-radius: 5px;
-            margin-top: 1rem;
-            transition: background-color 0.3s;
+            border-radius: 25px;
+            margin: 10px 0;
+            transition: transform 0.3s ease;
+            font-weight: bold;
         }
+
         .video-link:hover {
-            background: #218838;
+            transform: scale(1.05);
+            text-decoration: none;
+            color: white;
         }
-        @media print {
-            body { background: white; }
-            .header { background: #667eea !important; }
-            .video-info { display: none; }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+
+            .header {
+                padding: 20px;
+                margin-bottom: 20px;
+            }
+
+            .header h1 {
+                font-size: 1.8em;
+            }
+
+            .dashboard {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .sidebar {
+                position: static;
+                padding: 20px;
+                order: 2;
+            }
+
+            .mobile-menu-toggle {
+                display: block;
+                order: 1;
+            }
+
+            .sidebar.mobile-hidden {
+                display: none;
+            }
+
+            .content {
+                padding: 20px;
+                order: 3;
+            }
+
+            .section h2 {
+                font-size: 1.5em;
+            }
+
+            .concept-card, .exercise-box, .methodology-box {
+                padding: 20px;
+                margin: 15px 0;
+            }
+
+            .entities-grid {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+
+            .table-row {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+
+            .table-cell {
+                border-right: none;
+                border-bottom: 1px solid #dee2e6;
+            }
+
+            .step {
+                padding-left: 50px;
+                padding-right: 15px;
+            }
+
+            .nav-item {
+                padding: 15px 20px;
+                font-size: 1em;
+                text-align: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .header h1 {
+                font-size: 1.5em;
+            }
+
+            .content {
+                padding: 15px;
+            }
+
+            .concept-card, .exercise-box, .methodology-box {
+                padding: 15px;
+            }
+
+            .step {
+                padding-left: 45px;
+                padding-right: 10px;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="header">
-        <h1>Clase 2 - Modelado en Sabana</h1>
-        <p>10 Ejercicios Completos de Modelado de Base de Datos</p>
-    </div>
+    <div class="container">
+        <header class="header">
+            <img src="https://gessof.cl/wp-content/uploads/2025/05/Logo-minimalista-con-simbolismo-global.png" alt="Gessof Logo" style="height: 80px; margin-bottom: 20px; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.1));">
+            <h1>Curso SAP HANA</h1>
+            <h2 style="color: #667eea; font-size: 1.5em; margin: 10px 0; font-weight: 600;">VIDEO 012</h2>
+            <p>10 Ejercicios Completos de Modelado en Sabana</p>
+            <div class="video-badge">📹 Clase Práctica Completa</div>
+            <div class="progress-bar">
+                <div class="progress" style="width: 100%"></div>
+            </div>
+        </header>
 
-    <div class="video-info">
-        <h3>📹 Video Original</h3>
-        <p>Este documento está basado en la clase de YouTube sobre modelado en Sabana</p>
-        <a href="https://www.youtube.com/watch?v=PMfeSPMnudM" target="_blank" class="video-link">
-            Ver Video en YouTube
-        </a>
-    </div>
+        <div class="dashboard">
+            <button class="mobile-menu-toggle" onclick="toggleMobileMenu()">
+                📋 Menú de Contenidos
+            </button>
 
-    <div class="content-section">
-        <h2>🎯 Objetivos de la Clase</h2>
-        <p>En esta clase aprenderemos a:</p>
-        <ul>
-            <li>Analizar textos y extraer entidades, atributos y relaciones</li>
-            <li>Crear diseños entidad-relación a partir de enunciados</li>
-            <li>Convertir esquemas entidad-relación a modelo relacional</li>
-            <li>Preparar el modelo para implementación en base de datos</li>
-        </ul>
-    </div>
+            <nav class="sidebar" id="sidebar">
+                <h3>Contenidos del Módulo</h3>
+                <div class="nav-item active" onclick="showSection('overview')">📋 Resumen General</div>
+                <div class="nav-item" onclick="showSection('objectives')">🎯 Objetivos</div>
+                <div class="nav-item" onclick="showSection('methodology')">📚 Metodología</div>
+                <div class="nav-item" onclick="showSection('exercise1')">🏢 Ejercicio 1: Empresa</div>
+                <div class="nav-item" onclick="showSection('exercise2')">🏪 Ejercicio 2: Ventas</div>
+                <div class="nav-item" onclick="showSection('analysis')">🔍 Puntos Clave</div>
+                <div class="nav-item" onclick="showSection('recommendations')">✅ Recomendaciones</div>
+                <div class="nav-item" onclick="showSection('resources')">📚 Recursos</div>
+                <div class="nav-item" onclick="showSection('video-info')">📹 Video Original</div>
+            </nav>
 
-    <div class="content-section">
-        <h2>📚 Metodología de Trabajo</h2>
-        <div class="steps-container">
-            <div class="step">
-                <strong>Análisis del texto:</strong> Identificar sustantivos que representen entidades y sus atributos correspondientes.
-            </div>
-            <div class="step">
-                <strong>Identificación de entidades:</strong> Extraer los objetos de la realidad sobre los que necesitamos guardar información.
-            </div>
-            <div class="step">
-                <strong>Definición de atributos:</strong> Determinar qué datos necesitamos almacenar para cada entidad.
-            </div>
-            <div class="step">
-                <strong>Establecimiento de relaciones:</strong> Definir cómo se conectan las entidades entre sí.
-            </div>
-            <div class="step">
-                <strong>Conversión a modelo relacional:</strong> Transformar el diagrama entidad-relación en tablas relacionales.
-            </div>
+            <main class="content">
+                <section id="overview" class="section active">
+                    <h2>📋 Resumen General del Módulo</h2>
+                    
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-number">10</div>
+                            <div>Ejercicios Completos</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number">2</div>
+                            <div>Casos Detallados</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number">5</div>
+                            <div>Pasos Metodológicos</div>
+                        </div>
+                    </div>
+
+                    <div class="concept-card">
+                        <h3>🎯 Enfoque de la Clase</h3>
+                        <p>Esta clase práctica está dedicada a aplicar todo lo aprendido sobre <strong>Modelado de Bases de Datos</strong> a través de ejercicios completos que van desde el análisis de texto hasta la implementación final.</p>
+                    </div>
+
+                    <div class="methodology-box">
+                        <h3>🔧 Proceso Completo</h3>
+                        <p>Cada ejercicio sigue el proceso completo:</p>
+                        <ul>
+                            <li><strong>Análisis del enunciado</strong> - Extracción de requisitos</li>
+                            <li><strong>Identificación de entidades</strong> - Elementos principales</li>
+                            <li><strong>Definición de atributos</strong> - Propiedades de cada entidad</li>
+                            <li><strong>Establecimiento de relaciones</strong> - Conexiones y cardinalidad</li>
+                            <li><strong>Modelo relacional</strong> - Conversión a tablas</li>
+                        </ul>
+                    </div>
+
+                    <div class="concept-card">
+                        <h3>📊 Ejercicios Incluidos</h3>
+                        <ul>
+                            <li><strong>Sistema de Empresa:</strong> Clientes, artículos, pedidos y fábricas</li>
+                            <li><strong>Sistema de Ventas:</strong> Proveedores, productos, categorías y ventas</li>
+                            <li><strong>8 ejercicios adicionales</strong> con diferentes niveles de complejidad</li>
+                        </ul>
+                    </div>
+                </section>
+
+                <section id="objectives" class="section">
+                    <h2>🎯 Objetivos de la Clase</h2>
+                    
+                    <div class="concept-card">
+                        <h3>📋 Competencias a Desarrollar</h3>
+                        <p>En esta clase aprenderemos a:</p>
+                        <ul>
+                            <li><strong>Analizar textos</strong> y extraer entidades, atributos y relaciones</li>
+                            <li><strong>Crear diseños entidad-relación</strong> a partir de enunciados complejos</li>
+                            <li><strong>Convertir esquemas entidad-relación</strong> a modelo relacional</li>
+                            <li><strong>Preparar el modelo</strong> para implementación en base de datos</li>
+                        </ul>
+                    </div>
+
+                    <div class="methodology-box">
+                        <h3>🎯 Habilidades Específicas</h3>
+                        <div class="stats-grid">
+                            <div class="stat-card">
+                                <div class="stat-number">📝</div>
+                                <div>Análisis de Requisitos</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-number">🏗️</div>
+                                <div>Diseño Conceptual</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-number">🔗</div>
+                                <div>Modelado Relacional</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-number">⚙️</div>
+                                <div>Implementación</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="concept-card">
+                        <h3>🚀 Beneficios Esperados</h3>
+                        <ul>
+                            <li><strong>Dominio completo</strong> del proceso de modelado</li>
+                            <li><strong>Capacidad de análisis</strong> de requisitos complejos</li>
+                            <li><strong>Habilidad para identificar</strong> patrones de diseño</li>
+                            <li><strong>Preparación para casos reales</strong> de trabajo profesional</li>
+                        </ul>
+                    </div>
+                </section>
+
+                <section id="methodology" class="section">
+                    <h2>📚 Metodología de Trabajo</h2>
+                    
+                    <div class="methodology-box">
+                        <h3>🔧 Proceso Sistemático</h3>
+                        <p>Seguiremos un proceso estructurado de 5 pasos para cada ejercicio:</p>
+                        
+                        <div class="step-container">
+                            <div class="step">
+                                <strong>Análisis del texto:</strong> Identificar sustantivos que representen entidades y sus atributos correspondientes.
+                            </div>
+                            <div class="step">
+                                <strong>Identificación de entidades:</strong> Extraer los objetos de la realidad sobre los que necesitamos guardar información.
+                            </div>
+                            <div class="step">
+                                <strong>Definición de atributos:</strong> Determinar qué datos necesitamos almacenar para cada entidad.
+                            </div>
+                            <div class="step">
+                                <strong>Establecimiento de relaciones:</strong> Definir cómo se conectan las entidades entre sí.
+                            </div>
+                            <div class="step">
+                                <strong>Conversión a modelo relacional:</strong> Transformar el diagrama entidad-relación en tablas relacionales.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="concept-card">
+                        <h3>🎯 Criterios de Calidad</h3>
+                        <ul>
+                            <li><strong>Completitud:</strong> Capturar todos los requisitos del enunciado</li>
+                            <li><strong>Consistencia:</strong> Mantener coherencia en el diseño</li>
+                            <li><strong>Normalización:</strong> Evitar redundancia de datos</li>
+                            <li><strong>Eficiencia:</strong> Optimizar para consultas frecuentes</li>
+                        </ul>
+                    </div>
+
+                    <div class="important-note">
+                        <strong>💡 Recomendación Metodológica</strong>
+                        <p>Cada paso debe completarse antes de pasar al siguiente. Es fundamental no acelerar el proceso y verificar cada decisión antes de continuar.</p>
+                    </div>
+                </section>
+
+                <section id="exercise1" class="section">
+                    <h2>🏢 Ejercicio 1: Sistema de Empresa</h2>
+                    
+                    <div class="exercise-box">
+                        <div class="exercise-title">🏢 Sistema de Empresa (Clientes, Artículos y Pedidos)</div>
+                        
+                        <h3>📋 Enunciado</h3>
+                        <p><strong>Contexto:</strong> Crear una base de datos para una pequeña empresa que debe contener información acerca de clientes, artículos y pedidos.</p>
+
+                        <div class="entities-section">
+                            <h4>🏗️ Entidades Identificadas</h4>
+                            <div class="entities-grid">
+                                <div class="entity-card">
+                                    <div class="entity-name">CLIENTES</div>
+                                    <div class="attributes">
+                                        • <span class="pk">ID_Cliente</span> (PK)<br>
+                                        • Saldo<br>
+                                        • Límite_Crédito<br>
+                                        • Descuento
+                                    </div>
+                                </div>
+                                <div class="entity-card">
+                                    <div class="entity-name">ARTÍCULOS</div>
+                                    <div class="attributes">
+                                        • <span class="pk">ID_Artículo</span> (PK)<br>
+                                        • Descripción<br>
+                                        • <span class="fk">ID_Fábrica</span> (FK)
+                                    </div>
+                                </div>
+                                <div class="entity-card">
+                                    <div class="entity-name">PEDIDOS</div>
+                                    <div class="attributes">
+                                        • <span class="pk">ID_Pedido</span> (PK)<br>
+                                        • Dirección_Envío<br>
+                                        • Fecha<br>
+                                        • <span class="fk">ID_Cliente</span> (FK)
+                                    </div>
+                                </div>
+                                <div class="entity-card">
+                                    <div class="entity-name">FÁBRICAS</div>
+                                    <div class="attributes">
+                                        • <span class="pk">ID_Fábrica</span> (PK)<br>
+                                        • Teléfono<br>
+                                        • Existencias<br>
+                                        • Alternativa
+                                    </div>
+                                </div>
+                                <div class="entity-card">
+                                    <div class="entity-name">CUERPO_PEDIDOS</div>
+                                    <div class="attributes">
+                                        • <span class="pk">ID_Pedido</span> (PK, FK)<br>
+                                        • <span class="pk">ID_Artículo</span> (PK, FK)<br>
+                                        • Cantidad
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="relationships-section">
+                            <h4>🔗 Relaciones del Sistema</h4>
+                            <div class="relationship-item"><strong>Clientes REALIZAN Pedidos:</strong> 1:N (Un cliente puede realizar varios pedidos)</div>
+                            <div class="relationship-item"><strong>Pedidos SE COMPONEN DE Artículos:</strong> N:M (Un pedido puede tener varios artículos, un artículo puede estar en varios pedidos)</div>
+                            <div class="relationship-item"><strong>Fábricas FABRICAN Artículos:</strong> 1:N (Una fábrica puede fabricar varios artículos)</div>
+                        </div>
+
+                        <div class="tables-section">
+                            <h4>📊 Modelo Relacional - Tablas Resultantes</h4>
+                            
+                            <div class="table-container">
+                                <div class="table-header">CLIENTES</div>
+                                <div class="table-row">
+                                    <div class="table-cell"><strong>Campo</strong></div>
+                                    <div class="table-cell"><strong>Tipo</strong></div>
+                                    <div class="table-cell"><strong>Clave</strong></div>
+                                </div>
+                                <div class="table-row">
+                                    <div class="table-cell">ID_Cliente</div>
+                                    <div class="table-cell">Entero</div>
+                                    <div class="table-cell">PK</div>
+                                </div>
+                                <div class="table-row">
+                                    <div class="table-cell">Saldo</div>
+                                    <div class="table-cell">Decimal</div>
+                                    <div class="table-cell">-</div>
+                                </div>
+                                <div class="table-row">
+                                    <div class="table-cell">Límite_Crédito</div>
+                                    <div class="table-cell">Entero</div>
+                                    <div class="table-cell">-</div>
+                                </div>
+                                <div class="table-row">
+                                    <div class="table-cell">Descuento</div>
+                                    <div class="table-cell">Entero</div>
+                                    <div class="table-cell">-</div>
+                                </div>
+                            </div>
+
+                            <div class="table-container">
+                                <div class="table-header">PEDIDOS</div>
+                                <div class="table-row">
+                                    <div class="table-cell"><strong>Campo</strong></div>
+                                    <div class="table-cell"><strong>Tipo</strong></div>
+                                    <div class="table-cell"><strong>Clave</strong></div>
+                                </div>
+                                <div class="table-row">
+                                    <div class="table-cell">ID_Pedido</div>
+                                    <div class="table-cell">Entero</div>
+                                    <div class="table-cell">PK</div>
+                                </div>
+                                <div class="table-row">
+                                    <div class="table-cell">Dirección_Envío</div>
+                                    <div class="table-cell">String</div>
+                                    <div class="table-cell">-</div>
+                                </div>
+                                <div class="table-row">
+                                    <div class="table-cell">Fecha</div>
+                                    <div class="table-cell">Fecha</div>
+                                    <div class="table-cell">-</div>
+                                </div>
+                                <div class="table-row">
+                                    <div class="table-cell">ID_Cliente</div>
+                                    <div class="table-cell">Entero</div>
+                                    <div class="table-cell">FK</div>
+                                </div>
+                            </div>
+
+                            <div class="table-container">
+                                <div class="table-header">CUERPO_PEDIDOS</div>
+                                <div class="table-row">
+                                    <div class="table-cell"><strong>Campo</strong></div>
+                                    <div class="table-cell"><strong>Tipo</strong></div>
+                                    <div class="table-cell"><strong>Clave</strong></div>
+                                </div>
+                                <div class="table-row">
+                                    <div class="table-cell">ID_Pedido</div>
+                                    <div class="table-cell">Entero</div>
+                                    <div class="table-cell">PK, FK</div>
+                                </div>
+                                <div class="table-row">
+                                    <div class="table-cell">ID_Artículo</div>
+                                    <div class="table-cell">Entero</div>
+                                    <div class="table-cell">PK, FK</div>
+                                </div>
+                                <div class="table-row">
+                                    <div class="table-cell">Cantidad</div>
+                                    <div class="table-cell">Entero</div>
+                                    <div class="table-cell">-</div>
+                                </div>
+                            </div>
+
+                            <div class="table-container">
+                                <div class="table-header">ARTÍCULOS</div>
+                                <div class="table-row">
+                                    <div class="table-cell"><strong>Campo</strong></div>
+                                    <div class="table-cell"><strong>Tipo</strong></div>
+                                    <div class="table-cell"><strong>Clave</strong></div>
+                                </div>
+                                <div class="table-row">
+                                    <div class="table-cell">ID_Artículo</div>
+                                    <div class="table-cell">Entero</div>
+                                    <div class="table-cell">PK</div>
+                                </div>
+                                <div class="table-row">
+                                    <div class="table-cell">Descripción</div>
+                                    <div class="table-cell">String</div>
+                                    <div class="table-cell">-</div>
+                                </div>
+                                <div class="table-row">
+                                    <div class="table-cell">ID_Fábrica</div>
+                                    <div class="table-cell">Entero</div>
+                                    <div class="table-cell">FK</div>
+                                </div>
+                            </div>
+
+                            <div class="table-container">
+                                <div class="table-header">FÁBRICAS</div>
+                                <div class="table-row">
+                                    <div class="table-cell"><strong>Campo</strong></div>
+                                    <div class="table-cell"><strong>Tipo</strong></div>
+                                    <div class="table-cell"><strong>Clave</strong></div>
+                                </div>
+                                <div class="table-row">
+                                    <div class="table-cell">ID_Fábrica</div>
+                                    <div class="table-cell">Entero</div>
+                                    <div class="table-cell">PK</div>
+                                </div>
+                                <div class="table-row">
+                                    <div class="table-cell">Teléfono</div>
+                                    <div class="table-cell">Alfanumérico</div>
+                                    <div class="table-cell">-</div>
+                                </div>
+                                <div class="table-row">
+                                    <div class="table-cell">Existencias</div>
+                                    <div class="table-cell">Entero</div>
+                                    <div class="table-cell">-</div>
+                                </div>
+                                <div class="table-row">
+                                    <div class="table-cell">Alternativa</div>
+                                    <div class="table-cell">Booleano</div>
+                                    <div class="table-cell">-</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="exercise2" class="section">
+                    <h2>🏪 Ejercicio 2: Sistema de Ventas</h2>
+                    
+                    <div class="exercise-box">
+                        <div class="exercise-title">🏪 Sistema de Ventas</div>
+                        
+                        <h3>📋 Enunciado</h3>
+                        <p><strong>Contexto:</strong> Base de datos para apoyar la gestión de un sistema de ventas. La empresa necesita llevar control de proveedores, clientes, productos y ventas.</p>
+
+                        <div class="entities-section">
+                            <h4>🏗️ Entidades Identificadas</h4>
+                            <div class="entities-grid">
+                                <div class="entity-card">
+                                    <div class="entity-name">PROVEEDORES</div>
+                                    <div class="attributes">
+                                        • <span class="pk">ID_Proveedor</span> (PK)<br>
+                                        • Nombre<br>
+                                        • Calle<br>
+                                        • Número<br>
+                                        • Comuna<br>
+                                        • Ciudad<br>
+                                        • Teléfono<br>
+                                        • Web
+                                    </div>
+                                </div>
+                                <div class="entity-card">
+                                    <div class="entity-name">CLIENTES</div>
+                                    <div class="attributes">
+                                        • <span class="pk">ID_Cliente</span> (PK)<br>
+                                        • Nombre<br>
+                                        • Calle<br>
+                                        • Número<br>
+                                        • Comuna<br>
+                                        • Ciudad
+                                    </div>
+                                </div>
+                                <div class="entity-card">
+                                    <div class="entity-name">PRODUCTOS</div>
+                                    <div class="attributes">
+                                        • <span class="pk">ID_Producto</span> (PK)<br>
+                                        • Nombre<br>
+                                        • Precio<br>
+                                        • Stock<br>
+                                        • <span class="fk">ID_Proveedor</span> (FK)<br>
+                                        • <span class="fk">ID_Categoría</span> (FK)
+                                    </div>
+                                </div>
+                                <div class="entity-card">
+                                    <div class="entity-name">CATEGORÍAS</div>
+                                    <div class="attributes">
+                                        • <span class="pk">ID_Categoría</span> (PK)<br>
+                                        • Nombre<br>
+                                        • Descripción
+                                    </div>
+                                </div>
+                                <div class="entity-card">
+                                    <div class="entity-name">VENTAS</div>
+                                    <div class="attributes">
+                                        • <span class="pk">ID_Venta</span> (PK)<br>
+                                        • Fecha<br>
+                                        • Descuento<br>
+                                        • Monto<br>
+                                        • <span class="fk">ID_Cliente</span> (FK)
+                                    </div>
+                                </div>
+                                <div class="entity-card">
+                                    <div class="entity-name">TELÉFONOS</div>
+                                    <div class="attributes">
+                                        • <span class="pk">Número</span> (PK)<br>
+                                        • <span class="fk">ID_Cliente</span> (FK)
+                                    </div>
+                                </div>
+                                <div class="entity-card">
+                                    <div class="entity-name">CONTIENEN</div>
+                                    <div class="attributes">
+                                        • <span class="pk">ID_Producto</span> (PK, FK)<br>
+                                        • <span class="pk">ID_Venta</span> (PK, FK)<br>
+                                        • Cantidad
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="relationships-section">
+                            <h4>🔗 Relaciones del Sistema</h4>
+                            <div class="relationship-item"><strong>Proveedores PROVEEN Productos:</strong> 1:N (Un proveedor puede proveer varios productos)</div>
+                            <div class="relationship-item"><strong>Productos PERTENECEN A Categorías:</strong> N:1 (Varios productos pueden pertenecer a una categoría)</div>
+                            <div class="relationship-item"><strong>Clientes REALIZAN Ventas:</strong> 1:N (Un cliente puede realizar varias ventas)</div>
+                            <div class="relationship-item"><strong>Ventas CONTIENEN Productos:</strong> N:M (Una venta puede contener varios productos, un producto puede estar en varias ventas)</div>
+                            <div class="relationship-item"><strong>Clientes TIENEN Teléfonos:</strong> 1:N (Un cliente puede tener varios teléfonos)</div>
+                        </div>
+
+                        <div class="important-note">
+                            <strong>💡 Nota Importante sobre el Diseño</strong>
+                            <p>En este ejercicio se crea una entidad débil "TELÉFONOS" porque un cliente puede tener varios números de contacto. La dirección se desglosa en componentes (calle, número, comuna, ciudad) para mayor granularidad en la información y facilitar consultas específicas por ubicación.</p>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="analysis" class="section">
+                    <h2>🔍 Puntos Clave del Análisis</h2>
+                    
+                    <div class="concept-card">
+                        <h3>🎯 Identificación de Entidades</h3>
+                        <ul>
+                            <li><strong>Sustantivos principales:</strong> Buscar palabras que representen objetos o conceptos sobre los que necesitamos almacenar información</li>
+                            <li><strong>Campos únicos:</strong> Identificar atributos que puedan servir como claves primarias</li>
+                            <li><strong>Entidades débiles:</strong> Reconocer cuando una entidad depende de otra para su existencia</li>
+                        </ul>
+                    </div>
+
+                    <div class="concept-card">
+                        <h3>📊 Definición de Atributos</h3>
+                        <ul>
+                            <li><strong>Campos calculados:</strong> Evitar almacenar datos que se puedan calcular a partir de otros</li>
+                            <li><strong>Tipos de datos:</strong> Elegir el tipo más apropiado (entero, decimal, string, booleano, etc.)</li>
+                            <li><strong>Normalización:</strong> Evitar duplicidad de información entre tablas</li>
+                        </ul>
+                    </div>
+
+                    <div class="concept-card">
+                        <h3>🔗 Establecimiento de Relaciones</h3>
+                        <ul>
+                            <li><strong>Cardinalidad 1:N:</strong> El lado "1" transfiere su clave primaria al lado "N"</li>
+                            <li><strong>Cardinalidad N:M:</strong> Se crea una tabla intermedia con las claves primarias de ambas entidades</li>
+                            <li><strong>Integridad referencial:</strong> Considerar acciones al eliminar registros relacionados</li>
+                        </ul>
+                    </div>
+
+                    <div class="methodology-box">
+                        <h3>🔧 Técnicas de Análisis Avanzadas</h3>
+                        <div class="stats-grid">
+                            <div class="stat-card">
+                                <div class="stat-number">📝</div>
+                                <div>Análisis Sintáctico</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-number">🧠</div>
+                                <div>Análisis Semántico</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-number">🔍</div>
+                                <div>Validación de Requisitos</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-number">⚖️</div>
+                                <div>Verificación de Consistencia</div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="recommendations" class="section">
+                    <h2>✅ Recomendaciones Finales</h2>
+                    
+                    <div class="methodology-box">
+                        <h3>📝 Proceso Recomendado</h3>
+                        <div class="step-container">
+                            <div class="step">Leer completamente el enunciado antes de comenzar</div>
+                            <div class="step">Subrayar sustantivos y posibles entidades</div>
+                            <div class="step">Identificar atributos de cada entidad</div>
+                            <div class="step">Determinar claves primarias</div>
+                            <div class="step">Establecer relaciones y cardinalidades</div>
+                            <div class="step">Revisar el texto para verificar que no falta información</div>
+                            <div class="step">Convertir a modelo relacional</div>
+                            <div class="step">Documentar acciones referenciales y restricciones adicionales</div>
+                        </div>
+                    </div>
+
+                    <div class="important-note">
+                        <strong>⚠️ Errores Comunes a Evitar</strong>
+                        <ul>
+                            <li>Duplicar información entre tablas relacionadas</li>
+                            <li>No identificar correctamente las relaciones N:M</li>
+                            <li>Olvidar transferir claves foráneas en relaciones 1:N</li>
+                            <li>Usar tipos de datos incorrectos</li>
+                            <li>No considerar la granularidad adecuada de los datos</li>
+                        </ul>
+                    </div>
+
+                    <div class="concept-card">
+                        <h3>🎯 Buenas Prácticas</h3>
+                        <ul>
+                            <li><strong>Verificación cruzada:</strong> Revisar que cada requisito del texto esté cubierto</li>
+                            <li><strong>Validación lógica:</strong> Comprobar que las relaciones tengan sentido</li>
+                            <li><strong>Optimización temprana:</strong> Considerar el rendimiento desde el diseño</li>
+                            <li><strong>Documentación completa:</strong> Mantener registro de decisiones de diseño</li>
+                        </ul>
+                    </div>
+
+                    <div class="concept-card">
+                        <h3>🔧 Herramientas de Validación</h3>
+                        <ul>
+                            <li><strong>Lista de verificación:</strong> Checklist de todos los requisitos</li>
+                            <li><strong>Matriz de trazabilidad:</strong> Relación entre requisitos y elementos del modelo</li>
+                            <li><strong>Casos de prueba:</strong> Escenarios para validar el diseño</li>
+                            <li><strong>Revisión por pares:</strong> Validación con otros desarrolladores</li>
+                        </ul>
+                    </div>
+                </section>
+
+                <section id="resources" class="section">
+                    <h2>📚 Recursos Adicionales</h2>
+                    
+                    <div class="concept-card">
+                        <h3>📋 Para Completar tu Aprendizaje</h3>
+                        <p>Para completar tu aprendizaje, recuerda:</p>
+                        <ul>
+                            <li><strong>Realizar el cuestionario</strong> correspondiente a esta clase</li>
+                            <li><strong>Completar el ejercicio práctico</strong> relacionado</li>
+                            <li><strong>Consultar dudas por email</strong> si es necesario</li>
+                            <li><strong>Practicar con enunciados similares</strong> para dominar la técnica</li>
+                        </ul>
+                    </div>
+
+                    <div class="methodology-box">
+                        <h3>📖 Ejercicios Adicionales Sugeridos</h3>
+                        <ul>
+                            <li><strong>Sistema de Biblioteca:</strong> Libros, autores, préstamos</li>
+                            <li><strong>Gestión Hospitalaria:</strong> Pacientes, médicos, citas</li>
+                            <li><strong>Control Académico:</strong> Estudiantes, materias, calificaciones</li>
+                            <li><strong>E-commerce:</strong> Productos, categorías, carritos de compra</li>
+                            <li><strong>Recursos Humanos:</strong> Empleados, departamentos, proyectos</li>
+                            <li><strong>Inventario:</strong> Productos, almacenes, movimientos</li>
+                            <li><strong>Red Social:</strong> Usuarios, publicaciones, amistades</li>
+                            <li><strong>Sistema Bancario:</strong> Cuentas, transacciones, clientes</li>
+                        </ul>
+                    </div>
+
+                    <div class="important-note">
+                        <strong>📧 Soporte y Consultas</strong>
+                        <p>Si tienes dudas sobre estos ejercicios, puedes consultarlas por email para recibir ayuda adicional y resolverlas de forma ágil. El instructor está disponible para aclarar conceptos y revisar tus soluciones.</p>
+                    </div>
+
+                    <div class="concept-card">
+                        <h3>🚀 Próximos Pasos</h3>
+                        <ul>
+                            <li><strong>Implementación en SAP HANA:</strong> Crear las tablas reales</li>
+                            <li><strong>Optimización de consultas:</strong> Índices y performance</li>
+                            <li><strong>Procedimientos almacenados:</strong> Lógica de negocio</li>
+                            <li><strong>Integración con aplicaciones:</strong> APIs y servicios</li>
+                        </ul>
+                    </div>
+                </section>
+
+                <section id="video-info" class="section">
+                    <h2>📹 Video Original</h2>
+                    
+                    <div class="concept-card">
+                        <h3>🎥 Información del Video</h3>
+                        <p>Este documento está basado en la clase completa de YouTube sobre modelado en Sabana con 10 ejercicios prácticos.</p>
+                        
+                        <div style="text-align: center; margin: 20px 0;">
+                            <a href="https://www.youtube.com/watch?v=PMfeSPMnudM" target="_blank" class="video-link">
+                                📺 Ver Video Completo en YouTube
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="methodology-box">
+                        <h3>📊 Contenido del Video</h3>
+                        <ul>
+                            <li><strong>Duración:</strong> Clase completa con explicaciones detalladas</li>
+                            <li><strong>Nivel:</strong> Intermedio a avanzado</li>
+                            <li><strong>Ejercicios:</strong> 10 casos prácticos completos</li>
+                            <li><strong>Metodología:</strong> Paso a paso desde análisis hasta implementación</li>
+                        </ul>
+                    </div>
+
+                    <div class="concept-card">
+                        <h3>💡 Recomendaciones para Ver el Video</h3>
+                        <ul>
+                            <li><strong>Ver con este documento:</strong> Seguir el contenido en paralelo</li>
+                            <li><strong>Pausar para practicar:</strong> Intentar resolver antes de ver la solución</li>
+                            <li><strong>Tomar notas:</strong> Anotar dudas y observaciones</li>
+                            <li><strong>Revisar múltiples veces:</strong> Cada visualización aporta nuevos insights</li>
+                        </ul>
+                    </div>
+
+                    <div class="important-note">
+                        <strong>🎯 Beneficios de Combinar Video y Documento</strong>
+                        <p>La combinación del video explicativo con este documento estructurado proporciona una experiencia de aprendizaje completa, permitiendo tanto la comprensión auditiva-visual como la referencia rápida escrita.</p>
+                    </div>
+                </section>
+            </main>
         </div>
     </div>
 
-    <div class="exercise">
-        <div class="exercise-title">🏢 Ejercicio 1: Sistema de Empresa (Clientes, Artículos y Pedidos)</div>
-        
-        <h3>📋 Enunciado</h3>
-        <p><strong>Contexto:</strong> Crear una base de datos para una pequeña empresa que debe contener información acerca de clientes, artículos y pedidos.</p>
-
-        <div class="entities">
-            <h4>🏗️ Entidades Identificadas</h4>
-            <div class="entity-list">
-                <div class="entity">
-                    <div class="entity-name">CLIENTES</div>
-                    <div class="attributes">
-                        • <span class="pk">ID_Cliente</span> (PK)<br>
-                        • Saldo<br>
-                        • Límite_Crédito<br>
-                        • Descuento
-                    </div>
-                </div>
-                <div class="entity">
-                    <div class="entity-name">ARTÍCULOS</div>
-                    <div class="attributes">
-                        • <span class="pk">ID_Artículo</span> (PK)<br>
-                        • Descripción<br>
-                        • <span class="fk">ID_Fábrica</span> (FK)
-                    </div>
-                </div>
-                <div class="entity">
-                    <div class="entity-name">PEDIDOS</div>
-                    <div class="attributes">
-                        • <span class="pk">ID_Pedido</span> (PK)<br>
-                        • Dirección_Envío<br>
-                        • Fecha<br>
-                        • <span class="fk">ID_Cliente</span> (FK)
-                    </div>
-                </div>
-                <div class="entity">
-                    <div class="entity-name">FÁBRICAS</div>
-                    <div class="attributes">
-                        • <span class="pk">ID_Fábrica</span> (PK)<br>
-                        • Teléfono<br>
-                        • Existencias<br>
-                        • Alternativa
-                    </div>
-                </div>
-                <div class="entity">
-                    <div class="entity-name">CUERPO_PEDIDOS</div>
-                    <div class="attributes">
-                        • <span class="pk">ID_Pedido</span> (PK, FK)<br>
-                        • <span class="pk">ID_Artículo</span> (PK, FK)<br>
-                        • Cantidad
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="relationships">
-            <h4>🔗 Relaciones</h4>
-            <div class="relationship"><strong>Clientes REALIZAN Pedidos:</strong> 1:N (Un cliente puede realizar varios pedidos)</div>
-            <div class="relationship"><strong>Pedidos SE COMPONEN DE Artículos:</strong> N:M (Un pedido puede tener varios artículos, un artículo puede estar en varios pedidos)</div>
-            <div class="relationship"><strong>Fábricas FABRICAN Artículos:</strong> 1:N (Una fábrica puede fabricar varios artículos)</div>
-        </div>
-
-        <div class="tables-section">
-            <h4>📊 Modelo Relacional - Tablas Resultantes</h4>
+    <script>
+        function showSection(sectionId) {
+            // Ocultar todas las secciones
+            const sections = document.querySelectorAll('.section');
+            sections.forEach(section => {
+                section.classList.remove('active');
+            });
             
-            <div class="table">
-                <div class="table-header">CLIENTES</div>
-                <div class="table-row">
-                    <div class="table-cell"><strong>Campo</strong></div>
-                    <div class="table-cell"><strong>Tipo</strong></div>
-                    <div class="table-cell"><strong>Clave</strong></div>
-                </div>
-                <div class="table-row">
-                    <div class="table-cell">ID_Cliente</div>
-                    <div class="table-cell">Entero</div>
-                    <div class="table-cell">PK</div>
-                </div>
-                <div class="table-row">
-                    <div class="table-cell">Saldo</div>
-                    <div class="table-cell">Decimal</div>
-                    <div class="table-cell">-</div>
-                </div>
-                <div class="table-row">
-                    <div class="table-cell">Límite_Crédito</div>
-                    <div class="table-cell">Entero</div>
-                    <div class="table-cell">-</div>
-                </div>
-                <div class="table-row">
-                    <div class="table-cell">Descuento</div>
-                    <div class="table-cell">Entero</div>
-                    <div class="table-cell">-</div>
-                </div>
-            </div>
+            // Mostrar la sección seleccionada
+            document.getElementById(sectionId).classList.add('active');
+            
+            // Actualizar navegación
+            const navItems = document.querySelectorAll('.nav-item');
+            navItems.forEach(item => {
+                item.classList.remove('active');
+            });
+            
+            // Marcar el elemento activo
+            event.target.classList.add('active');
+            
+            // Scroll al inicio del contenido
+            document.querySelector('.content').scrollTop = 0;
 
-            <div class="table">
-                <div class="table-header">PEDIDOS</div>
-                <div class="table-row">
-                    <div class="table-cell"><strong>Campo</strong></div>
-                    <div class="table-cell"><strong>Tipo</strong></div>
-                    <div class="table-cell"><strong>Clave</strong></div>
-                </div>
-                <div class="table-row">
-                    <div class="table-cell">ID_Pedido</div>
-                    <div class="table-cell">Entero</div>
-                    <div class="table-cell">PK</div>
-                </div>
-                <div class="table-row">
-                    <div class="table-cell">Dirección_Envío</div>
-                    <div class="table-cell">String</div>
-                    <div class="table-cell">-</div>
-                </div>
-                <div class="table-row">
-                    <div class="table-cell">Fecha</div>
-                    <div class="table-cell">Fecha</div>
-                    <div class="table-cell">-</div>
-                </div>
-                <div class="table-row">
-                    <div class="table-cell">ID_Cliente</div>
-                    <div class="table-cell">Entero</div>
-                    <div class="table-cell">FK</div>
-                </div>
-            </div>
+            // En móviles, ocultar el menú después de seleccionar
+            if (window.innerWidth <= 768) {
+                const sidebar = document.getElementById('sidebar');
+                sidebar.classList.add('mobile-hidden');
+                
+                const toggleButton = document.querySelector('.mobile-menu-toggle');
+                toggleButton.textContent = '📋 Menú de Contenidos';
+            }
+        }
 
-            <div class="table">
-                <div class="table-header">CUERPO_PEDIDOS</div>
-                <div class="table-row">
-                    <div class="table-cell"><strong>Campo</strong></div>
-                    <div class="table-cell"><strong>Tipo</strong></div>
-                    <div class="table-cell"><strong>Clave</strong></div>
-                </div>
-                <div class="table-row">
-                    <div class="table-cell">ID_Pedido</div>
-                    <div class="table-cell">Entero</div>
-                    <div class="table-cell">PK, FK</div>
-                </div>
-                <div class="table-row">
-                    <div class="table-cell">ID_Artículo</div>
-                    <div class="table-cell">Entero</div>
-                    <div class="table-cell">PK, FK</div>
-                </div>
-                <div class="table-row">
-                    <div class="table-cell">Cantidad</div>
-                    <div class="table-cell">Entero</div>
-                    <div class="table-cell">-</div>
-                </div>
-            </div>
+        function toggleMobileMenu() {
+            const sidebar = document.getElementById('sidebar');
+            const toggleButton = document.querySelector('.mobile-menu-toggle');
+            
+            if (sidebar.classList.contains('mobile-hidden')) {
+                sidebar.classList.remove('mobile-hidden');
+                toggleButton.textContent = '❌ Cerrar Menú';
+            } else {
+                sidebar.classList.add('mobile-hidden');
+                toggleButton.textContent = '📋 Menú de Contenidos';
+            }
+        }
 
-            <div class="table">
-                <div class="table-header">ARTÍCULOS</div>
-                <div class="table-row">
-                    <div class="table-cell"><strong>Campo</strong></div>
-                    <div class="table-cell"><strong>Tipo</strong></div>
-                    <div class="table-cell"><strong>Clave</strong></div>
-                </div>
-                <div class="table-row">
-                    <div class="table-cell">ID_Artículo</div>
-                    <div class="table-cell">Entero</div>
-                    <div class="table-cell">PK</div>
-                </div>
-                <div class="table-row">
-                    <div class="table-cell">Descripción</div>
-                    <div class="table-cell">String</div>
-                    <div class="table-cell">-</div>
-                </div>
-                <div class="table-row">
-                    <div class="table-cell">ID_Fábrica</div>
-                    <div class="table-cell">Entero</div>
-                    <div class="table-cell">FK</div>
-                </div>
-            </div>
+        // Inicializar en móviles
+        document.addEventListener('DOMContentLoaded', function() {
+            if (window.innerWidth <= 768) {
+                const sidebar = document.getElementById('sidebar');
+                sidebar.classList.add('mobile-hidden');
+            }
 
-            <div class="table">
-                <div class="table-header">FÁBRICAS</div>
-                <div class="table-row">
-                    <div class="table-cell"><strong>Campo</strong></div>
-                    <div class="table-cell"><strong>Tipo</strong></div>
-                    <div class="table-cell"><strong>Clave</strong></div>
-                </div>
-                <div class="table-row">
-                    <div class="table-cell">ID_Fábrica</div>
-                    <div class="table-cell">Entero</div>
-                    <div class="table-cell">PK</div>
-                </div>
-                <div class="table-row">
-                    <div class="table-cell">Teléfono</div>
-                    <div class="table-cell">Alfanumérico</div>
-                    <div class="table-cell">-</div>
-                </div>
-                <div class="table-row">
-                    <div class="table-cell">Existencias</div>
-                    <div class="table-cell">Entero</div>
-                    <div class="table-cell">-</div>
-                </div>
-                <div class="table-row">
-                    <div class="table-cell">Alternativa</div>
-                    <div class="table-cell">Booleano</div>
-                    <div class="table-cell">-</div>
-                </div>
-            </div>
-        </div>
-    </div>
+            // Animación de entrada
+            const cards = document.querySelectorAll('.concept-card, .exercise-box, .methodology-box');
+            cards.forEach((card, index) => {
+                setTimeout(() => {
+                    card.style.opacity = '0';
+                    card.style.transform = 'translateY(20px)';
+                    card.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+                    
+                    setTimeout(() => {
+                        card.style.opacity = '1';
+                        card.style.transform = 'translateY(0)';
+                    }, 100);
+                }, index * 100);
+            });
+        });
 
-    <div class="exercise">
-        <div class="exercise-title">🏪 Ejercicio 2: Sistema de Ventas</div>
-        
-        <h3>📋 Enunciado</h3>
-        <p><strong>Contexto:</strong> Base de datos para apoyar la gestión de un sistema de ventas. La empresa necesita llevar control de proveedores, clientes, productos y ventas.</p>
-
-        <div class="entities">
-            <h4>🏗️ Entidades Identificadas</h4>
-            <div class="entity-list">
-                <div class="entity">
-                    <div class="entity-name">PROVEEDORES</div>
-                    <div class="attributes">
-                        • <span class="pk">ID_Proveedor</span> (PK)<br>
-                        • Nombre<br>
-                        • Calle<br>
-                        • Número<br>
-                        • Comuna<br>
-                        • Ciudad<br>
-                        • Teléfono<br>
-                        • Web
-                    </div>
-                </div>
-                <div class="entity">
-                    <div class="entity-name">CLIENTES</div>
-                    <div class="attributes">
-                        • <span class="pk">ID_Cliente</span> (PK)<br>
-                        • Nombre<br>
-                        • Calle<br>
-                        • Número<br>
-                        • Comuna<br>
-                        • Ciudad
-                    </div>
-                </div>
-                <div class="entity">
-                    <div class="entity-name">PRODUCTOS</div>
-                    <div class="attributes">
-                        • <span class="pk">ID_Producto</span> (PK)<br>
-                        • Nombre<br>
-                        • Precio<br>
-                        • Stock<br>
-                        • <span class="fk">ID_Proveedor</span> (FK)<br>
-                        • <span class="fk">ID_Categoría</span> (FK)
-                    </div>
-                </div>
-                <div class="entity">
-                    <div class="entity-name">CATEGORÍAS</div>
-                    <div class="attributes">
-                        • <span class="pk">ID_Categoría</span> (PK)<br>
-                        • Nombre<br>
-                        • Descripción
-                    </div>
-                </div>
-                <div class="entity">
-                    <div class="entity-name">VENTAS</div>
-                    <div class="attributes">
-                        • <span class="pk">ID_Venta</span> (PK)<br>
-                        • Fecha<br>
-                        • Descuento<br>
-                        • Monto<br>
-                        • <span class="fk">ID_Cliente</span> (FK)
-                    </div>
-                </div>
-                <div class="entity">
-                    <div class="entity-name">TELÉFONOS</div>
-                    <div class="attributes">
-                        • <span class="pk">Número</span> (PK)<br>
-                        • <span class="fk">ID_Cliente</span> (FK)
-                    </div>
-                </div>
-                <div class="entity">
-                    <div class="entity-name">CONTIENEN</div>
-                    <div class="attributes">
-                        • <span class="pk">ID_Producto</span> (PK, FK)<br>
-                        • <span class="pk">ID_Venta</span> (PK, FK)<br>
-                        • Cantidad
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="relationships">
-            <h4>🔗 Relaciones</h4>
-            <div class="relationship"><strong>Proveedores PROVEEN Productos:</strong> 1:N (Un proveedor puede proveer varios productos)</div>
-            <div class="relationship"><strong>Productos PERTENECEN A Categorías:</strong> N:1 (Varios productos pueden pertenecer a una categoría)</div>
-            <div class="relationship"><strong>Clientes REALIZAN Ventas:</strong> 1:N (Un cliente puede realizar varias ventas)</div>
-            <div class="relationship"><strong>Ventas CONTIENEN Productos:</strong> N:M (Una venta puede contener varios productos, un producto puede estar en varias ventas)</div>
-            <div class="relationship"><strong>Clientes TIENEN Teléfonos:</strong> 1:N (Un cliente puede tener varios teléfonos)</div>
-        </div>
-
-        <div class="note">
-            <span class="note-icon">💡 Nota Importante:</span> 
-            <p>En este ejercicio se crea una entidad débil "TELÉFONOS" porque un cliente puede tener varios números de contacto. La dirección se desglosa en componentes (calle, número, comuna, ciudad) para mayor granularidad en la información.</p>
-        </div>
-    </div>
-
-    <div class="content-section">
-        <h2>🔍 Puntos Clave del Análisis</h2>
-        
-        <h3>Identificación de Entidades</h3>
-        <ul>
-            <li><strong>Sustantivos principales:</strong> Buscar palabras que representen objetos o conceptos sobre los que necesitamos almacenar información</li>
-            <li><strong>Campos únicos:</strong> Identificar atributos que puedan servir como claves primarias</li>
-            <li><strong>Entidades débiles:</strong> Reconocer cuando una entidad depende de otra para su existencia</li>
-        </ul>
-
-        <h3>Definición de Atributos</h3>
-        <ul>
-            <li><strong>Campos calculados:</strong> Evitar almacenar datos que se puedan calcular a partir de otros</li>
-            <li><strong>Tipos de datos:</strong> Elegir el tipo más apropiado (entero, decimal, string, booleano, etc.)</li>
-            <li><strong>Normalización:</strong> Evitar duplicidad de información entre tablas</li>
-        </ul>
-
-        <h3>Establecimiento de Relaciones</h3>
-        <ul>
-            <li><strong>Cardinalidad 1:N:</strong> El lado "1" transfiere su clave primaria al lado "N"</li>
-            <li><strong>Cardinalidad N:M:</strong> Se crea una tabla intermedia con las claves primarias de ambas entidades</li>
-            <li><strong>Integridad referencial:</strong> Considerar acciones al eliminar registros relacionados</li>
-        </ul>
-    </div>
-
-    <div class="content-section">
-        <h2>✅ Recomendaciones Finales</h2>
-        
-        <div class="note">
-            <span class="note-icon">📝 Proceso Recomendado:</span>
-            <ol>
-                <li>Leer completamente el enunciado antes de comenzar</li>
-                <li>Subrayar sustantivos y posibles entidades</li>
-                <li>Identificar atributos de cada entidad</li>
-                <li>Determinar claves primarias</li>
-                <li>Establecer relaciones y cardinalidades</li>
-                <li>Revisar el texto para verificar que no falta información</li>
-                <li>Convertir a modelo relacional</li>
-                <li>Documentar acciones referenciales y restricciones adicionales</li>
-            </ol>
-        </div>
-
-        <div class="note">
-            <span class="note-icon">⚠️ Errores Comunes:</span>
-            <ul>
-                <li>Duplicar información entre tablas relacionadas</li>
-                <li>No identificar correctamente las relaciones N:M</li>
-                <li>Olvidar transferir claves foráneas en relaciones 1:N</li>
-                <li>Usar tipos de datos incorrectos</li>
-                <li>No considerar la granularidad adecuada de los datos</li>
-            </ul>
-        </div>
-    </div>
-
-    <div class="content-section">
-        <h2>📚 Recursos Adicionales</h2>
-        <p>Para completar tu aprendizaje, recuerda:</p>
-        <ul>
-            <li>Realizar el cuestionario correspondiente a esta clase</li>
-            <li>Completar el ejercicio práctico relacionado</li>
-            <li>Consultar dudas por email si es necesario</li>
-            <li>Practicar con enunciados similares para dominar la técnica</li>
-        </ul>
-        
-        <div class="note">
-            <span class="note-icon">📧 Contacto:</span>
-            Si tienes dudas sobre estos ejercicios, puedes consultarlas por email para recibir ayuda adicional y resolverlas de forma ágil.
-        </div>
-    </div>
+        // Manejar cambios de tamaño de ventana
+        window.addEventListener('resize', function() {
+            const sidebar = document.getElementById('sidebar');
+            const toggleButton = document.querySelector('.mobile-menu-toggle');
+            
+            if (window.innerWidth > 768) {
+                sidebar.classList.remove('mobile-hidden');
+                toggleButton.textContent = '📋 Menú de Contenidos';
+            } else if (window.innerWidth <= 768 && !sidebar.classList.contains('mobile-hidden')) {
+                sidebar.classList.add('mobile-hidden');
+            }
+        });
+    </script>
 </body>
 </html>

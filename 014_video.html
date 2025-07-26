@@ -1,0 +1,1572 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Curso SAP HANA - SAP HANA Studio en Detalle</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .header h1 {
+            color: #2c3e50;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header p {
+            color: #666;
+            font-size: 1.2em;
+        }
+
+        .recording-badge {
+            background: linear-gradient(45deg, #dc3545, #c82333);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: bold;
+            margin: 10px 0;
+            display: inline-block;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .dashboard {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .sidebar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            height: fit-content;
+            position: sticky;
+            top: 20px;
+        }
+
+        .sidebar h3 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #667eea;
+        }
+
+        .nav-item {
+            padding: 12px 20px;
+            margin: 5px 0;
+            background: linear-gradient(45deg, #f8f9fa, #e9ecef);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-left: 4px solid transparent;
+            font-size: 0.9em;
+        }
+
+        .nav-item:hover {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            transform: translateX(10px);
+            border-left-color: #fff;
+        }
+
+        .nav-item.active {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border-left-color: #fff;
+        }
+
+        .mobile-menu-toggle {
+            display: none;
+            background: rgba(255, 255, 255, 0.95);
+            border: none;
+            padding: 15px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            font-size: 1.2em;
+            cursor: pointer;
+            width: 100%;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .content {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .section {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .section h2 {
+            color: #2c3e50;
+            font-size: 2em;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #667eea;
+        }
+
+        .concept-card {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-radius: 15px;
+            padding: 25px;
+            margin: 20px 0;
+            border-left: 5px solid #667eea;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease;
+        }
+
+        .concept-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .concept-card h3, .concept-card h4 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 1.4em;
+        }
+
+        .concept-card p {
+            line-height: 1.8;
+            color: #555;
+            margin-bottom: 15px;
+        }
+
+        .concept-card ul, .concept-card ol {
+            margin-left: 20px;
+            margin-top: 10px;
+        }
+
+        .concept-card li {
+            margin: 8px 0;
+            color: #555;
+        }
+
+        .history-box {
+            background: linear-gradient(135deg, #fff3cd, #ffeaa7);
+            border-radius: 15px;
+            padding: 25px;
+            margin: 20px 0;
+            border-left: 5px solid #f39c12;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        .history-box h3, .history-box h4 {
+            color: #856404;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        .history-box p {
+            color: #856404;
+            line-height: 1.8;
+            margin-bottom: 10px;
+        }
+
+        .history-box ul, .history-box ol {
+            margin-left: 20px;
+            margin-top: 10px;
+        }
+
+        .history-box li {
+            margin: 8px 0;
+            color: #856404;
+        }
+
+        .technical-box {
+            background: linear-gradient(135deg, #e8f5e8, #d4edda);
+            border-radius: 15px;
+            padding: 25px;
+            margin: 20px 0;
+            border-left: 5px solid #28a745;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        .technical-box h3, .technical-box h4 {
+            color: #155724;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        .technical-box p {
+            color: #155724;
+            line-height: 1.8;
+            margin-bottom: 10px;
+        }
+
+        .technical-box ul, .technical-box ol {
+            margin-left: 20px;
+            margin-top: 10px;
+        }
+
+        .technical-box li {
+            margin: 8px 0;
+            color: #155724;
+        }
+
+        .perspective-box {
+            background: linear-gradient(135deg, #d1ecf1, #b8daff);
+            border-radius: 15px;
+            padding: 25px;
+            margin: 20px 0;
+            border-left: 5px solid #17a2b8;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        .perspective-box h3, .perspective-box h4 {
+            color: #0c5460;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        .perspective-box p {
+            color: #0c5460;
+            line-height: 1.8;
+            margin-bottom: 10px;
+        }
+
+        .perspective-box ul, .perspective-box ol {
+            margin-left: 20px;
+            margin-top: 10px;
+        }
+
+        .perspective-box li {
+            margin: 8px 0;
+            color: #0c5460;
+        }
+
+        .important-note {
+            background: linear-gradient(135deg, #ffebee, #ffcdd2);
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+            border-left: 5px solid #e74c3c;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        .important-note strong {
+            color: #c62828;
+        }
+
+        .important-note p {
+            color: #c62828;
+            line-height: 1.8;
+            margin-top: 10px;
+        }
+
+        .important-note ul, .important-note ol {
+            margin-left: 20px;
+            margin-top: 10px;
+        }
+
+        .important-note li {
+            margin: 8px 0;
+            color: #c62828;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: scale(1.05);
+        }
+
+        .stat-number {
+            font-size: 2.5em;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .progress-bar {
+            background: #e9ecef;
+            border-radius: 10px;
+            padding: 3px;
+            margin: 20px 0;
+        }
+
+        .progress {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            height: 20px;
+            border-radius: 8px;
+            transition: width 0.5s ease;
+        }
+
+        .timeline {
+            position: relative;
+            padding: 20px 0;
+        }
+
+        .timeline-item {
+            position: relative;
+            padding-left: 50px;
+            margin-bottom: 30px;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: 15px;
+            top: 0;
+            width: 3px;
+            height: 100%;
+            background: linear-gradient(to bottom, #667eea, #764ba2);
+        }
+
+        .timeline-item::after {
+            content: '';
+            position: absolute;
+            left: 10px;
+            top: 10px;
+            width: 13px;
+            height: 13px;
+            border-radius: 50%;
+            background: #667eea;
+        }
+
+        .timeline-content {
+            background: white;
+            padding: 15px 20px;
+            border-radius: 10px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .warning-box {
+            background: linear-gradient(135deg, #fff3cd, #ffeaa7);
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+            border-left: 5px solid #f39c12;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        .warning-box strong {
+            color: #856404;
+        }
+
+        .warning-box p {
+            color: #856404;
+            line-height: 1.8;
+            margin-top: 10px;
+        }
+
+        .exam-alert {
+            background: linear-gradient(135deg, #f8d7da, #f5c6cb);
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+            border-left: 5px solid #dc3545;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+            border: 2px solid #dc3545;
+        }
+
+        .exam-alert strong {
+            color: #721c24;
+            font-size: 1.1em;
+        }
+
+        .exam-alert p {
+            color: #721c24;
+            line-height: 1.8;
+            margin-top: 10px;
+            font-weight: 500;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+
+            .header {
+                padding: 20px;
+                margin-bottom: 20px;
+            }
+
+            .header h1 {
+                font-size: 1.8em;
+            }
+
+            .dashboard {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .sidebar {
+                position: static;
+                padding: 20px;
+                order: 2;
+            }
+
+            .mobile-menu-toggle {
+                display: block;
+                order: 1;
+            }
+
+            .sidebar.mobile-hidden {
+                display: none;
+            }
+
+            .content {
+                padding: 20px;
+                order: 3;
+            }
+
+            .section h2 {
+                font-size: 1.5em;
+            }
+
+            .concept-card, .history-box, .technical-box, .perspective-box {
+                padding: 20px;
+                margin: 15px 0;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+
+            .comparison-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .nav-item {
+                padding: 15px 20px;
+                font-size: 1em;
+                text-align: center;
+            }
+
+            .timeline-item {
+                padding-left: 40px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .header h1 {
+                font-size: 1.5em;
+            }
+
+            .content {
+                padding: 15px;
+            }
+
+            .concept-card, .history-box, .technical-box, .perspective-box {
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <img src="https://gessof.cl/wp-content/uploads/2025/05/Logo-minimalista-con-simbolismo-global.png" alt="Gessof Logo" style="height: 80px; margin-bottom: 20px; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.1));">
+            <h1>Curso SAP HANA</h1>
+            <h2 style="color: #667eea; font-size: 1.5em; margin: 10px 0; font-weight: 600;">VIDEO 014</h2>
+            <p>SAP HANA Studio - Interfaz Detallada</p>
+            <div class="recording-badge">🔴 Esta conferencia comenzará a grabarse</div>
+            <div class="progress-bar">
+                <div class="progress" style="width: 100%"></div>
+            </div>
+        </header>
+
+        <div class="dashboard">
+            <button class="mobile-menu-toggle" onclick="toggleMobileMenu()">
+                📋 Menú de Contenidos
+            </button>
+
+            <nav class="sidebar" id="sidebar">
+                <h3>Contenidos del Módulo</h3>
+                <div class="nav-item active" onclick="showSection('overview')">📋 Resumen General</div>
+                <div class="nav-item" onclick="showSection('introduction')">🚀 Introducción Studio</div>
+                <div class="nav-item" onclick="showSection('history')">📈 Historia HANA</div>
+                <div class="nav-item" onclick="showSection('eclipse')">🔧 Base Eclipse</div>
+                <div class="nav-item" onclick="showSection('perspectives')">🖼️ Perspectivas</div>
+                <div class="nav-item" onclick="showSection('modeling')">🎨 Perspectiva Modelado</div>
+                <div class="nav-item" onclick="showSection('navigation')">🗂️ Navegación y Vistas</div>
+                <div class="nav-item" onclick="showSection('administration')">⚙️ Consola Administración</div>
+                <div class="nav-item" onclick="showSection('storage')">💾 Conceptos Almacenamiento</div>
+                <div class="nav-item" onclick="showSection('systems')">🌐 Gestión Sistemas</div>
+                <div class="nav-item" onclick="showSection('delivery')">📦 Unidades Entrega</div>
+                <div class="nav-item" onclick="showSection('web-workbench')">🌐 Web Development</div>
+                <div class="nav-item" onclick="showSection('conclusions')">🎯 Conclusiones</div>
+            </nav>
+
+            <main class="content">
+                <section id="overview" class="section active">
+                    <h2>📋 Resumen General del Módulo</h2>
+                    
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-number">1.0</div>
+                            <div>Interfaz Original HANA</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number">4</div>
+                            <div>Perspectivas Principales</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number">XS</div>
+                            <div>Motor Clásico</div>
+                        </div>
+                    </div>
+
+                    <div class="concept-card">
+                        <h3>🎯 Objetivo del Módulo</h3>
+                        <p>En esta clase nos centraremos en el <strong>SAP HANA Studio</strong>, la interfaz original de HANA que era el interface principal en la época de HANA 1.0 y que <strong>sigue estando en uso</strong> aunque con limitaciones.</p>
+                    </div>
+
+                    <div class="history-box">
+                        <h3>📚 Contexto Histórico</h3>
+                        <p>SAP HANA Studio fue la <strong>primera interfaz</strong> que apareció cuando HANA llegó al mercado. Era el método principal y prácticamente único para trabajar con HANA 1.0.</p>
+                    </div>
+
+                    <div class="concept-card">
+                        <h3>📚 Contenido de la Clase</h3>
+                        <ul>
+                            <li><strong>Historia y evolución</strong> - HANA 1.0 vs 2.0, motores XS vs XSA</li>
+                            <li><strong>Base tecnológica</strong> - Eclipse y sistema de plugins</li>
+                            <li><strong>Perspectivas</strong> - Entornos predefinidos de trabajo</li>
+                            <li><strong>Navegación</strong> - Catálogo, content, security</li>
+                            <li><strong>Herramientas administrativas</strong> - Consola y monitoreo</li>
+                            <li><strong>Conceptos fundamentales</strong> - Almacenamiento de datos</li>
+                        </ul>
+                    </div>
+
+                    <div class="important-note">
+                        <strong>⚠️ Estado Actual</strong>
+                        <p>Aunque durante el curso no trabajaremos directamente con HANA Studio, es importante conocerlo porque:</p>
+                        <ul>
+                            <li>Puede aparecer en sistemas legacy</li>
+                            <li>Es contenido de exámenes de certificación SAP</li>
+                            <li>Ayuda a entender la evolución de HANA</li>
+                        </ul>
+                    </div>
+                </section>
+
+                <section id="introduction" class="section">
+                    <h2>🚀 Introducción a SAP HANA Studio</h2>
+                    
+                    <div class="concept-card">
+                        <h3>🎯 ¿Qué es SAP HANA Studio?</h3>
+                        <p>SAP HANA Studio es la <strong>interfaz original</strong> de HANA y aún es utilizada hoy en día, especialmente para clientes que ejecutan <strong>SAP HANA 1.0</strong>.</p>
+                    </div>
+
+                    <div class="history-box">
+                        <h3>🏗️ Características Principales</h3>
+                        <ul>
+                            <li><strong>Interfaz original</strong> - Primera herramienta de desarrollo para HANA</li>
+                            <li><strong>Basada en Eclipse</strong> - Plataforma de desarrollo conocida</li>
+                            <li><strong>Aplicación de escritorio</strong> - Se instala localmente</li>
+                            <li><strong>Motor XS clásico</strong> - Para desarrollo en HANA 1.0</li>
+                            <li><strong>Totalmente funcional</strong> - Administración, modelado y desarrollo</li>
+                        </ul>
+                    </div>
+
+                    <div class="technical-box">
+                        <h3>🔧 Funcionalidades Integradas</h3>
+                        <p>El SAP HANA Studio está integrado en el sistema de SAP HANA y provee un entorno completo para:</p>
+                        <ul>
+                            <li><strong>Administración</strong> - Gestión del sistema HANA</li>
+                            <li><strong>Modelado</strong> - Creación de vistas de información</li>
+                            <li><strong>Desarrollo</strong> - Aplicaciones y procedimientos</li>
+                            <li><strong>Aprovisionamiento de datos</strong> - Importación y gestión</li>
+                        </ul>
+                    </div>
+
+                    <div class="important-note">
+                        <strong>📌 Limitaciones Actuales</strong>
+                        <p>SAP HANA Studio puede utilizarse en HANA 2.0 cuando se trabaja en modo desarrollo del <strong>motor XS clásico</strong>, pero <strong>no puede utilizarse</strong> para desarrollar aplicaciones en el motor XSA.</p>
+                    </div>
+
+                    <div class="warning-box">
+                        <strong>⚠️ Incompatibilidad de Motores</strong>
+                        <p>Debido a los cambios entre motores, no podremos ver desde un entorno (Studio) lo que creemos con el otro entorno (Web IDE). <strong>Se marca una diferencia clara</strong> y debemos tener muy en cuenta con qué motor queremos trabajar.</p>
+                    </div>
+                </section>
+
+                <section id="history" class="section">
+                    <h2>📈 Historia y Evolución de HANA</h2>
+                    
+                    <div class="history-box">
+                        <h3>🌟 El Nacimiento de HANA</h3>
+                        <p>Cuando HANA apareció en el mercado hace relativamente poco, <strong>echó por tierra todo lo que se sabía</strong> y se sacó de la manga esta base de datos con nuevas tecnologías que no se habían visto hasta ahora:</p>
+                        <ul>
+                            <li><strong>Almacenaje in-memory</strong> - Datos en memoria RAM</li>
+                            <li><strong>Procesado en paralelo</strong> - Aprovechamiento de múltiples cores</li>
+                            <li><strong>Servidor web integrado</strong> - Motor XS incluido</li>
+                            <li><strong>Totalmente independiente</strong> - Ecosistema completo</li>
+                        </ul>
+                    </div>
+
+                    <div class="concept-card">
+                        <h3>🔄 Evolución y Mejoras</h3>
+                        <p>Como cualquier tecnología recién nacida, fue evolucionando con el tiempo:</p>
+                        <div class="timeline">
+                            <div class="timeline-item">
+                                <div class="timeline-content">
+                                    <h4>Fase Inicial - Motor XS</h4>
+                                    <p>Servidor web integrado original</p>
+                                </div>
+                            </div>
+                            <div class="timeline-item">
+                                <div class="timeline-content">
+                                    <h4>Cambio de Filosofía</h4>
+                                    <p>Proceso de prueba y error, mejoras continuas</p>
+                                </div>
+                            </div>
+                            <div class="timeline-item">
+                                <div class="timeline-content">
+                                    <h4>Motor XSA</h4>
+                                    <p>Ajuste al estándar Cloud Foundry</p>
+                                </div>
+                            </div>
+                            <div class="timeline-item">
+                                <div class="timeline-content">
+                                    <h4>Cambio de Nomenclatura</h4>
+                                    <p>HANA 1.0 vs HANA 2.0</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="technical-box">
+                        <h3>🏷️ Nomenclatura y Versiones</h3>
+                        <div class="comparison-grid">
+                            <div class="history-box">
+                                <h4>HANA 1.0</h4>
+                                <ul>
+                                    <li><strong>Versiones:</strong> Hasta SPS 12</li>
+                                    <li><strong>Motor:</strong> XS clásico</li>
+                                    <li><strong>Interfaz:</strong> HANA Studio principal</li>
+                                    <li><strong>Estado:</strong> Legacy</li>
+                                </ul>
+                            </div>
+                            <div class="technical-box">
+                                <h4>HANA 2.0</h4>
+                                <ul>
+                                    <li><strong>Versiones:</strong> Desde SPS 13+</li>
+                                    <li><strong>Motores:</strong> XS + XSA</li>
+                                    <li><strong>Interfaz:</strong> Web IDE principal</li>
+                                    <li><strong>Estado:</strong> Actual</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="important-note">
+                        <strong>🔄 Convivencia de Motores</strong>
+                        <p>HANA 2.0 posee <strong>ambos motores</strong> (XS y XSA). La idea es hacerlos convivir un tiempo y más adelante cambiar totalmente al motor XSA.</p>
+                    </div>
+
+                    <div class="concept-card">
+                        <h3>🎯 Impacto en las Interfaces</h3>
+                        <ul>
+                            <li><strong>HANA Studio</strong> → Conecta con motor XS</li>
+                            <li><strong>Web IDE</strong> → Conecta con motor XSA</li>
+                            <li><strong>Incompatibilidad</strong> → No se pueden ver objetos entre motores</li>
+                            <li><strong>Decisión empresarial</strong> → La empresa dictará qué motor usar</li>
+                        </ul>
+                    </div>
+                </section>
+
+                <section id="eclipse" class="section">
+                    <h2>🔧 Base Tecnológica: Eclipse</h2>
+                    
+                    <div class="technical-box">
+                        <h3>☕ ¿Qué es Eclipse?</h3>
+                        <p>SAP HANA Studio es una <strong>aplicación basada en Java</strong> que corre sobre la plataforma Eclipse. Eclipse es una plataforma de programación de <strong>código abierto</strong> que se puede utilizar prácticamente para todo.</p>
+                    </div>
+
+                    <div class="concept-card">
+                        <h3>🌟 Características de Eclipse</h3>
+                        <ul>
+                            <li><strong>Origen Java</strong> - Creado inicialmente para programación Java</li>
+                            <li><strong>Multiplataforma</strong> - Funciona en Windows, Linux, macOS</li>
+                            <li><strong>Extensible</strong> - Sistema de plugins muy potente</li>
+                            <li><strong>Código abierto</strong> - Libre y gratuito</li>
+                            <li><strong>Ampliamente usado</strong> - Por muchas empresas y proyectos</li>
+                        </ul>
+                    </div>
+
+                    <div class="history-box">
+                        <h3>🔌 Sistema de Plugins</h3>
+                        <p>Al ser de código abierto, las empresas se ocupan de crear plugins que podemos instalar en Eclipse:</p>
+                        
+                        <div class="concept-card">
+                            <h4>Ejemplos de Uso de Eclipse</h4>
+                            <ul>
+                                <li><strong>Android</strong> - En sus inicios, el entorno de desarrollo era Eclipse</li>
+                                <li><strong>SAP ABAP</strong> - Se puede programar desde Eclipse en lugar del SAP GUI</li>
+                                <li><strong>.NET</strong> - Incluso se ha configurado para .NET (aunque no muy común)</li>
+                                <li><strong>SAP HANA</strong> - Plugins oficiales de SAP para desarrollo</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="technical-box">
+                        <h3>⚙️ Instalación de HANA Studio</h3>
+                        <p>Para usar SAP HANA Studio necesitas:</p>
+                        <ol>
+                            <li><strong>Instalar Eclipse</strong> (plataforma base)</li>
+                            <li><strong>Descargar plugins SAP</strong> desde la página oficial</li>
+                            <li><strong>Configurar plugins</strong> en Eclipse</li>
+                            <li><strong>Crear conexión</strong> al sistema HANA</li>
+                            <li><strong>Configurar credenciales</strong> de acceso</li>
+                        </ol>
+                    </div>
+
+                    <div class="concept-card">
+                        <h3>🔗 Conexión al Sistema</h3>
+                        <p>Cuando inicias SAP HANA Studio por primera vez, debes crear una conexión al sistema SAP HANA con el que vas a trabajar. Para ello necesitas:</p>
+                        <ul>
+                            <li><strong>Host y instancia</strong> - Dirección del servidor</li>
+                            <li><strong>Usuario y password</strong> - Credenciales válidas</li>
+                            <li><strong>Privilegios suficientes</strong> - Para acceder a lo que necesites</li>
+                        </ul>
+                    </div>
+
+                    <div class="important-note">
+                        <strong>🟢 Indicador de Conexión</strong>
+                        <p>Una vez configurada la conexión, aparecerá una línea en el navegador. Si el <strong>botoncito está en verde</strong>, indica que estamos conectados a la base de datos y que esta se encuentra levantada y operativa.</p>
+                    </div>
+                </section>
+
+                <section id="perspectives" class="section">
+                    <h2>🖼️ Perspectivas en HANA Studio</h2>
+                    
+                    <div class="perspective-box">
+                        <h3>👁️ ¿Qué son las Perspectivas?</h3>
+                        <p>Las perspectivas son <strong>entornos de usuario predefinidos</strong> o vistas para distintos usos de las aplicaciones. Son configuraciones de pantalla optimizadas para tareas específicas.</p>
+                    </div>
+
+                    <div class="concept-card">
+                        <h3>🎯 Perspectivas Principales en HANA</h3>
+                        <div class="stats-grid">
+                            <div class="stat-card">
+                                <div class="stat-number">🎨</div>
+                                <div>Modelado</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-number">⚙️</div>
+                                <div>Administración</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-number">🔧</div>
+                                <div>Desarrollo</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-number">🐛</div>
+                                <div>Debug</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="technical-box">
+                        <h3>🔄 Navegación entre Perspectivas</h3>
+                        <p>Puedes moverte entre perspectivas de varias formas:</p>
+                        <ul>
+                            <li><strong>Accesos directos</strong> - Iconos en la parte superior</li>
+                            <li><strong>Menú completo</strong> - Windows → Perspective → Open Perspective → Other</li>
+                            <li><strong>Cambio rápido</strong> - Clic en los iconos superiores</li>
+                        </ul>
+                    </div>
+
+                    <div class="perspective-box">
+                        <h3>🧩 Vistas y Personalización</h3>
+                        <p>Las perspectivas están formadas por un conjunto de <strong>vistas</strong>:</p>
+                        <ul>
+                            <li><strong>Vistas</strong> - Cada una de las "casillas" o paneles</li>
+                            <li><strong>Pestañas</strong> - Múltiples vistas en un mismo panel</li>
+                            <li><strong>Personalizable</strong> - Puedes mover, cerrar y abrir vistas</li>
+                            <li><strong>Reset</strong> - Volver a configuración original</li>
+                        </ul>
+                    </div>
+
+                    <div class="concept-card">
+                        <h3>⚙️ Personalización Avanzada</h3>
+                        <p>Puedes personalizar completamente tu espacio de trabajo:</p>
+                        <ul>
+                            <li><strong>Mover vistas</strong> - Arrastrar y soltar paneles</li>
+                            <li><strong>Cerrar vistas</strong> - Eliminar paneles no necesarios</li>
+                            <li><strong>Añadir vistas</strong> - Windows → Show View → Other</li>
+                            <li><strong>Resetear</strong> - Windows → Perspective → Reset Perspective</li>
+                            <li><strong>Personalizar barras</strong> - Windows → Perspective → Customize</li>
+                        </ul>
+                    </div>
+
+                    <div class="warning-box">
+                        <strong>💡 Consejo Práctico</strong>
+                        <p>Es común que a base de mover elementos se desorganice todo. Siempre puedes usar <strong>Reset Perspective</strong> para volver a la configuración original si algo sale mal.</p>
+                    </div>
+                </section>
+
+                <section id="modeling" class="section">
+                    <h2>🎨 Perspectiva de Modelado</h2>
+                    
+                    <div class="perspective-box">
+                        <h3>🎯 Perspectiva Más Importante</h3>
+                        <p>La perspectiva de modelado es <strong>la que más nos interesa</strong>. Está configurada especialmente para las tareas de <strong>arquitectura de datos</strong> y se recomienda cuando queremos crear modelos de información.</p>
+                    </div>
+
+                    <div class="concept-card">
+                        <h3>📊 Modelo Relacional vs Esquema en Estrella</h3>
+                        <p>Aquí se introduce un concepto importante sobre diferentes enfoques de estructuración de datos:</p>
+                        
+                        <div class="comparison-grid">
+                            <div class="technical-box">
+                                <h4>🔗 Modelo Relacional</h4>
+                                <ul>
+                                    <li><strong>Sistemas transaccionales</strong></li>
+                                    <li><strong>Reduce redundancia</strong></li>
+                                    <li><strong>Optimiza espacio</strong></li>
+                                    <li><strong>CRUD eficiente</strong></li>
+                                    <li><strong>Consultas específicas</strong></li>
+                                </ul>
+                            </div>
+                            <div class="history-box">
+                                <h4>⭐ Esquema en Estrella</h4>
+                                <ul>
+                                    <li><strong>Análisis de datos</strong></li>
+                                    <li><strong>Tabla central numérica</strong></li>
+                                    <li><strong>Tablas contextuales</strong></li>
+                                    <li><strong>Consultas analíticas</strong></li>
+                                    <li><strong>Velocidad superior</strong></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="history-box">
+                        <h3>📈 Ejemplos de Análisis</h3>
+                        <p>El esquema en estrella se usa para casos como:</p>
+                        <ul>
+                            <li><strong>Gráficas de contagios COVID</strong> - Evolución temporal</li>
+                            <li><strong>Trackers de póker</strong> - Estadísticas de jugadores</li>
+                            <li><strong>Análisis empresarial</strong> - Patrones de compra</li>
+                            <li><strong>Business Intelligence</strong> - Dashboards ejecutivos</li>
+                        </ul>
+                    </div>
+
+                    <div class="technical-box">
+                        <h3>🔄 Evolución: BW vs HANA</h3>
+                        <div class="comparison-grid">
+                            <div class="concept-card">
+                                <h4>📊 Business Warehouse (Tradicional)</h4>
+                                <ul>
+                                    <li>Estructura física en BD</li>
+                                    <li>Dos servidores separados</li>
+                                    <li>Trasbase de datos</li>
+                                    <li>Tiempo y recursos</li>
+                                </ul>
+                            </div>
+                            <div class="perspective-box">
+                                <h4>⚡ HANA (Moderno)</h4>
+                                <ul>
+                                    <li>Estructura lógica</li>
+                                    <li>Un solo sistema</li>
+                                    <li>Tiempo real</li>
+                                    <li>Eficiencia superior</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="important-note">
+                        <strong>🎯 Enfoque del Curso</strong>
+                        <p>Estos conceptos de modelado analítico se verán <strong>más en detalle más adelante</strong> en el curso. Por ahora es importante entender que la perspectiva de modelado nos da las herramientas para crear estos tipos de estructuras.</p>
+                    </div>
+
+                    <div class="concept-card">
+                        <h3>🛠️ Herramientas Incluidas</h3>
+                        <p>La perspectiva de modelado incluye:</p>
+                        <ul>
+                            <li><strong>Consola SQL</strong> - Para escribir consultas</li>
+                            <li><strong>Árbol de estructuras</strong> - Navegador de BD</li>
+                            <li><strong>Herramientas de modelado</strong> - Para vistas de información</li>
+                            <li><strong>Gestión de objetos</strong> - Tablas, vistas, procedimientos, etc.</li>
+                        </ul>
+                    </div>
+                </section>
+
+                <section id="navigation" class="section">
+                    <h2>🗂️ Navegación y Estructura de Vistas</h2>
+                    
+                    <div class="concept-card">
+                        <h3>🌳 Árbol de Navegación</h3>
+                        <p>En la parte izquierda de la pantalla tienes el <strong>árbol de navegación</strong> con dos secciones principales de menú:</p>
+                    </div>
+
+                    <div class="comparison-grid">
+                        <div class="technical-box">
+                            <h4>📋 Nodo CATALOG</h4>
+                            <p>Navega por los <strong>elementos físicos</strong> que cualquier usuario va a utilizar:</p>
+                            <ul>
+                                <li><strong>Tablas físicas</strong></li>
+                                <li><strong>Vistas</strong></li>
+                                <li><strong>Procedimientos</strong></li>
+                                <li><strong>Funciones</strong></li>
+                                <li><strong>Índices</strong></li>
+                            </ul>
+                        </div>
+                        <div class="perspective-box">
+                            <h4>🛠️ Nodo CONTENT</h4>
+                            <p>Contiene los <strong>elementos lógicos</strong> de trabajo:</p>
+                            <ul>
+                                <li><strong>Vistas de atributos</strong></li>
+                                <li><strong>Vistas analíticas</strong></li>
+                                <li><strong>Vistas calculadas</strong></li>
+                                <li><strong>Privilegios analíticos</strong></li>
+                                <li><strong>Procedimientos</strong></li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="concept-card">
+                        <h3>🔄 Flujo de Trabajo</h3>
+                        <p>El proceso típico es:</p>
+                        <ol>
+                            <li><strong>Crear modelos</strong> en la carpeta CONTENT</li>
+                            <li><strong>Desarrollar y probar</strong> los objetos</li>
+                            <li><strong>Construir/Activar</strong> los modelos</li>
+                            <li><strong>Aparecer en CATALOG</strong> para usuarios finales</li>
+                        </ol>
+                    </div>
+
+                    <div class="technical-box">
+                        <h3>📁 Organización con Paquetes</h3>
+                        <p>Para organizar el trabajo, puedes crear <strong>paquetes</strong> como carpetas:</p>
+                        <ul>
+                            <li><strong>Clic derecho en Content</strong> → Nuevo Paquete</li>
+                            <li><strong>Paquetes anidados</strong> - Crear subcarpetas</li>
+                            <li><strong>Metadatos</strong> - Nombre, descripción, responsable</li>
+                            <li><strong>Unidades de envío</strong> - Para transporte entre sistemas</li>
+                        </ul>
+                    </div>
+
+                    <div class="concept-card">
+                        <h3>🗂️ Otros Nodos Importantes</h3>
+                        <div class="stats-grid">
+                            <div class="stat-card">
+                                <div class="stat-number">📊</div>
+                                <div>Provisioning</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-number">🔒</div>
+                                <div>Security</div>
+                            </div>
+                        </div>
+
+                        <div class="perspective-box">
+                            <h4>📊 Nodo Provisioning</h4>
+                            <p>Herramientas para aprovisionamiento de datos:</p>
+                            <ul>
+                                <li><strong>Smart Data Access (SDA)</strong> - Vistas de información externa</li>
+                                <li><strong>No copia datos</strong> - Acceso en tiempo real</li>
+                                <li><strong>Sistemas externos</strong> - Integración sin duplicación</li>
+                            </ul>
+                        </div>
+
+                        <div class="technical-box">
+                            <h4>🔒 Nodo Security</h4>
+                            <p>Administración de seguridad del sistema:</p>
+                            <ul>
+                                <li><strong>Usuarios</strong> - Gestión de cuentas</li>
+                                <li><strong>Roles</strong> - Definición de permisos</li>
+                                <li><strong>Privilegios</strong> - Control de acceso</li>
+                                <li><strong>Configuración</strong> - Políticas de seguridad</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="important-note">
+                        <strong>⚠️ Limitación Motor XS</strong>
+                        <p>Recordar que todo esto sirve para trabajar con el <strong>motor XS clásico</strong>, por lo que lo que creemos aquí no vamos a poder trabajar con ello desde el entorno Web IDE que trabaja con el motor XSA.</p>
+                    </div>
+                </section>
+
+                <section id="administration" class="section">
+                    <h2>⚙️ Consola de Administración</h2>
+                    
+                    <div class="perspective-box">
+                        <h3>🎛️ Acceso a la Consola</h3>
+                        <p>La consola de administración se puede abrir de varias formas:</p>
+                        <ul>
+                            <li><strong>Doble clic</strong> en el sistema desde el navegador</li>
+                            <li><strong>Icono de administración</strong> (llaves) en la barra superior</li>
+                            <li><strong>Doble clic</strong> desde el system monitor</li>
+                        </ul>
+                    </div>
+
+                    <div class="concept-card">
+                        <h3>👥 ¿Para Quién es?</h3>
+                        <p>La consola de administración se utiliza para los <strong>administradores de SAP HANA</strong>, que desde aquí pueden administrar y monitorizar el motor de base de datos.</p>
+                    </div>
+
+                    <div class="technical-box">
+                        <h3>🔧 Funcionalidades Principales</h3>
+                        <ul>
+                            <li><strong>Arrancar y apagar instancias</strong> - Control de servicios</li>
+                            <li><strong>Recuperar caché</strong> - Gestión de memoria</li>
+                            <li><strong>Monitorizar sistema</strong> - Performance y recursos</li>
+                            <li><strong>Configurar instancia</strong> - Parámetros del motor</li>
+                            <li><strong>Análisis de problemas</strong> - Troubleshooting</li>
+                            <li><strong>Gestión de trazas</strong> - Logs y debugging</li>
+                        </ul>
+                    </div>
+
+                    <div class="concept-card">
+                        <h3>📊 System Monitor</h3>
+                        <p>El monitor de sistema integrado proporciona:</p>
+                        <ul>
+                            <li><strong>Vista de administración</strong> sobre el landscape</li>
+                            <li><strong>Información importante</strong> de todos los sistemas</li>
+                            <li><strong>Configuración personalizable</strong> - Qué información mostrar</li>
+                            <li><strong>Filtros de sistemas</strong> - Seleccionar qué ver</li>
+                        </ul>
+                    </div>
+
+                    <div class="perspective-box">
+                        <h3>⚙️ Secciones de la Consola</h3>
+                        <div class="stats-grid">
+                            <div class="stat-card">
+                                <div class="stat-number">🖥️</div>
+                                <div>Servicios</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-number">📈</div>
+                                <div>Performance</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-number">🔧</div>
+                                <div>Configuration</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-number">⚠️</div>
+                                <div>Alertas</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="warning-box">
+                        <strong>⚠️ Advertencia para Desarrolladores</strong>
+                        <p>Esta área va más orientada al <strong>tema de administración</strong> de la base de datos. Los desarrolladores normalmente no deberían trabajar aquí, ya que no es su campo especializado, aunque a veces es necesario conocer un poco de todo.</p>
+                    </div>
+
+                    <div class="technical-box">
+                        <h3>🛠️ Tareas Comunes de Administración</h3>
+                        <ul>
+                            <li><strong>Reiniciar servicios</strong> - Cuando hay problemas</li>
+                            <li><strong>Revisar performance</strong> - CPU, memoria, disco</li>
+                            <li><strong>Configurar parámetros</strong> - Ajustes del sistema</li>
+                            <li><strong>Analizar trazas</strong> - Investigar errores</li>
+                            <li><strong>Gestionar alertas</strong> - Monitoreo proactivo</li>
+                        </ul>
+                    </div>
+                </section>
+
+                <section id="storage" class="section">
+                    <h2>💾 Conceptos Fundamentales de Almacenamiento</h2>
+                    
+                    <div class="exam-alert">
+                        <strong>🚨 PREGUNTA DE EXAMEN</strong>
+                        <p>Esta información es <strong>fundamental</strong> y puede aparecer en exámenes de certificación SAP. Si alguien falla esta pregunta, ¡tendrá consecuencias!</p>
+                    </div>
+
+                    <div class="concept-card">
+                        <h3>🎯 Concepto Clave: Almacenamiento Físico</h3>
+                        <p><strong>El único objeto de la base de datos que almacena información (datos) de forma física son las TABLAS.</strong></p>
+                    </div>
+
+                    <div class="technical-box">
+                        <h3>📊 ¿Qué Hace el Resto de Objetos?</h3>
+                        <p>Todo el resto de objetos nos <strong>muestran</strong> esa información, pero no la almacenan:</p>
+                        <ul>
+                            <li><strong>Vistas</strong> - Accedemos y vemos datos, pero no los almacenan</li>
+                            <li><strong>Procedimientos</strong> - Hacen operaciones y muestran datos</li>
+                            <li><strong>Funciones</strong> - Procesan y retornan datos</li>
+                            <li><strong>Todos acuden a las tablas</strong> para buscar los datos físicos</li>
+                        </ul>
+                    </div>
+
+                    <div class="important-note">
+                        <strong>🔑 Principio Fundamental</strong>
+                        <p>Todos los objetos (excepto tablas) acuden a las tablas para buscar los datos, luego trabajan con ellos y nos los muestran. Pero <strong>SOLO LAS TABLAS ALMACENAN DATOS FÍSICAMENTE</strong>.</p>
+                    </div>
+
+                    <div class="perspective-box">
+                        <h3>🏗️ Implicaciones en HANA</h3>
+                        <ul>
+                            <li><strong>Modelos de información</strong> dan como resultado vistas de BD</li>
+                            <li><strong>SAP HANA no persiste datos redundantes</strong> para cada modelo</li>
+                            <li><strong>No crea agregados materializados</strong> físicos</li>
+                            <li><strong>Eficiencia en almacenamiento</strong> y gestión</li>
+                        </ul>
+                    </div>
+
+                    <div class="concept-card">
+                        <h3>💡 Ventajas de este Enfoque</h3>
+                        <ul>
+                            <li><strong>Sin duplicación</strong> - Un solo lugar para cada dato</li>
+                            <li><strong>Consistencia</strong> - Cambios se reflejan en todas las vistas</li>
+                            <li><strong>Eficiencia de espacio</strong> - No redundancia de almacenamiento</li>
+                            <li><strong>Mantenimiento simplificado</strong> - Actualizaciones centralizadas</li>
+                        </ul>
+                    </div>
+
+                    <div class="exam-alert">
+                        <strong>📝 Para Examen de Certificación</strong>
+                        <p>Memoriza: <strong>"Las tablas físicas son el único área de almacenamiento de datos dentro de SAP HANA. Todos los modelos de información resultan en vistas que no almacenan datos físicamente."</strong></p>
+                    </div>
+                </section>
+
+                <section id="systems" class="section">
+                    <h2>🌐 Gestión de Sistemas</h2>
+                    
+                    <div class="concept-card">
+                        <h3>➕ Agregar Sistema a HANA Studio</h3>
+                        <p>Para integrar un sistema SAP HANA en el Studio, necesitas conocer:</p>
+                        <ul>
+                            <li><strong>Servidor</strong> - Donde el motor está funcionando</li>
+                            <li><strong>Número de instancia</strong> - Puerto específico</li>
+                            <li><strong>Usuario y password</strong> - Credenciales válidas</li>
+                            <li><strong>Privilegios suficientes</strong> - Para establecer conexión</li>
+                        </ul>
+                    </div>
+
+                    <div class="technical-box">
+                        <h3>📋 Proceso de Configuración</h3>
+                        <ol>
+                            <li><strong>Acceder al asistente</strong> - Icono de servidores con "+"</li>
+                            <li><strong>Introducir datos</strong> - Host, instancia, modo conexión</li>
+                            <li><strong>Configurar credenciales</strong> - Usuario y contraseña</li>
+                            <li><strong>Seleccionar esquema</strong> - Donde guardar tablas creadas</li>
+                            <li><strong>Probar conexión</strong> - Verificar acceso</li>
+                        </ol>
+                    </div>
+
+                    <div class="concept-card">
+                        <h3>🗂️ Organización con Esquemas</h3>
+                        <p>Durante la importación de metadatos:</p>
+                        <ul>
+                            <li><strong>Se define qué esquema</strong> guardará las tablas creadas</li>
+                            <li><strong>Diferentes esquemas</strong> pueden agrupar tablas en categorías</li>
+                            <li><strong>Simplifica identificación</strong> - Qué tablas utilizar</li>
+                            <li><strong>No limita capacidades</strong> - Un modelo puede usar varios esquemas</li>
+                        </ul>
+                    </div>
+
+                    <div class="technical-box">
+                        <h3>📤 Import/Export de Landscapes</h3>
+                        <p>Puedes gestionar configuraciones de sistemas:</p>
+                        <ul>
+                            <li><strong>Importar landscape</strong> - File → Import → SAP HANA Studio Landscape</li>
+                            <li><strong>Exportar configuración</strong> - Para reutilizar en otros Studios</li>
+                            <li><strong>Gestionar passwords</strong> - Clic derecho → Database Logon User</li>
+                            <li><strong>Múltiples sistemas</strong> - Un Studio puede conectar a varios</li>
+                        </ul>
+                    </div>
+
+                    <div class="perspective-box">
+                        <h3>🔄 Gestión de Múltiples Sistemas</h3>
+                        <p>HANA Studio puede manejar múltiples conexiones:</p>
+                        <ul>
+                            <li><strong>Varios sistemas</strong> en un solo Studio</li>
+                            <li><strong>Cada sistema</strong> con su propio árbol de objetos</li>
+                            <li><strong>Cambio fácil</strong> entre sistemas</li>
+                            <li><strong>Configuraciones independientes</strong> por sistema</li>
+                        </ul>
+                    </div>
+
+                    <div class="warning-box">
+                        <strong>💡 Consejo Práctico</strong>
+                        <p>Mantén organizadas tus conexiones con <strong>nombres descriptivos</strong> y documenta las credenciales de acceso para cada sistema (desarrollo, calidad, producción).</p>
+                    </div>
+                </section>
+
+                <section id="delivery" class="section">
+                    <h2>📦 Unidades de Entrega</h2>
+                    
+                    <div class="concept-card">
+                        <h3>📦 ¿Qué son las Unidades de Entrega?</h3>
+                        <p>Las unidades de entrega (Delivery Units) nos permiten ir <strong>almacenando los cambios</strong> que vayamos realizando en el servidor HANA para posteriormente <strong>exportar estas modificaciones a otros sistemas</strong>.</p>
+                    </div>
+
+                    <div class="history-box">
+                        <h3>🔄 Equivalencia con SAP</h3>
+                        <p>Es el equivalente a las <strong>órdenes de transporte</strong> en SAP tradicional:</p>
+                        <ul>
+                            <li><strong>Desarrollo → Calidad → Producción</strong></li>
+                            <li><strong>Fichero contenedor</strong> - Con todos los cambios</li>
+                            <li><strong>Despliegue conjunto</strong> - Todos los objetos relacionados</li>
+                            <li><strong>Control de versiones</strong> - Gestión de cambios</li>
+                        </ul>
+                    </div>
+
+                    <div class="technical-box">
+                        <h3>🛠️ Creación de Unidades de Entrega</h3>
+                        <p>Se crean desde la perspectiva SAP HANA Modeller:</p>
+                        <ol>
+                            <li><strong>Abrir Quick View</strong> - Help → Quick View</li>
+                            <li><strong>Delivery Units</strong> - Seleccionar sistema</li>
+                            <li><strong>Crear nueva unidad</strong> - Siguiente</li>
+                            <li><strong>Metadatos</strong> - Nombre, descripción, responsable</li>
+                            <li><strong>Asignar objetos</strong> - Al crear nuevos elementos</li>
+                        </ol>
+                    </div>
+
+                    <div class="concept-card">
+                        <h3>📋 Metadatos de las Unidades</h3>
+                        <p>Al crear una unidad de entrega especificas:</p>
+                        <ul>
+                            <li><strong>Nombre</strong> - Identificador único</li>
+                            <li><strong>Descripción</strong> - Qué contiene la entrega</li>
+                            <li><strong>Unidad de envío</strong> - Asociación organizativa</li>
+                            <li><strong>Lenguaje original</strong> - Del contenido</li>
+                            <li><strong>Usuario responsable</strong> - Owner de los cambios</li>
+                        </ul>
+                    </div>
+
+                    <div class="important-note">
+                        <strong>⚠️ Evolución en HANA 2.0</strong>
+                        <p>Esto funcionaba así en <strong>HANA 1.0</strong>. Cuando trabajamos con Web IDE en HANA 2.0, esto ha desaparecido y utilizamos los <strong>contenedores HDI</strong> que ofrecen funcionalidad similar pero con tecnología más moderna.</p>
+                    </div>
+
+                    <div class="perspective-box">
+                        <h3>🔄 Flujo de Trabajo</h3>
+                        <ol>
+                            <li><strong>Crear unidad de entrega</strong> al inicio del proyecto</li>
+                            <li><strong>Asignar objetos</strong> a la unidad al crearlos</li>
+                            <li><strong>Desarrollar y probar</strong> en entorno de desarrollo</li>
+                            <li><strong>Exportar unidad</strong> cuando esté lista</li>
+                            <li><strong>Importar en destino</strong> (calidad/producción)</li>
+                            <li><strong>Verificar despliegue</strong> correcto</li>
+                        </ol>
+                    </div>
+
+                    <div class="concept-card">
+                        <h3>💡 Ventajas del Sistema</h3>
+                        <ul>
+                            <li><strong>Gestión integrada</strong> - Todo en una unidad</li>
+                            <li><strong>Dependencias controladas</strong> - Objetos relacionados juntos</li>
+                            <li><strong>Rollback posible</strong> - En caso de problemas</li>
+                            <li><strong>Trazabilidad</strong> - Qué cambios contiene cada entrega</li>
+                        </ul>
+                    </div>
+                </section>
+
+                <section id="web-workbench" class="section">
+                    <h2>🌐 Web Development Workbench</h2>
+                    
+                    <div class="warning-box">
+                        <strong>⚠️ Herramienta Legacy</strong>
+                        <p>Además del SAP HANA Studio, para desarrollos en XS existía una herramienta de desarrollo basada en web. <strong>Esto es solo para desarrollo y solo para motor XS.</strong></p>
+                    </div>
+
+                    <div class="concept-card">
+                        <h3>🎯 Características del Web Workbench</h3>
+                        <ul>
+                            <li><strong>Interfaz liviana</strong> - Basada en navegador web</li>
+                            <li><strong>Solo para desarrolladores</strong> - No para administración</li>
+                            <li><strong>Alternativa al Studio</strong> - Más ligera que HANA Studio</li>
+                            <li><strong>Funciones específicas</strong> - Solo lo que necesitan desarrolladores</li>
+                            <li><strong>Motor XS únicamente</strong> - No compatible con XSA</li>
+                        </ul>
+                    </div>
+
+                    <div class="technical-box">
+                        <h3>🔗 Acceso al Web Workbench</h3>
+                        <p>Para acceder necesitas abrir un navegador e introducir la URL:</p>
+                        <div style="background: #f4f4f4; padding: 15px; border-radius: 8px; margin: 15px 0; font-family: monospace;">
+                            <code>https://&lt;hostname&gt;:&lt;puerto&gt;80&lt;instancia&gt;/hana/xs/ide/</code>
+                        </div>
+                        <p>Donde sustituyes:</p>
+                        <ul>
+                            <li><strong>&lt;hostname&gt;</strong> - Nombre del servidor</li>
+                            <li><strong>&lt;instancia&gt;</strong> - Número de instancia</li>
+                        </ul>
+                    </div>
+
+                    <div class="important-note">
+                        <strong>🚨 Importante: No Confundir</strong>
+                        <p>Hay que tener <strong>muchísimo cuidado</strong> de no confundirlo con el Web IDE:</p>
+                        <ul>
+                            <li><strong>Web Development Workbench</strong> - Motor XS (HANA 1.0)</li>
+                            <li><strong>Web IDE</strong> - Motor XSA (HANA 2.0)</li>
+                            <li><strong>Son diferentes</strong> - Diferentes motores, diferentes capacidades</li>
+                            <li><strong>Pregunta trampa</strong> - Puede aparecer en exámenes</li>
+                        </ul>
+                    </div>
+
+                    <div class="concept-card">
+                        <h3>🔄 Proceso de Acceso</h3>
+                        <ol>
+                            <li><strong>Abrir navegador web</strong></li>
+                            <li><strong>Introducir URL correcta</strong> con parámetros del sistema</li>
+                            <li><strong>Introducir credenciales</strong> - Usuario y contraseña</li>
+                            <li><strong>Clic en Login</strong></li>
+                            <li><strong>Acceso al entorno</strong> de desarrollo web</li>
+                        </ol>
+                    </div>
+
+                    <div class="exam-alert">
+                        <strong>📚 Para Exámenes de Certificación</strong>
+                        <p>Aunque no se han visto preguntas relacionadas desde hace mucho tiempo, SAP puede incluir preguntas trampa diferenciando entre <strong>Web Development Workbench (XS)</strong> y <strong>Web IDE (XSA)</strong>.</p>
+                    </div>
+
+                    <div class="perspective-box">
+                        <h3>📉 Estado Actual</h3>
+                        <ul>
+                            <li><strong>Prácticamente desaparecido</strong> - De documentación y exámenes</li>
+                            <li><strong>Solo para sistemas legacy</strong> - HANA 1.0 antiguos</li>
+                            <li><strong>Reemplazado por Web IDE</strong> - Para nuevos desarrollos</li>
+                            <li><strong>Conocimiento histórico</strong> - Importante para contexto</li>
+                        </ul>
+                    </div>
+                </section>
+
+                <section id="conclusions" class="section">
+                    <h2>🎯 Conclusiones</h2>
+                    
+                    <div class="concept-card">
+                        <h3>📋 Resumen de SAP HANA Studio</h3>
+                        <p>Hemos explorado en detalle la interfaz original de SAP HANA:</p>
+                    </div>
+
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-number">🏆</div>
+                            <div>Interfaz Original</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number">☕</div>
+                            <div>Basada en Eclipse</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number">⚙️</div>
+                            <div>Motor XS Clásico</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number">📉</div>
+                            <div>En Declive</div>
+                        </div>
+                    </div>
+
+                    <div class="concept-card">
+                        <h3>🔑 Puntos Clave Aprendidos</h3>
+                        <ul>
+                            <li><strong>Historia y evolución</strong> - De HANA 1.0 a 2.0, XS a XSA</li>
+                            <li><strong>Base tecnológica</strong> - Eclipse como plataforma extensible</li>
+                            <li><strong>Perspectivas</strong> - Entornos especializados para diferentes tareas</li>
+                            <li><strong>Navegación</strong> - Catalog vs Content, organización lógica</li>
+                            <li><strong>Administración</strong> - Herramientas para gestión del sistema</li>
+                            <li><strong>Almacenamiento</strong> - Solo las tablas almacenan datos físicamente</li>
+                        </ul>
+                    </div>
+
+                    <div class="exam-alert">
+                        <strong>📚 Importancia para Certificación</strong>
+                        <p>Este contenido es <strong>relevante para exámenes SAP</strong>:</p>
+                        <ul>
+                            <li><strong>Diferencias entre motores</strong> XS vs XSA</li>
+                            <li><strong>Almacenamiento físico</strong> - Solo tablas almacenan datos</li>
+                            <li><strong>Perspectivas disponibles</strong> - Modelado, administración</li>
+                            <li><strong>Compatibilidades</strong> - Qué funciona con qué</li>
+                        </ul>
+                    </div>
+
+                    <div class="technical-box">
+                        <h3>🎯 Estado Actual y Futuro</h3>
+                        <ul>
+                            <li><strong>Sigue funcionando</strong> - En sistemas HANA 2.0</li>
+                            <li><strong>Solo para motor XS</strong> - No compatible con XSA</li>
+                            <li><strong>Sistemas legacy</strong> - Mantenimiento de aplicaciones antiguas</li>
+                            <li><strong>Conocimiento necesario</strong> - Para soporte y migración</li>
+                        </ul>
+                    </div>
+
+                    <div class="perspective-box">
+                        <h3>🚀 Próximos Pasos</h3>
+                        <p>En la siguiente clase veremos el <strong>Web IDE</strong>, la interfaz moderna recomendada para HANA 2.0 que:</p>
+                        <ul>
+                            <li><strong>Trabaja con motor XSA</strong> - Tecnología actual</li>
+                            <li><strong>Interfaz web moderna</strong> - Sin instalaciones</li>
+                            <li><strong>Futuro de HANA</strong> - Dirección recomendada por SAP</li>
+                            <li><strong>Desarrollo práctico</strong> - Donde haremos nuestros ejercicios</li>
+                        </ul>
+                    </div>
+
+                    <div class="important-note">
+                        <strong>💭 Reflexión Final</strong>
+                        <p>Aunque SAP HANA Studio está en declive, comprenderlo nos ayuda a:</p>
+                        <ul>
+                            <li><strong>Entender la evolución</strong> de la plataforma HANA</li>
+                            <li><strong>Trabajar con sistemas legacy</strong> cuando sea necesario</li>
+                            <li><strong>Apreciar las mejoras</strong> del Web IDE moderno</li>
+                            <li><strong>Estar preparados</strong> para preguntas de certificación</li>
+                        </ul>
+                    </div>
+
+                    <div class="concept-card">
+                        <h3>🎉 ¡Clase Completada!</h3>
+                        <p>Esto sería todo sobre SAP HANA Studio. <strong>Muy buenas noches a todos y nos vemos en la próxima clase</strong> donde exploraremos el Web IDE en detalle.</p>
+                    </div>
+                </section>
+            </main>
+        </div>
+    </div>
+
+    <script>
+        function showSection(sectionId) {
+            // Ocultar todas las secciones
+            const sections = document.querySelectorAll('.section');
+            sections.forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            // Mostrar la sección seleccionada
+            document.getElementById(sectionId).classList.add('active');
+            
+            // Actualizar navegación
+            const navItems = document.querySelectorAll('.nav-item');
+            navItems.forEach(item => {
+                item.classList.remove('active');
+            });
+            
+            // Marcar el elemento activo
+            event.target.classList.add('active');
+            
+            // Scroll al inicio del contenido
+            document.querySelector('.content').scrollTop = 0;
+
+            // En móviles, ocultar el menú después de seleccionar
+            if (window.innerWidth <= 768) {
+                const sidebar = document.getElementById('sidebar');
+                sidebar.classList.add('mobile-hidden');
+                
+                const toggleButton = document.querySelector('.mobile-menu-toggle');
+                toggleButton.textContent = '📋 Menú de Contenidos';
+            }
+        }
+
+        function toggleMobileMenu() {
+            const sidebar = document.getElementById('sidebar');
+            const toggleButton = document.querySelector('.mobile-menu-toggle');
+            
+            if (sidebar.classList.contains('mobile-hidden')) {
+                sidebar.classList.remove('mobile-hidden');
+                toggleButton.textContent = '❌ Cerrar Menú';
+            } else {
+                sidebar.classList.add('mobile-hidden');
+                toggleButton.textContent = '📋 Menú de Contenidos';
+            }
+        }
+
+        // Inicializar en móviles
+        document.addEventListener('DOMContentLoaded', function() {
+            if (window.innerWidth <= 768) {
+                const sidebar = document.getElementById('sidebar');
+                sidebar.classList.add('mobile-hidden');
+            }
+
+            // Animación de entrada
+            const cards = document.querySelectorAll('.concept-card, .history-box, .technical-box, .perspective-box');
+            cards.forEach((card, index) => {
+                setTimeout(() => {
+                    card.style.opacity = '0';
+                    card.style.transform = 'translateY(20px)';
+                    card.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+                    
+                    setTimeout(() => {
+                        card.style.opacity = '1';
+                        card.style.transform = 'translateY(0)';
+                    }, 100);
+                }, index * 100);
+            });
+        });
+
+        // Manejar cambios de tamaño de ventana
+        window.addEventListener('resize', function() {
+            const sidebar = document.getElementById('sidebar');
+            const toggleButton = document.querySelector('.mobile-menu-toggle');
+            
+            if (window.innerWidth > 768) {
+                sidebar.classList.remove('mobile-hidden');
+                toggleButton.textContent = '📋 Menú de Contenidos';
+            } else if (window.innerWidth <= 768 && !sidebar.classList.contains('mobile-hidden')) {
+                sidebar.classList.add('mobile-hidden');
+            }
+        });
+    </script>
+</body>
+</html>

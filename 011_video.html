@@ -3,509 +3,1389 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Video 11 - Práctica Modelo Entidad Relación</title>
+    <title>Curso SAP HANA - Práctica Modelo Entidad-Relación</title>
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            line-height: 1.6;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
             color: #333;
-            max-width: 1200px;
+        }
+
+        .container {
+            max-width: 1400px;
             margin: 0 auto;
             padding: 20px;
-            background-color: #f5f5f5;
         }
-        
-        .container {
-            background: white;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-        }
-        
+
         .header {
-            text-align: center;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
             margin-bottom: 30px;
-            padding-bottom: 20px;
-            border-bottom: 3px solid #2196F3;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            text-align: center;
         }
-        
-        h1 {
-            color: #2196F3;
+
+        .header h1 {
+            color: #2c3e50;
             font-size: 2.5em;
             margin-bottom: 10px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
-        
-        .subtitle {
+
+        .header p {
             color: #666;
             font-size: 1.2em;
-            font-style: italic;
         }
-        
-        .toc {
-            background: #e3f2fd;
-            padding: 20px;
-            border-radius: 8px;
-            margin: 20px 0;
-            border-left: 4px solid #2196F3;
+
+        .duration-info {
+            background: linear-gradient(45deg, #ff9800, #f57c00);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-weight: bold;
+            margin: 10px 0;
+            display: inline-block;
         }
-        
-        .toc h3 {
-            color: #1976D2;
-            margin-top: 0;
+
+        .dashboard {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
         }
-        
-        .toc ul {
-            list-style-type: none;
-            padding-left: 0;
+
+        .sidebar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            height: fit-content;
+            position: sticky;
+            top: 20px;
         }
-        
-        .toc li {
-            padding: 5px 0;
-        }
-        
-        .toc a {
-            color: #1976D2;
-            text-decoration: none;
-            transition: color 0.3s;
-        }
-        
-        .toc a:hover {
-            color: #0d47a1;
-            text-decoration: underline;
-        }
-        
-        h2 {
-            color: #1976D2;
-            border-bottom: 2px solid #e3f2fd;
+
+        .sidebar h3 {
+            color: #2c3e50;
+            margin-bottom: 20px;
             padding-bottom: 10px;
-            margin-top: 40px;
+            border-bottom: 2px solid #667eea;
         }
-        
-        h3 {
-            color: #424242;
-            margin-top: 30px;
+
+        .nav-item {
+            padding: 12px 20px;
+            margin: 5px 0;
+            background: linear-gradient(45deg, #f8f9fa, #e9ecef);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-left: 4px solid transparent;
+            font-size: 0.9em;
         }
-        
+
+        .nav-item:hover {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            transform: translateX(10px);
+            border-left-color: #fff;
+        }
+
+        .nav-item.active {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border-left-color: #fff;
+        }
+
+        .mobile-menu-toggle {
+            display: none;
+            background: rgba(255, 255, 255, 0.95);
+            border: none;
+            padding: 15px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            font-size: 1.2em;
+            cursor: pointer;
+            width: 100%;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .content {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .section {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .section h2 {
+            color: #2c3e50;
+            font-size: 2em;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #667eea;
+        }
+
         .timestamp {
             background: #ff9800;
             color: white;
-            padding: 2px 8px;
+            padding: 4px 12px;
             border-radius: 15px;
             font-size: 0.8em;
             font-weight: bold;
-            margin-right: 10px;
+            margin-left: 10px;
+            display: inline-block;
         }
-        
+
+        .concept-card {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-radius: 15px;
+            padding: 25px;
+            margin: 20px 0;
+            border-left: 5px solid #667eea;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease;
+        }
+
+        .concept-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .concept-card h3, .concept-card h4 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 1.4em;
+        }
+
+        .concept-card p {
+            line-height: 1.8;
+            color: #555;
+            margin-bottom: 15px;
+        }
+
+        .concept-card ul, .concept-card ol {
+            margin-left: 20px;
+            margin-top: 10px;
+        }
+
+        .concept-card li {
+            margin: 8px 0;
+            color: #555;
+        }
+
         .example-box {
-            background: #f8f9fa;
-            border: 1px solid #dee2e6;
-            border-radius: 8px;
+            background: linear-gradient(135deg, #fff3cd, #ffeaa7);
+            border-radius: 15px;
+            padding: 25px;
+            margin: 20px 0;
+            border-left: 5px solid #f39c12;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        .example-box h3, .example-box h4 {
+            color: #856404;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        .example-box p {
+            color: #856404;
+            line-height: 1.8;
+            margin-bottom: 10px;
+        }
+
+        .example-box ul, .example-box ol {
+            margin-left: 20px;
+            margin-top: 10px;
+        }
+
+        .example-box li {
+            margin: 8px 0;
+            color: #856404;
+        }
+
+        .method-box {
+            background: linear-gradient(135deg, #e8f5e8, #d4edda);
+            border-radius: 15px;
+            padding: 25px;
+            margin: 20px 0;
+            border-left: 5px solid #28a745;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        .method-box h3, .method-box h4 {
+            color: #155724;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        .method-box p {
+            color: #155724;
+            line-height: 1.8;
+            margin-bottom: 10px;
+        }
+
+        .method-box ul, .method-box ol {
+            margin-left: 20px;
+            margin-top: 10px;
+        }
+
+        .method-box li {
+            margin: 8px 0;
+            color: #155724;
+        }
+
+        .important-note {
+            background: linear-gradient(135deg, #ffebee, #ffcdd2);
+            border-radius: 15px;
             padding: 20px;
             margin: 20px 0;
-            border-left: 4px solid #28a745;
+            border-left: 5px solid #e74c3c;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
         }
-        
-        .example-title {
-            color: #28a745;
+
+        .important-note strong {
+            color: #c62828;
+        }
+
+        .important-note p {
+            color: #c62828;
+            line-height: 1.8;
+            margin-top: 10px;
+        }
+
+        .important-note ul, .important-note ol {
+            margin-left: 20px;
+            margin-top: 10px;
+        }
+
+        .important-note li {
+            margin: 8px 0;
+            color: #c62828;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: scale(1.05);
+        }
+
+        .stat-number {
+            font-size: 2.5em;
             font-weight: bold;
             margin-bottom: 10px;
         }
-        
-        .important {
-            background: #fff3cd;
-            border: 1px solid #ffeaa7;
-            border-radius: 5px;
-            padding: 15px;
-            margin: 15px 0;
-            border-left: 4px solid #f39c12;
-        }
-        
-        .concept-box {
-            background: #e8f5e8;
-            border: 1px solid #c8e6c9;
-            border-radius: 8px;
-            padding: 20px;
+
+        .progress-bar {
+            background: #e9ecef;
+            border-radius: 10px;
+            padding: 3px;
             margin: 20px 0;
         }
-        
-        .code-block {
-            background: #f4f4f4;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            padding: 15px;
-            margin: 10px 0;
-            font-family: 'Courier New', monospace;
+
+        .progress {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            height: 20px;
+            border-radius: 8px;
+            transition: width 0.5s ease;
         }
-        
-        ul, ol {
-            padding-left: 25px;
-        }
-        
-        li {
-            margin: 8px 0;
-        }
-        
-        .highlight {
-            background-color: #ffeb3b;
-            padding: 2px 4px;
-            border-radius: 3px;
-        }
-        
+
         .entity {
-            background: #e3f2fd;
-            padding: 10px;
+            background: linear-gradient(135deg, #e3f2fd, #bbdefb);
             border: 2px solid #2196F3;
-            border-radius: 5px;
+            border-radius: 10px;
+            padding: 12px 16px;
             display: inline-block;
             margin: 5px;
             font-weight: bold;
+            color: #1976D2;
+            box-shadow: 0 2px 8px rgba(33, 150, 243, 0.2);
         }
-        
+
         .attribute {
-            background: #fff9c4;
-            padding: 8px;
+            background: linear-gradient(135deg, #fff9c4, #fff59d);
             border: 1px solid #f57f17;
-            border-radius: 15px;
+            border-radius: 20px;
+            padding: 8px 12px;
             display: inline-block;
             margin: 3px;
+            color: #ef6c00;
+            font-size: 0.9em;
         }
-        
+
         .relationship {
-            background: #ffcdd2;
-            padding: 8px;
+            background: linear-gradient(135deg, #ffcdd2, #ef9a9a);
             border: 1px solid #f44336;
-            border-radius: 3px;
+            border-radius: 8px;
+            padding: 12px 16px;
             display: inline-block;
-            margin: 3px;
-            transform: rotate(-45deg);
-            transform-origin: center;
+            margin: 5px;
+            color: #c62828;
+            font-weight: bold;
+            transform: rotate(-5deg);
         }
-        
-        @media print {
-            body { background: white; }
-            .container { box-shadow: none; }
+
+        .code-block {
+            background: #f4f4f4;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            font-family: 'Courier New', monospace;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .entities-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .entity-card {
+            background: linear-gradient(135deg, #e3f2fd, #bbdefb);
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 5px 20px rgba(33, 150, 243, 0.2);
+        }
+
+        .entity-title {
+            color: #1976D2;
+            font-weight: bold;
+            font-size: 1.2em;
+            margin-bottom: 15px;
+            padding: 10px;
+            border: 2px solid #2196F3;
+            border-radius: 8px;
+            background: white;
+        }
+
+        .sap-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .sap-table th {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            padding: 12px;
+            text-align: left;
+        }
+
+        .sap-table td {
+            padding: 12px;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .sap-table tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .relation-diagram {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+
+        .relation-arrow {
+            font-size: 2em;
+            color: #667eea;
+            margin: 0 15px;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+
+            .header {
+                padding: 20px;
+                margin-bottom: 20px;
+            }
+
+            .header h1 {
+                font-size: 1.8em;
+            }
+
+            .dashboard {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .sidebar {
+                position: static;
+                padding: 20px;
+                order: 2;
+            }
+
+            .mobile-menu-toggle {
+                display: block;
+                order: 1;
+            }
+
+            .sidebar.mobile-hidden {
+                display: none;
+            }
+
+            .content {
+                padding: 20px;
+                order: 3;
+            }
+
+            .section h2 {
+                font-size: 1.5em;
+            }
+
+            .concept-card, .example-box, .method-box {
+                padding: 20px;
+                margin: 15px 0;
+            }
+
+            .stats-grid, .entities-grid {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+
+            .comparison-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .nav-item {
+                padding: 15px 20px;
+                font-size: 1em;
+                text-align: center;
+            }
+
+            .relation-diagram {
+                flex-direction: column;
+            }
+
+            .relation-arrow {
+                transform: rotate(90deg);
+                margin: 15px 0;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .header h1 {
+                font-size: 1.5em;
+            }
+
+            .content {
+                padding: 15px;
+            }
+
+            .concept-card, .example-box, .method-box {
+                padding: 15px;
+            }
+
+            .entity, .attribute, .relationship {
+                display: block;
+                margin: 8px 0;
+                text-align: center;
+            }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="header">
-            <h1>Práctica Modelo Entidad Relación</h1>
-            <p class="subtitle">Curso de Modelado en SAP HANA - Clase 2</p>
-            <p><strong>Duración:</strong> 1:02:23 | <strong>Fuente:</strong> YouTube</p>
-        </div>
-
-        <div class="toc">
-            <h3>📋 Índice de Contenidos</h3>
-            <ul>
-                <li><a href="#introduccion">1. Introducción y Herramientas</a></li>
-                <li><a href="#primer-ejemplo">2. Primer Ejemplo: Sistema Escolar</a></li>
-                <li><a href="#metodologia">3. Metodología de Análisis de Texto</a></li>
-                <li><a href="#ejemplo-practico">4. Ejemplo Práctico: Alumnos y Profesores</a></li>
-                <li><a href="#atributos-complejos">5. Tratamiento de Atributos Complejos</a></li>
-                <li><a href="#relaciones">6. Establecimiento de Relaciones</a></li>
-                <li><a href="#atributos-relacion">7. Atributos en las Relaciones</a></li>
-                <li><a href="#sap-mandantes">8. Concepto de Mandantes en SAP</a></li>
-                <li><a href="#ejercicio-completo">9. Ejercicio Completo: Sistema Comercial</a></li>
-                <li><a href="#claves-primarias">10. Definición de Claves Primarias</a></li>
-            </ul>
-        </div>
-
-        <h2 id="introduccion">1. Introducción y Herramientas <span class="timestamp">00:00</span></h2>
-        
-        <p>En esta clase pondremos en práctica los conceptos teóricos del modelo entidad-relación vistos anteriormente.</p>
-        
-        <div class="important">
-            <strong>💡 Sobre las Herramientas:</strong>
-            <ul>
-                <li>Existen programas gratuitos y de pago para diagramas ER</li>
-                <li>Para estos ejemplos usaremos métodos genéricos (Paint)</li>
-                <li>Algunas personas prefieren papel y bolígrafo</li>
-                <li>Lo importante es el concepto, no la herramienta</li>
-            </ul>
-        </div>
-
-        <h2 id="primer-ejemplo">2. Primer Ejemplo: Sistema Escolar <span class="timestamp">01:39</span></h2>
-        
-        <div class="example-box">
-            <div class="example-title">🏫 Ejemplo: Escuela</div>
-            <p><strong>Entidades identificadas:</strong></p>
-            <div class="entity">ALUMNOS</div>
-            <div class="entity">PROFESORES</div>
-            <div class="entity">CLASES</div>
-            
-            <p><strong>Atributos de Alumnos:</strong></p>
-            <div class="attribute">Nombre</div>
-            <div class="attribute">Edad</div>
-            <div class="attribute">DNI</div>
-            <div class="attribute">Dirección</div>
-            <div class="attribute">Teléfono</div>
-        </div>
-
-        <div class="concept-box">
-            <h4>🎯 Elementos del Modelo ER</h4>
-            <ul>
-                <li><strong>Entidades:</strong> Objetos de la vida real (rectángulos)</li>
-                <li><strong>Atributos:</strong> Información a guardar (óvalos)</li>
-                <li><strong>Relaciones:</strong> Conexiones entre entidades (rombos)</li>
-            </ul>
-        </div>
-
-        <h2 id="metodologia">3. Metodología de Análisis de Texto <span class="timestamp">07:37</span></h2>
-        
-        <div class="important">
-            <strong>📝 Método de Análisis:</strong>
-            <ol>
-                <li><strong>Marcar sustantivos</strong> → Candidatos a entidades o atributos</li>
-                <li><strong>Marcar verbos</strong> → Candidatos a relaciones</li>
-                <li><strong>Analizar contexto</strong> → Determinar función de cada elemento</li>
-                <li><strong>Descartar elementos irrelevantes</strong></li>
-            </ol>
-        </div>
-
-        <h2 id="ejemplo-practico">4. Ejemplo Práctico: Alumnos y Profesores <span class="timestamp">08:01</span></h2>
-        
-        <div class="code-block">
-            <strong>📄 Texto de Requisitos:</strong><br><br>
-            "Los requisitos para esta base de datos son los siguientes. En nuestro colegio tenemos una serie de alumnos de los que queremos guardar su nombre completo, su dirección, teléfono y DNI. Del mismo modo, tenemos a nuestro profesorado que imparte clases a los alumnos, del cual también queremos guardar su nombre completo, dirección, teléfono, DNI y un registro de su sueldo."
-        </div>
-
-        <h3>Análisis del Texto</h3>
-        <ul>
-            <li><strong>Sustantivos identificados:</strong> base de datos, colegio, alumnos, nombre, dirección, teléfono, DNI, profesorado, clases, sueldo</li>
-            <li><strong>Verbos identificados:</strong> son, tenemos, queremos, guardar, imparte</li>
-            <li><strong>Entidades resultantes:</strong> ALUMNOS, PROFESORES</li>
-            <li><strong>Relación:</strong> IMPARTE (profesores imparten clases a alumnos)</li>
-        </ul>
-
-        <h2 id="atributos-complejos">5. Tratamiento de Atributos Complejos <span class="timestamp">19:36</span></h2>
-        
-        <div class="concept-box">
-            <h4>🔧 Principio de Normalización</h4>
-            <p><strong>Recomendación:</strong> Extraer los elementos más básicos posibles</p>
-            
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 15px;">
-                <div>
-                    <h5>❌ Menos Eficiente:</h5>
-                    <div class="attribute">Nombre Completo</div>
-                    <div class="attribute">Dirección Completa</div>
-                </div>
-                <div>
-                    <h5>✅ Más Eficiente:</h5>
-                    <div class="attribute">Nombre</div>
-                    <div class="attribute">Apellido1</div>
-                    <div class="attribute">Apellido2</div>
-                    <div class="attribute">Número</div>
-                    <div class="attribute">Calle</div>
-                    <div class="attribute">Población</div>
-                    <div class="attribute">CP</div>
-                </div>
+        <header class="header">
+            <img src="https://gessof.cl/wp-content/uploads/2025/05/Logo-minimalista-con-simbolismo-global.png" alt="Gessof Logo" style="height: 80px; margin-bottom: 20px; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.1));">
+            <h1>Curso SAP HANA</h1>
+            <h2 style="color: #667eea; font-size: 1.5em; margin: 10px 0; font-weight: 600;">VIDEO 011</h2>
+            <p>Práctica Modelo Entidad-Relación</p>
+            <div class="duration-info">⏱️ Duración: 1:02:23 | 📺 Clase Práctica</div>
+            <div class="progress-bar">
+                <div class="progress" style="width: 100%"></div>
             </div>
-        </div>
+        </header>
 
-        <div class="important">
-            <strong>💡 Ventajas de la Descomposición:</strong>
-            <ul>
-                <li>Mayor versatilidad en consultas</li>
-                <li>Facilidad para extraer datos específicos</li>
-                <li>Mejor gestión interna de la base de datos</li>
-                <li>Evita procesamiento adicional de cadenas</li>
-            </ul>
-        </div>
+        <div class="dashboard">
+            <button class="mobile-menu-toggle" onclick="toggleMobileMenu()">
+                📋 Menú de Contenidos
+            </button>
 
-        <h2 id="relaciones">6. Establecimiento de Relaciones <span class="timestamp">26:26</span></h2>
-        
-        <div class="example-box">
-            <div class="example-title">🔗 Relación: IMPARTE</div>
-            <p><strong>Análisis de cardinalidad:</strong></p>
-            <ul>
-                <li>Un alumno puede tener <strong>uno o más</strong> profesores → <strong>N</strong></li>
-                <li>Un profesor puede tener <strong>uno o más</strong> alumnos → <strong>N</strong></li>
-                <li><strong>Resultado:</strong> Relación N:M (muchos a muchos)</li>
-            </ul>
-        </div>
+            <nav class="sidebar" id="sidebar">
+                <h3>Contenidos del Módulo</h3>
+                <div class="nav-item active" onclick="showSection('overview')">📋 Resumen General</div>
+                <div class="nav-item" onclick="showSection('introduction')">🛠️ Introducción y Herramientas</div>
+                <div class="nav-item" onclick="showSection('first-example')">🏫 Primer Ejemplo</div>
+                <div class="nav-item" onclick="showSection('methodology')">📝 Metodología de Análisis</div>
+                <div class="nav-item" onclick="showSection('practical-example')">👨‍🎓 Ejemplo Práctico</div>
+                <div class="nav-item" onclick="showSection('complex-attributes')">🔧 Atributos Complejos</div>
+                <div class="nav-item" onclick="showSection('relationships')">🔗 Relaciones</div>
+                <div class="nav-item" onclick="showSection('relation-attributes')">📊 Atributos en Relaciones</div>
+                <div class="nav-item" onclick="showSection('sap-mandantes')">🏢 Mandantes SAP</div>
+                <div class="nav-item" onclick="showSection('complete-exercise')">🏪 Ejercicio Completo</div>
+                <div class="nav-item" onclick="showSection('primary-keys')">🔑 Claves Primarias</div>
+                <div class="nav-item" onclick="showSection('conclusions')">🎯 Conclusiones</div>
+            </nav>
 
-        <h2 id="atributos-relacion">7. Atributos en las Relaciones <span class="timestamp">28:26</span></h2>
-        
-        <div class="concept-box">
-            <h4>📚 Ejemplo: Alumnos - Asignaturas</h4>
-            <p>Cuando necesitamos almacenar la <strong>nota</strong> de un alumno en una asignatura:</p>
-            
-            <div style="margin: 20px 0;">
-                <div class="entity">ALUMNOS</div> 
-                <span style="margin: 0 10px;">--</span>
-                <div class="relationship" style="transform: none; background: #ffcdd2; padding: 10px;">ESTUDIA<br><div class="attribute">Nota</div></div>
-                <span style="margin: 0 10px;">--</span>
-                <div class="entity">ASIGNATURAS</div>
-            </div>
-            
-            <div class="important">
-                <strong>¿Por qué en la relación?</strong>
-                <ul>
-                    <li>La nota nace de la relación entre alumno y asignatura</li>
-                    <li>Sin ambas entidades, la nota no tiene sentido</li>
-                    <li>Requiere información de ambas entidades para existir</li>
-                </ul>
-            </div>
-        </div>
-
-        <h3>Ejemplo Adicional: Aeropuertos y Vuelos</h3>
-        <div class="example-box">
-            <div class="example-title">✈️ Aeropuertos - Planificación de Vuelos</div>
-            <p><strong>Problema:</strong> ¿Cómo distinguir aeropuerto de origen y destino?</p>
-            
-            <p><strong>Solución:</strong> Atributo "orden" en la relación</p>
-            <ul>
-                <li>Orden = 1 → Aeropuerto de origen</li>
-                <li>Orden = 2 → Aeropuerto de destino</li>
-            </ul>
-        </div>
-
-        <h2 id="sap-mandantes">8. Concepto de Mandantes en SAP <span class="timestamp">38:14</span></h2>
-        
-        <div class="concept-box">
-            <h4>🏢 Sistema de Mandantes en SAP</h4>
-            <p><strong>Definición:</strong> Distribución por clientes que permite separar información en la misma base de datos</p>
-            
-            <div class="important">
-                <strong>Funcionamiento:</strong>
-                <ul>
-                    <li>Cada usuario se loguea a un mandante específico</li>
-                    <li>Solo tiene acceso a información de ese mandante</li>
-                    <li>Las tablas incluyen un campo "mandante" en la clave primaria</li>
-                    <li>Permite reutilizar las mismas tablas para diferentes organizaciones</li>
-                </ul>
-            </div>
-            
-            <h5>Ejemplo de Tabla con Mandantes:</h5>
-            <table style="border-collapse: collapse; width: 100%; margin-top: 10px;">
-                <tr style="background: #e3f2fd;">
-                    <th style="border: 1px solid #ddd; padding: 8px;">Mandante</th>
-                    <th style="border: 1px solid #ddd; padding: 8px;">Usuario ID</th>
-                    <th style="border: 1px solid #ddd; padding: 8px;">Nombre</th>
-                </tr>
-                <tr>
-                    <td style="border: 1px solid #ddd; padding: 8px;">001</td>
-                    <td style="border: 1px solid #ddd; padding: 8px;">1</td>
-                    <td style="border: 1px solid #ddd; padding: 8px;">Juan Pérez</td>
-                </tr>
-                <tr>
-                    <td style="border: 1px solid #ddd; padding: 8px;">002</td>
-                    <td style="border: 1px solid #ddd; padding: 8px;">1</td>
-                    <td style="border: 1px solid #ddd; padding: 8px;">María García</td>
-                </tr>
-            </table>
-            <p><em>Nota: Aunque el Usuario ID es igual (1), son registros diferentes por tener distinto mandante.</em></p>
-        </div>
-
-        <h2 id="ejercicio-completo">9. Ejercicio Completo: Sistema Comercial <span class="timestamp">44:00</span></h2>
-        
-        <div class="code-block">
-            <strong>📄 Enunciado:</strong><br><br>
-            "Una empresa vende productos a varios clientes. Se necesita conocer los datos personales de los clientes (nombre, apellidos, DNI, dirección, fecha de nacimiento). Cada producto tiene un nombre y un código, así como un precio unitario. Un cliente puede comprar varios productos a la empresa y un mismo producto puede ser comprado por varios clientes. Los productos son suministrados por diferentes proveedores. Se debe tener en cuenta que un producto solo puede ser suministrado por un proveedor y que un proveedor puede suministrar diferentes productos. De cada proveedor se desea conocer el NIF, nombre y dirección."
-        </div>
-
-        <h3>Análisis y Resultado</h3>
-        <div class="example-box">
-            <div class="example-title">🏪 Entidades Identificadas</div>
-            
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-top: 15px;">
-                <div>
-                    <div class="entity">CLIENTES</div>
-                    <div style="margin-top: 10px;">
-                        <div class="attribute">ID</div>
-                        <div class="attribute">Nombre</div>
-                        <div class="attribute">Apellidos</div>
-                        <div class="attribute">DNI</div>
-                        <div class="attribute">Dirección</div>
-                        <div class="attribute">Fecha Nacimiento</div>
+            <main class="content">
+                <section id="overview" class="section active">
+                    <h2>📋 Resumen General del Módulo</h2>
+                    
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-number">10</div>
+                            <div>Temas Principales</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number">3</div>
+                            <div>Ejemplos Prácticos</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number">62</div>
+                            <div>Minutos de Contenido</div>
+                        </div>
                     </div>
-                </div>
-                
-                <div>
-                    <div class="entity">PRODUCTOS</div>
-                    <div style="margin-top: 10px;">
-                        <div class="attribute">Código (PK)</div>
-                        <div class="attribute">Nombre</div>
-                        <div class="attribute">Precio</div>
+
+                    <div class="concept-card">
+                        <h3>🎯 Objetivos del Módulo</h3>
+                        <p>En esta clase práctica aplicaremos los conceptos teóricos del <strong>Modelo Entidad-Relación</strong> vistos anteriormente, trabajando con casos reales y desarrollando la metodología completa de análisis.</p>
                     </div>
-                </div>
-                
-                <div>
-                    <div class="entity">PROVEEDORES</div>
-                    <div style="margin-top: 10px;">
-                        <div class="attribute">NIF (PK)</div>
-                        <div class="attribute">Nombre</div>
-                        <div class="attribute">Dirección</div>
+
+                    <div class="method-box">
+                        <h3>🔑 Metodología Principal</h3>
+                        <p><strong>Análisis de Texto Estructurado:</strong> Aprenderemos a extraer entidades, atributos y relaciones desde descripciones textuales de requisitos.</p>
                     </div>
-                </div>
-            </div>
-        </div>
 
-        <h3>Relaciones del Sistema</h3>
-        <div style="display: flex; justify-content: space-around; margin: 20px 0; flex-wrap: wrap;">
-            <div style="text-align: center; margin: 10px;">
-                <div class="relationship" style="transform: none; padding: 15px;">COMPRA</div>
-                <p>Clientes ↔ Productos<br><strong>N:M</strong></p>
-            </div>
-            <div style="text-align: center; margin: 10px;">
-                <div class="relationship" style="transform: none; padding: 15px;">SUMINISTRA</div>
-                <p>Proveedores ↔ Productos<br><strong>1:N</strong></p>
-            </div>
-        </div>
+                    <div class="concept-card">
+                        <h3>📚 Contenido del Módulo</h3>
+                        <ul>
+                            <li><strong>Herramientas:</strong> Opciones para crear diagramas E-R</li>
+                            <li><strong>Metodología:</strong> Análisis sistemático de textos</li>
+                            <li><strong>Ejemplos prácticos:</strong> Escuela, sistema comercial</li>
+                            <li><strong>Conceptos avanzados:</strong> Atributos en relaciones, mandantes SAP</li>
+                            <li><strong>Casos completos:</strong> Del texto al diagrama finalizado</li>
+                        </ul>
+                    </div>
+                </section>
 
-        <h2 id="claves-primarias">10. Definición de Claves Primarias <span class="timestamp">55:57</span></h2>
-        
-        <div class="concept-box">
-            <h4>🔑 Importancia de las Claves Primarias</h4>
-            <p>Toda entidad necesita un atributo que identifique cada elemento de forma única.</p>
-            
-            <div class="important">
-                <strong>Opciones para Claves Primarias:</strong>
-                <ul>
-                    <li><strong>Campo natural único:</strong> DNI, NIF, código de producto</li>
-                    <li><strong>Campo artificial:</strong> ID, código interno, referencia</li>
-                    <li><strong>Clave compuesta:</strong> Combinación de múltiples campos</li>
-                </ul>
-            </div>
-            
-            <h5>Ejemplos en el Sistema Comercial:</h5>
-            <ul>
-                <li><strong>Proveedores:</strong> NIF (único por empresa)</li>
-                <li><strong>Productos:</strong> Código (asignado para identificación)</li>
-                <li><strong>Clientes:</strong> ID (campo artificial agregado)</li>
-            </ul>
-        </div>
+                <section id="introduction" class="section">
+                    <h2>🛠️ Introducción y Herramientas <span class="timestamp">00:00</span></h2>
+                    
+                    <div class="concept-card">
+                        <h3>🎯 Objetivo de la Clase</h3>
+                        <p>En esta clase pondremos en práctica los conceptos teóricos del modelo entidad-relación vistos anteriormente, aplicándolos a casos reales de desarrollo.</p>
+                    </div>
 
-        <h2>🎯 Resumen y Próximos Pasos</h2>
-        
-        <div class="important">
-            <strong>Conceptos Clave Aprendidos:</strong>
-            <ul>
-                <li>Metodología de análisis de texto para extraer requisitos</li>
-                <li>Identificación de entidades, atributos y relaciones</li>
-                <li>Importancia de la normalización de atributos</li>
-                <li>Manejo de atributos en relaciones</li>
-                <li>Definición de claves primarias</li>
-                <li>Concepto de mandantes en SAP</li>
-            </ul>
-        </div>
-        
-        <div class="concept-box">
-            <h4>🔜 Siguientes Temas</h4>
-            <ul>
-                <li>Modelo relacional</li>
-                <li>Transformación de diagramas ER a tablas</li>
-                <li>Ejemplos completos desde texto hasta implementación</li>
-                <li>Esquemas conceptual y lógico completos</li>
-            </ul>
-        </div>
+                    <div class="important-note">
+                        <strong>💡 Sobre las Herramientas de Diagramación</strong>
+                        <ul>
+                            <li><strong>Programas especializados:</strong> Existen opciones gratuitas y de pago</li>
+                            <li><strong>Herramientas genéricas:</strong> Paint, herramientas de dibujo básicas</li>
+                            <li><strong>Método tradicional:</strong> Papel y bolígrafo</li>
+                            <li><strong>Lo importante:</strong> El concepto, no la herramienta utilizada</li>
+                        </ul>
+                    </div>
 
-        <hr style="margin-top: 40px; border: none; border-top: 2px solid #e3f2fd;">
-        <div style="text-align: center; color: #666; margin-top: 20px;">
-            <p><strong>Curso de Modelado en SAP HANA</strong> | Clase 2 - Práctica Modelo Entidad Relación</p>
-            <p>Duración: 1:02:23 | Organizado y estructurado para mejor comprensión</p>
+                    <div class="example-box">
+                        <h4>🔧 Opciones de Herramientas</h4>
+                        <div class="comparison-grid">
+                            <div>
+                                <h5>✅ Ventajas Programas Especializados:</h5>
+                                <ul>
+                                    <li>Elementos predefinidos</li>
+                                    <li>Validación automática</li>
+                                    <li>Exportación a diferentes formatos</li>
+                                </ul>
+                            </div>
+                            <div>
+                                <h5>✅ Ventajas Métodos Simples:</h5>
+                                <ul>
+                                    <li>Mayor flexibilidad</li>
+                                    <li>Rapidez para bocetos</li>
+                                    <li>Sin curva de aprendizaje</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="concept-card">
+                        <h3>🎨 Para estos Ejemplos</h3>
+                        <p>Utilizaremos métodos genéricos que permitan enfocarse en el <strong>concepto y la metodología</strong> más que en el dominio de herramientas específicas.</p>
+                    </div>
+                </section>
+
+                <section id="first-example" class="section">
+                    <h2>🏫 Primer Ejemplo: Sistema Escolar <span class="timestamp">01:39</span></h2>
+                    
+                    <div class="example-box">
+                        <h3>🏫 Contexto: Escuela</h3>
+                        <p>Comenzamos con un ejemplo simple para entender los elementos básicos del modelo E-R.</p>
+                    </div>
+
+                    <div class="entities-grid">
+                        <div class="entity-card">
+                            <div class="entity-title">ALUMNOS</div>
+                            <div class="attribute">Nombre</div>
+                            <div class="attribute">Edad</div>
+                            <div class="attribute">DNI</div>
+                            <div class="attribute">Dirección</div>
+                            <div class="attribute">Teléfono</div>
+                        </div>
+                        <div class="entity-card">
+                            <div class="entity-title">PROFESORES</div>
+                            <div class="attribute">Nombre</div>
+                            <div class="attribute">Especialidad</div>
+                            <div class="attribute">DNI</div>
+                            <div class="attribute">Dirección</div>
+                            <div class="attribute">Teléfono</div>
+                        </div>
+                        <div class="entity-card">
+                            <div class="entity-title">CLASES</div>
+                            <div class="attribute">Asignatura</div>
+                            <div class="attribute">Horario</div>
+                            <div class="attribute">Aula</div>
+                            <div class="attribute">Duración</div>
+                        </div>
+                    </div>
+
+                    <div class="method-box">
+                        <h3>🎯 Elementos del Modelo E-R</h3>
+                        <ul>
+                            <li><strong>Entidades:</strong> Objetos de la vida real (representados con rectángulos)</li>
+                            <li><strong>Atributos:</strong> Información que queremos guardar (representados con óvalos)</li>
+                            <li><strong>Relaciones:</strong> Conexiones entre entidades (representados con rombos)</li>
+                        </ul>
+                    </div>
+
+                    <div class="concept-card">
+                        <h3>🔍 Identificación Visual</h3>
+                        <div class="relation-diagram">
+                            <div class="entity">ALUMNOS</div>
+                            <div class="relation-arrow">↔</div>
+                            <div class="relationship">ASISTEN</div>
+                            <div class="relation-arrow">↔</div>
+                            <div class="entity">CLASES</div>
+                        </div>
+                        <div class="relation-diagram">
+                            <div class="entity">PROFESORES</div>
+                            <div class="relation-arrow">↔</div>
+                            <div class="relationship">IMPARTEN</div>
+                            <div class="relation-arrow">↔</div>
+                            <div class="entity">CLASES</div>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="methodology" class="section">
+                    <h2>📝 Metodología de Análisis de Texto <span class="timestamp">07:37</span></h2>
+                    
+                    <div class="method-box">
+                        <h3>📝 Método Sistemático de Análisis</h3>
+                        <p>Para extraer información estructurada de textos de requisitos:</p>
+                        <ol>
+                            <li><strong>Marcar sustantivos</strong> → Candidatos a entidades o atributos</li>
+                            <li><strong>Marcar verbos</strong> → Candidatos a relaciones</li>
+                            <li><strong>Analizar contexto</strong> → Determinar función de cada elemento</li>
+                            <li><strong>Descartar elementos irrelevantes</strong> → Filtrar información no pertinente</li>
+                        </ol>
+                    </div>
+
+                    <div class="concept-card">
+                        <h3>🎯 Criterios de Decisión</h3>
+                        <div class="comparison-grid">
+                            <div class="example-box">
+                                <h4>📦 ¿Cuándo es una Entidad?</h4>
+                                <ul>
+                                    <li>Representa un objeto del mundo real</li>
+                                    <li>Tiene múltiples atributos asociados</li>
+                                    <li>Es central para el sistema</li>
+                                    <li>Se relaciona con otras entidades</li>
+                                </ul>
+                            </div>
+                            <div class="example-box">
+                                <h4>📊 ¿Cuándo es un Atributo?</h4>
+                                <ul>
+                                    <li>Describe una propiedad específica</li>
+                                    <li>No se subdivide normalmente</li>
+                                    <li>Pertenece claramente a una entidad</li>
+                                    <li>Es un dato simple</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="important-note">
+                        <strong>⚠️ Advertencia:</strong>
+                        <p>No todos los sustantivos serán entidades y no todos los verbos serán relaciones. El análisis de contexto es fundamental para tomar decisiones correctas.</p>
+                    </div>
+                </section>
+
+                <section id="practical-example" class="section">
+                    <h2>👨‍🎓 Ejemplo Práctico: Alumnos y Profesores <span class="timestamp">08:01</span></h2>
+                    
+                    <div class="code-block">
+                        <strong>📄 Texto de Requisitos del Cliente:</strong><br><br>
+                        <em>"Los requisitos para esta base de datos son los siguientes. En nuestro colegio tenemos una serie de alumnos de los que queremos guardar su nombre completo, su dirección, teléfono y DNI. Del mismo modo, tenemos a nuestro profesorado que imparte clases a los alumnos, del cual también queremos guardar su nombre completo, dirección, teléfono, DNI y un registro de su sueldo."</em>
+                    </div>
+
+                    <div class="method-box">
+                        <h3>🔍 Análisis Paso a Paso</h3>
+                        <h4>1. Sustantivos Identificados:</h4>
+                        <ul>
+                            <li><strong>base de datos</strong> - Descartado (no es parte del dominio)</li>
+                            <li><strong>colegio</strong> - Contexto general</li>
+                            <li><strong>alumnos</strong> - 🏆 ENTIDAD</li>
+                            <li><strong>nombre, dirección, teléfono, DNI</strong> - 📊 ATRIBUTOS</li>
+                            <li><strong>profesorado</strong> - 🏆 ENTIDAD</li>
+                            <li><strong>clases</strong> - Parte de la relación</li>
+                            <li><strong>sueldo</strong> - 📊 ATRIBUTO</li>
+                        </ul>
+
+                        <h4>2. Verbos Identificados:</h4>
+                        <ul>
+                            <li><strong>son, tenemos, queremos, guardar</strong> - Descartados (proceso)</li>
+                            <li><strong>imparte</strong> - 🔗 RELACIÓN</li>
+                        </ul>
+                    </div>
+
+                    <div class="example-box">
+                        <h3>📋 Resultado del Análisis</h3>
+                        <div class="entities-grid">
+                            <div class="entity-card">
+                                <div class="entity-title">ALUMNOS</div>
+                                <div class="attribute">Nombre Completo</div>
+                                <div class="attribute">Dirección</div>
+                                <div class="attribute">Teléfono</div>
+                                <div class="attribute">DNI</div>
+                            </div>
+                            <div class="entity-card">
+                                <div class="entity-title">PROFESORES</div>
+                                <div class="attribute">Nombre Completo</div>
+                                <div class="attribute">Dirección</div>
+                                <div class="attribute">Teléfono</div>
+                                <div class="attribute">DNI</div>
+                                <div class="attribute">Sueldo</div>
+                            </div>
+                        </div>
+                        
+                        <div class="relation-diagram">
+                            <div class="entity">PROFESORES</div>
+                            <div class="relation-arrow">→</div>
+                            <div class="relationship">IMPARTE</div>
+                            <div class="relation-arrow">→</div>
+                            <div class="entity">ALUMNOS</div>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="complex-attributes" class="section">
+                    <h2>🔧 Tratamiento de Atributos Complejos <span class="timestamp">19:36</span></h2>
+                    
+                    <div class="method-box">
+                        <h3>🔧 Principio de Normalización</h3>
+                        <p><strong>Recomendación:</strong> Extraer los elementos más básicos posibles para mayor eficiencia y versatilidad.</p>
+                    </div>
+
+                    <div class="comparison-grid">
+                        <div class="example-box">
+                            <h4>❌ Menos Eficiente</h4>
+                            <div class="attribute">Nombre Completo</div>
+                            <div class="attribute">Dirección Completa</div>
+                            <p><strong>Problemas:</strong></p>
+                            <ul>
+                                <li>Dificulta búsquedas específicas</li>
+                                <li>Requiere procesamiento de cadenas</li>
+                                <li>Menor flexibilidad</li>
+                            </ul>
+                        </div>
+                        <div class="method-box">
+                            <h4>✅ Más Eficiente</h4>
+                            <div class="attribute">Nombre</div>
+                            <div class="attribute">Apellido1</div>
+                            <div class="attribute">Apellido2</div>
+                            <div class="attribute">Calle</div>
+                            <div class="attribute">Número</div>
+                            <div class="attribute">Población</div>
+                            <div class="attribute">CP</div>
+                            <p><strong>Ventajas:</strong></p>
+                            <ul>
+                                <li>Consultas más específicas</li>
+                                <li>Mejor gestión de datos</li>
+                                <li>Mayor versatilidad</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="important-note">
+                        <strong>💡 Beneficios de la Descomposición</strong>
+                        <ul>
+                            <li><strong>Mayor versatilidad en consultas:</strong> Buscar por apellido específico</li>
+                            <li><strong>Facilidad para extraer datos específicos:</strong> Listados por población</li>
+                            <li><strong>Mejor gestión interna:</strong> Optimización de base de datos</li>
+                            <li><strong>Evita procesamiento adicional:</strong> No necesita manipular cadenas</li>
+                        </ul>
+                    </div>
+
+                    <div class="concept-card">
+                        <h3>📊 Ejemplo Práctico de Búsquedas</h3>
+                        <p>Con atributos descompuestos puedes hacer consultas como:</p>
+                        <ul>
+                            <li><strong>"Todos los García"</strong> → Filtro directo por Apellido1</li>
+                            <li><strong>"Personas de Madrid"</strong> → Filtro directo por Población</li>
+                            <li><strong>"Códigos postales 28xxx"</strong> → Filtro por rango de CP</li>
+                        </ul>
+                    </div>
+                </section>
+
+                <section id="relationships" class="section">
+                    <h2>🔗 Establecimiento de Relaciones <span class="timestamp">26:26</span></h2>
+                    
+                    <div class="example-box">
+                        <h3>🔗 Análisis de la Relación: IMPARTE</h3>
+                        <p><strong>Pregunta clave:</strong> ¿Cuál es la cardinalidad de esta relación?</p>
+                        
+                        <div class="method-box">
+                            <h4>🤔 Análisis de Cardinalidad</h4>
+                            <ul>
+                                <li>¿Un alumno puede tener <strong>uno o más</strong> profesores? → <strong>SÍ (N)</strong></li>
+                                <li>¿Un profesor puede tener <strong>uno o más</strong> alumnos? → <strong>SÍ (N)</strong></li>
+                                <li><strong>Resultado:</strong> Relación N:M (muchos a muchos)</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="concept-card">
+                        <h3>📐 Representación Visual de la Cardinalidad</h3>
+                        <div class="relation-diagram">
+                            <div class="entity">PROFESORES</div>
+                            <div style="text-align: center; margin: 0 20px;">
+                                <div class="relationship">IMPARTE</div>
+                                <div style="color: #667eea; font-weight: bold; margin-top: 5px;">N : M</div>
+                            </div>
+                            <div class="entity">ALUMNOS</div>
+                        </div>
+                    </div>
+
+                    <div class="important-note">
+                        <strong>⚠️ Consideración Importante</strong>
+                        <p>Las relaciones N:M requieren tratamiento especial en el modelo relacional. Se convertirán en una tabla intermedia con las claves primarias de ambas entidades.</p>
+                    </div>
+
+                    <div class="concept-card">
+                        <h3>🎯 Tipos de Cardinalidad Recordatorio</h3>
+                        <ul>
+                            <li><strong>1:1</strong> - Uno a uno (ej: Persona - DNI)</li>
+                            <li><strong>1:N</strong> - Uno a muchos (ej: Departamento - Empleados)</li>
+                            <li><strong>N:M</strong> - Muchos a muchos (ej: Alumnos - Profesores)</li>
+                        </ul>
+                    </div>
+                </section>
+
+                <section id="relation-attributes" class="section">
+                    <h2>📊 Atributos en las Relaciones <span class="timestamp">28:26</span></h2>
+                    
+                    <div class="method-box">
+                        <h3>📚 Concepto: Atributos que Nacen de la Relación</h3>
+                        <p>Algunos atributos solo tienen sentido cuando existe la relación entre dos entidades.</p>
+                    </div>
+
+                    <div class="example-box">
+                        <h3>📝 Ejemplo: Alumnos - Asignaturas</h3>
+                        <p>Cuando necesitamos almacenar la <strong>nota</strong> de un alumno en una asignatura:</p>
+                        
+                        <div class="relation-diagram">
+                            <div class="entity">ALUMNOS</div>
+                            <div class="relation-arrow">↔</div>
+                            <div style="text-align: center;">
+                                <div class="relationship">ESTUDIA</div>
+                                <div class="attribute" style="margin-top: 10px;">Nota</div>
+                            </div>
+                            <div class="relation-arrow">↔</div>
+                            <div class="entity">ASIGNATURAS</div>
+                        </div>
+                        
+                        <div class="important-note">
+                            <strong>¿Por qué la nota va en la relación?</strong>
+                            <ul>
+                                <li>La nota <strong>nace de la relación</strong> entre alumno y asignatura</li>
+                                <li>Sin ambas entidades, la nota <strong>no tiene sentido</strong></li>
+                                <li>Requiere información de <strong>ambas entidades</strong> para existir</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="example-box">
+                        <h3>✈️ Ejemplo Adicional: Aeropuertos y Vuelos</h3>
+                        <p><strong>Problema:</strong> ¿Cómo distinguir aeropuerto de origen y destino en un vuelo?</p>
+                        
+                        <div class="method-box">
+                            <h4>💡 Solución: Atributo "orden" en la relación</h4>
+                            <ul>
+                                <li><strong>Orden = 1</strong> → Aeropuerto de origen</li>
+                                <li><strong>Orden = 2</strong> → Aeropuerto de destino</li>
+                            </ul>
+                        </div>
+
+                        <div class="relation-diagram">
+                            <div class="entity">AEROPUERTOS</div>
+                            <div class="relation-arrow">↔</div>
+                            <div style="text-align: center;">
+                                <div class="relationship">PLANIFICA</div>
+                                <div class="attribute">Orden</div>
+                                <div class="attribute">Hora</div>
+                            </div>
+                            <div class="relation-arrow">↔</div>
+                            <div class="entity">VUELOS</div>
+                        </div>
+                    </div>
+
+                    <div class="concept-card">
+                        <h3>🎯 Criterios para Atributos en Relaciones</h3>
+                        <ul>
+                            <li>El atributo depende de <strong>ambas entidades</strong></li>
+                            <li>No puede asignarse exclusivamente a una entidad</li>
+                            <li>Su valor cambia según la <strong>combinación específica</strong></li>
+                            <li>Representa información sobre <strong>la conexión misma</strong></li>
+                        </ul>
+                    </div>
+                </section>
+
+                <section id="sap-mandantes" class="section">
+                    <h2>🏢 Concepto de Mandantes en SAP <span class="timestamp">38:14</span></h2>
+                    
+                    <div class="method-box">
+                        <h3>🏢 Sistema de Mandantes en SAP</h3>
+                        <p><strong>Definición:</strong> Distribución por clientes que permite separar información en la misma base de datos física.</p>
+                    </div>
+
+                    <div class="concept-card">
+                        <h3>🔧 Funcionamiento del Sistema</h3>
+                        <ul>
+                            <li>Cada usuario se loguea a un <strong>mandante específico</strong></li>
+                            <li>Solo tiene acceso a información de <strong>ese mandante</strong></li>
+                            <li>Las tablas incluyen un campo <strong>"mandante"</strong> en la clave primaria</li>
+                            <li>Permite reutilizar las mismas tablas para <strong>diferentes organizaciones</strong></li>
+                        </ul>
+                    </div>
+
+                    <div class="example-box">
+                        <h3>📊 Ejemplo de Tabla con Mandantes</h3>
+                        <table class="sap-table">
+                            <thead>
+                                <tr>
+                                    <th>Mandante</th>
+                                    <th>Usuario ID</th>
+                                    <th>Nombre</th>
+                                    <th>Empresa</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>001</td>
+                                    <td>1</td>
+                                    <td>Juan Pérez</td>
+                                    <td>Empresa A</td>
+                                </tr>
+                                <tr>
+                                    <td>002</td>
+                                    <td>1</td>
+                                    <td>María García</td>
+                                    <td>Empresa B</td>
+                                </tr>
+                                <tr>
+                                    <td>003</td>
+                                    <td>1</td>
+                                    <td>Carlos López</td>
+                                    <td>Empresa C</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <p><em>📝 Nota: Aunque el Usuario ID es igual (1), son registros diferentes por tener distinto mandante.</em></p>
+                    </div>
+
+                    <div class="important-note">
+                        <strong>💡 Ventajas del Sistema de Mandantes</strong>
+                        <ul>
+                            <li><strong>Seguridad:</strong> Aislamiento total de datos entre organizaciones</li>
+                            <li><strong>Eficiencia:</strong> Una sola instalación para múltiples clientes</li>
+                            <li><strong>Mantenimiento:</strong> Gestión centralizada del sistema</li>
+                            <li><strong>Escalabilidad:</strong> Fácil incorporación de nuevos clientes</li>
+                        </ul>
+                    </div>
+
+                    <div class="concept-card">
+                        <h3>🎯 Implicaciones en el Modelado</h3>
+                        <p>En sistemas SAP, todas las entidades principales deben considerar el campo <strong>Mandante</strong> como parte de su clave primaria para garantizar la separación de datos.</p>
+                    </div>
+                </section>
+
+                <section id="complete-exercise" class="section">
+                    <h2>🏪 Ejercicio Completo: Sistema Comercial <span class="timestamp">44:00</span></h2>
+                    
+                    <div class="code-block">
+                        <strong>📄 Enunciado Completo:</strong><br><br>
+                        <em>"Una empresa vende productos a varios clientes. Se necesita conocer los datos personales de los clientes (nombre, apellidos, DNI, dirección, fecha de nacimiento). Cada producto tiene un nombre y un código, así como un precio unitario. Un cliente puede comprar varios productos a la empresa y un mismo producto puede ser comprado por varios clientes. Los productos son suministrados por diferentes proveedores. Se debe tener en cuenta que un producto solo puede ser suministrado por un proveedor y que un proveedor puede suministrar diferentes productos. De cada proveedor se desea conocer el NIF, nombre y dirección."</em>
+                    </div>
+
+                    <div class="method-box">
+                        <h3>🔍 Análisis Sistemático</h3>
+                        <h4>1. Entidades Identificadas:</h4>
+                        <ul>
+                            <li><strong>CLIENTES</strong> - Compradores de productos</li>
+                            <li><strong>PRODUCTOS</strong> - Artículos vendidos</li>
+                            <li><strong>PROVEEDORES</strong> - Suministradores de productos</li>
+                        </ul>
+
+                        <h4>2. Relaciones Identificadas:</h4>
+                        <ul>
+                            <li><strong>COMPRA</strong> - Clientes compran productos (N:M)</li>
+                            <li><strong>SUMINISTRA</strong> - Proveedores suministran productos (1:N)</li>
+                        </ul>
+                    </div>
+
+                    <div class="entities-grid">
+                        <div class="entity-card">
+                            <div class="entity-title">CLIENTES</div>
+                            <div class="attribute">ID</div>
+                            <div class="attribute">Nombre</div>
+                            <div class="attribute">Apellidos</div>
+                            <div class="attribute">DNI</div>
+                            <div class="attribute">Dirección</div>
+                            <div class="attribute">Fecha Nacimiento</div>
+                        </div>
+                        
+                        <div class="entity-card">
+                            <div class="entity-title">PRODUCTOS</div>
+                            <div class="attribute">Código (PK)</div>
+                            <div class="attribute">Nombre</div>
+                            <div class="attribute">Precio</div>
+                        </div>
+                        
+                        <div class="entity-card">
+                            <div class="entity-title">PROVEEDORES</div>
+                            <div class="attribute">NIF (PK)</div>
+                            <div class="attribute">Nombre</div>
+                            <div class="attribute">Dirección</div>
+                        </div>
+                    </div>
+
+                    <div class="example-box">
+                        <h3>🔗 Relaciones del Sistema</h3>
+                        <div class="relation-diagram">
+                            <div class="entity">CLIENTES</div>
+                            <div class="relation-arrow">↔</div>
+                            <div style="text-align: center;">
+                                <div class="relationship">COMPRA</div>
+                                <div style="color: #667eea; font-weight: bold;">N : M</div>
+                            </div>
+                            <div class="relation-arrow">↔</div>
+                            <div class="entity">PRODUCTOS</div>
+                        </div>
+
+                        <div class="relation-diagram">
+                            <div class="entity">PROVEEDORES</div>
+                            <div class="relation-arrow">→</div>
+                            <div style="text-align: center;">
+                                <div class="relationship">SUMINISTRA</div>
+                                <div style="color: #667eea; font-weight: bold;">1 : N</div>
+                            </div>
+                            <div class="relation-arrow">→</div>
+                            <div class="entity">PRODUCTOS</div>
+                        </div>
+                    </div>
+
+                    <div class="important-note">
+                        <strong>📝 Observaciones del Análisis</strong>
+                        <ul>
+                            <li>La relación <strong>COMPRA</strong> es N:M porque permite múltiples compras</li>
+                            <li>La relación <strong>SUMINISTRA</strong> es 1:N porque cada producto tiene un solo proveedor</li>
+                            <li>Se agregó un campo <strong>ID</strong> a clientes como clave primaria artificial</li>
+                        </ul>
+                    </div>
+                </section>
+
+                <section id="primary-keys" class="section">
+                    <h2>🔑 Definición de Claves Primarias <span class="timestamp">55:57</span></h2>
+                    
+                    <div class="method-box">
+                        <h3>🔑 Importancia de las Claves Primarias</h3>
+                        <p>Toda entidad necesita un atributo (o conjunto de atributos) que identifique cada elemento de forma <strong>única e inequívoca</strong>.</p>
+                    </div>
+
+                    <div class="concept-card">
+                        <h3>🎯 Opciones para Claves Primarias</h3>
+                        <div class="comparison-grid">
+                            <div class="example-box">
+                                <h4>🆔 Campo Natural Único</h4>
+                                <ul>
+                                    <li><strong>DNI</strong> - Para personas</li>
+                                    <li><strong>NIF</strong> - Para empresas</li>
+                                    <li><strong>Código de producto</strong> - Asignado por empresa</li>
+                                    <li><strong>Matrícula</strong> - Para vehículos</li>
+                                </ul>
+                            </div>
+                            <div class="example-box">
+                                <h4>🤖 Campo Artificial</h4>
+                                <ul>
+                                    <li><strong>ID</strong> - Número secuencial</li>
+                                    <li><strong>Código interno</strong> - Generado automáticamente</li>
+                                    <li><strong>UUID</strong> - Identificador único universal</li>
+                                    <li><strong>Referencia</strong> - Sistema de numeración propio</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="example-box">
+                        <h3>📋 Ejemplos en el Sistema Comercial</h3>
+                        <table class="sap-table">
+                            <thead>
+                                <tr>
+                                    <th>Entidad</th>
+                                    <th>Clave Primaria</th>
+                                    <th>Tipo</th>
+                                    <th>Justificación</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>PROVEEDORES</td>
+                                    <td>NIF</td>
+                                    <td>Natural</td>
+                                    <td>Único por empresa, identificación legal</td>
+                                </tr>
+                                <tr>
+                                    <td>PRODUCTOS</td>
+                                    <td>Código</td>
+                                    <td>Artificial</td>
+                                    <td>Asignado por la empresa para identificación</td>
+                                </tr>
+                                <tr>
+                                    <td>CLIENTES</td>
+                                    <td>ID</td>
+                                    <td>Artificial</td>
+                                    <td>Campo agregado, secuencial automático</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="important-note">
+                        <strong>💡 Consideraciones para Elegir Claves Primarias</strong>
+                        <ul>
+                            <li><strong>Estabilidad:</strong> No debe cambiar con el tiempo</li>
+                            <li><strong>Simplicidad:</strong> Preferir claves simples a compuestas</li>
+                            <li><strong>Significado:</strong> Los campos naturales aportan valor semántico</li>
+                            <li><strong>Rendimiento:</strong> Los campos artificiales suelen ser más eficientes</li>
+                        </ul>
+                    </div>
+
+                    <div class="concept-card">
+                        <h3>🔧 Clave Compuesta</h3>
+                        <p>Cuando ningún campo individual puede garantizar unicidad, se combinan múltiples campos:</p>
+                        <div class="example-box">
+                            <h4>Ejemplo: Tabla de Ventas</h4>
+                            <ul>
+                                <li><strong>Cliente ID + Producto Código + Fecha</strong></li>
+                                <li>Permite múltiples compras del mismo producto en fechas diferentes</li>
+                            </ul>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="conclusions" class="section">
+                    <h2>🎯 Conclusiones y Próximos Pasos</h2>
+                    
+                    <div class="concept-card">
+                        <h3>📋 Resumen de Conceptos Aprendidos</h3>
+                        <p>En esta clase práctica hemos aplicado sistemáticamente el Modelo Entidad-Relación:</p>
+                    </div>
+
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-number">✅</div>
+                            <div>Metodología Domina</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number">📊</div>
+                            <div>Análisis de Texto</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number">🔗</div>
+                            <div>Relaciones Complejas</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number">🔑</div>
+                            <div>Claves Primarias</div>
+                        </div>
+                    </div>
+
+                    <div class="method-box">
+                        <h3>🔑 Conceptos Clave Dominados</h3>
+                        <ul>
+                            <li><strong>Metodología de análisis de texto</strong> para extraer requisitos estructurados</li>
+                            <li><strong>Identificación sistemática</strong> de entidades, atributos y relaciones</li>
+                            <li><strong>Normalización de atributos</strong> para mayor eficiencia</li>
+                            <li><strong>Manejo de atributos en relaciones</strong> cuando dependen de múltiples entidades</li>
+                            <li><strong>Definición apropiada de claves primarias</strong> según el contexto</li>
+                            <li><strong>Comprensión del sistema de mandantes</strong> en entornos SAP</li>
+                        </ul>
+                    </div>
+
+                    <div class="example-box">
+                        <h3>🔜 Siguientes Temas en el Curso</h3>
+                        <ul>
+                            <li><strong>Modelo Relacional:</strong> Conversión de diagramas E-R a tablas</li>
+                            <li><strong>Transformación completa:</strong> Del texto hasta la implementación</li>
+                            <li><strong>Normalización:</strong> Esquemas optimizados</li>
+                            <li><strong>Ejemplos avanzados:</strong> Casos complejos de modelado</li>
+                            <li><strong>Implementación en SAP HANA:</strong> Aplicación práctica</li>
+                        </ul>
+                    </div>
+
+                    <div class="important-note">
+                        <strong>🎯 Habilidades Desarrolladas</strong>
+                        <p>Al completar esta clase, has desarrollado la capacidad de transformar requisitos textuales en modelos estructurados de datos, una habilidad fundamental para el diseño de bases de datos profesionales.</p>
+                    </div>
+
+                    <div class="concept-card">
+                        <h3>💪 Preparado para el Siguiente Nivel</h3>
+                        <p>Con estos fundamentos sólidos en el análisis y modelado conceptual, estás preparado para avanzar hacia aspectos más técnicos de implementación en SAP HANA.</p>
+                    </div>
+                </section>
+            </main>
         </div>
     </div>
+
+    <script>
+        function showSection(sectionId) {
+            // Ocultar todas las secciones
+            const sections = document.querySelectorAll('.section');
+            sections.forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            // Mostrar la sección seleccionada
+            document.getElementById(sectionId).classList.add('active');
+            
+            // Actualizar navegación
+            const navItems = document.querySelectorAll('.nav-item');
+            navItems.forEach(item => {
+                item.classList.remove('active');
+            });
+            
+            // Marcar el elemento activo
+            event.target.classList.add('active');
+            
+            // Scroll al inicio del contenido
+            document.querySelector('.content').scrollTop = 0;
+
+            // En móviles, ocultar el menú después de seleccionar
+            if (window.innerWidth <= 768) {
+                const sidebar = document.getElementById('sidebar');
+                sidebar.classList.add('mobile-hidden');
+                
+                const toggleButton = document.querySelector('.mobile-menu-toggle');
+                toggleButton.textContent = '📋 Menú de Contenidos';
+            }
+        }
+
+        function toggleMobileMenu() {
+            const sidebar = document.getElementById('sidebar');
+            const toggleButton = document.querySelector('.mobile-menu-toggle');
+            
+            if (sidebar.classList.contains('mobile-hidden')) {
+                sidebar.classList.remove('mobile-hidden');
+                toggleButton.textContent = '❌ Cerrar Menú';
+            } else {
+                sidebar.classList.add('mobile-hidden');
+                toggleButton.textContent = '📋 Menú de Contenidos';
+            }
+        }
+
+        // Inicializar en móviles
+        document.addEventListener('DOMContentLoaded', function() {
+            if (window.innerWidth <= 768) {
+                const sidebar = document.getElementById('sidebar');
+                sidebar.classList.add('mobile-hidden');
+            }
+
+            // Animación de entrada
+            const cards = document.querySelectorAll('.concept-card, .example-box, .method-box');
+            cards.forEach((card, index) => {
+                setTimeout(() => {
+                    card.style.opacity = '0';
+                    card.style.transform = 'translateY(20px)';
+                    card.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+                    
+                    setTimeout(() => {
+                        card.style.opacity = '1';
+                        card.style.transform = 'translateY(0)';
+                    }, 100);
+                }, index * 100);
+            });
+        });
+
+        // Manejar cambios de tamaño de ventana
+        window.addEventListener('resize', function() {
+            const sidebar = document.getElementById('sidebar');
+            const toggleButton = document.querySelector('.mobile-menu-toggle');
+            
+            if (window.innerWidth > 768) {
+                sidebar.classList.remove('mobile-hidden');
+                toggleButton.textContent = '📋 Menú de Contenidos';
+            } else if (window.innerWidth <= 768 && !sidebar.classList.contains('mobile-hidden')) {
+                sidebar.classList.add('mobile-hidden');
+            }
+        });
+    </script>
 </body>
 </html>

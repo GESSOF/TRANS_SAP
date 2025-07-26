@@ -5,110 +5,179 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Escenarios de Implementación SAP HANA</title>
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            line-height: 1.6;
-            color: #333;
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
+            color: #333;
         }
-        
+
         .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
             background: rgba(255, 255, 255, 0.95);
-            border-radius: 15px;
-            padding: 40px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
             backdrop-filter: blur(10px);
-        }
-        
-        h1 {
-            color: #2c3e50;
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
             text-align: center;
+        }
+
+        .header h1 {
+            color: #2c3e50;
             font-size: 2.5em;
-            margin-bottom: 30px;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
-            border-bottom: 3px solid #3498db;
-            padding-bottom: 15px;
+            margin-bottom: 10px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
-        
-        h2 {
-            color: #34495e;
-            font-size: 1.8em;
-            margin-top: 40px;
+
+        .header p {
+            color: #666;
+            font-size: 1.2em;
+        }
+
+        .dashboard {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .sidebar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            height: fit-content;
+            position: sticky;
+            top: 20px;
+        }
+
+        .sidebar h3 {
+            color: #2c3e50;
             margin-bottom: 20px;
-            padding: 15px;
-            background: linear-gradient(135deg, #74b9ff, #0984e3);
+            padding-bottom: 10px;
+            border-bottom: 2px solid #667eea;
+        }
+
+        .nav-item {
+            padding: 12px 20px;
+            margin: 5px 0;
+            background: linear-gradient(45deg, #f8f9fa, #e9ecef);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-left: 4px solid transparent;
+        }
+
+        .nav-item:hover {
+            background: linear-gradient(45deg, #667eea, #764ba2);
             color: white;
-            border-radius: 8px;
-            box-shadow: 0 4px 15px rgba(116, 185, 255, 0.3);
+            transform: translateX(10px);
+            border-left-color: #fff;
         }
-        
-        h3 {
-            color: #2980b9;
-            font-size: 1.4em;
-            margin-top: 25px;
-            margin-bottom: 15px;
-            border-left: 4px solid #3498db;
-            padding-left: 15px;
+
+        .nav-item.active {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border-left-color: #fff;
         }
-        
-        p {
-            margin-bottom: 15px;
-            text-align: justify;
-            font-size: 1.1em;
+
+        .content {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
         }
-        
-        .intro {
-            background: #f8f9fa;
+
+        .section {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .section h2 {
+            color: #2c3e50;
+            font-size: 2em;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #667eea;
+        }
+
+        .concept-card {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-radius: 15px;
             padding: 25px;
-            border-radius: 10px;
-            border-left: 5px solid #17a2b8;
-            margin-bottom: 30px;
-            font-style: italic;
+            margin: 20px 0;
+            border-left: 5px solid #667eea;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease;
         }
-        
-        .scenario {
-            background: #ffffff;
-            border: 1px solid #e9ecef;
-            border-radius: 10px;
-            padding: 25px;
-            margin-bottom: 30px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-        
-        .scenario:hover {
+
+        .concept-card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 5px 25px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
         }
-        
+
+        .concept-card h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 1.4em;
+        }
+
+        .concept-card p {
+            line-height: 1.8;
+            color: #555;
+            margin-bottom: 15px;
+        }
+
         .advantages {
             background: #d4edda;
             border: 1px solid #c3e6cb;
-            border-radius: 8px;
+            border-radius: 15px;
             padding: 20px;
             margin: 20px 0;
         }
-        
+
         .disadvantages {
             background: #f8d7da;
             border: 1px solid #f5c6cb;
-            border-radius: 8px;
+            border-radius: 15px;
             padding: 20px;
             margin: 20px 0;
         }
-        
+
         .neutral {
             background: #fff3cd;
             border: 1px solid #ffeaa7;
-            border-radius: 8px;
+            border-radius: 15px;
             padding: 20px;
             margin: 20px 0;
         }
-        
+
         .highlight {
             background: #e3f2fd;
             border-left: 4px solid #2196f3;
@@ -116,7 +185,34 @@
             margin: 15px 0;
             border-radius: 5px;
         }
-        
+
+        .diagram {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin: 25px 0;
+            text-align: center;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .comparison {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin: 25px 0;
+        }
+
+        .comparison-item {
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+
+        .comparison-item:hover {
+            transform: scale(1.05);
+        }
+
         .code-block {
             background: #2c3e50;
             color: #ecf0f1;
@@ -126,49 +222,17 @@
             margin: 20px 0;
             overflow-x: auto;
         }
-        
-        .diagram {
-            text-align: center;
-            margin: 30px 0;
-            padding: 20px;
-            background: #f1f3f4;
-            border-radius: 10px;
-            border: 2px dashed #95a5a6;
-        }
-        
-        .comparison {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-            margin: 25px 0;
-        }
-        
-        .comparison-item {
-            padding: 20px;
-            border-radius: 8px;
-            text-align: center;
-        }
-        
-        .xml-format {
-            background: #fff3e0;
-            border: 2px solid #ff9800;
-        }
-        
-        .json-format {
-            background: #e8f5e8;
-            border: 2px solid #4caf50;
-        }
-        
+
         .video-section {
             background: linear-gradient(135deg, #ff6b6b, #ee5a24);
             color: white;
             border-radius: 15px;
             padding: 30px;
-            margin-bottom: 30px;
+            margin: 25px 0;
             box-shadow: 0 10px 30px rgba(255, 107, 107, 0.3);
             text-align: center;
         }
-        
+
         .video-container {
             background: rgba(255, 255, 255, 0.1);
             border-radius: 10px;
@@ -176,7 +240,7 @@
             margin-top: 20px;
             backdrop-filter: blur(10px);
         }
-        
+
         .video-info h3 {
             color: white;
             margin-top: 0;
@@ -185,7 +249,7 @@
             border: none;
             padding: 0;
         }
-        
+
         .video-link {
             display: inline-block;
             background: rgba(255, 255, 255, 0.2);
@@ -199,7 +263,7 @@
             transition: all 0.3s ease;
             border: 2px solid rgba(255, 255, 255, 0.3);
         }
-        
+
         .video-link:hover {
             background: rgba(255, 255, 255, 0.3);
             transform: translateY(-2px);
@@ -207,272 +271,591 @@
             text-decoration: none;
             color: white;
         }
-        
+
         .video-description {
             font-style: italic;
             margin-top: 15px;
             opacity: 0.9;
         }
-            .container {
-                padding: 20px;
+
+        .key-points {
+            background: linear-gradient(135deg, #fff3cd, #ffeaa7);
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+            border-left: 5px solid #f39c12;
+        }
+
+        .key-points h4 {
+            color: #856404;
+            margin-bottom: 10px;
+        }
+
+        .key-points ul {
+            padding-left: 20px;
+        }
+
+        .key-points li {
+            margin: 8px 0;
+            color: #856404;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2.5em;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .architecture-flow {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .flow-item {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 15px 20px;
+            border-radius: 10px;
+            font-weight: bold;
+            text-align: center;
+            min-width: 120px;
+        }
+
+        .flow-arrow {
+            font-size: 1.5em;
+            color: #667eea;
+            font-weight: bold;
+        }
+
+        @media (max-width: 768px) {
+            .dashboard {
+                grid-template-columns: 1fr;
             }
             
-            h1 {
+            .sidebar {
+                position: static;
+            }
+            
+            .header h1 {
                 font-size: 2em;
-            }
-            
-            h2 {
-                font-size: 1.5em;
             }
             
             .comparison {
                 grid-template-columns: 1fr;
+            }
+            
+            .architecture-flow {
+                flex-direction: column;
             }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>🚀 Escenarios de Implementación SAP HANA</h1>
-        
-        <div class="video-section">
-            <h2>🎬 VIDEO 1 - Contenido Original</h2>
-            <div class="video-container">
-                <div class="video-info">
-                    <h3>📺 Ver Video Completo</h3>
-                    <p>Este documento está basado en el contenido del siguiente video educativo:</p>
-                    <a href="https://youtu.be/ODdMWknA8Gc?si=JgIOKfuyj-c90HFO" target="_blank" class="video-link">
-                        🔗 <strong>VIDEO 1:</strong> Escenarios de Implementación SAP HANA
-                    </a>
-                    <p class="video-description">Accede al video original para escuchar las explicaciones detalladas del instructor y complementar tu aprendizaje.</p>
-                </div>
-            </div>
-        </div>
+        <header class="header">
+            <img src="https://gessof.cl/wp-content/uploads/2025/05/Logo-minimalista-con-simbolismo-global.png" alt="Gessof Logo" style="height: 80px; margin-bottom: 20px; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.1));">
+            <h1>Curso SAP HANA</h1>
+            <h2 style="color: #667eea; font-size: 1.5em; margin: 10px 0; font-weight: 600;">VIDEO 1</h2>
+            <p>Escenarios de Implementación SAP HANA</p>
+        </header>
 
-        <div class="intro">
-            <p><strong>Introducción:</strong> Los escenarios de implementación de SAP HANA representan las diferentes formas en las que podemos encontrar una base de datos HANA funcionando en el mundo real. Aunque este contenido no aparece detalladamente en los manuales oficiales de SAP, es fundamental conocerlo ya que suele aparecer en preguntas de examen de certificación.</p>
-        </div>
+        <div class="dashboard">
+            <nav class="sidebar">
+                <h3>Escenarios de Implementación</h3>
+                <div class="nav-item active" onclick="showSection('overview')">📋 Introducción</div>
+                <div class="nav-item" onclick="showSection('video')">🎬 Video Original</div>
+                <div class="nav-item" onclick="showSection('accelerator')">🔄 HANA Acelerador</div>
+                <div class="nav-item" onclick="showSection('platform')">🏗️ HANA Plataforma</div>
+                <div class="nav-item" onclick="showSection('analytics')">📊 HANA Analytics</div>
+                <div class="nav-item" onclick="showSection('warehouse')">🏢 HANA Business Warehouse</div>
+                <div class="nav-item" onclick="showSection('apps')">📱 HANA Apps</div>
+                <div class="nav-item" onclick="showSection('suite')">💼 HANA Business Suite</div>
+                <div class="nav-item" onclick="showSection('cloud')">☁️ Cloud vs On-Premise</div>
+            </nav>
 
-        <div class="scenario">
-            <h2>1. 🔄 SAP HANA como Acelerador</h2>
-            
-            <p>Este escenario permite acelerar un sistema SAP existente de forma sencilla. HANA replica en tiempo real la base de datos ya existente y el sistema comienza a trabajar sobre la base de datos HANA, logrando una gran aceleración en la obtención de datos.</p>
-            
-            <h3>Situación Típica:</h3>
-            <p>Una empresa tiene un sistema SAP funcionando perfectamente desde hace años con una base de datos tradicional (por ejemplo, Oracle). Desean aprovechar las ventajas de HANA pero no quieren mover toda su infraestructura existente debido a:</p>
-            <ul>
-                <li>Base de datos inmensa con años de información histórica</li>
-                <li>Mucha programación desarrollada sobre el sistema actual</li>
-                <li>Costes excesivamente altos para migración completa</li>
-            </ul>
-            
-            <div class="diagram">
-                <p><strong>Arquitectura:</strong></p>
-                <p>Sistema Original ↔ SLT (ETL) ↔ Base de Datos HANA ↔ Herramientas BI</p>
-            </div>
-            
-            <div class="highlight">
-                <p><strong>Funcionamiento:</strong> El sistema realiza las <strong>lecturas</strong> (análisis, BI) sobre HANA para mayor velocidad, mientras que las <strong>escrituras</strong> (operaciones diarias) se realizan en la base de datos clásica. HANA "escucha" los cambios y se actualiza en tiempo real vía ETL.</p>
-            </div>
-        </div>
+            <main class="content">
+                <section id="overview" class="section active">
+                    <h2>📋 Introducción a los Escenarios de Implementación</h2>
+                    
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-number">7</div>
+                            <div>Escenarios Principales</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number">3</div>
+                            <div>Enfoques de Despliegue</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number">100%</div>
+                            <div>Flexibilidad Empresarial</div>
+                        </div>
+                    </div>
 
-        <div class="scenario">
-            <h2>2. 🏗️ SAP HANA como Plataforma</h2>
-            
-            <p>En este escenario, HANA funciona como una plataforma integral independiente, sin necesidad de un sistema SAP por encima.</p>
-            
-            <h3>Componentes Principales:</h3>
-            <ul>
-                <li><strong>SAP HANA Extended Application Service Advanced Model (XSA):</strong> Servidor de aplicaciones web integrado</li>
-                <li><strong>SAP Web IDE:</strong> Entorno de desarrollo basado en navegador web</li>
-            </ul>
-            
-            <div class="highlight">
-                <p><strong>Características del motor XSA:</strong></p>
-                <ul>
-                    <li>Plataforma de aplicación políglota (múltiples lenguajes)</li>
-                    <li>Platform as a Service (PaaS) de código abierto de Cloud Foundry</li>
-                    <li>Solo requiere navegador web para desarrollo</li>
-                </ul>
-            </div>
-            
-            <div class="neutral">
-                <p><strong>Nota importante:</strong> XSA es para HANA 2.0, mientras que XS era para HANA 1.0. Para XS se utilizaba HANA Studio con Eclipse.</p>
-            </div>
-        </div>
+                    <div class="concept-card">
+                        <h3>🎯 ¿Qué son los Escenarios de Implementación?</h3>
+                        <p>Los escenarios de implementación de SAP HANA representan las <strong>diferentes formas</strong> en las que podemos encontrar una base de datos HANA funcionando en el mundo real.</p>
+                    </div>
 
-        <div class="scenario">
-            <h2>3. 📊 SAP HANA Analytics</h2>
-            
-            <p>Permite que los clientes accedan a los datos directamente a través de HANA utilizando una capa de virtualización de modelos de datos, obteniendo datos en tiempo real.</p>
-            
-            <h3>Revolución en el Acceso a Datos:</h3>
-            <p>Tradicionalmente se necesitaba:</p>
-            <div class="diagram">
-                <p>ERP → Business Warehouse → Business Intelligence</p>
-            </div>
-            
-            <p>Con HANA Analytics:</p>
-            <div class="diagram">
-                <p>ERP con HANA → Directamente a BI (sin BW intermedio)</p>
-            </div>
-            
-            <div class="highlight">
-                <p><strong>Capa de Virtualización:</strong> Los datos no se almacenan físicamente duplicados, sino que se reorganizan virtualmente "al vuelo" desde la estructura original, aprovechando el procesamiento en memoria y paralelo de HANA.</p>
-            </div>
-        </div>
+                    <div class="key-points">
+                        <h4>🔑 Puntos Clave</h4>
+                        <ul>
+                            <li><strong>Contenido de Examen:</strong> Aunque no aparece detalladamente en manuales oficiales, es fundamental para certificaciones</li>
+                            <li><strong>Flexibilidad:</strong> HANA se adapta a diferentes necesidades empresariales</li>
+                            <li><strong>Mundo Real:</strong> Casos prácticos de implementación en empresas</li>
+                            <li><strong>Estrategia:</strong> Cada escenario responde a objetivos específicos</li>
+                        </ul>
+                    </div>
 
-        <div class="scenario">
-            <h2>4. 🏢 SAP HANA como Business Warehouse</h2>
-            
-            <p>Utiliza HANA junto con un sistema de Business Warehouse para acelerar increíblemente la generación de informes mediante réplica de datos.</p>
-            
-            <div class="advantages">
-                <h3>✅ Ventajas:</h3>
-                <ul>
-                    <li>Replicación en tiempo real (vs. BW tradicional cada 24h)</li>
-                    <li>Aprovechamiento de la velocidad de procesamiento de HANA</li>
-                    <li>Técnica "push down" para optimizar operaciones</li>
-                </ul>
-            </div>
-            
-            <div class="highlight">
-                <p><strong>Evolución:</strong> Los nuevos módulos BWI de SAP (S/4HANA, BW for HANA) vienen diseñados específicamente para trabajar con HANA, maximizando la eficiencia.</p>
-            </div>
-        </div>
+                    <div class="concept-card">
+                        <h3>🚀 Objetivo del Módulo</h3>
+                        <p>Comprender las diferentes formas de implementar SAP HANA según las necesidades específicas de cada organización, desde acelerar sistemas existentes hasta crear nuevas plataformas nativas en la nube.</p>
+                    </div>
+                </section>
 
-        <div class="scenario">
-            <h2>5. 📱 HANA Apps</h2>
-            
-            <p>La llegada de HANA ha revolucionado el desarrollo de aplicaciones, cambiando la filosofía tradicional de procesamiento.</p>
-            
-            <h3>Cambio de Paradigma:</h3>
-            
-            <div class="comparison">
-                <div class="comparison-item" style="background: #ffebee;">
-                    <h4>❌ Método Tradicional</h4>
-                    <p>1. Extraer datos de BD</p>
-                    <p>2. Procesar en servidor aplicaciones</p>
-                    <p>3. Devolver/guardar resultados</p>
-                </div>
-                <div class="comparison-item" style="background: #e8f5e8;">
-                    <h4>✅ Con HANA (Push Down)</h4>
-                    <p>1. Procesar directamente en BD</p>
-                    <p>2. Servidor solo visualiza datos</p>
-                    <p>3. Mayor eficiencia y simplicidad</p>
-                </div>
-            </div>
-            
-            <div class="advantages">
-                <h3>Beneficios del Push Down:</h3>
-                <ul>
-                    <li><strong>Para desarrolladores:</strong> 2 líneas de código SQL vs. decenas de líneas en servidor</li>
-                    <li><strong>Mantenimiento:</strong> Código más simple y fácil de revisar</li>
-                    <li><strong>Acceso:</strong> Desde navegador web, aplicaciones móviles, etc.</li>
-                </ul>
-            </div>
-            
-            <h3>Formatos de Intercambio de Datos:</h3>
-            <div class="comparison">
-                <div class="comparison-item xml-format">
-                    <h4>XML (Tradicional)</h4>
-                    <div class="code-block">
+                <section id="video" class="section">
+                    <h2>🎬 Contenido del Video Original</h2>
+                    
+                    <div class="video-section">
+                        <h2>🎬 VIDEO 1 - Contenido Original</h2>
+                        <div class="video-container">
+                            <div class="video-info">
+                                <h3>📺 Ver Video Completo</h3>
+                                <p>Este documento está basado en el contenido del siguiente video educativo:</p>
+                                <a href="https://youtu.be/ODdMWknA8Gc?si=JgIOKfuyj-c90HFO" target="_blank" class="video-link">
+                                    🔗 <strong>VIDEO 1:</strong> Escenarios de Implementación SAP HANA
+                                </a>
+                                <p class="video-description">Accede al video original para escuchar las explicaciones detalladas del instructor y complementar tu aprendizaje.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="concept-card">
+                        <h3>📚 Contenido del Video</h3>
+                        <p>El video cubre de manera detallada todos los escenarios de implementación con ejemplos prácticos y explicaciones del instructor. Es el contenido fuente de este documento interactivo.</p>
+                    </div>
+                </section>
+
+                <section id="accelerator" class="section">
+                    <h2>🔄 SAP HANA como Acelerador</h2>
+                    
+                    <div class="concept-card">
+                        <h3>💡 Concepto</h3>
+                        <p>Este escenario permite <strong>acelerar un sistema SAP existente</strong> de forma sencilla. HANA replica en tiempo real la base de datos ya existente y el sistema comienza a trabajar sobre la base de datos HANA, logrando una gran aceleración en la obtención de datos.</p>
+                    </div>
+
+                    <div class="key-points">
+                        <h4>🏢 Situación Típica</h4>
+                        <ul>
+                            <li><strong>Sistema Legacy:</strong> SAP funcionando perfectamente desde hace años con BD tradicional (Oracle, SQL Server)</li>
+                            <li><strong>Años de Historia:</strong> Base de datos inmensa con información histórica valiosa</li>
+                            <li><strong>Desarrollo Existente:</strong> Mucha programación desarrollada sobre el sistema actual</li>
+                            <li><strong>Restricciones:</strong> Costes excesivamente altos para migración completa</li>
+                        </ul>
+                    </div>
+
+                    <div class="diagram">
+                        <h4>🏗️ Arquitectura del Acelerador</h4>
+                        <div class="architecture-flow">
+                            <div class="flow-item">Sistema Original</div>
+                            <div class="flow-arrow">↔</div>
+                            <div class="flow-item">SLT (ETL)</div>
+                            <div class="flow-arrow">↔</div>
+                            <div class="flow-item">Base de Datos HANA</div>
+                            <div class="flow-arrow">↔</div>
+                            <div class="flow-item">Herramientas BI</div>
+                        </div>
+                    </div>
+
+                    <div class="highlight">
+                        <h4>🔧 Funcionamiento</h4>
+                        <p>El sistema realiza las <strong>lecturas</strong> (análisis, BI) sobre HANA para mayor velocidad, mientras que las <strong>escrituras</strong> (operaciones diarias) se realizan en la base de datos clásica. HANA "escucha" los cambios y se actualiza en tiempo real vía ETL.</p>
+                    </div>
+
+                    <div class="comparison">
+                        <div class="advantages">
+                            <h4>✅ Ventajas</h4>
+                            <ul>
+                                <li>Sin necesidad de migración completa</li>
+                                <li>Aprovecha sistema existente</li>
+                                <li>Mejora inmediata en reporting</li>
+                                <li>Menor riesgo de implementación</li>
+                            </ul>
+                        </div>
+                        <div class="disadvantages">
+                            <h4>⚠️ Consideraciones</h4>
+                            <ul>
+                                <li>Duplicación de datos</li>
+                                <li>Complejidad de sincronización</li>
+                                <li>Dependencia de ETL</li>
+                                <li>Costes de infraestructura dual</li>
+                            </ul>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="platform" class="section">
+                    <h2>🏗️ SAP HANA como Plataforma</h2>
+                    
+                    <div class="concept-card">
+                        <h3>🎯 Definición</h3>
+                        <p>En este escenario, HANA funciona como una <strong>plataforma integral independiente</strong>, sin necesidad de un sistema SAP por encima.</p>
+                    </div>
+
+                    <div class="key-points">
+                        <h4>🔧 Componentes Principales</h4>
+                        <ul>
+                            <li><strong>SAP HANA Extended Application Service Advanced Model (XSA):</strong> Servidor de aplicaciones web integrado</li>
+                            <li><strong>SAP Web IDE:</strong> Entorno de desarrollo basado en navegador web</li>
+                        </ul>
+                    </div>
+
+                    <div class="highlight">
+                        <h4>🚀 Características del motor XSA</h4>
+                        <ul>
+                            <li><strong>Plataforma políglota:</strong> Soporte para múltiples lenguajes de programación</li>
+                            <li><strong>Platform as a Service (PaaS):</strong> Basado en Cloud Foundry de código abierto</li>
+                            <li><strong>Desarrollo Web:</strong> Solo requiere navegador web para desarrollo</li>
+                            <li><strong>Escalabilidad:</strong> Capacidades cloud-native integradas</li>
+                        </ul>
+                    </div>
+
+                    <div class="neutral">
+                        <h4>📝 Nota Importante</h4>
+                        <p><strong>Evolución de la Plataforma:</strong></p>
+                        <ul>
+                            <li><strong>XSA:</strong> Para HANA 2.0 (Actual)</li>
+                            <li><strong>XS:</strong> Para HANA 1.0 (Legacy)</li>
+                            <li><strong>Herramienta:</strong> XS utilizaba HANA Studio con Eclipse</li>
+                        </ul>
+                    </div>
+
+                    <div class="concept-card">
+                        <h3>💼 Casos de Uso</h3>
+                        <p>Ideal para organizaciones que quieren desarrollar aplicaciones nativas en HANA sin depender de sistemas SAP tradicionales, aprovechando al máximo las capacidades de procesamiento en memoria.</p>
+                    </div>
+                </section>
+
+                <section id="analytics" class="section">
+                    <h2>📊 SAP HANA Analytics</h2>
+                    
+                    <div class="concept-card">
+                        <h3>🎯 Objetivo</h3>
+                        <p>Permite que los clientes accedan a los datos directamente a través de HANA utilizando una <strong>capa de virtualización de modelos de datos</strong>, obteniendo datos en tiempo real.</p>
+                    </div>
+
+                    <div class="diagram">
+                        <h4>🔄 Revolución en el Acceso a Datos</h4>
+                        <div style="margin: 20px 0;">
+                            <h5>❌ Método Tradicional:</h5>
+                            <div class="architecture-flow">
+                                <div class="flow-item">ERP</div>
+                                <div class="flow-arrow">→</div>
+                                <div class="flow-item">Business Warehouse</div>
+                                <div class="flow-arrow">→</div>
+                                <div class="flow-item">Business Intelligence</div>
+                            </div>
+                        </div>
+                        <div style="margin: 20px 0;">
+                            <h5>✅ Con HANA Analytics:</h5>
+                            <div class="architecture-flow">
+                                <div class="flow-item">ERP con HANA</div>
+                                <div class="flow-arrow">→</div>
+                                <div class="flow-item">Directamente a BI</div>
+                            </div>
+                            <p style="text-align: center; color: #27ae60; font-weight: bold; margin-top: 10px;">(Sin BW intermedio)</p>
+                        </div>
+                    </div>
+
+                    <div class="highlight">
+                        <h4>🔮 Capa de Virtualización</h4>
+                        <p>Los datos <strong>no se almacenan físicamente duplicados</strong>, sino que se reorganizan virtualmente "al vuelo" desde la estructura original, aprovechando el procesamiento en memoria y paralelo de HANA.</p>
+                    </div>
+
+                    <div class="advantages">
+                        <h4>✅ Beneficios Clave</h4>
+                        <ul>
+                            <li><strong>Tiempo Real:</strong> Acceso directo a datos operacionales</li>
+                            <li><strong>Eliminación de Capas:</strong> Sin necesidad de BW intermedio</li>
+                            <li><strong>Eficiencia:</strong> Procesamiento directo en la fuente</li>
+                            <li><strong>Flexibilidad:</strong> Modelos de datos dinámicos</li>
+                        </ul>
+                    </div>
+                </section>
+
+                <section id="warehouse" class="section">
+                    <h2>🏢 SAP HANA como Business Warehouse</h2>
+                    
+                    <div class="concept-card">
+                        <h3>📈 Concepto</h3>
+                        <p>Utiliza HANA junto con un sistema de Business Warehouse para <strong>acelerar increíblemente la generación de informes</strong> mediante réplica de datos.</p>
+                    </div>
+
+                    <div class="advantages">
+                        <h4>✅ Ventajas Principales</h4>
+                        <ul>
+                            <li><strong>Replicación en tiempo real:</strong> vs. BW tradicional cada 24h</li>
+                            <li><strong>Velocidad HANA:</strong> Aprovechamiento del procesamiento en memoria</li>
+                            <li><strong>Técnica "push down":</strong> Optimización de operaciones en base de datos</li>
+                            <li><strong>Escalabilidad:</strong> Manejo de grandes volúmenes de datos</li>
+                        </ul>
+                    </div>
+
+                    <div class="highlight">
+                        <h4>🚀 Evolución Tecnológica</h4>
+                        <p>Los nuevos módulos BWI de SAP (<strong>S/4HANA</strong>, <strong>BW for HANA</strong>) vienen diseñados específicamente para trabajar con HANA, maximizando la eficiencia y aprovechando todas las capacidades de la plataforma.</p>
+                    </div>
+
+                    <div class="comparison">
+                        <div class="comparison-item" style="background: #ffebee;">
+                            <h4>🐌 BW Tradicional</h4>
+                            <p>• Actualización cada 24h</p>
+                            <p>• Procesamiento batch</p>
+                            <p>• Limitaciones de rendimiento</p>
+                        </div>
+                        <div class="comparison-item" style="background: #e8f5e8;">
+                            <h4>⚡ BW con HANA</h4>
+                            <p>• Tiempo real</p>
+                            <p>• Procesamiento en memoria</p>
+                            <p>• Rendimiento optimizado</p>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="apps" class="section">
+                    <h2>📱 HANA Apps</h2>
+                    
+                    <div class="concept-card">
+                        <h3>🔄 Revolución en el Desarrollo</h3>
+                        <p>La llegada de HANA ha revolucionado el desarrollo de aplicaciones, cambiando la <strong>filosofía tradicional de procesamiento</strong>.</p>
+                    </div>
+
+                    <div class="diagram">
+                        <h4>🎯 Cambio de Paradigma</h4>
+                        <div class="comparison">
+                            <div class="comparison-item" style="background: #ffebee;">
+                                <h4>❌ Método Tradicional</h4>
+                                <p>1. Extraer datos de BD</p>
+                                <p>2. Procesar en servidor aplicaciones</p>
+                                <p>3. Devolver/guardar resultados</p>
+                            </div>
+                            <div class="comparison-item" style="background: #e8f5e8;">
+                                <h4>✅ Con HANA (Push Down)</h4>
+                                <p>1. Procesar directamente en BD</p>
+                                <p>2. Servidor solo visualiza datos</p>
+                                <p>3. Mayor eficiencia y simplicidad</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="advantages">
+                        <h4>🚀 Beneficios del Push Down</h4>
+                        <ul>
+                            <li><strong>Para desarrolladores:</strong> 2 líneas de código SQL vs. decenas de líneas en servidor</li>
+                            <li><strong>Mantenimiento:</strong> Código más simple y fácil de revisar</li>
+                            <li><strong>Acceso universal:</strong> Desde navegador web, aplicaciones móviles, etc.</li>
+                            <li><strong>Performance:</strong> Procesamiento optimizado en memoria</li>
+                        </ul>
+                    </div>
+
+                    <div class="concept-card">
+                        <h3>📊 Formatos de Intercambio de Datos</h3>
+                        <div class="comparison">
+                            <div class="comparison-item" style="background: #fff3e0; border: 2px solid #ff9800;">
+                                <h4>XML (Tradicional)</h4>
+                                <div class="code-block">
 &lt;entrada&gt;valor&lt;/entrada&gt;
 &lt;nombre&gt;valor&lt;/nombre&gt;
-                    </div>
-                </div>
-                <div class="comparison-item json-format">
-                    <h4>JSON (Actual)</h4>
-                    <div class="code-block">
+                                </div>
+                            </div>
+                            <div class="comparison-item" style="background: #e8f5e8; border: 2px solid #4caf50;">
+                                <h4>JSON (Actual)</h4>
+                                <div class="code-block">
 {
   "entrada": "valor",
   "nombre": "valor"
 }
+                                </div>
+                            </div>
+                        </div>
+                        <p style="text-align: center; font-weight: bold; color: #27ae60; margin-top: 15px;">
+                            <strong>Ventaja JSON:</strong> Menos caracteres = transferencias más rápidas, especialmente importante con grandes volúmenes de datos empresariales.
+                        </p>
                     </div>
-                </div>
-            </div>
-            
-            <p><strong>Ventaja JSON:</strong> Menos caracteres = transferencias más rápidas, especialmente importante con grandes volúmenes de datos empresariales.</p>
+                </section>
+
+                <section id="suite" class="section">
+                    <h2>💼 SAP HANA Business Suite</h2>
+                    
+                    <div class="concept-card">
+                        <h3>🏗️ Arquitectura Integral</h3>
+                        <p>Utilización de un sistema SAP completo sobre base de datos HANA con <strong>filosofía de tres capas optimizada</strong>.</p>
+                    </div>
+
+                    <div class="diagram">
+                        <h4>🔧 Arquitectura de 3 Capas</h4>
+                        <div style="display: flex; flex-direction: column; align-items: center; gap: 15px;">
+                            <div class="flow-item" style="background: linear-gradient(135deg, #3498db, #2980b9);">Capa de Presentación</div>
+                            <div style="color: #667eea; font-size: 1.5em; font-weight: bold;">↕️</div>
+                            <div class="flow-item" style="background: linear-gradient(135deg, #e74c3c, #c0392b);">Servidor de Aplicaciones</div>
+                            <div style="color: #667eea; font-size: 1.5em; font-weight: bold;">↕️</div>
+                            <div class="flow-item" style="background: linear-gradient(135deg, #f39c12, #e67e22);">Base de Datos HANA</div>
+                        </div>
+                        <div style="margin-top: 20px; text-align: left;">
+                            <p><strong>• Capa de Presentación:</strong> Cliente - Interfaz de Usuario</p>
+                            <p><strong>• Servidor de Aplicaciones:</strong> Lógica de negocio</p>
+                            <p><strong>• Base de Datos HANA:</strong> Almacenamiento + Procesamiento</p>
+                        </div>
+                    </div>
+
+                    <div class="highlight">
+                        <h4>🔄 Cambio Fundamental</h4>
+                        <p>El peso del procesamiento se traslada del <strong>servidor de aplicaciones</strong> a la <strong>base de datos HANA</strong>, aprovechando su capacidad de procesamiento en memoria.</p>
+                    </div>
+
+                    <div class="key-points">
+                        <h4>📋 Ejemplos de Implementación</h4>
+                        <ul>
+                            <li><strong>S/4HANA:</strong> Suite empresarial completa nativa en HANA</li>
+                            <li><strong>Business Suite versión 7.4+:</strong> Versiones optimizadas para HANA</li>
+                            <li><strong>Sistemas híbridos:</strong> Migración progresiva a HANA</li>
+                        </ul>
+                    </div>
+                </section>
+
+                <section id="cloud" class="section">
+                    <h2>☁️ SAP HANA: Cloud vs On-Premise</h2>
+                    
+                    <div class="concept-card">
+                        <h3>🤔 Decisión Estratégica</h3>
+                        <p>La elección entre Cloud y On-Premise es una de las decisiones más importantes en la implementación de SAP HANA, cada una con ventajas y desventajas específicas.</p>
+                    </div>
+
+                    <div class="comparison">
+                        <div class="advantages">
+                            <h4>🏢 On-Premise - Ventajas</h4>
+                            <ul>
+                                <li>Control completo sobre mantenimiento y actualizaciones</li>
+                                <li>Posibilidad de afinar el rendimiento según necesidades</li>
+                                <li>Control total sobre el ciclo de vida del software</li>
+                                <li>Cumplimiento de normativas específicas</li>
+                            </ul>
+                        </div>
+                        <div class="disadvantages">
+                            <h4>🏢 On-Premise - Desventajas</h4>
+                            <ul>
+                                <li>Inversión significativa en hardware y licencias</li>
+                                <li>Necesidad de personal técnico especializado</li>
+                                <li>Costes continuos de infraestructura y mantenimiento</li>
+                                <li>Responsabilidad completa de gestión</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="comparison">
+                        <div class="advantages">
+                            <h4>☁️ Cloud - Ventajas</h4>
+                            <ul>
+                                <li>Sin inversión inicial en hardware ni licencias</li>
+                                <li>Escalabilidad flexible (pagar solo lo que se usa)</li>
+                                <li>Sin necesidad de equipo de operaciones propio</li>
+                                <li>Actualizaciones automáticas cada 2 semanas</li>
+                            </ul>
+                        </div>
+                        <div class="disadvantages">
+                            <h4>☁️ Cloud - Desventajas</h4>
+                            <ul>
+                                <li>Sin control sobre actualizaciones (puede romper aplicaciones críticas)</li>
+                                <li>Dependencia total del proveedor</li>
+                                <li>Menos control sobre el rendimiento</li>
+                                <li>Posibles limitaciones de personalización</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="neutral">
+                        <h4>🔄 Solución Híbrida - Lo Mejor de Ambos Mundos</h4>
+                        <ul>
+                            <li><strong>On-Premise:</strong> Para operaciones críticas que requieren control total</li>
+                            <li><strong>Cloud:</strong> Para desarrollo y aplicaciones con últimas novedades</li>
+                            <li><strong>Beneficio:</strong> Optimización de costes manteniendo control sobre lo esencial</li>
+                            <li><strong>Flexibilidad:</strong> Adaptación según necesidades específicas</li>
+                        </ul>
+                    </div>
+
+                    <div class="highlight">
+                        <h4>💡 Recomendación</h4>
+                        <p>La decisión debe basarse en factores como el nivel de control requerido, presupuesto disponible, capacidades internas, requisitos de cumplimiento y estrategia tecnológica a largo plazo.</p>
+                    </div>
+                </section>
+            </main>
         </div>
 
-        <div class="scenario">
-            <h2>6. 💼 SAP HANA Business Suite</h2>
-            
-            <p>Utilización de un sistema SAP completo sobre base de datos HANA con filosofía de tres capas optimizada.</p>
-            
-            <div class="diagram">
-                <h3>Arquitectura de 3 Capas:</h3>
-                <p><strong>Capa de Presentación</strong> (Cliente - UI)</p>
-                <p>↕️</p>
-                <p><strong>Servidor de Aplicaciones</strong> (Lógica de negocio)</p>
-                <p>↕️</p>
-                <p><strong>Base de Datos HANA</strong> (Almacenamiento + Procesamiento)</p>
-            </div>
-            
-            <div class="highlight">
-                <p><strong>Cambio Fundamental:</strong> El peso del procesamiento se traslada del servidor de aplicaciones a la base de datos HANA, aprovechando su capacidad de procesamiento en memoria.</p>
-            </div>
-            
-            <p><strong>Ejemplos:</strong> S/4HANA, Business Suite versión 7.4+</p>
-        </div>
-
-        <div class="scenario">
-            <h2>7. ☁️ SAP HANA: Cloud vs On-Premise</h2>
-            
-            <h3>🏢 On-Premise</h3>
-            <div class="advantages">
-                <h4>✅ Ventajas:</h4>
-                <ul>
-                    <li>Control completo sobre mantenimiento y actualizaciones</li>
-                    <li>Posibilidad de afinar el rendimiento según necesidades</li>
-                    <li>Control total sobre el ciclo de vida del software</li>
-                </ul>
-            </div>
-            
-            <div class="disadvantages">
-                <h4>❌ Desventajas:</h4>
-                <ul>
-                    <li>Inversión en hardware y licencias</li>
-                    <li>Necesidad de personal técnico especializado</li>
-                    <li>Costes de infraestructura y mantenimiento</li>
-                </ul>
-            </div>
-            
-            <h3>☁️ Cloud</h3>
-            <div class="advantages">
-                <h4>✅ Ventajas:</h4>
-                <ul>
-                    <li>Sin inversión en hardware ni licencias</li>
-                    <li>Escalabilidad flexible (pagar solo lo que se usa)</li>
-                    <li>Sin necesidad de equipo de operaciones propio</li>
-                    <li>Actualizaciones automáticas cada 2 semanas</li>
-                </ul>
-            </div>
-            
-            <div class="disadvantages">
-                <h4>❌ Desventajas:</h4>
-                <ul>
-                    <li>Sin control sobre actualizaciones (puede romper aplicaciones críticas)</li>
-                    <li>Dependencia del proveedor</li>
-                    <li>Menos control sobre el rendimiento</li>
-                </ul>
-            </div>
-            
-            <h3>🔄 Solución Híbrida</h3>
-            <div class="neutral">
-                <p><strong>Lo mejor de ambos mundos:</strong></p>
-                <ul>
-                    <li><strong>On-Premise:</strong> Para operaciones críticas que requieren control total</li>
-                    <li><strong>Cloud:</strong> Para desarrollo y aplicaciones con últimas novedades</li>
-                </ul>
-                <p>Permite optimizar costes manteniendo control sobre lo esencial.</p>
-            </div>
-        </div>
-        
-        <div style="text-align: center; margin-top: 40px; padding: 20px; background: #f8f9fa; border-radius: 10px;">
-            <h3>🎯 Conclusión</h3>
-            <p>Los escenarios de implementación de SAP HANA ofrecen flexibilidad para adaptarse a diferentes necesidades empresariales, desde acelerar sistemas existentes hasta crear nuevas plataformas nativas en la nube.</p>
+        <div style="text-align: center; margin-top: 40px; padding: 30px; background: rgba(255, 255, 255, 0.95); border-radius: 20px; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);">
+            <h3 style="color: #2c3e50; margin-bottom: 15px;">🎯 Conclusión</h3>
+            <p style="color: #555; font-size: 1.1em; line-height: 1.6;">Los escenarios de implementación de SAP HANA ofrecen <strong>flexibilidad total</strong> para adaptarse a diferentes necesidades empresariales, desde acelerar sistemas existentes hasta crear nuevas plataformas nativas en la nube.</p>
         </div>
     </div>
+
+    <script>
+        function showSection(sectionId) {
+            // Ocultar todas las secciones
+            const sections = document.querySelectorAll('.section');
+            sections.forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            // Mostrar la sección seleccionada
+            document.getElementById(sectionId).classList.add('active');
+            
+            // Actualizar navegación
+            const navItems = document.querySelectorAll('.nav-item');
+            navItems.forEach(item => {
+                item.classList.remove('active');
+            });
+            
+            // Marcar el elemento activo
+            event.target.classList.add('active');
+            
+            // Scroll al inicio del contenido
+            document.querySelector('.content').scrollTop = 0;
+        }
+
+        // Animación de entrada
+        document.addEventListener('DOMContentLoaded', function() {
+            const cards = document.querySelectorAll('.concept-card');
+            cards.forEach((card, index) => {
+                setTimeout(() => {
+                    card.style.opacity = '0';
+                    card.style.transform = 'translateY(20px)';
+                    card.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+                    
+                    setTimeout(() => {
+                        card.style.opacity = '1';
+                        card.style.transform = 'translateY(0)';
+                    }, 100);
+                }, index * 100);
+            });
+        });
+    </script>
 </body>
 </html>
