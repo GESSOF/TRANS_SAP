@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Curso SAP HANA - Datos vs Información</title>
+    <title>Curso SAP HANA - Introducción al Modelado de Datos</title>
     <style>
         * {
             margin: 0;
@@ -82,7 +82,6 @@
             cursor: pointer;
             transition: all 0.3s ease;
             border-left: 4px solid transparent;
-            font-size: 0.9em;
         }
 
         .nav-item:hover {
@@ -96,19 +95,6 @@
             background: linear-gradient(45deg, #667eea, #764ba2);
             color: white;
             border-left-color: #fff;
-        }
-
-        .mobile-menu-toggle {
-            display: none;
-            background: rgba(255, 255, 255, 0.95);
-            border: none;
-            padding: 15px;
-            border-radius: 15px;
-            margin-bottom: 20px;
-            font-size: 1.2em;
-            cursor: pointer;
-            width: 100%;
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
         }
 
         .content {
@@ -168,118 +154,189 @@
             margin-bottom: 15px;
         }
 
-        .concept-card ul {
-            margin-left: 20px;
-            margin-top: 10px;
-        }
-
-        .concept-card li {
-            margin: 8px 0;
-            color: #555;
-        }
-
-        .definition-box {
-            background: linear-gradient(135deg, #fff3cd, #ffeaa7);
-            border-radius: 15px;
-            padding: 25px;
-            margin: 20px 0;
-            border-left: 5px solid #f39c12;
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
-        }
-
-        .definition-box h3 {
-            color: #856404;
-            margin-bottom: 15px;
-            font-size: 1.3em;
-        }
-
-        .definition-box p {
-            color: #856404;
-            line-height: 1.8;
-            margin-bottom: 10px;
-        }
-
-        .example-box {
-            background: linear-gradient(135deg, #e8f5e8, #d4edda);
-            border-radius: 15px;
-            padding: 25px;
-            margin: 20px 0;
-            border-left: 5px solid #27ae60;
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
-        }
-
-        .example-box h3 {
-            color: #155724;
-            margin-bottom: 15px;
-            font-size: 1.3em;
-        }
-
-        .example-box p {
-            color: #155724;
-            line-height: 1.8;
-            margin-bottom: 10px;
-        }
-
-        .example-box ul {
-            margin-left: 20px;
-            margin-top: 10px;
-        }
-
-        .example-box li {
-            margin: 8px 0;
-            color: #155724;
-        }
-
-        .data-types-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 20px 0;
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
-            border-radius: 15px;
-            overflow: hidden;
+        .diagram {
             background: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin: 25px 0;
+            text-align: center;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
         }
 
-        .data-types-table th,
-        .data-types-table td {
-            padding: 15px;
-            text-align: left;
-            border-bottom: 1px solid #e9ecef;
+        .process-flow {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            margin: 30px 0;
+            flex-wrap: wrap;
         }
 
-        .data-types-table th {
-            background: linear-gradient(45deg, #667eea, #764ba2);
+        .process-step {
+            width: 150px;
+            height: 150px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
             color: white;
             font-weight: bold;
-            font-size: 0.9em;
+            margin: 10px;
+            position: relative;
+            transition: transform 0.3s ease;
         }
 
-        .data-types-table tr:nth-child(even) {
-            background-color: #f8f9fa;
+        .process-step:hover {
+            transform: scale(1.1);
         }
 
-        .data-types-table tr:hover {
-            background-color: #e3f2fd;
-            transition: background-color 0.3s ease;
+        .process-step .number {
+            font-size: 2.5em;
+            margin-bottom: 10px;
         }
 
-        .important-note {
-            background: linear-gradient(135deg, #ffebee, #ffcdd2);
+        .arrow {
+            width: 50px;
+            height: 3px;
+            background: #667eea;
+            position: relative;
+            margin: 0 10px;
+        }
+
+        .arrow::after {
+            content: '';
+            position: absolute;
+            right: -10px;
+            top: -7px;
+            width: 0;
+            height: 0;
+            border-left: 15px solid #667eea;
+            border-top: 10px solid transparent;
+            border-bottom: 10px solid transparent;
+        }
+
+        .entity-example {
+            display: inline-block;
+            padding: 15px 30px;
+            border: 3px solid #667eea;
+            border-radius: 10px;
+            margin: 10px;
+            font-weight: bold;
+            color: #667eea;
+            background: white;
+            transition: all 0.3s ease;
+        }
+
+        .entity-example:hover {
+            background: #667eea;
+            color: white;
+        }
+
+        .attribute-example {
+            display: inline-block;
+            padding: 10px 25px;
+            border: 2px solid #f39c12;
+            border-radius: 25px;
+            margin: 10px;
+            color: #f39c12;
+            background: white;
+            transition: all 0.3s ease;
+        }
+
+        .attribute-example:hover {
+            background: #f39c12;
+            color: white;
+        }
+
+        .relation-example {
+            display: inline-block;
+            padding: 10px 25px;
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            color: white;
+            transform: rotate(45deg);
+            margin: 20px;
+            border-radius: 5px;
+            transition: transform 0.3s ease;
+        }
+
+        .relation-example:hover {
+            transform: rotate(45deg) scale(1.1);
+        }
+
+        .relation-example span {
+            display: inline-block;
+            transform: rotate(-45deg);
+        }
+
+        .key-points {
+            background: linear-gradient(135deg, #fff3cd, #ffeaa7);
             border-radius: 15px;
             padding: 20px;
             margin: 20px 0;
-            border-left: 5px solid #e74c3c;
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+            border-left: 5px solid #f39c12;
         }
 
-        .important-note strong {
-            color: #c62828;
+        .key-points h4 {
+            color: #856404;
+            margin-bottom: 10px;
         }
 
-        .important-note p {
-            color: #c62828;
-            line-height: 1.8;
-            margin-top: 10px;
+        .key-points ul {
+            padding-left: 20px;
+        }
+
+        .key-points li {
+            margin: 8px 0;
+            color: #856404;
+        }
+
+        .timeline {
+            position: relative;
+            margin: 30px 0;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 50%;
+            top: 0;
+            bottom: 0;
+            width: 3px;
+            background: linear-gradient(to bottom, #667eea, #764ba2);
+            transform: translateX(-50%);
+        }
+
+        .timeline-item {
+            position: relative;
+            margin: 30px 0;
+            padding: 0 50px;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            width: 15px;
+            height: 15px;
+            background: #667eea;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            border: 3px solid white;
+            box-shadow: 0 0 0 3px #667eea;
+        }
+
+        .timeline-content {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            width: 45%;
+        }
+
+        .timeline-item:nth-child(odd) .timeline-content {
+            margin-left: auto;
         }
 
         .stats-grid {
@@ -295,17 +352,33 @@
             padding: 25px;
             border-radius: 15px;
             text-align: center;
-            transition: transform 0.3s ease;
-        }
-
-        .stat-card:hover {
-            transform: scale(1.05);
         }
 
         .stat-number {
             font-size: 2.5em;
             font-weight: bold;
             margin-bottom: 10px;
+        }
+
+        .quote-box {
+            background: linear-gradient(135deg, #2c3e50, #34495e);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            margin: 20px 0;
+            font-style: italic;
+            font-size: 1.2em;
+            text-align: center;
+            position: relative;
+        }
+
+        .quote-box::before {
+            content: '"';
+            font-size: 4em;
+            position: absolute;
+            top: -10px;
+            left: 20px;
+            opacity: 0.3;
         }
 
         .progress-bar {
@@ -322,120 +395,40 @@
             transition: width 0.5s ease;
         }
 
-        .quality-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
-            margin: 20px 0;
-        }
-
-        .quality-card {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
-            padding: 20px;
-            border-radius: 15px;
-            text-align: center;
-            transition: transform 0.3s ease;
-        }
-
-        .quality-card:hover {
-            transform: scale(1.05);
-        }
-
-        .quality-card h4 {
-            font-size: 1.2em;
-            margin-bottom: 10px;
-        }
-
         @media (max-width: 768px) {
-            .container {
-                padding: 10px;
-            }
-
-            .header {
-                padding: 20px;
-                margin-bottom: 20px;
-            }
-
-            .header h1 {
-                font-size: 1.8em;
-            }
-
             .dashboard {
                 grid-template-columns: 1fr;
-                gap: 20px;
             }
             
             .sidebar {
                 position: static;
-                padding: 20px;
-                order: 2;
             }
-
-            .mobile-menu-toggle {
-                display: block;
-                order: 1;
-            }
-
-            .sidebar.mobile-hidden {
-                display: none;
-            }
-
-            .content {
-                padding: 20px;
-                order: 3;
-            }
-
-            .section h2 {
-                font-size: 1.5em;
-            }
-
-            .concept-card, .definition-box, .example-box {
-                padding: 20px;
-                margin: 15px 0;
-            }
-
-            .data-types-table {
-                font-size: 0.85em;
-            }
-
-            .data-types-table th,
-            .data-types-table td {
-                padding: 10px 8px;
-            }
-
-            .stats-grid, .quality-grid {
-                grid-template-columns: 1fr;
-                gap: 15px;
-            }
-
-            .nav-item {
-                padding: 15px 20px;
-                font-size: 1em;
-                text-align: center;
-            }
-        }
-
-        @media (max-width: 480px) {
+            
             .header h1 {
-                font-size: 1.5em;
+                font-size: 2em;
             }
-
-            .content {
-                padding: 15px;
+            
+            .timeline::before {
+                left: 20px;
             }
-
-            .concept-card, .definition-box, .example-box {
-                padding: 15px;
+            
+            .timeline-item {
+                padding-left: 50px;
+                padding-right: 0;
             }
-
-            .data-types-table {
-                font-size: 0.75em;
+            
+            .timeline-content {
+                width: 100%;
+                margin-left: 0 !important;
             }
-
-            .data-types-table th,
-            .data-types-table td {
-                padding: 8px 5px;
+            
+            .process-flow {
+                flex-direction: column;
+            }
+            
+            .arrow {
+                transform: rotate(90deg);
+                margin: 20px 0;
             }
         }
     </style>
@@ -444,29 +437,25 @@
     <div class="container">
         <header class="header">
             <img src="https://gessof.cl/wp-content/uploads/2025/05/Logo-minimalista-con-simbolismo-global.png" alt="Gessof Logo" style="height: 80px; margin-bottom: 20px; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.1));">
-            <h1>Curso SAP HANA</h1>
-            <h2 style="color: #667eea; font-size: 1.5em; margin: 10px 0; font-weight: 600;">VIDEO 008</h2>
-            <p>Datos vs Información - Modelado en Hana</p>
+            <h1>Curso SAP HANA - Modelado de Datos</h1>
+            <h2 style="color: #667eea; font-size: 1.5em; margin: 10px 0; font-weight: 600;">Clase 008</h2>
+            <p>Introduccion al Modelado de Datos - Unidad 2</p>
             <div class="progress-bar">
-                <div class="progress" style="width: 100%"></div>
+                <div class="progress" style="width: 20%"></div>
             </div>
         </header>
 
         <div class="dashboard">
-            <button class="mobile-menu-toggle" onclick="toggleMobileMenu()">
-                📋 Menú de Contenidos
-            </button>
-
-            <nav class="sidebar" id="sidebar">
-                <h3>Contenidos del Módulo</h3>
+            <nav class="sidebar">
+                <h3>Contenidos del Modulo</h3>
                 <div class="nav-item active" onclick="showSection('overview')">📋 Resumen General</div>
-                <div class="nav-item" onclick="showSection('introduction')">🚀 Introducción</div>
-                <div class="nav-item" onclick="showSection('data')">📊 Los Datos</div>
-                <div class="nav-item" onclick="showSection('data-types')">🔧 Tipos de Datos</div>
-                <div class="nav-item" onclick="showSection('information')">💡 La Información</div>
-                <div class="nav-item" onclick="showSection('qualities')">⭐ Cualidades</div>
-                <div class="nav-item" onclick="showSection('performance')">🚀 Rendimiento</div>
-                <div class="nav-item" onclick="showSection('conclusions')">🎯 Conclusiones</div>
+                <div class="nav-item" onclick="showSection('intro')">🎯 Introducción al Módulo</div>
+                <div class="nav-item" onclick="showSection('context')">🔍 Contexto y Metodología</div>
+                <div class="nav-item" onclick="showSection('entity-model')">📊 Modelo Entidad-Relación</div>
+                <div class="nav-item" onclick="showSection('divide-conquer')">⚔️ Divide y Vencerás</div>
+                <div class="nav-item" onclick="showSection('diagram-elements')">🔷 Elementos del Diagrama</div>
+                <div class="nav-item" onclick="showSection('transformation')">🔄 Proceso de Transformación</div>
+                <div class="nav-item" onclick="showSection('objectives')">🎯 Objetivos de la Unidad</div>
             </nav>
 
             <main class="content">
@@ -475,356 +464,438 @@
                     
                     <div class="stats-grid">
                         <div class="stat-card">
-                            <div class="stat-number">2</div>
-                            <div>Conceptos Principales</div>
+                            <div class="stat-number">3</div>
+                            <div>Etapas de Modelado</div>
                         </div>
                         <div class="stat-card">
-                            <div class="stat-number">6</div>
-                            <div>Tipos de Datos</div>
+                            <div class="stat-number">15</div>
+                            <div>Minutos de Duración</div>
                         </div>
                         <div class="stat-card">
-                            <div class="stat-number">5</div>
-                            <div>Cualidades de Información</div>
+                            <div class="stat-number">100%</div>
+                            <div>Enfoque Práctico</div>
                         </div>
                     </div>
 
                     <div class="concept-card">
-                        <h3>🎯 Objetivos del Módulo</h3>
-                        <p>En esta clase analizaremos la diferencia fundamental entre <strong>datos</strong> e <strong>información</strong>, dos conceptos que frecuentemente se confunden pero que tienen características y propósitos distintos en el ámbito de las bases de datos y el análisis de información.</p>
+                        <h3>🚀 Transición de Teoría a Práctica</h3>
+                        <p>Después de completar la unidad teórica sobre Big Data y arquitectura HANA, iniciamos la fase práctica más importante del curso: <strong>el modelado de datos</strong>.</p>
                     </div>
 
-                    <div class="definition-box">
-                        <h3>🔑 Definición Clave</h3>
-                        <p><strong>Base de datos:</strong> No es más que un conjunto de datos que están almacenados para su uso en el futuro. El resultado del procesamiento de esos datos es la información.</p>
+                    <div class="quote-box">
+                        "En programación es importante conocer el lenguaje, pero es casi tan importante o más saber buscarse la vida y localizar información que no conoces"
                     </div>
 
-                    <div class="concept-card">
-                        <h3>📚 Contenido del Módulo</h3>
+                    <div class="key-points">
+                        <h4>📌 Lo que Aprenderás</h4>
                         <ul>
-                            <li><strong>Los Datos:</strong> Definición, características y tipos</li>
-                            <li><strong>La Información:</strong> Transformación y valor agregado</li>
-                            <li><strong>Cualidades:</strong> Precisión, exactitud, oportunidad, integridad y significatividad</li>
-                            <li><strong>Consideraciones de rendimiento</strong> en big data</li>
+                            <li>Fundamentos del Modelo Entidad-Relación</li>
+                            <li>Metodología "Divide y Vencerás" para modelado</li>
+                            <li>Proceso de transformación en 3 etapas</li>
+                            <li>Aplicación práctica directa al trabajo diario</li>
                         </ul>
                     </div>
                 </section>
 
-                <section id="introduction" class="section">
-                    <h2>🚀 Introducción</h2>
+                <section id="intro" class="section">
+                    <h2>🎯 Introducción al Módulo</h2>
                     
                     <div class="concept-card">
-                        <h3>🎯 Propósito del Módulo</h3>
-                        <p>En esta clase analizaremos la diferencia fundamental entre datos e información, dos conceptos que frecuentemente se confunden pero que tienen características y propósitos distintos en el ámbito de las bases de datos y el análisis de información.</p>
+                        <h3>📚 De la Teoría a la Práctica</h3>
+                        <p>Completada la primera unidad sobre teoría pura (arquitectura, ventajas, evoluciones), ahora comenzamos con el <strong>aspecto práctico fundamental</strong>: el modelado de datos.</p>
                     </div>
 
-                    <div class="definition-box">
-                        <h3>💡 Concepto Fundamental</h3>
-                        <p><strong>Base de datos:</strong> No es más que un conjunto de datos que están almacenados para su uso en el futuro. El resultado del procesamiento de esos datos es la información.</p>
-                    </div>
-
-                    <div class="concept-card">
-                        <h3>🔄 Proceso de Transformación</h3>
-                        <p>El objetivo principal de cualquier sistema de base de datos es transformar <strong>datos brutos</strong> en <strong>información útil</strong> que permita la toma de decisiones informadas.</p>
-                        
-                        <div style="display: flex; justify-content: space-around; align-items: center; margin: 20px 0; flex-wrap: wrap;">
-                            <div style="text-align: center; margin: 10px;">
-                                <div style="width: 100px; height: 100px; background: linear-gradient(135deg, #95a5a6, #7f8c8d); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; margin: 0 auto 10px;">📊</div>
-                                <p><strong>DATOS</strong><br>Elementos individuales</p>
+                    <div class="diagram">
+                        <h4>🎯 Por qué es Importante el Modelado</h4>
+                        <div class="stats-grid">
+                            <div class="stat-card">
+                                <div>💼</div>
+                                <div>Aplicable en trabajo diario</div>
                             </div>
-                            <div style="text-align: center; margin: 10px;">
-                                <div style="font-size: 2em; color: #667eea;">→</div>
-                                <p><strong>PROCESAMIENTO</strong></p>
+                            <div class="stat-card">
+                                <div>📖</div>
+                                <div>Va más allá de la teoría</div>
                             </div>
-                            <div style="text-align: center; margin: 10px;">
-                                <div style="width: 100px; height: 100px; background: linear-gradient(135deg, #27ae60, #2ecc71); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; margin: 0 auto 10px;">💡</div>
-                                <p><strong>INFORMACIÓN</strong><br>Conocimiento útil</p>
+                            <div class="stat-card">
+                                <div>🎓</div>
+                                <div>Esencial para certificación</div>
+                            </div>
+                            <div class="stat-card">
+                                <div>🛠�?/div>
+                                <div>Herramientas prácticas</div>
                             </div>
                         </div>
                     </div>
-                </section>
-
-                <section id="data" class="section">
-                    <h2>📊 Los Datos</h2>
-                    
-                    <div class="concept-card">
-                        <h3>🔍 ¿Qué son los datos?</h3>
-                        <p>Los datos son <strong>elementos individuales</strong> que por sí solos no constituyen información en el sentido útil de la palabra. No permiten la adopción de la decisión más conveniente, ya que no aportan los conocimientos necesarios para ello.</p>
-                        <p>Solo tras su <strong>adecuado procesamiento</strong> se proporciona el conocimiento adecuado para poder ser considerados como información.</p>
-                    </div>
-
-                    <div class="example-box">
-                        <h3>📝 Ejemplo Práctico</h3>
-                        <p>Si tenemos una tabla con los siguientes campos:</p>
-                        <ul>
-                            <li><strong>Nombre de una persona</strong></li>
-                            <li><strong>Apellido</strong></li>
-                            <li><strong>Número de teléfono</strong></li>
-                            <li><strong>Año de nacimiento</strong></li>
-                        </ul>
-                        <p>Cada uno de estos elementos por separado son <strong>datos</strong>. Un nombre por sí solo, un apellido por sí solo, no constituyen información útil.</p>
-                    </div>
 
                     <div class="concept-card">
-                        <h3>🔑 Características de los Datos</h3>
-                        <ul>
-                            <li><strong>Atomicidad:</strong> Son elementos indivisibles</li>
-                            <li><strong>Sin contexto:</strong> Por sí solos no tienen significado</li>
-                            <li><strong>Requieren procesamiento:</strong> Necesitan ser transformados</li>
-                            <li><strong>Materia prima:</strong> Base para generar información</li>
-                        </ul>
+                        <h3>🎯 Lo que Realmente Nos Interesa</h3>
+                        <p>El modelado de datos representa <strong>lo que realmente nos interesa del curso</strong>, porque proporciona las herramientas prácticas necesarias para el desarrollo profesional.</p>
                     </div>
                 </section>
 
-                <section id="data-types" class="section">
-                    <h2>🔧 Tipos de Datos</h2>
+                <section id="context" class="section">
+                    <h2>🔍 Contexto y Metodología</h2>
                     
                     <div class="concept-card">
-                        <h3>📋 Clasificación de Datos</h3>
-                        <p>Los datos se pueden catalogar en diferentes tipos, lo que <strong>limita qué valores pueden tomar</strong> y <strong>qué operaciones podemos realizar</strong> con ellos.</p>
+                        <h3>💡 Experiencia vs. Metodología</h3>
+                        <p><strong>Desarrollo Intuitivo:</strong> Muchos desarrolladores crean estructuras basándose en:</p>
+                        <ul style="margin-left: 20px; margin-top: 10px;">
+                            <li><strong>Experiencia previa:</strong> "Ya sé cómo van colocados estos datos"</li>
+                            <li><strong>Intuición:</strong> Identificación de patrones recursivos</li>
+                            <li><strong>Conocimiento empírico:</strong> Estructuras sólidas y coherentes</li>
+                        </ul>
                     </div>
 
-                    <table class="data-types-table">
-                        <thead>
-                            <tr>
-                                <th>Tipo de Dato</th>
-                                <th>Descripción</th>
-                                <th>Ejemplos</th>
-                                <th>Consideraciones</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td><strong>Carácter</strong></td>
-                                <td>Dígitos individuales (números, letras u otros caracteres)</td>
-                                <td>DNI, número de teléfono</td>
-                                <td>Los números no sirven para operaciones matemáticas</td>
-                            </tr>
-                            <tr>
-                                <td><strong>Cadenas (String)</strong></td>
-                                <td>Unión de múltiples caracteres</td>
-                                <td>Nombres, descripciones</td>
-                                <td>Tipo complejo formado por tipos carácter</td>
-                            </tr>
-                            <tr>
-                                <td><strong>Numérico</strong></td>
-                                <td>Números que permiten operaciones matemáticas</td>
-                                <td>Enteros: 1, 2, 3<br>Decimales: 1.5, 2.7</td>
-                                <td>Diferentes rangos según el subtipo</td>
-                            </tr>
-                            <tr>
-                                <td><strong>Booleano</strong></td>
-                                <td>Valores lógicos</td>
-                                <td>true/false, 1/0, verdadero/falso</td>
-                                <td>Expresión más básica de la informática</td>
-                            </tr>
-                            <tr>
-                                <td><strong>Fecha</strong></td>
-                                <td>Almacenamiento de fechas y tiempos</td>
-                                <td>01/01/2024, 15:30:00</td>
-                                <td>Permite operaciones temporales</td>
-                            </tr>
-                            <tr>
-                                <td><strong>Binario</strong></td>
-                                <td>Información en código binario</td>
-                                <td>Vídeos, audios, documentos</td>
-                                <td>Alto consumo de recursos</td>
-                            </tr>
-                        </tbody>
-                    </table>
+                    <div class="key-points">
+                        <h4>⚠️ Limitaciones del Enfoque Intuitivo</h4>
+                        <ul>
+                            <li><strong>Casos complejos:</strong> No siempre son sencillos de visualizar</li>
+                            <li><strong>Proyectos grandes:</strong> Necesidad de metodología para evitar omisiones</li>
+                            <li><strong>Riesgo de errores:</strong> Descuidos por falta de sistematización</li>
+                            <li><strong>Calidad:</strong> Deseo de "hacer las cosas bien"</li>
+                        </ul>
+                    </div>
 
-                    <div class="important-note">
-                        <strong>Nota Importante:</strong>
-                        <p>La elección correcta del tipo de dato es crucial para optimizar el uso de memoria y mejorar el rendimiento. En big data, cada optimización mínima puede traducirse en grandes diferencias de tiempo de procesamiento.</p>
+                    <div class="diagram">
+                        <h4>📚 Alcance del Curso</h4>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin: 20px 0;">
+                            <div class="concept-card">
+                                <h3>�?Lo que NO haremos</h3>
+                                <ul style="margin-left: 20px;">
+                                    <li>Profundización exhaustiva en HANA SQL</li>
+                                    <li>Memorización completa de opciones</li>
+                                    <li>Casos extremadamente específicos</li>
+                                </ul>
+                            </div>
+                            <div class="concept-card">
+                                <h3>�?Filosofía de Aprendizaje</h3>
+                                <ul style="margin-left: 20px;">
+                                    <li>Acceso universal a información</li>
+                                    <li>Comunidad activa de soporte</li>
+                                    <li>Documentación en línea actualizada</li>
+                                    <li>Orientación práctica</li>
+                                </ul>
+                            </div>
+                        </div>
                     </div>
                 </section>
 
-                <section id="information" class="section">
-                    <h2>💡 La Información</h2>
+                <section id="entity-model" class="section">
+                    <h2>📊 Modelo Entidad-Relación</h2>
                     
                     <div class="concept-card">
-                        <h3>🎯 ¿Qué es la información?</h3>
-                        <p>Para que una información sea útil, es necesario que facilite al responsable de la toma de decisiones una <strong>idea clara y completa de la situación</strong>, de forma que le aporte una base sobre la que decidir.</p>
+                        <h3>📐 Definición</h3>
+                        <p><strong>Modelo Entidad-Relación:</strong> Representación esquemática y gráfica de la información necesaria para crear una base de datos.</p>
                     </div>
 
-                    <div class="definition-box">
-                        <h3>⚠️ Concepto Clave</h3>
-                        <p>La información no es simplemente datos procesados. Podemos procesar los datos de mil maneras y que aún así no sea información, dado que no nos aporta nada útil para la toma de decisiones.</p>
+                    <div class="diagram">
+                        <h4>🧩 Componentes del Diagrama</h4>
+                        <p>A partir de los requerimientos del sistema, el diagrama representa:</p>
+                        <div style="margin: 30px 0;">
+                            <div class="entity-example">ENTIDADES</div>
+                            <p style="margin: 10px 0;">Objetos principales del sistema</p>
+                            
+                            <div class="attribute-example">Atributos</div>
+                            <p style="margin: 10px 0;">Características importantes de cada entidad</p>
+                            
+                            <div class="relation-example"><span>Relaciones</span></div>
+                            <p style="margin: 10px 0;">Conexiones entre las entidades</p>
+                        </div>
                     </div>
 
-                    <div class="example-box">
-                        <h3>🔄 Transformación de Datos a Información</h3>
-                        <p>Si realizamos una consulta y extraemos datos de múltiples tablas:</p>
+                    <div class="key-points">
+                        <h4>⚠️ Limitaciones Importantes</h4>
                         <ul>
-                            <li><strong>Nombre + Apellido</strong></li>
-                            <li><strong>Edad calculada</strong></li>
-                            <li><strong>Dirección</strong></li>
-                            <li><strong>Sueldo</strong></li>
-                        </ul>
-                        <p>Y los presentamos de forma que nos permitan conocer que <strong>"una persona de X edad que vive en tal sitio tiene un sueldo de tal cantidad"</strong>, entonces hemos convertido los datos en <strong>información</strong>.</p>
-                    </div>
-
-                    <div class="concept-card">
-                        <h3>🎯 Valor de la Información</h3>
-                        <p>La información tiene valor cuando:</p>
-                        <ul>
-                            <li><strong>Reduce la incertidumbre</strong> en la toma de decisiones</li>
-                            <li><strong>Proporciona contexto</strong> a los datos individuales</li>
-                            <li><strong>Permite acciones</strong> basadas en conocimiento</li>
-                            <li><strong>Mejora la comprensión</strong> de una situación</li>
+                            <li><strong>Característica importante:</strong> El modelo entidad-relación NO se puede implementar directamente sobre una base de datos</li>
+                            <li><strong>Necesidad de transformación:</strong> Es solo el primer paso que debe evolucionar hacia un modelo relacional implementable</li>
                         </ul>
                     </div>
                 </section>
 
-                <section id="qualities" class="section">
-                    <h2>⭐ Cualidades de una Buena Información</h2>
+                <section id="divide-conquer" class="section">
+                    <h2>⚔️ Proceso de Modelado: Divide y Vencerás</h2>
                     
-                    <div class="quality-grid">
-                        <div class="quality-card">
-                            <h4>🎯 Precisión</h4>
-                            <p>Adaptada al objetivo</p>
-                        </div>
-                        <div class="quality-card">
-                            <h4>✅ Exactitud</h4>
-                            <p>Información verificable</p>
-                        </div>
-                        <div class="quality-card">
-                            <h4>⏰ Oportunidad</h4>
-                            <p>En el momento correcto</p>
-                        </div>
-                        <div class="quality-card">
-                            <h4>🔗 Integridad</h4>
-                            <p>Información completa</p>
-                        </div>
-                        <div class="quality-card">
-                            <h4>💡 Significatividad</h4>
-                            <p>Clara y relevante</p>
-                        </div>
+                    <div class="quote-box">
+                        "Divide y vencerás es aplicable a casi cualquier problema en la vida"
                     </div>
 
                     <div class="concept-card">
-                        <h3>🎯 1. Precisión</h3>
-                        <p>La precisión depende del <strong>objetivo de la aplicación</strong>:</p>
-                        <ul>
-                            <li><strong>Programa de almacenamiento:</strong> Precisión útil con números enteros (20 muebles, 50 regletas)</li>
-                            <li><strong>Aplicación científica:</strong> Necesaria precisión mayor con muchos decimales (peso atómico)</li>
+                        <h3>🚫 Problema del Enfoque Global</h3>
+                        <ul style="margin-left: 20px;">
+                            <li><strong>Sobrecarga:</strong> Difícil controlar todos los aspectos simultáneamente</li>
+                            <li><strong>Complejidad:</strong> Problemas grandes son abrumadores</li>
+                            <li><strong>Ineficiencia:</strong> Falta de control sobre el proceso completo</li>
                         </ul>
                     </div>
 
                     <div class="concept-card">
-                        <h3>✅ 2. Exactitud</h3>
-                        <p>Si la información no es exacta, puede llevarnos a cometer errores. Es necesario <strong>cotejar y confirmar</strong> la información buscando fuentes que la verifiquen.</p>
+                        <h3>�?Ventajas de la División</h3>
+                        <ul style="margin-left: 20px;">
+                            <li><strong>Problemas específicos:</strong> Más concretos y manejables</li>
+                            <li><strong>Control gradual:</strong> Manejo de aspectos individuales</li>
+                            <li><strong>Resultados intermedios:</strong> Bases sólidas para etapas siguientes</li>
+                        </ul>
+                    </div>
+
+                    <div class="diagram">
+                        <h4>🔄 Las 3 Etapas del Modelado</h4>
+                        <div class="process-flow">
+                            <div class="process-step">
+                                <div class="number">1</div>
+                                <div>Modelado<br>Conceptual</div>
+                            </div>
+                            <div class="arrow"></div>
+                            <div class="process-step">
+                                <div class="number">2</div>
+                                <div>Modelado<br>Lógico</div>
+                            </div>
+                            <div class="arrow"></div>
+                            <div class="process-step">
+                                <div class="number">3</div>
+                                <div>Implementación<br>Física</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="timeline">
+                        <div class="timeline-item">
+                            <div class="timeline-content">
+                                <h4>📋 ETAPA 1: Modelado Conceptual</h4>
+                                <p><strong>Objetivo:</strong> Esquema de alto nivel</p>
+                                <p><strong>Proceso:</strong></p>
+                                <ul style="margin-left: 20px;">
+                                    <li>Análisis de requerimientos</li>
+                                    <li>Esquema gráfico sencillo</li>
+                                    <li>Relaciones básicas</li>
+                                </ul>
+                                <p><strong>Resultado:</strong> Vista muy genérica</p>
+                            </div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-content">
+                                <h4>🔧 ETAPA 2: Modelado Lógico</h4>
+                                <p><strong>Objetivo:</strong> Refinamiento del modelo</p>
+                                <p><strong>Proceso:</strong></p>
+                                <ul style="margin-left: 20px;">
+                                    <li>Transformación del modelo conceptual</li>
+                                    <li>Corrección de imperfecciones</li>
+                                    <li>Completar huecos</li>
+                                </ul>
+                                <p><strong>Resultado:</strong> Esquema implementable</p>
+                            </div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-content">
+                                <h4>💻 ETAPA 3: Implementación Física</h4>
+                                <p><strong>Objetivo:</strong> Creación real en BD</p>
+                                <p><strong>Proceso:</strong></p>
+                                <ul style="margin-left: 20px;">
+                                    <li>Aplicación de HANA SQL</li>
+                                    <li>Creación de tablas</li>
+                                    <li>Introducción de datos</li>
+                                </ul>
+                                <p><strong>Resultado:</strong> Base de datos funcional</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="diagram-elements" class="section">
+                    <h2>🔷 Elementos del Diagrama Entidad-Relación</h2>
+                    
+                    <div class="diagram">
+                        <h4>📊 Componentes Visuales</h4>
                         
-                        <div class="example-box">
-                            <h4>📍 Ejemplo: Código Postal en Supermercados</h4>
-                            <p>Cuando en un supermercado preguntan el código postal, es para realizar estudios de clientela. Esta información funciona siempre y cuando los clientes proporcionen datos correctos. Si mienten, la información resultante llevará a conclusiones erróneas.</p>
+                        <div class="concept-card">
+                            <h3>📦 Entidades (Cuadrados)</h3>
+                            <p><strong>Representación:</strong> Cuadrados o rectángulos<br>
+                            <strong>Equivalencia:</strong> Aproximadamente las tablas que crearemos</p>
+                            <div style="margin: 20px 0;">
+                                <div class="entity-example">Cliente</div>
+                                <div class="entity-example">Factura</div>
+                                <div class="entity-example">Producto</div>
+                                <div class="entity-example">Empleado</div>
+                                <div class="entity-example">Departamento</div>
+                            </div>
+                        </div>
+
+                        <div class="concept-card">
+                            <h3>�?Atributos (Óvalos)</h3>
+                            <p><strong>Representación:</strong> Óvalos conectados a entidades<br>
+                            <strong>Equivalencia:</strong> Campos/columnas de las tablas</p>
+                            <p><strong>Ejemplo - Entidad Factura:</strong></p>
+                            <div style="margin: 20px 0;">
+                                <div class="attribute-example">Número de factura</div>
+                                <div class="attribute-example">Pago</div>
+                                <div class="attribute-example">Importe</div>
+                                <div class="attribute-example">Envío</div>
+                            </div>
+                        </div>
+
+                        <div class="concept-card">
+                            <h3>💎 Relaciones (Rombos)</h3>
+                            <p><strong>Representación:</strong> Rombos conectando entidades<br>
+                            <strong>Función:</strong> Expresan conexiones entre entidades</p>
+                            <div style="margin: 20px 0;">
+                                <div class="relation-example"><span>Enviar</span></div>
+                                <div class="relation-example"><span>Solicita</span></div>
+                                <div class="relation-example"><span>Realiza</span></div>
+                                <div class="relation-example"><span>Pertenece</span></div>
+                            </div>
                         </div>
                     </div>
 
-                    <div class="concept-card">
-                        <h3>⏰ 3. Oportunidad</h3>
-                        <p>La información debe estar disponible en el <strong>momento y lugar indicado</strong> con suficiente calidad para resolver un problema.</p>
-                        
-                        <div class="example-box">
-                            <h4>👕 Ejemplo: Tienda de Ropa</h4>
-                            <p><strong>Análisis Humano:</strong> Un dependiente ve entrar a un joven con melena, pendientes, vaqueros, camiseta de grupo musical y cazadora de cuero. Procesa estos datos y los convierte en información para orientar al cliente hacia la sección juvenil.</p>
-                            <p><strong>Análisis Automatizado:</strong> El mismo proceso debe realizarse por ordenador mientras el cliente está en la tienda. Si la información se obtiene después de que el cliente se vaya, no sirve para nada.</p>
-                        </div>
-                    </div>
-
-                    <div class="concept-card">
-                        <h3>🔗 4. Integridad</h3>
-                        <p>La información debe ser lo más <strong>completa posible</strong>. Es una cuestión de contexto.</p>
-                        <p><strong>Ejemplo:</strong> Saber que un hombre se llama "Juan Pastor" no dice gran cosa. Saber que Juan Pastor vive en determinada ciudad, calle, tiene un sueldo estimado y ciertos hábitos de compra, nos da información mucho más completa para tomar decisiones adecuadas.</p>
-                    </div>
-
-                    <div class="concept-card">
-                        <h3>💡 5. Significatividad</h3>
-                        <p>Debe ser <strong>clara y relevante</strong>. El exceso de datos o datos irrelevantes también pueden ser un problema. La información procesada debe ser:</p>
+                    <div class="key-points">
+                        <h4>🔑 Elementos Especiales</h4>
                         <ul>
-                            <li><strong>Concreta</strong></li>
-                            <li><strong>Concisa</strong></li>
-                            <li><strong>Fácil de interpretar</strong></li>
-                            <li><strong>Aprovechable</strong></li>
-                        </ul>
-                    </div>
-
-                    <div class="important-note">
-                        <strong>Recordatorio:</strong>
-                        <p>La información es el resultado del procesamiento de los datos. Para que todas estas cualidades se cumplan, debemos tener especial cuidado en la recopilación, limpieza y verificación de los datos.</p>
-                    </div>
-                </section>
-
-                <section id="performance" class="section">
-                    <h2>🚀 Consideraciones de Rendimiento</h2>
-                    
-                    <div class="concept-card">
-                        <h3>📚 Enfoque del Curso</h3>
-                        <p>En este curso trabajaremos con <strong>volúmenes de datos pequeños</strong> porque las herramientas y operaciones no dependen del volumen, sino de la <strong>lógica y el razonamiento adecuado</strong>.</p>
-                    </div>
-
-                    <div class="concept-card">
-                        <h3>📊 Impacto del Volumen de Datos</h3>
-                        <ul>
-                            <li>El volumen de datos solo afecta al <strong>tiempo de procesamiento</strong></li>
-                            <li>Algo que funciona bien con pocos datos puede <strong>no ser óptimo</strong> con grandes volúmenes</li>
-                            <li>En big data, cada milésima de segundo de optimización puede convertirse en <strong>minutos de diferencia</strong></li>
-                            <li>Es necesario utilizar herramientas de análisis para identificar qué partes del proceso necesitan mejora</li>
-                        </ul>
-                    </div>
-
-                    <div class="important-note">
-                        <strong>Optimización en Big Data:</strong>
-                        <p>En entornos de grandes volúmenes, la elección correcta del tipo de dato y las estrategias de procesamiento pueden marcar la diferencia entre procesos que toman minutos versus horas de ejecución.</p>
-                    </div>
-
-                    <div class="concept-card">
-                        <h3>🔧 Mejores Prácticas</h3>
-                        <ul>
-                            <li><strong>Elegir tipos de datos apropiados</strong> desde el diseño inicial</li>
-                            <li><strong>Implementar índices eficientes</strong> para consultas frecuentes</li>
-                            <li><strong>Monitorear el rendimiento</strong> constantemente</li>
-                            <li><strong>Optimizar consultas</strong> antes de escalar volúmenes</li>
+                            <li><strong>Cardinalidad:</strong> Números y letras en las conexiones - Define la naturaleza cuantitativa</li>
+                            <li><strong>Claves Primarias:</strong> Atributos subrayados - Identificadores únicos</li>
+                            <li><strong>Campos Multivalorados:</strong> Óvalos dobles - Pueden tener múltiples valores</li>
                         </ul>
                     </div>
                 </section>
 
-                <section id="conclusions" class="section">
-                    <h2>🎯 Conclusiones</h2>
+                <section id="transformation" class="section">
+                    <h2>🔄 Proceso de Transformación</h2>
                     
                     <div class="concept-card">
-                        <h3>📋 Resumen de Conceptos</h3>
-                        <p>La distinción entre datos e información es fundamental para el modelado de bases de datos:</p>
+                        <h3>🚀 Del Concepto a la Implementación</h3>
+                        <p>El flujo de trabajo completo para convertir requerimientos en una base de datos funcional.</p>
                     </div>
 
-                    <div class="quality-grid">
-                        <div class="quality-card">
-                            <h4>📊 DATOS</h4>
-                            <p>Elementos individuales sin contexto</p>
-                        </div>
-                        <div class="quality-card">
-                            <h4>💡 INFORMACIÓN</h4>
-                            <p>Datos procesados con valor</p>
+                    <div class="diagram">
+                        <h4>📊 Flujo de Trabajo</h4>
+                        <div class="timeline">
+                            <div class="timeline-item">
+                                <div class="timeline-content">
+                                    <h4>📝 Requerimientos del cliente</h4>
+                                    <p>Análisis inicial de necesidades</p>
+                                </div>
+                            </div>
+                            <div class="timeline-item">
+                                <div class="timeline-content">
+                                    <h4>📐 Diagrama Entidad-Relación</h4>
+                                    <p>Representación conceptual</p>
+                                </div>
+                            </div>
+                            <div class="timeline-item">
+                                <div class="timeline-content">
+                                    <h4>📏 Reglas de normalización</h4>
+                                    <p>Transformación a modelo relacional</p>
+                                </div>
+                            </div>
+                            <div class="timeline-item">
+                                <div class="timeline-content">
+                                    <h4>💻 Implementación física</h4>
+                                    <p>Base de datos operativa</p>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
                     <div class="concept-card">
-                        <h3>🔑 Puntos Clave</h3>
-                        <ul>
-                            <li><strong>Los datos</strong> son elementos individuales sin contexto que, por sí solos, no permiten tomar decisiones</li>
-                            <li><strong>La información</strong> es el resultado del procesamiento adecuado de los datos, que debe cumplir criterios de precisión, exactitud, oportunidad, integridad y significatividad</li>
-                            <li>La elección correcta de <strong>tipos de datos</strong> impacta directamente en el rendimiento y la eficiencia del sistema</li>
-                            <li>El objetivo final es <strong>convertir datos en información útil</strong> para la toma de decisiones</li>
+                        <h3>🛠�?Herramientas de Apoyo</h3>
+                        <ul style="margin-left: 20px;">
+                            <li>Diferentes estilos de diagramas disponibles</li>
+                            <li>Representaciones gráficas variadas</li>
+                            <li>Selección personal según comodidad y eficiencia</li>
                         </ul>
                     </div>
 
-                    <div class="definition-box">
-                        <h3>🎯 Objetivo Final</h3>
-                        <p>El propósito fundamental de cualquier sistema de gestión de bases de datos es <strong>transformar datos brutos en información valiosa</strong> que facilite la toma de decisiones informadas y estratégicas.</p>
+                    <div class="key-points">
+                        <h4>📈 Progresión del Aprendizaje</h4>
+                        <ul>
+                            <li><strong>Conceptos básicos:</strong> Entidades, atributos, relaciones</li>
+                            <li><strong>Casos sencillos:</strong> Ejemplos iniciales simples</li>
+                            <li><strong>Complejidad creciente:</strong> Ejemplos más elaborados</li>
+                            <li><strong>Casos de prueba:</strong> Validación de conocimientos</li>
+                        </ul>
+                    </div>
+                </section>
+
+                <section id="objectives" class="section">
+                    <h2>🎯 Objetivos de la Unidad</h2>
+                    
+                    <div class="concept-card">
+                        <h3>📚 Alcance Limitado pero Fundamental</h3>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin: 20px 0;">
+                            <div class="key-points">
+                                <h4>�?Lo que Abordaremos</h4>
+                                <ul>
+                                    <li>Diagrama Entidad-Relación: Base conceptual</li>
+                                    <li>Modelo Relacional: Implementación práctica</li>
+                                    <li>Base sólida: Fundamentos para desarrollo posterior</li>
+                                </ul>
+                            </div>
+                            <div class="key-points">
+                                <h4>�?Lo que NO Profundizaremos</h4>
+                                <ul>
+                                    <li>Todos los tipos de diagramas existentes</li>
+                                    <li>Complejidades avanzadas de modelado</li>
+                                    <li>Casos extremos o muy específicos</li>
+                                </ul>
+                            </div>
+                        </div>
                     </div>
 
                     <div class="concept-card">
-                        <h3>🚀 Próximos Pasos</h3>
-                        <p>Con estos fundamentos claros sobre la diferencia entre datos e información, estamos preparados para avanzar hacia aspectos más técnicos del modelado en SAP HANA, donde aplicaremos estos conceptos en situaciones prácticas.</p>
+                        <h3>🎓 Competencias a Desarrollar</h3>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin: 20px 0;">
+                            <div>
+                                <h4>💻 Habilidades Técnicas</h4>
+                                <ul style="margin-left: 20px;">
+                                    <li>Interpretación de requerimientos del cliente</li>
+                                    <li>Creación de diagramas conceptuales</li>
+                                    <li>Transformación a modelos implementables</li>
+                                    <li>Aplicación de reglas de normalización</li>
+                                </ul>
+                            </div>
+                            <div>
+                                <h4>🧠 Habilidades Metodológicas</h4>
+                                <ul style="margin-left: 20px;">
+                                    <li>Pensamiento sistemático: Divide y vencerás</li>
+                                    <li>Progresión ordenada: De simple a complejo</li>
+                                    <li>Validación continua: Verificación de cada etapa</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="diagram">
+                        <h4>🚀 Próximos Pasos</h4>
+                        <div class="concept-card">
+                            <h3>📅 Preparación para la Siguiente Clase</h3>
+                            <p><strong>Temas a Desarrollar:</strong></p>
+                            <ul style="margin-left: 20px;">
+                                <li>Conceptos específicos de modelado</li>
+                                <li>Historia y evolución de las bases de datos</li>
+                                <li>Fundamentos teóricos detallados</li>
+                                <li>Ejemplos prácticos iniciales</li>
+                            </ul>
+                            
+                            <p style="margin-top: 20px;"><strong>Enfoque Progresivo:</strong></p>
+                            <ul style="margin-left: 20px;">
+                                <li>Desglose gradual de todos los elementos</li>
+                                <li>Casos prácticos desde simples a complejos</li>
+                                <li>Comprensión profunda de cada componente</li>
+                                <li>Aplicación práctica inmediata</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div>📝</div>
+                            <div>Fin del Video 5</div>
+                        </div>
+                        <div class="stat-card">
+                            <div>⏱️</div>
+                            <div>15 minutos</div>
+                        </div>
+                        <div class="stat-card">
+                            <div>📚</div>
+                            <div>Unidad 2</div>
+                        </div>
                     </div>
                 </section>
             </main>
@@ -853,39 +924,11 @@
             
             // Scroll al inicio del contenido
             document.querySelector('.content').scrollTop = 0;
-
-            // En móviles, ocultar el menú después de seleccionar
-            if (window.innerWidth <= 768) {
-                const sidebar = document.getElementById('sidebar');
-                sidebar.classList.add('mobile-hidden');
-                
-                const toggleButton = document.querySelector('.mobile-menu-toggle');
-                toggleButton.textContent = '📋 Menú de Contenidos';
-            }
         }
 
-        function toggleMobileMenu() {
-            const sidebar = document.getElementById('sidebar');
-            const toggleButton = document.querySelector('.mobile-menu-toggle');
-            
-            if (sidebar.classList.contains('mobile-hidden')) {
-                sidebar.classList.remove('mobile-hidden');
-                toggleButton.textContent = '❌ Cerrar Menú';
-            } else {
-                sidebar.classList.add('mobile-hidden');
-                toggleButton.textContent = '📋 Menú de Contenidos';
-            }
-        }
-
-        // Inicializar en móviles
+        // Animación de entrada
         document.addEventListener('DOMContentLoaded', function() {
-            if (window.innerWidth <= 768) {
-                const sidebar = document.getElementById('sidebar');
-                sidebar.classList.add('mobile-hidden');
-            }
-
-            // Animación de entrada
-            const cards = document.querySelectorAll('.concept-card, .definition-box, .example-box');
+            const cards = document.querySelectorAll('.concept-card');
             cards.forEach((card, index) => {
                 setTimeout(() => {
                     card.style.opacity = '0';
@@ -900,18 +943,18 @@
             });
         });
 
-        // Manejar cambios de tamaño de ventana
-        window.addEventListener('resize', function() {
-            const sidebar = document.getElementById('sidebar');
-            const toggleButton = document.querySelector('.mobile-menu-toggle');
-            
-            if (window.innerWidth > 768) {
-                sidebar.classList.remove('mobile-hidden');
-                toggleButton.textContent = '📋 Menú de Contenidos';
-            } else if (window.innerWidth <= 768 && !sidebar.classList.contains('mobile-hidden')) {
-                sidebar.classList.add('mobile-hidden');
-            }
-        });
+        // Funcionalidad de búsqueda (opcional)
+        function searchContent(query) {
+            const sections = document.querySelectorAll('.section');
+            sections.forEach(section => {
+                const text = section.textContent.toLowerCase();
+                if (text.includes(query.toLowerCase())) {
+                    section.style.display = 'block';
+                } else {
+                    section.style.display = 'none';
+                }
+            });
+        }
     </script>
 </body>
 </html>

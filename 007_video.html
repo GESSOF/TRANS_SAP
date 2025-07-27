@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Curso SAP HANA - Diseño y Evolución de Bases de Datos</title>
+    <title>Curso SAP HANA - Alta Disponibilidad y Seguridad</title>
     <style>
         * {
             margin: 0;
@@ -154,181 +154,96 @@
             margin-bottom: 15px;
         }
 
-        .model-card {
+        .diagram {
             background: white;
             border-radius: 15px;
             padding: 30px;
             margin: 25px 0;
+            text-align: center;
             box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
-            border-top: 5px solid #667eea;
-            position: relative;
-            overflow: hidden;
         }
 
-        .model-card::before {
-            content: attr(data-model);
-            position: absolute;
-            top: -10px;
-            right: -10px;
-            font-size: 80px;
-            font-weight: bold;
-            color: rgba(102, 126, 234, 0.1);
-            z-index: 0;
-        }
-
-        .model-card .model-content {
-            position: relative;
-            z-index: 1;
-        }
-
-        .model-card h4 {
-            color: #667eea;
-            font-size: 1.5em;
-            margin-bottom: 15px;
-        }
-
-        .analogy-box {
-            background: linear-gradient(135deg, #e3f2fd, #bbdefb);
-            border-radius: 15px;
-            padding: 20px;
-            margin: 20px 0;
-            border-left: 5px solid #2196f3;
-        }
-
-        .analogy-box h5 {
-            color: #1565c0;
-            margin-bottom: 10px;
-        }
-
-        .process-flow {
+        .server-diagram {
             display: flex;
             justify-content: space-around;
             align-items: center;
-            margin: 30px 0;
-            flex-wrap: wrap;
+            margin: 20px 0;
         }
 
-        .process-step {
-            text-align: center;
-            margin: 10px;
-        }
-
-        .process-icon {
+        .server {
             width: 80px;
-            height: 80px;
+            height: 60px;
             background: linear-gradient(135deg, #667eea, #764ba2);
-            border-radius: 50%;
+            border-radius: 10px;
             display: flex;
             align-items: center;
             justify-content: center;
             color: white;
-            font-size: 2em;
-            margin: 0 auto 10px;
-            transition: transform 0.3s ease;
-        }
-
-        .process-step:hover .process-icon {
-            transform: scale(1.1) rotate(5deg);
-        }
-
-        .arrow {
-            font-size: 2em;
-            color: #667eea;
-            margin: 0 20px;
-        }
-
-        .timeline {
+            font-weight: bold;
+            margin: 10px;
             position: relative;
-            margin: 40px 0;
-            padding: 20px 0;
         }
 
-        .timeline::before {
-            content: '';
-            position: absolute;
-            left: 50%;
-            top: 0;
-            bottom: 0;
-            width: 3px;
-            background: linear-gradient(to bottom, #667eea, #764ba2);
-            transform: translateX(-50%);
+        .server.standby {
+            background: linear-gradient(135deg, #95a5a6, #7f8c8d);
         }
 
-        .timeline-item {
-            position: relative;
-            margin: 30px 0;
+        .server.failed {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            opacity: 0.5;
+        }
+
+        .connection {
+            width: 50px;
+            height: 2px;
+            background: #667eea;
+            margin: 0 10px;
+        }
+
+        .database {
+            width: 120px;
+            height: 80px;
+            background: linear-gradient(135deg, #f39c12, #e67e22);
+            border-radius: 15px;
             display: flex;
             align-items: center;
             justify-content: center;
+            color: white;
+            font-weight: bold;
         }
 
-        .timeline-item::before {
-            content: '';
-            position: absolute;
-            width: 20px;
-            height: 20px;
-            background: #667eea;
-            border-radius: 50%;
-            border: 4px solid white;
-            z-index: 1;
+        .security-levels {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
         }
 
-        .timeline-content {
-            background: white;
+        .security-level {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
             padding: 20px;
             border-radius: 15px;
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
-            width: 45%;
-            position: relative;
-        }
-
-        .timeline-item:nth-child(odd) .timeline-content {
-            margin-right: auto;
-            margin-left: 20px;
-        }
-
-        .timeline-item:nth-child(even) .timeline-content {
-            margin-left: auto;
-            margin-right: 20px;
-        }
-
-        .tree-diagram {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            margin: 30px 0;
-        }
-
-        .tree-node {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
-            padding: 15px 30px;
-            border-radius: 10px;
-            margin: 10px;
-            position: relative;
+            text-align: center;
             transition: transform 0.3s ease;
         }
 
-        .tree-node:hover {
+        .security-level:hover {
             transform: scale(1.05);
         }
 
-        .tree-children {
-            display: flex;
-            justify-content: center;
-            margin-top: 30px;
-            position: relative;
+        .progress-bar {
+            background: #e9ecef;
+            border-radius: 10px;
+            padding: 3px;
+            margin: 20px 0;
         }
 
-        .tree-children::before {
-            content: '';
-            position: absolute;
-            top: -20px;
-            left: 50%;
-            width: 2px;
+        .progress {
+            background: linear-gradient(45deg, #667eea, #764ba2);
             height: 20px;
-            background: #667eea;
-            transform: translateX(-50%);
+            border-radius: 8px;
+            transition: width 0.5s ease;
         }
 
         .key-points {
@@ -353,65 +268,52 @@
             color: #856404;
         }
 
-        .comparison-table {
-            overflow-x: auto;
-            margin: 20px 0;
-        }
-
-        .comparison-table table {
-            width: 100%;
-            border-collapse: collapse;
-            background: white;
-            border-radius: 10px;
-            overflow: hidden;
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
-        }
-
-        .comparison-table th {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
-            padding: 15px;
-            text-align: left;
-        }
-
-        .comparison-table td {
-            padding: 15px;
-            border-bottom: 1px solid #e9ecef;
-        }
-
-        .comparison-table tr:hover {
-            background: #f8f9fa;
-        }
-
-        .evolution-diagram {
-            display: flex;
-            justify-content: space-around;
-            align-items: center;
+        .timeline {
+            position: relative;
             margin: 30px 0;
-            flex-wrap: wrap;
         }
 
-        .era-card {
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 50%;
+            top: 0;
+            bottom: 0;
+            width: 3px;
+            background: linear-gradient(to bottom, #667eea, #764ba2);
+            transform: translateX(-50%);
+        }
+
+        .timeline-item {
+            position: relative;
+            margin: 30px 0;
+            padding: 0 50px;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            width: 15px;
+            height: 15px;
+            background: #667eea;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            border: 3px solid white;
+            box-shadow: 0 0 0 3px #667eea;
+        }
+
+        .timeline-content {
             background: white;
+            padding: 20px;
             border-radius: 15px;
-            padding: 25px;
-            margin: 10px;
-            width: 250px;
-            text-align: center;
             box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
-            transition: all 0.3s ease;
-            border-bottom: 4px solid transparent;
+            width: 45%;
         }
 
-        .era-card:hover {
-            transform: translateY(-10px);
-            border-bottom-color: #667eea;
-        }
-
-        .era-card h5 {
-            color: #667eea;
-            margin-bottom: 15px;
-            font-size: 1.2em;
+        .timeline-item:nth-child(odd) .timeline-content {
+            margin-left: auto;
         }
 
         .stats-grid {
@@ -435,20 +337,6 @@
             margin-bottom: 10px;
         }
 
-        .progress-bar {
-            background: #e9ecef;
-            border-radius: 10px;
-            padding: 3px;
-            margin: 20px 0;
-        }
-
-        .progress {
-            background: linear-gradient(45deg, #667eea, #764ba2);
-            height: 20px;
-            border-radius: 8px;
-            transition: width 0.5s ease;
-        }
-
         @media (max-width: 768px) {
             .dashboard {
                 grid-template-columns: 1fr;
@@ -466,18 +354,14 @@
                 left: 20px;
             }
             
+            .timeline-item {
+                padding-left: 50px;
+                padding-right: 0;
+            }
+            
             .timeline-content {
-                width: 90%;
-                margin-left: 40px !important;
-            }
-            
-            .process-flow {
-                flex-direction: column;
-            }
-            
-            .arrow {
-                transform: rotate(90deg);
-                margin: 10px 0;
+                width: 100%;
+                margin-left: 0 !important;
             }
         }
     </style>
@@ -486,11 +370,11 @@
     <div class="container">
         <header class="header">
             <img src="https://gessof.cl/wp-content/uploads/2025/05/Logo-minimalista-con-simbolismo-global.png" alt="Gessof Logo" style="height: 80px; margin-bottom: 20px; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.1));">
-            <h1>Curso SAP HANA - Modelado de Datos</h1>
-            <h2 style="color: #667eea; font-size: 1.5em; margin: 10px 0; font-weight: 600;">VIDEO 7</h2>
-            <p>Diseño de Bases de Datos y Evolución Histórica</p>
+            <h1>Curso SAP HANA</h1>
+            <h2 style="color: #667eea; font-size: 1.5em; margin: 10px 0; font-weight: 600;">Clase 007</h2>
+            <p>Alta Disponibilidad y Sistemas de Seguridad</p>
             <div class="progress-bar">
-                <div class="progress" style="width: 30%"></div>
+                <div class="progress" style="width: 100%"></div>
             </div>
         </header>
 
@@ -498,15 +382,13 @@
             <nav class="sidebar">
                 <h3>Contenidos del Módulo</h3>
                 <div class="nav-item active" onclick="showSection('overview')">📋 Resumen General</div>
-                <div class="nav-item" onclick="showSection('intro')">🎯 Introducción</div>
-                <div class="nav-item" onclick="showSection('conceptual')">📐 Modelo Conceptual</div>
-                <div class="nav-item" onclick="showSection('logical')">🔧 Modelo Lógico</div>
-                <div class="nav-item" onclick="showSection('physical')">💻 Modelo Físico</div>
-                <div class="nav-item" onclick="showSection('evolution')">📜 Evolución Histórica</div>
-                <div class="nav-item" onclick="showSection('pre-relational')">🌳 Pre-Relacionales</div>
-                <div class="nav-item" onclick="showSection('relational')">📊 Sistema Relacional</div>
-                <div class="nav-item" onclick="showSection('post-relational')">🔮 Post-Relacionales</div>
-                <div class="nav-item" onclick="showSection('conclusion')">✅ Conclusiones</div>
+                <div class="nav-item" onclick="showSection('availability')">🔄 Alta Disponibilidad</div>
+                <div class="nav-item" onclick="showSection('security')">🔒 Sistemas de Seguridad</div>
+                <div class="nav-item" onclick="showSection('authentication')">👤 Autenticación</div>
+                <div class="nav-item" onclick="showSection('users-roles')">👥 Usuarios y Roles</div>
+                <div class="nav-item" onclick="showSection('encryption')">🔐 Cifrado</div>
+                <div class="nav-item" onclick="showSection('audit')">📊 Auditoría</div>
+                <div class="nav-item" onclick="showSection('tools')">🛠️ Herramientas</div>
             </nav>
 
             <main class="content">
@@ -515,504 +397,402 @@
                     
                     <div class="stats-grid">
                         <div class="stat-card">
-                            <div class="stat-number">3</div>
-                            <div>Modelos de Diseño</div>
+                            <div class="stat-number">2</div>
+                            <div>Conceptos Principales</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number">6</div>
+                            <div>Temas de Seguridad</div>
                         </div>
                         <div class="stat-card">
                             <div class="stat-number">3</div>
-                            <div>Eras Históricas</div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-number">99%</div>
-                            <div>Uso de E-R</div>
+                            <div>Herramientas</div>
                         </div>
                     </div>
 
                     <div class="concept-card">
-                        <h3>🎯 Objetivo del Módulo</h3>
-                        <p>Comprender el <strong>proceso de diseño</strong> de bases de datos y su <strong>evolución histórica</strong>, desde los sistemas pre-relacionales hasta los modernos sistemas orientados a objetos.</p>
-                    </div>
-
-                    <div class="analogy-box">
-                        <h5>🏗️ Analogía Principal</h5>
-                        <p>El diseño de una base de datos es como construir una casa:</p>
-                        <ul style="margin-left: 20px;">
-                            <li><strong>Cliente</strong> → Entrega boceto (Modelo Conceptual)</li>
-                            <li><strong>Arquitecto</strong> → Crea planos (Modelo Lógico)</li>
-                            <li><strong>Constructores</strong> → Implementan (Modelo Físico)</li>
-                        </ul>
+                        <h3>🎯 Objetivos del Módulo</h3>
+                        <p>Este módulo final del curso cubre los aspectos críticos de <strong>alta disponibilidad</strong> y <strong>seguridad</strong> en SAP HANA, preparando el camino hacia contenidos más prácticos en los siguientes módulos.</p>
                     </div>
 
                     <div class="key-points">
-                        <h4>📌 Temas Clave</h4>
+                        <h4>📌 Puntos Clave</h4>
                         <ul>
-                            <li>Los tres modelos de diseño de bases de datos</li>
-                            <li>Proceso secuencial y estructurado</li>
-                            <li>Evolución desde sistemas jerárquicos hasta orientados a objetos</li>
-                            <li>Dominio actual del modelo relacional</li>
+                            <li>Transición de teoría a práctica en próximos módulos</li>
+                            <li>Fundamentos esenciales para administración de HANA</li>
+                            <li>Preparación para trabajo con entornos reales</li>
+                            <li>Base para certificaciones SAP HANA</li>
                         </ul>
                     </div>
                 </section>
 
-                <section id="intro" class="section">
-                    <h2>🎯 Introducción al Diseño de Bases de Datos</h2>
+                <section id="availability" class="section">
+                    <h2>🔄 Alta Disponibilidad (High Availability)</h2>
                     
                     <div class="concept-card">
-                        <h3>📊 Definición</h3>
-                        <p>El diseño de una base de datos es el <strong>proceso que determina su organización y estructura</strong>. Similar a la construcción de un edificio, involucra diferentes profesionales y etapas bien definidas para lograr un resultado exitoso.</p>
+                        <h3>💡 Concepto</h3>
+                        <p>La alta disponibilidad busca que <strong>múltiples usuarios</strong> puedan acceder al sistema simultáneamente sin bloqueos, incluyendo <strong>tolerancia a desastres</strong>.</p>
+                        <p><strong>Analogía:</strong> Como un generador de emergencia en un hospital - si falla el sistema principal, inmediatamente se activa el respaldo.</p>
                     </div>
 
-                    <div class="process-flow">
-                        <div class="process-step">
-                            <div class="process-icon">👤</div>
-                            <h4>Cliente</h4>
-                            <p>Ideas y requisitos</p>
-                        </div>
-                        <div class="arrow">→</div>
-                        <div class="process-step">
-                            <div class="process-icon">📐</div>
-                            <h4>Arquitecto</h4>
-                            <p>Planos detallados</p>
-                        </div>
-                        <div class="arrow">→</div>
-                        <div class="process-step">
-                            <div class="process-icon">🔨</div>
-                            <h4>Constructores</h4>
-                            <p>Implementación física</p>
-                        </div>
-                    </div>
-
-                    <div class="concept-card">
-                        <h3>🔄 Los Tres Modelos de Diseño</h3>
-                        <p>El proceso de diseño se divide en tres etapas fundamentales, cada una con su propósito específico:</p>
-                        <ol style="margin-left: 20px; margin-top: 10px;">
-                            <li><strong>Modelo Conceptual:</strong> Vista genérica e independiente</li>
-                            <li><strong>Modelo Lógico:</strong> Transformación técnica</li>
-                            <li><strong>Modelo Físico:</strong> Implementación real</li>
-                        </ol>
-                    </div>
-                </section>
-
-                <section id="conceptual" class="section">
-                    <h2>📐 Modelo Conceptual</h2>
-                    
-                    <div class="model-card" data-model="1">
-                        <div class="model-content">
-                            <h4>Características Principales</h4>
-                            <div class="analogy-box">
-                                <h5>🎨 Analogía</h5>
-                                <p>Equivale al <strong>boceto del cliente</strong> en la construcción</p>
-                            </div>
-                            
-                            <div class="key-points">
-                                <h5>📋 Características:</h5>
-                                <ul>
-                                    <li>Estructura <strong>totalmente independiente</strong> del lenguaje</li>
-                                    <li>Vista genérica que <strong>no incluye</strong>:
-                                        <ul style="margin-left: 20px; margin-top: 5px;">
-                                            <li>Tipos de datos específicos</li>
-                                            <li>Sistema gestor de base de datos particular</li>
-                                            <li>Lenguaje de implementación</li>
-                                        </ul>
-                                    </li>
-                                </ul>
+                    <div class="diagram">
+                        <h4>🏗️ Arquitectura Scale Out (Un Data Center)</h4>
+                        <div class="server-diagram">
+                            <div class="database">BASE DE<br>DATOS HANA</div>
+                            <div class="connection"></div>
+                            <div>
+                                <div class="server">S1</div>
+                                <div class="server">S2</div>
+                                <div class="server">S3</div>
+                                <div class="server standby">Standby</div>
                             </div>
                         </div>
-                    </div>
-
-                    <div class="concept-card">
-                        <h3>🎯 Objetivos del Modelo Conceptual</h3>
-                        <ul style="margin-left: 20px;">
-                            <li><strong>Establecer</strong> la información que se quiere almacenar</li>
-                            <li><strong>Definir</strong> la estructura de almacenamiento</li>
-                            <li><strong>Centrarse</strong> en problemas estructurales de la información</li>
-                            <li><strong>Crear</strong> relaciones lógicas y coherentes</li>
-                            <li><strong>Garantizar</strong> eficiencia en el trabajo con los datos</li>
-                        </ul>
-                    </div>
-
-                    <div class="stat-card" style="max-width: 600px; margin: 20px auto;">
-                        <h4>🛠️ Herramienta Principal</h4>
-                        <div class="stat-number">99%</div>
-                        <p>de las bases de datos relacionales utilizan<br><strong>Diagramas Entidad-Relación</strong></p>
-                    </div>
-                </section>
-
-                <section id="logical" class="section">
-                    <h2>🔧 Modelo Lógico</h2>
-                    
-                    <div class="model-card" data-model="2">
-                        <div class="model-content">
-                            <h4>Características Principales</h4>
-                            <div class="analogy-box">
-                                <h5>📏 Analogía</h5>
-                                <p>Equivale al <strong>trabajo del arquitecto</strong> en la construcción</p>
-                            </div>
-                            
-                            <ul style="margin-left: 20px; margin-top: 15px;">
-                                <li>Se realiza a partir del modelo conceptual</li>
-                                <li>Transforma el modelo conceptual en algo <strong>implementable físicamente</strong></li>
-                            </ul>
-                        </div>
-                    </div>
-
-                    <div class="concept-card">
-                        <h3>🔍 Consideraciones Técnicas</h3>
-                        <p><strong>Debe tener en cuenta</strong> el sistema gestor de base de datos elegido.</p>
-                        <p style="margin-top: 15px;">Para sistemas relacionales debe indicar:</p>
-                        <ul style="margin-left: 20px; margin-top: 10px;">
-                            <li>Relaciones entre tablas</li>
-                            <li>Atributos de cada entidad</li>
-                            <li>Claves primarias y foráneas</li>
-                            <li>Índices necesarios</li>
-                        </ul>
-                    </div>
-
-                    <div class="key-points">
-                        <h4>🎯 Enfoque</h4>
-                        <ul>
-                            <li>Dedicado a <strong>cuestiones tecnológicas</strong></li>
-                            <li>Los problemas estructurales deben estar resueltos del modelo anterior</li>
-                            <li>Se centra en <strong>traducir</strong> el esquema conceptual a una estructura implementable</li>
-                        </ul>
-                    </div>
-
-                    <div class="concept-card" style="background: linear-gradient(135deg, #e8f5e9, #c8e6c9); border-left-color: #4caf50;">
-                        <h3 style="color: #2e7d32;">🔧 Herramientas</h3>
-                        <p style="color: #2e7d32;"><strong>Formas Normales:</strong> Serie de reglas que ayudan a realizar las modificaciones necesarias hasta obtener un modelo correcto para implementar.</p>
-                    </div>
-                </section>
-
-                <section id="physical" class="section">
-                    <h2>💻 Modelo Físico</h2>
-                    
-                    <div class="model-card" data-model="3">
-                        <div class="model-content">
-                            <h4>Características Principales</h4>
-                            <div class="analogy-box">
-                                <h5>🏗️ Analogía</h5>
-                                <p>Equivale al <strong>trabajo de construcción física</strong></p>
-                            </div>
-                            
-                            <ul style="margin-left: 20px; margin-top: 15px;">
-                                <li>Transforma el modelo lógico para mayor eficiencia</li>
-                                <li>Crea los <strong>objetos físicos</strong> en la base de datos</li>
-                            </ul>
-                        </div>
-                    </div>
-
-                    <div class="concept-card">
-                        <h3>⚙️ Decisiones Críticas</h3>
-                        <p>Al implementar físicamente, se deben tomar decisiones sobre:</p>
-                        
-                        <div class="comparison-table" style="margin-top: 20px;">
-                            <table>
-                                <thead>
-                                    <tr>
-                                        <th>Tipo de Campo</th>
-                                        <th>Decisiones a Tomar</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td><strong>Campos de Texto</strong></td>
-                                        <td>
-                                            • Tipo de dato específico<br>
-                                            • Codificación (ASCII vs Unicode)<br>
-                                            • Longitud variable vs tamaño fijo
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td><strong>Campos Numéricos</strong></td>
-                                        <td>
-                                            • Enteros vs decimales<br>
-                                            • Precisión y escala
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td><strong>Fechas</strong></td>
-                                        <td>
-                                            • Tipo de dato fecha específico<br>
-                                            • Formato de almacenamiento
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-
-                    <div class="key-points">
-                        <h4>💡 Impacto</h4>
-                        <p>Estas decisiones influyen directamente en:</p>
-                        <ul>
-                            <li>Eficacia del sistema</li>
-                            <li>Rendimiento de las consultas</li>
-                            <li>Espacio de almacenamiento requerido</li>
-                        </ul>
-                    </div>
-                </section>
-
-                <section id="evolution" class="section">
-                    <h2>📜 Evolución Histórica de los Modelos de Bases de Datos</h2>
-                    
-                    <div class="concept-card">
-                        <h3>🌍 Contexto Actual</h3>
-                        <ul style="margin-left: 20px;">
-                            <li>Las bases de datos relacionales son el <strong>estándar de facto</strong></li>
-                            <li>Los cursos ya no especifican el tipo porque se <strong>asume que son relacionales</strong></li>
-                            <li>El modelo relacional marcó un <strong>antes y un después</strong> en el diseño de bases de datos</li>
-                        </ul>
+                        <p><strong>Servidores activos</strong> + <strong>Almacenamiento compartido</strong> + <strong>Servidor en espera</strong></p>
                     </div>
 
                     <div class="timeline">
                         <div class="timeline-item">
                             <div class="timeline-content">
-                                <h4>🌳 Sistemas Pre-relacionales</h4>
-                                <p>• Modelo Jerárquico<br>• Modelo de Red</p>
+                                <h4>⚡ Fallo del Servidor</h4>
+                                <p>Un servidor activo falla por problemas eléctricos o hardware</p>
                             </div>
                         </div>
                         <div class="timeline-item">
                             <div class="timeline-content">
-                                <h4>📊 Sistema Relacional</h4>
-                                <p>• Revolución en BD<br>• Estándar actual</p>
+                                <h4>🔄 Activación Automática</h4>
+                                <p>El servidor en standby toma inmediatamente el lugar del servidor fallido</p>
                             </div>
                         </div>
                         <div class="timeline-item">
                             <div class="timeline-content">
-                                <h4>🔮 Sistemas Post-relacionales</h4>
-                                <p>• Orientados a Objetos<br>• Multimedia</p>
+                                <h4>✅ Continuidad del Servicio</h4>
+                                <p>Los usuarios experimentan una interrupción mínima</p>
                             </div>
                         </div>
                     </div>
 
-                    <div class="evolution-diagram">
-                        <div class="era-card">
-                            <h5>PRE-RELACIONALES</h5>
-                            <p>Jerárquico<br>Red</p>
+                    <div class="concept-card">
+                        <h3>🌍 Sistema Distribuido (Múltiples Data Centers)</h3>
+                        <p>En multinacionales con servidores en diferentes países (España, EE.UU., Inglaterra), si falla un data center completo, el tráfico se desvía automáticamente a otro.</p>
+                        
+                        <div class="security-levels">
+                            <div class="security-level">
+                                <h4>🇪🇸 España</h4>
+                                <p>Servidor Principal</p>
+                            </div>
+                            <div class="security-level">
+                                <h4>🇺🇸 EE.UU.</h4>
+                                <p>Respaldo Secundario</p>
+                            </div>
+                            <div class="security-level">
+                                <h4>🇬🇧 Inglaterra</h4>
+                                <p>Respaldo Terciario</p>
+                            </div>
                         </div>
-                        <div class="arrow">→</div>
-                        <div class="era-card">
-                            <h5>RELACIONALES</h5>
-                            <p>Tabular<br>SQL</p>
+                    </div>
+
+                    <div class="key-points">
+                        <h4>🔧 Componentes Técnicos</h4>
+                        <ul>
+                            <li><strong>Servidor de Nombres:</strong> Traduce IPs a nombres reconocibles</li>
+                            <li><strong>Servidor de Índices:</strong> Se conecta a la capa de persistencia (base de datos)</li>
+                            <li><strong>Failover Automático:</strong> Cambio por error utiliza nodos standby</li>
+                            <li><strong>Hasta 3 servidores maestros:</strong> Redundancia en la administración</li>
+                        </ul>
+                    </div>
+                </section>
+
+                <section id="security" class="section">
+                    <h2>🔒 Características de Seguridad en SAP HANA</h2>
+                    
+                    <div class="concept-card">
+                        <h3>🛡️ Panorama General</h3>
+                        <p>SAP HANA proporciona características cruciales para garantizar la seguridad completa de:</p>
+                        <ul style="margin-left: 20px; margin-top: 10px;">
+                            <li>Base de datos</li>
+                            <li>Aplicaciones del motor XS (clásica y avanzada)</li>
+                            <li>Objetos de desarrollo en repositorios</li>
+                        </ul>
+                    </div>
+
+                    <div class="security-levels">
+                        <div class="security-level">
+                            <h4>🔑 Autenticación</h4>
+                            <p>Verificación de identidad</p>
                         </div>
-                        <div class="arrow">→</div>
-                        <div class="era-card">
-                            <h5>POST-RELACIONALES</h5>
-                            <p>Objetos<br>Multimedia</p>
+                        <div class="security-level">
+                            <h4>👥 Usuarios y Roles</h4>
+                            <p>Gestión de permisos</p>
+                        </div>
+                        <div class="security-level">
+                            <h4>✅ Autorización</h4>
+                            <p>Privilegios analíticos</p>
+                        </div>
+                        <div class="security-level">
+                            <h4>🔐 Cifrado</h4>
+                            <p>Protección de datos</p>
+                        </div>
+                        <div class="security-level">
+                            <h4>📊 Auditoría</h4>
+                            <p>Registro de actividades</p>
                         </div>
                     </div>
                 </section>
 
-                <section id="pre-relational" class="section">
-                    <h2>🌳 Sistemas Pre-Relacionales</h2>
+                <section id="authentication" class="section">
+                    <h2>👤 Autenticación</h2>
                     
-                    <div class="model-card">
-                        <div class="model-content">
-                            <h4>📊 Modelo Jerárquico</h4>
-                            <ul style="margin-left: 20px;">
-                                <li>Uno de los <strong>primeros modelos estables</strong> implementados</li>
-                                <li>Los datos se relacionan de <strong>modo jerárquico</strong></li>
-                                <li>Se representa mediante <strong>estructura de árbol</strong></li>
-                                <li><strong>Limitación:</strong> Cada nodo solo puede tener <strong>un nodo padre</strong></li>
+                    <div class="concept-card">
+                        <h3>🔍 Definición</h3>
+                        <p>Proceso de <strong>verificación de identidad</strong> cuando un usuario intenta conectarse a la base de datos HANA. Comprueba si realmente tiene permisos para acceder.</p>
+                    </div>
+
+                    <div class="diagram">
+                        <h4>🔐 Métodos de Autenticación</h4>
+                        <div class="security-levels">
+                            <div class="security-level">
+                                <h4>🔑 Usuario/Contraseña</h4>
+                                <p>Método tradicional más común</p>
+                            </div>
+                            <div class="security-level">
+                                <h4>🎫 Kerberos</h4>
+                                <p>Protocolo avanzado del MIT</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="concept-card">
+                        <h3>🎫 Protocolo Kerberos</h3>
+                        <p><strong>Creado por el MIT</strong> - Permite a dos ordenadores en una red insegura demostrar su identidad mutuamente de manera segura.</p>
+                        
+                        <div class="key-points">
+                            <h4>🏗️ Componentes Clave</h4>
+                            <ul>
+                                <li><strong>KDC (Key Distribution Center):</strong> Centro de distribución de claves</li>
+                                <li><strong>AS (Authentication Server):</strong> Servidor de autenticación</li>
+                                <li><strong>TGS (Ticket Granting Server):</strong> Servidor emisor de tickets</li>
+                                <li><strong>Criptografía simétrica:</strong> Base del protocolo</li>
                             </ul>
-                            
-                            <div class="tree-diagram">
-                                <div class="tree-node">Nodo Raíz</div>
-                                <div class="tree-children">
-                                    <div class="tree-node">Hijo 1</div>
-                                    <div class="tree-node">Hijo 2</div>
-                                    <div class="tree-node">Hijo 3</div>
+                        </div>
+
+                        <div class="timeline">
+                            <div class="timeline-item">
+                                <div class="timeline-content">
+                                    <h4>1️⃣ Autenticación inicial</h4>
+                                    <p>Cliente se autentica contra Authentication Server</p>
                                 </div>
                             </div>
-                            
-                            <div class="analogy-box">
-                                <h5>👨‍👩‍👧‍👦 Ejemplo</h5>
-                                <p>Como un árbol genealógico donde cada persona tiene un único padre directo.</p>
+                            <div class="timeline-item">
+                                <div class="timeline-content">
+                                    <h4>2️⃣ Solicitud de ticket</h4>
+                                    <p>Demuestra al TGS que está autorizado para recibir ticket</p>
+                                </div>
+                            </div>
+                            <div class="timeline-item">
+                                <div class="timeline-content">
+                                    <h4>3️⃣ Acceso al servicio</h4>
+                                    <p>Demuestra al servidor que ha sido aprobado para usar el servicio</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="users-roles" class="section">
+                    <h2>👥 Usuarios y Roles</h2>
+                    
+                    <div class="concept-card">
+                        <h3>🎯 Filosofía de Seguridad</h3>
+                        <p><strong>"Lo menos posible"</strong> - Cada usuario debe tener acceso únicamente a los recursos que realmente necesita para su trabajo.</p>
+                    </div>
+
+                    <div class="diagram">
+                        <h4>🔧 Gestión de Privilegios</h4>
+                        <div style="display: flex; justify-content: space-around; align-items: center; margin: 20px 0;">
+                            <div style="text-align: center;">
+                                <div style="width: 100px; height: 100px; background: linear-gradient(135deg, #e74c3c, #c0392b); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; margin: 0 auto 10px;">❌</div>
+                                <p><strong>Privilegios de MÁS</strong><br>Riesgo de daños accidentales o maliciosos</p>
+                            </div>
+                            <div style="text-align: center;">
+                                <div style="width: 100px; height: 100px; background: linear-gradient(135deg, #27ae60, #2ecc71); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; margin: 0 auto 10px;">✅</div>
+                                <p><strong>Privilegios de MENOS</strong><br>Usuario solicita lo que necesita</p>
                             </div>
                         </div>
                     </div>
 
-                    <div class="model-card">
-                        <div class="model-content">
-                            <h4>🕸️ Modelo de Red</h4>
-                            <ul style="margin-left: 20px;">
-                                <li><strong>Evolución</strong> del modelo jerárquico</li>
-                                <li><strong>Mejora principal:</strong> Un nodo puede tener <strong>varios nodos padre</strong></li>
-                                <li>Estructura más compleja pero con mayor interrelacionalidad</li>
-                                <li>Aún así, las relaciones siguen siendo <strong>bastante limitadas</strong></li>
+                    <div class="concept-card">
+                        <h3>📦 Sistema de Roles</h3>
+                        <p>Un <strong>rol</strong> es como una "caja" que contiene un conjunto de privilegios predefinidos para un perfil específico de trabajo.</p>
+                        
+                        <div class="security-levels">
+                            <div class="security-level">
+                                <h4>👨‍💻 Desarrollador</h4>
+                                <p>• Acceso a tablas específicas<br>• Permisos de ejecución<br>• Creación de objetos</p>
+                            </div>
+                            <div class="security-level">
+                                <h4>🎨 Modelador</h4>
+                                <p>• Permisos de creación en esquemas<br>• Consulta de datos<br>• Diseño de modelos</p>
+                            </div>
+                            <div class="security-level">
+                                <h4>👤 Usuario Normal</h4>
+                                <p>• Consulta básica<br>• Lectura de reportes<br>• Sin permisos de modificación</p>
+                            </div>
+                        </div>
+
+                        <div class="key-points">
+                            <h4>⚙️ Proceso de Asignación</h4>
+                            <ul>
+                                <li><strong>Paso 1:</strong> Crear rol base para el perfil</li>
+                                <li><strong>Paso 2:</strong> Asignar rol al usuario nuevo</li>
+                                <li><strong>Paso 3:</strong> Añadir privilegios específicos individuales</li>
+                                <li><strong>Ventaja:</strong> Eficiencia y consistencia en permisos</li>
                             </ul>
                         </div>
                     </div>
                 </section>
 
-                <section id="relational" class="section">
-                    <h2>📊 Sistema Relacional</h2>
+                <section id="encryption" class="section">
+                    <h2>🔐 Cifrado y Encriptación</h2>
                     
                     <div class="concept-card">
-                        <h3>🚀 Características Revolucionarias</h3>
-                        <ul style="margin-left: 20px;">
-                            <li>Se <strong>olvida</strong> de las relaciones jerárquicas tradicionales</li>
-                            <li>Utiliza <strong>conceptos matemáticos</strong> para:
-                                <ul style="margin-left: 20px; margin-top: 5px;">
-                                    <li>Establecer relaciones</li>
-                                    <li>Representar datos</li>
-                                    <li>Definir operaciones</li>
-                                </ul>
-                            </li>
-                        </ul>
+                        <h3>🛡️ Objetivo del Cifrado</h3>
+                        <p>Garantizar que la información permanezca segura y solo sea legible por usuarios con permisos y autenticación correcta.</p>
                     </div>
 
-                    <div class="stats-grid">
-                        <div class="stat-card">
-                            <div>🔧</div>
-                            <div>Estructuras Complejas</div>
-                        </div>
-                        <div class="stat-card">
-                            <div>⚡</div>
-                            <div>Rendimiento Superior</div>
-                        </div>
-                        <div class="stat-card">
-                            <div>🔄</div>
-                            <div>Flexibilidad Total</div>
-                        </div>
-                        <div class="stat-card">
-                            <div>🔓</div>
-                            <div>Independencia Física</div>
-                        </div>
-                    </div>
-
-                    <div class="key-points">
-                        <h4>💡 Impacto</h4>
-                        <ul>
-                            <li>Revolución completa en el almacenamiento y consulta de datos</li>
-                            <li>Se convirtió en el <strong>estándar universal</strong></li>
-                            <li>Cuando se habla de "bases de datos" sin especificar, se asume que son relacionales</li>
-                        </ul>
-                    </div>
-                </section>
-
-                <section id="post-relational" class="section">
-                    <h2>🔮 Sistemas Post-Relacionales</h2>
-                    
-                    <div class="model-card">
-                        <div class="model-content">
-                            <h4>🎯 Modelo Orientado a Objetos</h4>
-                            
-                            <div class="concept-card">
-                                <h5>📋 Características</h5>
-                                <ul style="margin-left: 20px;">
-                                    <li>Los datos se representan mediante <strong>objetos</strong></li>
-                                    <li>Los objetos están compuestos por:
-                                        <ul style="margin-left: 20px; margin-top: 5px;">
-                                            <li><strong>Variables</strong> (atributos)</li>
-                                            <li><strong>Métodos</strong> (funciones)</li>
-                                        </ul>
-                                    </li>
-                                    <li>La manipulación se realiza mediante <strong>mensajes</strong></li>
-                                </ul>
+                    <div class="diagram">
+                        <h4>📈 Evolución del Cifrado</h4>
+                        <div class="timeline">
+                            <div class="timeline-item">
+                                <div class="timeline-content">
+                                    <h4>⚙️ Máquina Enigma</h4>
+                                    <p>Segunda Guerra Mundial - Cambio de posición de letras</p>
+                                </div>
                             </div>
-
-                            <div class="comparison-table">
-                                <h5>🔗 Relación con la Programación</h5>
-                                <table>
-                                    <thead>
-                                        <tr>
-                                            <th>Concepto OOP</th>
-                                            <th>Equivalencia en BD</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td>Clases</td>
-                                            <td>Plantillas de objetos</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Atributos</td>
-                                            <td>Variables que almacenan valores</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Métodos</td>
-                                            <td>Funciones para manipular datos</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Mensajes</td>
-                                            <td>Comunicación entre objetos</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
+                            <div class="timeline-item">
+                                <div class="timeline-content">
+                                    <h4>💻 Cifrado Moderno</h4>
+                                    <p>Algoritmos complejos - Extremadamente difíciles de descifrar</p>
+                                </div>
+                            </div>
+                            <div class="timeline-item">
+                                <div class="timeline-content">
+                                    <h4>🔒 Cifrado Actual</h4>
+                                    <p>Protección contra ataques de hackers y secuestro de datos</p>
+                                </div>
                             </div>
                         </div>
                     </div>
 
-                    <div class="key-points">
-                        <h4>💼 Aplicaciones</h4>
-                        <ul>
-                            <li>Bases de datos complejas con estructuras no tradicionales</li>
-                            <li>Sistemas multimedia con diferentes tipos de datos</li>
-                            <li>Aplicaciones especializadas que requieren comportamientos complejos</li>
-                        </ul>
-                    </div>
-                </section>
-
-                <section id="conclusion" class="section">
-                    <h2>✅ Conclusiones</h2>
-                    
                     <div class="concept-card">
-                        <h3>📊 Resumen del Proceso Completo</h3>
+                        <h3>🔍 Cifrado en la Práctica</h3>
+                        <p>Cuando los hackers roban datos de grandes empresas, frecuentemente no pueden utilizarlos porque están encriptados. El tiempo necesario para descifrarlos sin la clave puede ser de <strong>décadas o siglos</strong>.</p>
                         
-                        <h4 style="margin-top: 20px;">🔄 Flujo de Diseño</h4>
-                        <div class="process-flow">
-                            <div class="process-step">
-                                <div class="process-icon">📐</div>
-                                <h5>MODELO CONCEPTUAL</h5>
-                                <p>(Boceto)</p>
+                        <div class="key-points">
+                            <h4>💡 Principio Básico</h4>
+                            <ul>
+                                <li>Sin credenciales válidas = Información ilegible</li>
+                                <li>Con autenticación correcta = Información legible</li>
+                                <li>Protección contra acceso no autorizado</li>
+                                <li>Última línea de defensa en seguridad</li>
+                            </ul>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="audit" class="section">
+                    <h2>📊 Audit Logging (Registros de Auditoría)</h2>
+                    
+                    <div class="concept-card">
+                        <h3>📝 Definición</h3>
+                        <p>También conocidos como <strong>"logs"</strong> o <strong>"trazas del sistema"</strong> - Registran un seguimiento completo de todas las actividades en el sistema.</p>
+                    </div>
+
+                    <div class="diagram">
+                        <h4>🔍 Qué se Registra</h4>
+                        <div class="security-levels">
+                            <div class="security-level">
+                                <h4>🔐 Accesos</h4>
+                                <p>Recursos, datos, funciones, procedimientos</p>
                             </div>
-                            <div class="arrow">→</div>
-                            <div class="process-step">
-                                <div class="process-icon">🔧</div>
-                                <h5>MODELO LÓGICO</h5>
-                                <p>(Planos)</p>
+                            <div class="security-level">
+                                <h4>👥 Administración</h4>
+                                <p>Usuarios, roles, parámetros de seguridad</p>
                             </div>
-                            <div class="arrow">→</div>
-                            <div class="process-step">
-                                <div class="process-icon">💻</div>
-                                <h5>MODELO FÍSICO</h5>
-                                <p>(Construcción)</p>
+                            <div class="security-level">
+                                <h4>📋 Reglas</h4>
+                                <p>Configuraciones y políticas del sistema</p>
                             </div>
                         </div>
+                    </div>
 
-                        <h4 style="margin-top: 30px;">📈 Evolución Tecnológica</h4>
-                        <div class="evolution-diagram">
-                            <div class="era-card">
-                                <h5>PRE-RELACIONALES</h5>
-                                <p>• Jerárquico<br>• Red</p>
+                    <div class="concept-card">
+                        <h3>🎯 Beneficios de la Auditoría</h3>
+                        <div class="key-points">
+                            <h4>✅ Ventajas</h4>
+                            <ul>
+                                <li><strong>Trazabilidad completa:</strong> Saber quién hizo qué y cuándo</li>
+                                <li><strong>Detección de anomalías:</strong> Identificar comportamientos sospechosos</li>
+                                <li><strong>Cumplimiento normativo:</strong> Satisfacer requisitos legales</li>
+                                <li><strong>Investigación de incidentes:</strong> Análisis forense de problemas</li>
+                                <li><strong>Optimización:</strong> Identificar patrones de uso del sistema</li>
+                            </ul>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="tools" class="section">
+                    <h2>🛠️ Herramientas de Administración</h2>
+                    
+                    <div class="concept-card">
+                        <h3>📊 Evolución de las Herramientas</h3>
+                        <p>La administración de SAP HANA ha evolucionado desde una herramienta única hacia un enfoque web más moderno.</p>
+                    </div>
+
+                    <div class="diagram">
+                        <h4>🔄 Comparación de Versiones</h4>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin: 20px 0;">
+                            <div class="concept-card">
+                                <h3>🏢 SAP HANA 1.0</h3>
+                                <p><strong>HANA Studio</strong> - Herramienta única para todo:</p>
+                                <ul style="margin-left: 20px; margin-top: 10px;">
+                                    <li>✅ Desarrollo</li>
+                                    <li>✅ Modelado</li>
+                                    <li>✅ Administración</li>
+                                    <li>✅ Interfaz integrada</li>
+                                </ul>
+                                <p style="color: #27ae60; font-weight: bold; margin-top: 15px;">Preferencia personal del instructor</p>
                             </div>
-                            <div class="arrow">→</div>
-                            <div class="era-card">
-                                <h5>RELACIONALES</h5>
-                                <p>• Tabular<br>• SQL</p>
-                            </div>
-                            <div class="arrow">→</div>
-                            <div class="era-card">
-                                <h5>POST-RELACIONALES</h5>
-                                <p>• Orientado a Objetos<br>• Multimedia</p>
+                            <div class="concept-card">
+                                <h3>🌐 SAP HANA 2.0</h3>
+                                <p><strong>Enfoque híbrido:</strong></p>
+                                <ul style="margin-left: 20px; margin-top: 10px;">
+                                    <li>🌐 <strong>Cockpit (Web):</strong> Administración principal</li>
+                                    <li>🏢 <strong>HANA Studio:</strong> Tareas específicas</li>
+                                </ul>
+                                <p style="color: #f39c12; font-weight: bold; margin-top: 15px;">En transición (hace unos años algunas tareas solo desde Studio)</p>
                             </div>
                         </div>
                     </div>
 
                     <div class="key-points">
-                        <h4>🎯 Puntos Clave</h4>
+                        <h4>🎯 Recomendación SAP</h4>
                         <ul>
-                            <li><strong>Importancia del Proceso Secuencial:</strong> Cada etapa del diseño tiene su propósito específico y debe completarse correctamente antes de avanzar a la siguiente</li>
-                            <li><strong>Dominio del Modelo Relacional:</strong> Aunque existen otros modelos, el relacional sigue siendo el más utilizado y el que debemos dominar</li>
-                            <li><strong>Evolución Continua:</strong> La tecnología de bases de datos ha evolucionado constantemente, adaptándose a las necesidades cambiantes</li>
-                            <li><strong>Fundamentos Sólidos:</strong> Comprender la evolución histórica nos ayuda a entender mejor las decisiones de diseño actuales</li>
+                            <li><strong>Priorizar Cockpit (Web):</strong> Para todas las tareas posibles</li>
+                            <li><strong>Futuro único:</strong> Se espera que sea la única herramienta de administración</li>
+                            <li><strong>Evolución continua:</strong> La tecnología avanza rápidamente</li>
+                            <li><strong>Ejemplo HANA:</strong> Ha revolucionado el mercado de bases de datos</li>
                         </ul>
                     </div>
 
-                    <div class="stat-card" style="max-width: 800px; margin: 30px auto;">
-                        <h4>📚 Mensaje Final</h4>
-                        <p style="font-size: 1.1em; margin-top: 15px;">El diseño de bases de datos es un proceso estructurado que ha evolucionado significativamente, pero los principios fundamentales permanecen: organización, eficiencia y adaptabilidad.</p>
+                    <div class="concept-card">
+                        <h3>🚀 Próximos Pasos del Curso</h3>
+                        <p><strong>¡Buenas noticias!</strong> A partir del siguiente módulo, el curso se vuelve más práctico:</p>
+                        <ul style="margin-left: 20px; margin-top: 10px;">
+                            <li>✅ Teoría fundamental completada</li>
+                            <li>🔨 Trabajo hands-on con herramientas reales</li>
+                            <li>📚 Teoría necesaria + práctica en cada unidad</li>
+                            <li>🎯 Enfoque en aplicación real de conocimientos</li>
+                        </ul>
                     </div>
                 </section>
             </main>
@@ -1045,7 +825,7 @@
 
         // Animación de entrada
         document.addEventListener('DOMContentLoaded', function() {
-            const cards = document.querySelectorAll('.concept-card, .model-card');
+            const cards = document.querySelectorAll('.concept-card');
             cards.forEach((card, index) => {
                 setTimeout(() => {
                     card.style.opacity = '0';
@@ -1060,16 +840,18 @@
             });
         });
 
-        // Animación para las tarjetas de era
-        const eraCards = document.querySelectorAll('.era-card');
-        eraCards.forEach(card => {
-            card.addEventListener('mouseenter', function() {
-                this.style.transform = 'translateY(-10px) scale(1.05)';
+        // Funcionalidad de búsqueda (opcional)
+        function searchContent(query) {
+            const sections = document.querySelectorAll('.section');
+            sections.forEach(section => {
+                const text = section.textContent.toLowerCase();
+                if (text.includes(query.toLowerCase())) {
+                    section.style.display = 'block';
+                } else {
+                    section.style.display = 'none';
+                }
             });
-            card.addEventListener('mouseleave', function() {
-                this.style.transform = 'translateY(0) scale(1)';
-            });
-        });
+        }
     </script>
 </body>
 </html>

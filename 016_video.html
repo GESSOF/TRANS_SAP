@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Curso SAP HANA - Interfaces Cockpit</title>
+    <title>No Disponible - Portal Educativo</title>
     <style>
         * {
             margin: 0;
@@ -12,984 +12,99 @@
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Arial', sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
-            color: #333;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
         }
 
         .container {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-
-        .header {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
-            padding: 30px;
-            margin-bottom: 30px;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
             text-align: center;
-        }
-
-        .header h1 {
-            color: #2c3e50;
-            font-size: 2.5em;
-            margin-bottom: 10px;
-            background: linear-gradient(45deg, #667eea, #764ba2);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .header p {
-            color: #666;
-            font-size: 1.2em;
-        }
-
-        .dashboard {
-            display: grid;
-            grid-template-columns: 300px 1fr;
-            gap: 30px;
-            margin-bottom: 30px;
-        }
-
-        .sidebar {
             background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(10px);
             border-radius: 20px;
-            padding: 30px;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
-            height: fit-content;
-            position: sticky;
-            top: 20px;
-        }
-
-        .sidebar h3 {
-            color: #2c3e50;
-            margin-bottom: 20px;
-            padding-bottom: 10px;
-            border-bottom: 2px solid #667eea;
-        }
-
-        .nav-item {
-            padding: 12px 20px;
-            margin: 5px 0;
-            background: linear-gradient(45deg, #f8f9fa, #e9ecef);
-            border-radius: 12px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            border-left: 4px solid transparent;
-            font-size: 0.9em;
-        }
-
-        .nav-item:hover {
-            background: linear-gradient(45deg, #667eea, #764ba2);
-            color: white;
-            transform: translateX(10px);
-            border-left-color: #fff;
-        }
-
-        .nav-item.active {
-            background: linear-gradient(45deg, #667eea, #764ba2);
-            color: white;
-            border-left-color: #fff;
-        }
-
-        .mobile-menu-toggle {
-            display: none;
-            background: rgba(255, 255, 255, 0.95);
-            border: none;
-            padding: 15px;
-            border-radius: 15px;
-            margin-bottom: 20px;
-            font-size: 1.2em;
-            cursor: pointer;
+            padding: 60px 40px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
             width: 100%;
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            animation: fadeInUp 0.8s ease-out;
         }
 
-        .content {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
-            padding: 40px;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
-        .section {
-            display: none;
-            animation: fadeIn 0.5s ease;
+        .icon {
+            font-size: 80px;
+            margin-bottom: 30px;
+            animation: bounce 2s infinite;
         }
 
-        .section.active {
-            display: block;
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateY(0);
+            }
+            40% {
+                transform: translateY(-10px);
+            }
+            60% {
+                transform: translateY(-5px);
+            }
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .section h2 {
-            color: #2c3e50;
-            font-size: 2em;
-            margin-bottom: 20px;
-            padding-bottom: 10px;
-            border-bottom: 3px solid #667eea;
-        }
-
-        .concept-card {
-            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-            border-radius: 15px;
-            padding: 25px;
-            margin: 20px 0;
-            border-left: 5px solid #667eea;
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
-            transition: transform 0.3s ease;
-        }
-
-        .concept-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-        }
-
-        .concept-card h3 {
-            color: #2c3e50;
-            margin-bottom: 15px;
-            font-size: 1.4em;
-        }
-
-        .concept-card p {
-            line-height: 1.8;
-            color: #555;
-            margin-bottom: 15px;
-        }
-
-        .concept-card ul {
-            margin-left: 20px;
-            margin-top: 10px;
-        }
-
-        .concept-card li {
-            margin: 8px 0;
-            color: #555;
-        }
-
-        .definition-box {
-            background: linear-gradient(135deg, #fff3cd, #ffeaa7);
-            border-radius: 15px;
-            padding: 25px;
-            margin: 20px 0;
-            border-left: 5px solid #f39c12;
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
-        }
-
-        .definition-box h3 {
-            color: #856404;
-            margin-bottom: 15px;
-            font-size: 1.3em;
-        }
-
-        .definition-box p {
-            color: #856404;
-            line-height: 1.8;
-            margin-bottom: 10px;
-        }
-
-        .example-box {
-            background: linear-gradient(135deg, #e8f5e8, #d4edda);
-            border-radius: 15px;
-            padding: 25px;
-            margin: 20px 0;
-            border-left: 5px solid #27ae60;
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
-        }
-
-        .example-box h3 {
-            color: #155724;
-            margin-bottom: 15px;
-            font-size: 1.3em;
-        }
-
-        .example-box p {
-            color: #155724;
-            line-height: 1.8;
-            margin-bottom: 10px;
-        }
-
-        .example-box ul {
-            margin-left: 20px;
-            margin-top: 10px;
-        }
-
-        .example-box li {
-            margin: 8px 0;
-            color: #155724;
-        }
-
-        .warning-box {
-            background: linear-gradient(135deg, #ffebee, #ffcdd2);
-            border-radius: 15px;
-            padding: 20px;
-            margin: 20px 0;
-            border-left: 5px solid #e74c3c;
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
-        }
-
-        .warning-box strong {
-            color: #c62828;
-        }
-
-        .warning-box p {
-            color: #c62828;
-            line-height: 1.8;
-            margin-top: 10px;
-        }
-
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-            margin: 20px 0;
-        }
-
-        .stat-card {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
-            padding: 25px;
-            border-radius: 15px;
-            text-align: center;
-            transition: transform 0.3s ease;
-        }
-
-        .stat-card:hover {
-            transform: scale(1.05);
-        }
-
-        .stat-number {
-            font-size: 2.5em;
+        .main-title {
+            font-size: 3.5rem;
             font-weight: bold;
-            margin-bottom: 10px;
+            color: #2d3748;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+            letter-spacing: -1px;
         }
 
-        .progress-bar {
-            background: #e9ecef;
-            border-radius: 10px;
-            padding: 3px;
-            margin: 20px 0;
+        .subtitle {
+            font-size: 1.3rem;
+            color: #4a5568;
+            margin-bottom: 30px;
+            line-height: 1.6;
         }
 
-        .progress {
-            background: linear-gradient(45deg, #667eea, #764ba2);
-            height: 20px;
-            border-radius: 8px;
-            transition: width 0.5s ease;
-        }
 
-        .feature-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
-            margin: 20px 0;
-        }
-
-        .feature-card {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
-            padding: 20px;
-            border-radius: 15px;
-            text-align: center;
-            transition: transform 0.3s ease;
-        }
-
-        .feature-card:hover {
-            transform: scale(1.05);
-        }
-
-        .feature-card h4 {
-            font-size: 1.2em;
-            margin-bottom: 10px;
-        }
-
-        .interface-comparison {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-            margin: 20px 0;
-        }
-
-        .interface-card {
-            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
-            border-radius: 15px;
-            padding: 25px;
-            border-left: 5px solid #667eea;
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
-        }
-
-        .interface-card h4 {
-            color: #2c3e50;
-            margin-bottom: 15px;
-            font-size: 1.3em;
-        }
 
         @media (max-width: 768px) {
             .container {
-                padding: 10px;
-            }
-
-            .header {
-                padding: 20px;
-                margin-bottom: 20px;
-            }
-
-            .header h1 {
-                font-size: 1.8em;
-            }
-
-            .dashboard {
-                grid-template-columns: 1fr;
-                gap: 20px;
+                padding: 40px 20px;
             }
             
-            .sidebar {
-                position: static;
-                padding: 20px;
-                order: 2;
+            .main-title {
+                font-size: 2.5rem;
             }
-
-            .mobile-menu-toggle {
-                display: block;
-                order: 1;
-            }
-
-            .sidebar.mobile-hidden {
-                display: none;
-            }
-
-            .content {
-                padding: 20px;
-                order: 3;
-            }
-
-            .section h2 {
-                font-size: 1.5em;
-            }
-
-            .concept-card, .definition-box, .example-box {
-                padding: 20px;
-                margin: 15px 0;
-            }
-
-            .stats-grid, .feature-grid {
-                grid-template-columns: 1fr;
-                gap: 15px;
-            }
-
-            .interface-comparison {
-                grid-template-columns: 1fr;
-            }
-
-            .nav-item {
-                padding: 15px 20px;
-                font-size: 1em;
-                text-align: center;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .header h1 {
-                font-size: 1.5em;
-            }
-
-            .content {
-                padding: 15px;
-            }
-
-            .concept-card, .definition-box, .example-box {
-                padding: 15px;
+            
+            .subtitle {
+                font-size: 1.1rem;
             }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <header class="header">
-            <img src="https://gessof.cl/wp-content/uploads/2025/05/Logo-minimalista-con-simbolismo-global.png" alt="Gessof Logo" style="height: 80px; margin-bottom: 20px; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.1));">
-            <h1>Curso SAP HANA</h1>
-            <h2 style="color: #667eea; font-size: 1.5em; margin: 10px 0; font-weight: 600;">VIDEO 016</h2>
-            <p>Interfaces Cockpit - Administración y Monitorización</p>
-            <div class="progress-bar">
-                <div class="progress" style="width: 100%"></div>
-            </div>
-        </header>
+        <div class="icon">📚</div>
+        
+		<h1 class="main-title">CLASE 016</h1>
+        <h1 class="main-title">NO DISPONIBLE</h1>
+        
+        <p class="subtitle">Contenido temporalmente inaccesible</p>
+        
 
-        <div class="dashboard">
-            <button class="mobile-menu-toggle" onclick="toggleMobileMenu()">
-                📋 Menú de Contenidos
-            </button>
-
-            <nav class="sidebar" id="sidebar">
-                <h3>Contenidos del Módulo</h3>
-                <div class="nav-item active" onclick="showSection('overview')">📋 Resumen General</div>
-                <div class="nav-item" onclick="showSection('introduction')">🚀 Introducción</div>
-                <div class="nav-item" onclick="showSection('hana-cockpit')">🛠️ SAP HANA Cockpit</div>
-                <div class="nav-item" onclick="showSection('xsa-cockpit')">⚙️ XSA Cockpit</div>
-                <div class="nav-item" onclick="showSection('user-management')">👥 Gestión de Usuarios</div>
-                <div class="nav-item" onclick="showSection('monitoring')">📊 Monitorización</div>
-                <div class="nav-item" onclick="showSection('spaces')">🏢 Espacios de Trabajo</div>
-                <div class="nav-item" onclick="showSection('conclusions')">🎯 Conclusiones</div>
-            </nav>
-
-            <main class="content">
-                <section id="overview" class="section active">
-                    <h2>📋 Resumen General del Módulo</h2>
-                    
-                    <div class="stats-grid">
-                        <div class="stat-card">
-                            <div class="stat-number">2</div>
-                            <div>Interfaces Cockpit</div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-number">3</div>
-                            <div>Tipos de Roles</div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-number">2</div>
-                            <div>Espacios de Trabajo</div>
-                        </div>
-                    </div>
-
-                    <div class="concept-card">
-                        <h3>🎯 Objetivos del Módulo</h3>
-                        <p>En esta clase exploraremos las interfaces de administración de <strong>SAP HANA</strong>, específicamente el <strong>SAP HANA Cockpit</strong> para administración de base de datos y el <strong>XSA Cockpit</strong> para gestión del servidor de aplicaciones.</p>
-                    </div>
-
-                    <div class="interface-comparison">
-                        <div class="interface-card">
-                            <h4>🛠️ SAP HANA Cockpit</h4>
-                            <ul>
-                                <li>Administración de base de datos</li>
-                                <li>Monitorización del sistema</li>
-                                <li>Navegador SQL</li>
-                                <li>Copias de seguridad</li>
-                            </ul>
-                        </div>
-                        <div class="interface-card">
-                            <h4>⚙️ XSA Cockpit</h4>
-                            <ul>
-                                <li>Servidor de aplicaciones</li>
-                                <li>Gestión de usuarios</li>
-                                <li>Espacios de trabajo</li>
-                                <li>Roles y permisos</li>
-                            </ul>
-                        </div>
-                    </div>
-
-                    <div class="definition-box">
-                        <h3>🔑 Conceptos Clave</h3>
-                        <p><strong>Cockpit:</strong> Interfaz web de administración que proporciona un punto único de acceso para herramientas de administración y monitorización de SAP HANA.</p>
-                    </div>
-                </section>
-
-                <section id="introduction" class="section">
-                    <h2>🚀 Introducción</h2>
-                    
-                    <div class="concept-card">
-                        <h3>🎯 Propósito de las Interfaces Cockpit</h3>
-                        <p>Las interfaces Cockpit de SAP HANA proporcionan herramientas completas para la administración, monitorización y gestión de bases de datos SAP HANA, tanto individuales como múltiples tenant.</p>
-                    </div>
-
-                    <div class="definition-box">
-                        <h3>💡 Características Principales</h3>
-                        <p>Ambas interfaces están basadas en <strong>HTML5</strong>, se ejecutan en navegadores web y proporcionan acceso unificado a todas las herramientas administrativas necesarias para el mantenimiento del sistema.</p>
-                    </div>
-
-                    <div class="concept-card">
-                        <h3>🔧 Requisitos del Sistema</h3>
-                        <ul>
-                            <li><strong>SAP HANA 2.0:</strong> Compatibilidad completa</li>
-                            <li><strong>SAP HANA 1.0 SPS 12:</strong> Funcionalidad básica</li>
-                            <li><strong>Navegador web moderno:</strong> HTML5 compatible</li>
-                            <li><strong>XSA Runtime:</strong> Para funcionalidades avanzadas</li>
-                        </ul>
-                    </div>
-
-                    <div class="example-box">
-                        <h3>🌐 Acceso a las Interfaces</h3>
-                        <p>Desde la pantalla de inicio del sistema SAP HANA encontramos:</p>
-                        <ul>
-                            <li><strong>WebIDE:</strong> Para desarrollo de aplicaciones</li>
-                            <li><strong>XSA Cockpit:</strong> Administración del servidor de aplicaciones</li>
-                            <li><strong>HANA Cockpit:</strong> Administración de la base de datos</li>
-                        </ul>
-                    </div>
-                </section>
-
-                <section id="hana-cockpit" class="section">
-                    <h2>🛠️ SAP HANA Cockpit</h2>
-                    
-                    <div class="concept-card">
-                        <h3>🔍 ¿Qué es SAP HANA Cockpit?</h3>
-                        <p>El SAP HANA Cockpit provee un <strong>único punto de acceso</strong> a herramientas para administración y monitorización de bases de datos SAP HANA. Integra capacidades de desarrollo SQL requeridas por administradores en una interfaz HTML5 basada en web.</p>
-                    </div>
-
-                    <div class="feature-grid">
-                        <div class="feature-card">
-                            <h4>📊 Monitor del Landscape</h4>
-                            <p>Supervisión general del sistema</p>
-                        </div>
-                        <div class="feature-card">
-                            <h4>⚙️ Administración</h4>
-                            <p>Gestión de configuraciones</p>
-                        </div>
-                        <div class="feature-card">
-                            <h4>🆘 Soporte</h4>
-                            <p>Comunicación con partners</p>
-                        </div>
-                        <div class="feature-card">
-                            <h4>💾 Copias de Seguridad</h4>
-                            <p>Gestión de backups</p>
-                        </div>
-                    </div>
-
-                    <div class="concept-card">
-                        <h3>🗂️ Directorio de Recursos</h3>
-                        <p>Desde esta sección podemos visualizar y gestionar:</p>
-                        <ul>
-                            <li><strong>Sistemas activos:</strong> Bases de datos en funcionamiento</li>
-                            <li><strong>Configuraciones:</strong> Parámetros del sistema</li>
-                            <li><strong>Conexiones:</strong> Información de conectividad</li>
-                            <li><strong>Usuarios técnicos:</strong> Cuentas de sistema</li>
-                        </ul>
-                    </div>
-
-                    <div class="example-box">
-                        <h3>📝 Información del Sistema</h3>
-                        <p>El cockpit muestra detalles como:</p>
-                        <ul>
-                            <li><strong>Nombre de base de datos:</strong> HXE</li>
-                            <li><strong>Tipo:</strong> Multicontainer/tenant</li>
-                            <li><strong>Puerto de conexión:</strong> Configuración de red</li>
-                            <li><strong>Usuario técnico:</strong> Credenciales de administración</li>
-                        </ul>
-                    </div>
-
-                    <div class="concept-card">
-                        <h3>🔧 Navegador de Base de Datos</h3>
-                        <p>Funcionalidad similar al WebIDE que permite:</p>
-                        <ul>
-                            <li>Exploración de esquemas y objetos</li>
-                            <li>Ejecución de sentencias SQL</li>
-                            <li>Visualización de metadatos</li>
-                            <li>Análisis de rendimiento</li>
-                        </ul>
-                    </div>
-
-                    <div class="warning-box">
-                        <strong>⚠️ Importante:</strong>
-                        <p>El acceso al SAP HANA Cockpit requiere credenciales específicas de administración. Algunos usuarios pueden tener restricciones de acceso por motivos de seguridad.</p>
-                    </div>
-                </section>
-
-                <section id="xsa-cockpit" class="section">
-                    <h2>⚙️ XSA Cockpit</h2>
-                    
-                    <div class="concept-card">
-                        <h3>🌐 Servidor de Aplicaciones XSA</h3>
-                        <p>El XSA Cockpit está dedicado a la administración del <strong>servidor de aplicaciones XSA</strong> (Extended Services, Advanced). Proporciona información detallada sobre organizaciones, espacios y aplicaciones en ejecución.</p>
-                    </div>
-
-                    <div class="concept-card">
-                        <h3>🏢 Estructura Organizacional</h3>
-                        <p>El sistema se organiza jerárquicamente:</p>
-                        <ul>
-                            <li><strong>Organizaciones:</strong> Contenedores principales del sistema</li>
-                            <li><strong>Espacios:</strong> Áreas de trabajo dentro de organizaciones</li>
-                            <li><strong>Aplicaciones:</strong> Servicios y herramientas en ejecución</li>
-                        </ul>
-                    </div>
-
-                    <div class="interface-comparison">
-                        <div class="interface-card">
-                            <h4>🔧 Espacio SAP</h4>
-                            <ul>
-                                <li>34 aplicaciones funcionando</li>
-                                <li>13 aplicaciones detenidas</li>
-                                <li>11.70 GB de memoria</li>
-                                <li>Servicios del sistema</li>
-                            </ul>
-                        </div>
-                        <div class="interface-card">
-                            <h4>💻 Espacio Development</h4>
-                            <ul>
-                                <li>4 aplicaciones iniciadas</li>
-                                <li>1.75 GB de memoria</li>
-                                <li>40 miembros registrados</li>
-                                <li>Entorno de desarrollo</li>
-                            </ul>
-                        </div>
-                    </div>
-
-                    <div class="example-box">
-                        <h3>📊 Monitorización en Tiempo Real</h3>
-                        <p>Desde el XSA Cockpit podemos:</p>
-                        <ul>
-                            <li><strong>Visualizar servicios activos:</strong> Estado de aplicaciones</li>
-                            <li><strong>Controlar servicios:</strong> Iniciar, detener, reiniciar</li>
-                            <li><strong>Escalar recursos:</strong> Añadir instancias</li>
-                            <li><strong>Monitorear recursos:</strong> Memoria, CPU, conexiones</li>
-                        </ul>
-                    </div>
-
-                    <div class="concept-card">
-                        <h3>🔗 Comunicación entre Espacios</h3>
-                        <p>Aunque los espacios SAP y Development están diferenciados, existe <strong>comunicación intensa</strong> entre ellos. El espacio SAP contiene todas las aplicaciones y herramientas propias que permiten el funcionamiento del espacio de desarrollo.</p>
-                    </div>
-
-                    <div class="warning-box">
-                        <strong>⚠️ Precaución:</strong>
-                        <p>La administración de servicios requiere conocimiento específico. Modificar configuraciones sin el conocimiento adecuado puede afectar la estabilidad del sistema.</p>
-                    </div>
-                </section>
-
-                <section id="user-management" class="section">
-                    <h2>👥 Gestión de Usuarios</h2>
-                    
-                    <div class="concept-card">
-                        <h3>👤 Creación de Usuarios</h3>
-                        <p>La gestión de usuarios en SAP HANA requiere un <strong>proceso en dos pasos</strong>:</p>
-                        <ol>
-                            <li>Crear el usuario en la base de datos</li>
-                            <li>Asignar el usuario a un espacio de trabajo</li>
-                        </ol>
-                    </div>
-
-                    <div class="concept-card">
-                        <h3>🔐 Roles y Permisos</h3>
-                        <p>Los <strong>roles</strong> son colecciones de privilegios que se pueden asignar a usuarios u otros roles. Principales roles disponibles:</p>
-                        <ul>
-                            <li><strong>Developer:</strong> Para tareas de desarrollo</li>
-                            <li><strong>Administrator:</strong> Permisos administrativos</li>
-                            <li><strong>Auditor:</strong> Solo lectura y auditoria</li>
-                        </ul>
-                    </div>
-
-                    <div class="example-box">
-                        <h3>⚙️ Proceso de Configuración</h3>
-                        <p><strong>Paso 1 - Crear usuario en base de datos:</strong></p>
-                        <ul>
-                            <li>Acceder a "Host Management"</li>
-                            <li>Seleccionar "Usuarios"</li>
-                            <li>Crear nuevo usuario con datos básicos</li>
-                            <li>Asignar roles de base de datos</li>
-                        </ul>
-                        
-                        <p><strong>Paso 2 - Asignar a espacio de trabajo:</strong></p>
-                        <ul>
-                            <li>Ir a Organización → Espacio (Development/SAP)</li>
-                            <li>Sección "Miembros"</li>
-                            <li>Añadir usuario con rol específico del espacio</li>
-                        </ul>
-                    </div>
-
-                    <div class="feature-grid">
-                        <div class="feature-card">
-                            <h4>👨‍💻 Desarrollador del Espacio</h4>
-                            <p>Permisos completos de desarrollo</p>
-                        </div>
-                        <div class="feature-card">
-                            <h4>👨‍💼 Administrador del Espacio</h4>
-                            <p>Gestión y configuración</p>
-                        </div>
-                        <div class="feature-card">
-                            <h4>👁️ Auditor del Espacio</h4>
-                            <p>Solo lectura y supervisión</p>
-                        </div>
-                    </div>
-
-                    <div class="concept-card">
-                        <h3>🔄 Migración de Usuarios</h3>
-                        <p>Para usuarios existentes en SAP HANA 1.0, existe una funcionalidad de <strong>migración</strong> que convierte automáticamente los usuarios para que puedan acceder al motor XSA sin perder sus configuraciones previas.</p>
-                    </div>
-
-                    <div class="warning-box">
-                        <strong>📌 Recordatorio:</strong>
-                        <p>Un usuario creado solo en la base de datos NO puede trabajar hasta que se le asigne un espacio de trabajo con los roles apropiados. Ambos pasos son obligatorios.</p>
-                    </div>
-                </section>
-
-                <section id="monitoring" class="section">
-                    <h2>📊 Monitorización</h2>
-                    
-                    <div class="concept-card">
-                        <h3>📈 Supervisión del Sistema</h3>
-                        <p>Las interfaces Cockpit proporcionan herramientas completas para <strong>monitorización en tiempo real</strong> del estado del sistema, recursos y rendimiento.</p>
-                    </div>
-
-                    <div class="feature-grid">
-                        <div class="feature-card">
-                            <h4>💾 Memoria</h4>
-                            <p>Uso de RAM por servicios</p>
-                        </div>
-                        <div class="feature-card">
-                            <h4>🔗 Conexiones</h4>
-                            <p>Sesiones activas y rutas</p>
-                        </div>
-                        <div class="feature-card">
-                            <h4>⚡ Servicios</h4>
-                            <p>Estado de aplicaciones</p>
-                        </div>
-                        <div class="feature-card">
-                            <h4>👥 Usuarios</h4>
-                            <p>Sesiones y actividad</p>
-                        </div>
-                    </div>
-
-                    <div class="concept-card">
-                        <h3>🔍 Información Detallada</h3>
-                        <p>Para cada espacio de trabajo podemos monitorizar:</p>
-                        <ul>
-                            <li><strong>Aplicaciones iniciadas/detenidas:</strong> Estado operativo</li>
-                            <li><strong>Consumo de memoria:</strong> Optimización de recursos</li>
-                            <li><strong>Número de rutas:</strong> Conectividad de servicios</li>
-                            <li><strong>Miembros activos:</strong> Usuarios conectados</li>
-                        </ul>
-                    </div>
-
-                    <div class="example-box">
-                        <h3>📋 Logs y Eventos</h3>
-                        <p>Las interfaces proporcionan acceso a:</p>
-                        <ul>
-                            <li><strong>Logs de sistema:</strong> Registro de actividades</li>
-                            <li><strong>Eventos de seguridad:</strong> Accesos y permisos</li>
-                            <li><strong>Avisos (Warnings):</strong> Alertas del sistema</li>
-                            <li><strong>Métricas de rendimiento:</strong> Análisis histórico</li>
-                        </ul>
-                    </div>
-
-                    <div class="concept-card">
-                        <h3>⚙️ Administración de Servicios</h3>
-                        <p>Desde las interfaces de monitorización es posible:</p>
-                        <ul>
-                            <li>Reiniciar servicios problemáticos</li>
-                            <li>Detener aplicaciones que consumen recursos</li>
-                            <li>Escalar añadiendo nuevas instancias</li>
-                            <li>Eliminar servicios innecesarios</li>
-                        </ul>
-                    </div>
-
-                    <div class="warning-box">
-                        <strong>⚠️ Precaución en Monitorización:</strong>
-                        <p>La monitorización debe realizarse con conocimiento del sistema. Realizar cambios sin comprender las dependencias puede causar interrupciones en el servicio.</p>
-                    </div>
-                </section>
-
-                <section id="spaces" class="section">
-                    <h2>🏢 Espacios de Trabajo</h2>
-                    
-                    <div class="concept-card">
-                        <h3>🔧 Estructura de Espacios</h3>
-                        <p>SAP HANA organiza el trabajo en <strong>espacios diferenciados</strong> que proporcionan aislamiento y organización para diferentes propósitos y equipos de trabajo.</p>
-                    </div>
-
-                    <div class="interface-comparison">
-                        <div class="interface-card">
-                            <h4>🏭 Espacio SAP</h4>
-                            <ul>
-                                <li><strong>Propósito:</strong> Servicios del sistema</li>
-                                <li><strong>Aplicaciones:</strong> +30 servicios básicos</li>
-                                <li><strong>Recursos:</strong> 11+ GB memoria</li>
-                                <li><strong>Usuarios:</strong> Administradores</li>
-                            </ul>
-                        </div>
-                        <div class="interface-card">
-                            <h4>💻 Espacio Development</h4>
-                            <ul>
-                                <li><strong>Propósito:</strong> Desarrollo de aplicaciones</li>
-                                <li><strong>Aplicaciones:</strong> ~4 herramientas</li>
-                                <li><strong>Recursos:</strong> 1.75 GB memoria</li>
-                                <li><strong>Usuarios:</strong> 40+ desarrolladores</li>
-                            </ul>
-                        </div>
-                    </div>
-
-                    <div class="concept-card">
-                        <h3>🔗 Interacción entre Espacios</h3>
-                        <p>Aunque los espacios están <strong>diferenciados</strong>, mantienen comunicación intensa. El espacio SAP contiene todas las aplicaciones y herramientas fundamentales que permiten el funcionamiento del espacio de desarrollo.</p>
-                    </div>
-
-                    <div class="example-box">
-                        <h3>⚙️ Configuración de Espacios</h3>
-                        <p>Características de configuración:</p>
-                        <ul>
-                            <li><strong>Variables de entorno:</strong> Configuración específica</li>
-                            <li><strong>Roles y permisos:</strong> Control de acceso</li>
-                            <li><strong>Certificados:</strong> Seguridad y autenticación</li>
-                            <li><strong>User Provided Variables:</strong> Conexiones HDI</li>
-                        </ul>
-                    </div>
-
-                    <div class="concept-card">
-                        <h3>🎯 Espacios Adicionales</h3>
-                        <p>Es posible crear espacios adicionales para diferentes propósitos:</p>
-                        <ul>
-                            <li><strong>Producción:</strong> Aplicaciones en vivo</li>
-                            <li><strong>Test:</strong> Pruebas y validación</li>
-                            <li><strong>Staging:</strong> Pre-producción</li>
-                            <li><strong>Training:</strong> Formación y demos</li>
-                        </ul>
-                    </div>
-
-                    <div class="definition-box">
-                        <h3>💡 Concepto Clave</h3>
-                        <p><strong>Aislamiento de espacios:</strong> Cada espacio proporciona un entorno controlado donde los desarrolladores pueden trabajar sin afectar otros espacios o el sistema de producción.</p>
-                    </div>
-                </section>
-
-                <section id="conclusions" class="section">
-                    <h2>🎯 Conclusiones</h2>
-                    
-                    <div class="concept-card">
-                        <h3>📋 Resumen de Interfaces</h3>
-                        <p>Las interfaces Cockpit de SAP HANA proporcionan herramientas administrativas completas para diferentes aspectos del sistema:</p>
-                    </div>
-
-                    <div class="interface-comparison">
-                        <div class="interface-card">
-                            <h4>🛠️ SAP HANA Cockpit</h4>
-                            <p><strong>Enfoque:</strong> Base de datos</p>
-                            <ul>
-                                <li>Administración de BBDD</li>
-                                <li>Monitorización del sistema</li>
-                                <li>Navegador SQL</li>
-                                <li>Gestión de recursos</li>
-                            </ul>
-                        </div>
-                        <div class="interface-card">
-                            <h4>⚙️ XSA Cockpit</h4>
-                            <p><strong>Enfoque:</strong> Aplicaciones</p>
-                            <ul>
-                                <li>Servidor de aplicaciones</li>
-                                <li>Gestión de usuarios</li>
-                                <li>Espacios de trabajo</li>
-                                <li>Roles y permisos</li>
-                            </ul>
-                        </div>
-                    </div>
-
-                    <div class="concept-card">
-                        <h3>🔑 Puntos Clave</h3>
-                        <ul>
-                            <li>Las interfaces Cockpit son <strong>herramientas administrativas especializadas</strong> que requieren conocimientos específicos</li>
-                            <li>La <strong>gestión de usuarios es un proceso de dos pasos</strong>: creación en BBDD + asignación a espacios</li>
-                            <li>Los <strong>espacios de trabajo proporcionan aislamiento</strong> y organización para diferentes propósitos</li>
-                            <li>La <strong>monitorización en tiempo real</strong> permite optimización y resolución de problemas</li>
-                        </ul>
-                    </div>
-
-                    <div class="warning-box">
-                        <strong>⚠️ Recomendación:</strong>
-                        <p>El uso de estas interfaces requiere formación específica en administración de SAP HANA. Es recomendable practicar en entornos de desarrollo antes de trabajar en sistemas de producción.</p>
-                    </div>
-
-                    <div class="concept-card">
-                        <h3>🚀 Próximos Pasos</h3>
-                        <p>Con el conocimiento de las interfaces administrativas, estamos preparados para avanzar hacia el <strong>lenguaje HANA SQL</strong>, que será el foco principal de las próximas unidades del curso.</p>
-                    </div>
-
-                    <div class="definition-box">
-                        <h3>🎯 Objetivo Alcanzado</h3>
-                        <p>Hemos completado la exploración de las principales interfaces de SAP HANA, proporcionando una base sólida para comprender la administración y gestión del sistema antes de adentrarnos en aspectos más técnicos del desarrollo.</p>
-                    </div>
-                </section>
-            </main>
-        </div>
     </div>
-
-    <script>
-        function showSection(sectionId) {
-            // Ocultar todas las secciones
-            const sections = document.querySelectorAll('.section');
-            sections.forEach(section => {
-                section.classList.remove('active');
-            });
-            
-            // Mostrar la sección seleccionada
-            document.getElementById(sectionId).classList.add('active');
-            
-            // Actualizar navegación
-            const navItems = document.querySelectorAll('.nav-item');
-            navItems.forEach(item => {
-                item.classList.remove('active');
-            });
-            
-            // Marcar el elemento activo
-            event.target.classList.add('active');
-            
-            // Scroll al inicio del contenido
-            document.querySelector('.content').scrollTop = 0;
-
-            // En móviles, ocultar el menú después de seleccionar
-            if (window.innerWidth <= 768) {
-                const sidebar = document.getElementById('sidebar');
-                sidebar.classList.add('mobile-hidden');
-                
-                const toggleButton = document.querySelector('.mobile-menu-toggle');
-                toggleButton.textContent = '📋 Menú de Contenidos';
-            }
-        }
-
-        function toggleMobileMenu() {
-            const sidebar = document.getElementById('sidebar');
-            const toggleButton = document.querySelector('.mobile-menu-toggle');
-            
-            if (sidebar.classList.contains('mobile-hidden')) {
-                sidebar.classList.remove('mobile-hidden');
-                toggleButton.textContent = '❌ Cerrar Menú';
-            } else {
-                sidebar.classList.add('mobile-hidden');
-                toggleButton.textContent = '📋 Menú de Contenidos';
-            }
-        }
-
-        // Inicializar en móviles
-        document.addEventListener('DOMContentLoaded', function() {
-            if (window.innerWidth <= 768) {
-                const sidebar = document.getElementById('sidebar');
-                sidebar.classList.add('mobile-hidden');
-            }
-
-            // Animación de entrada
-            const cards = document.querySelectorAll('.concept-card, .definition-box, .example-box');
-            cards.forEach((card, index) => {
-                setTimeout(() => {
-                    card.style.opacity = '0';
-                    card.style.transform = 'translateY(20px)';
-                    card.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
-                    
-                    setTimeout(() => {
-                        card.style.opacity = '1';
-                        card.style.transform = 'translateY(0)';
-                    }, 100);
-                }, index * 100);
-            });
-        });
-
-        // Manejar cambios de tamaño de ventana
-        window.addEventListener('resize', function() {
-            const sidebar = document.getElementById('sidebar');
-            const toggleButton = document.querySelector('.mobile-menu-toggle');
-            
-            if (window.innerWidth > 768) {
-                sidebar.classList.remove('mobile-hidden');
-                toggleButton.textContent = '📋 Menú de Contenidos';
-            } else if (window.innerWidth <= 768 && !sidebar.classList.contains('mobile-hidden')) {
-                sidebar.classList.add('mobile-hidden');
-            }
-        });
-    </script>
 </body>
 </html>

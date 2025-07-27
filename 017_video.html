@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Curso SAP HANA - Introducción al Lenguaje HANA SQL</title>
+    <title>Curso SAP HANA - 10 Ejercicios Completos de Modelado</title>
     <style>
         * {
             margin: 0;
@@ -47,6 +47,16 @@
         .header p {
             color: #666;
             font-size: 1.2em;
+        }
+
+        .video-badge {
+            background: linear-gradient(45deg, #28a745, #20c997);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-weight: bold;
+            margin: 10px 0;
+            display: inline-block;
         }
 
         .dashboard {
@@ -156,7 +166,7 @@
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
         }
 
-        .concept-card h3 {
+        .concept-card h3, .concept-card h4 {
             color: #2c3e50;
             margin-bottom: 15px;
             font-size: 1.4em;
@@ -168,7 +178,7 @@
             margin-bottom: 15px;
         }
 
-        .concept-card ul {
+        .concept-card ul, .concept-card ol {
             margin-left: 20px;
             margin-top: 10px;
         }
@@ -178,59 +188,185 @@
             color: #555;
         }
 
-        .definition-box {
-            background: linear-gradient(135deg, #fff3cd, #ffeaa7);
+        .exercise-box {
+            background: linear-gradient(135deg, #f8f9ff 0%, #e6f3ff 100%);
             border-radius: 15px;
             padding: 25px;
             margin: 20px 0;
-            border-left: 5px solid #f39c12;
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+            border-left: 5px solid #007bff;
+            box-shadow: 0 5px 20px rgba(0, 123, 255, 0.1);
         }
 
-        .definition-box h3 {
-            color: #856404;
-            margin-bottom: 15px;
-            font-size: 1.3em;
+        .exercise-title {
+            color: #007bff;
+            font-size: 1.5em;
+            font-weight: bold;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: white;
+            border-radius: 10px;
+            border: 2px solid #007bff;
         }
 
-        .definition-box p {
-            color: #856404;
-            line-height: 1.8;
-            margin-bottom: 10px;
-        }
-
-        .example-box {
+        .entities-section {
             background: linear-gradient(135deg, #e8f5e8, #d4edda);
             border-radius: 15px;
-            padding: 25px;
+            padding: 20px;
             margin: 20px 0;
-            border-left: 5px solid #27ae60;
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+            border-left: 5px solid #28a745;
         }
 
-        .example-box h3 {
-            color: #155724;
-            margin-bottom: 15px;
-            font-size: 1.3em;
+        .entities-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
         }
 
-        .example-box p {
-            color: #155724;
-            line-height: 1.8;
+        .entity-card {
+            background: white;
+            border: 2px solid #28a745;
+            border-radius: 10px;
+            padding: 15px;
+            box-shadow: 0 3px 10px rgba(40, 167, 69, 0.2);
+        }
+
+        .entity-name {
+            background: #28a745;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-weight: bold;
+            text-align: center;
             margin-bottom: 10px;
         }
 
-        .example-box ul {
-            margin-left: 20px;
-            margin-top: 10px;
+        .attributes {
+            font-size: 0.9em;
+            line-height: 1.6;
         }
 
-        .example-box li {
+        .pk {
+            color: #dc3545;
+            font-weight: bold;
+        }
+
+        .fk {
+            color: #6f42c1;
+            font-style: italic;
+        }
+
+        .relationships-section {
+            background: linear-gradient(135deg, #d1ecf1, #b8daff);
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+            border-left: 5px solid #17a2b8;
+        }
+
+        .relationship-item {
+            background: white;
+            padding: 10px 15px;
             margin: 8px 0;
-            color: #155724;
+            border-radius: 8px;
+            border-left: 3px solid #17a2b8;
         }
 
-        .warning-box {
+        .tables-section {
+            background: linear-gradient(135deg, #fff3cd, #ffeaa7);
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+            border-left: 5px solid #ffc107;
+        }
+
+        .table-container {
+            background: white;
+            border: 2px solid #495057;
+            border-radius: 10px;
+            margin: 15px 0;
+            overflow: hidden;
+            box-shadow: 0 3px 10px rgba(73, 80, 87, 0.2);
+        }
+
+        .table-header {
+            background: linear-gradient(45deg, #495057, #6c757d);
+            color: white;
+            padding: 12px;
+            font-weight: bold;
+            text-align: center;
+            font-size: 1.1em;
+        }
+
+        .table-row {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        .table-row:last-child {
+            border-bottom: none;
+        }
+
+        .table-cell {
+            padding: 12px;
+            border-right: 1px solid #dee2e6;
+        }
+
+        .table-cell:last-child {
+            border-right: none;
+        }
+
+        .table-row:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+
+        .table-row:hover {
+            background-color: #e3f2fd;
+        }
+
+        .methodology-box {
+            background: linear-gradient(135deg, #fff9c4, #fff59d);
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+            border-left: 5px solid #ff9800;
+        }
+
+        .step-container {
+            counter-reset: step-counter;
+        }
+
+        .step {
+            counter-increment: step-counter;
+            position: relative;
+            padding-left: 60px;
+            margin: 20px 0;
+            background: white;
+            padding: 20px 20px 20px 60px;
+            border-radius: 10px;
+            border-left: 4px solid #ff9800;
+        }
+
+        .step::before {
+            content: counter(step-counter);
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: linear-gradient(45deg, #ff9800, #f57c00);
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 0.9em;
+        }
+
+        .important-note {
             background: linear-gradient(135deg, #ffebee, #ffcdd2);
             border-radius: 15px;
             padding: 20px;
@@ -239,14 +375,18 @@
             box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
         }
 
-        .warning-box strong {
+        .important-note strong {
             color: #c62828;
         }
 
-        .warning-box p {
+        .important-note p, .important-note ul, .important-note ol {
             color: #c62828;
             line-height: 1.8;
             margin-top: 10px;
+        }
+
+        .important-note li {
+            margin: 8px 0;
         }
 
         .stats-grid {
@@ -289,82 +429,22 @@
             transition: width 0.5s ease;
         }
 
-        .sql-types-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 20px;
-            margin: 20px 0;
-        }
-
-        .sql-type-card {
-            background: linear-gradient(135deg, #667eea, #764ba2);
+        .video-link {
+            display: inline-block;
+            background: linear-gradient(45deg, #28a745, #20c997);
             color: white;
-            padding: 25px;
-            border-radius: 15px;
-            transition: transform 0.3s ease;
-        }
-
-        .sql-type-card:hover {
-            transform: scale(1.05);
-        }
-
-        .sql-type-card h4 {
-            font-size: 1.3em;
-            margin-bottom: 15px;
-            text-align: center;
-        }
-
-        .sql-type-card .commands {
-            background: rgba(255, 255, 255, 0.1);
-            padding: 10px;
-            border-radius: 8px;
+            padding: 12px 24px;
+            text-decoration: none;
+            border-radius: 25px;
             margin: 10px 0;
-            text-align: center;
-            font-family: 'Courier New', monospace;
+            transition: transform 0.3s ease;
             font-weight: bold;
         }
 
-        .code-example {
-            background: #2d3748;
-            color: #e2e8f0;
-            padding: 20px;
-            border-radius: 10px;
-            font-family: 'Courier New', monospace;
-            margin: 20px 0;
-            overflow-x: auto;
-        }
-
-        .code-example .keyword {
-            color: #63b3ed;
-        }
-
-        .code-example .comment {
-            color: #68d391;
-        }
-
-        .code-example .string {
-            color: #fbb6ce;
-        }
-
-        .comparison-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-            margin: 20px 0;
-        }
-
-        .comparison-card {
-            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
-            border-radius: 15px;
-            padding: 25px;
-            border-left: 5px solid #667eea;
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
-        }
-
-        .comparison-card h4 {
-            color: #2c3e50;
-            margin-bottom: 15px;
-            font-size: 1.3em;
+        .video-link:hover {
+            transform: scale(1.05);
+            text-decoration: none;
+            color: white;
         }
 
         @media (max-width: 768px) {
@@ -410,18 +490,29 @@
                 font-size: 1.5em;
             }
 
-            .concept-card, .definition-box, .example-box {
+            .concept-card, .exercise-box, .methodology-box {
                 padding: 20px;
                 margin: 15px 0;
             }
 
-            .stats-grid, .sql-types-grid {
+            .entities-grid {
                 grid-template-columns: 1fr;
                 gap: 15px;
             }
 
-            .comparison-grid {
+            .table-row {
                 grid-template-columns: 1fr;
+                text-align: center;
+            }
+
+            .table-cell {
+                border-right: none;
+                border-bottom: 1px solid #dee2e6;
+            }
+
+            .step {
+                padding-left: 50px;
+                padding-right: 15px;
             }
 
             .nav-item {
@@ -440,8 +531,13 @@
                 padding: 15px;
             }
 
-            .concept-card, .definition-box, .example-box {
+            .concept-card, .exercise-box, .methodology-box {
                 padding: 15px;
+            }
+
+            .step {
+                padding-left: 45px;
+                padding-right: 10px;
             }
         }
     </style>
@@ -451,8 +547,9 @@
         <header class="header">
             <img src="https://gessof.cl/wp-content/uploads/2025/05/Logo-minimalista-con-simbolismo-global.png" alt="Gessof Logo" style="height: 80px; margin-bottom: 20px; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.1));">
             <h1>Curso SAP HANA</h1>
-            <h2 style="color: #667eea; font-size: 1.5em; margin: 10px 0; font-weight: 600;">VIDEO 017</h2>
-            <p>Introducción al Lenguaje HANA SQL</p>
+            <h2 style="color: #667eea; font-size: 1.5em; margin: 10px 0; font-weight: 600;">Clase 017</h2>
+            <p>10 Ejercicios Completos de Modelado en Sabana</p>
+            <div class="video-badge">📹 Clase Práctica Completa</div>
             <div class="progress-bar">
                 <div class="progress" style="width: 100%"></div>
             </div>
@@ -466,13 +563,14 @@
             <nav class="sidebar" id="sidebar">
                 <h3>Contenidos del Módulo</h3>
                 <div class="nav-item active" onclick="showSection('overview')">📋 Resumen General</div>
-                <div class="nav-item" onclick="showSection('introduction')">🚀 Introducción</div>
-                <div class="nav-item" onclick="showSection('sql-concepts')">💡 Conceptos SQL</div>
-                <div class="nav-item" onclick="showSection('ddl')">🏗️ DDL - Definición</div>
-                <div class="nav-item" onclick="showSection('dml')">📊 DML - Manipulación</div>
-                <div class="nav-item" onclick="showSection('dcl')">🔐 DCL - Control</div>
-                <div class="nav-item" onclick="showSection('comments')">💬 Comentarios</div>
-                <div class="nav-item" onclick="showSection('conclusions')">🎯 Conclusiones</div>
+                <div class="nav-item" onclick="showSection('objectives')">🎯 Objetivos</div>
+                <div class="nav-item" onclick="showSection('methodology')">📚 Metodología</div>
+                <div class="nav-item" onclick="showSection('exercise1')">🏢 Ejercicio 1: Empresa</div>
+                <div class="nav-item" onclick="showSection('exercise2')">🏪 Ejercicio 2: Ventas</div>
+                <div class="nav-item" onclick="showSection('analysis')">🔍 Puntos Clave</div>
+                <div class="nav-item" onclick="showSection('recommendations')">✅ Recomendaciones</div>
+                <div class="nav-item" onclick="showSection('resources')">📚 Recursos</div>
+                <div class="nav-item" onclick="showSection('video-info')">📹 Video Original</div>
             </nav>
 
             <main class="content">
@@ -481,517 +579,623 @@
                     
                     <div class="stats-grid">
                         <div class="stat-card">
-                            <div class="stat-number">3</div>
-                            <div>Tipos de SQL</div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-number">9</div>
-                            <div>Comandos Principales</div>
+                            <div class="stat-number">10</div>
+                            <div>Ejercicios Completos</div>
                         </div>
                         <div class="stat-card">
                             <div class="stat-number">2</div>
-                            <div>Tipos de Comentarios</div>
+                            <div>Casos Detallados</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number">5</div>
+                            <div>Pasos Metodológicos</div>
                         </div>
                     </div>
 
                     <div class="concept-card">
-                        <h3>🎯 Objetivos del Módulo</h3>
-                        <p>En esta clase comenzamos nuestro recorrido por el <strong>lenguaje HANA SQL</strong>, la herramienta fundamental para construir el modelo físico de nuestra base de datos y manipular los datos que contendrá.</p>
+                        <h3>🎯 Enfoque de la Clase</h3>
+                        <p>Esta clase práctica está dedicada a aplicar todo lo aprendido sobre <strong>Modelado de Bases de Datos</strong> a través de ejercicios completos que van desde el análisis de texto hasta la implementación final.</p>
                     </div>
 
-                    <div class="definition-box">
-                        <h3>🔑 Concepto Fundamental</h3>
-                        <p><strong>HANA SQL:</strong> Es la implementación de SAP del lenguaje SQL estándar (SQL-92) adaptado con características específicas para aprovechar las capacidades de SAP HANA.</p>
-                    </div>
-
-                    <div class="sql-types-grid">
-                        <div class="sql-type-card">
-                            <h4>🏗️ DDL</h4>
-                            <div class="commands">CREATE • ALTER • DROP</div>
-                            <p>Definición de objetos de base de datos</p>
-                        </div>
-                        <div class="sql-type-card">
-                            <h4>📊 DML</h4>
-                            <div class="commands">SELECT • INSERT • UPDATE • DELETE</div>
-                            <p>Manipulación de datos</p>
-                        </div>
-                        <div class="sql-type-card">
-                            <h4>🔐 DCL</h4>
-                            <div class="commands">GRANT • REVOKE</div>
-                            <p>Control de acceso y permisos</p>
-                        </div>
-                    </div>
-
-                    <div class="concept-card">
-                        <h3>📚 Contenido del Módulo</h3>
+                    <div class="methodology-box">
+                        <h3>🔧 Proceso Completo</h3>
+                        <p>Cada ejercicio sigue el proceso completo:</p>
                         <ul>
-                            <li><strong>Conceptos básicos:</strong> Qué es SQL y cómo funciona en HANA</li>
-                            <li><strong>Tipos de lenguaje:</strong> DDL, DML y DCL</li>
-                            <li><strong>Uso práctico:</strong> Consola SQL y comentarios</li>
-                            <li><strong>Preparación:</strong> Base para las siguientes unidades</li>
+                            <li><strong>Análisis del enunciado</strong> - Extracción de requisitos</li>
+                            <li><strong>Identificación de entidades</strong> - Elementos principales</li>
+                            <li><strong>Definición de atributos</strong> - Propiedades de cada entidad</li>
+                            <li><strong>Establecimiento de relaciones</strong> - Conexiones y cardinalidad</li>
+                            <li><strong>Modelo relacional</strong> - Conversión a tablas</li>
+                        </ul>
+                    </div>
+
+                    <div class="concept-card">
+                        <h3>📊 Ejercicios Incluidos</h3>
+                        <ul>
+                            <li><strong>Sistema de Empresa:</strong> Clientes, artículos, pedidos y fábricas</li>
+                            <li><strong>Sistema de Ventas:</strong> Proveedores, productos, categorías y ventas</li>
+                            <li><strong>8 ejercicios adicionales</strong> con diferentes niveles de complejidad</li>
                         </ul>
                     </div>
                 </section>
 
-                <section id="introduction" class="section">
-                    <h2>🚀 Introducción</h2>
+                <section id="objectives" class="section">
+                    <h2>🎯 Objetivos de la Clase</h2>
                     
                     <div class="concept-card">
-                        <h3>🎯 Transformación del Modelo</h3>
-                        <p>Hasta ahora hemos trabajado con modelos conceptuales (diagramas entidad-relación) y modelos lógicos (modelo relacional con formas normales). Ahora es momento de usar <strong>SQL para transformar ese modelo relacional en una base de datos física y útil</strong>.</p>
+                        <h3>📋 Competencias a Desarrollar</h3>
+                        <p>En esta clase aprenderemos a:</p>
+                        <ul>
+                            <li><strong>Analizar textos</strong> y extraer entidades, atributos y relaciones</li>
+                            <li><strong>Crear diseños entidad-relación</strong> a partir de enunciados complejos</li>
+                            <li><strong>Convertir esquemas entidad-relación</strong> a modelo relacional</li>
+                            <li><strong>Preparar el modelo</strong> para implementación en base de datos</li>
+                        </ul>
                     </div>
 
-                    <div class="comparison-grid">
-                        <div class="comparison-card">
-                            <h4>📝 Modelo Conceptual</h4>
-                            <ul>
-                                <li>Diagrama entidad-relación</li>
-                                <li>Representa el negocio</li>
-                                <li>Independiente de tecnología</li>
-                            </ul>
+                    <div class="methodology-box">
+                        <h3>🎯 Habilidades Específicas</h3>
+                        <div class="stats-grid">
+                            <div class="stat-card">
+                                <div class="stat-number">📝</div>
+                                <div>Análisis de Requisitos</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-number">🏗️</div>
+                                <div>Diseño Conceptual</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-number">🔗</div>
+                                <div>Modelado Relacional</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-number">⚙️</div>
+                                <div>Implementación</div>
+                            </div>
                         </div>
-                        <div class="comparison-card">
-                            <h4>⚙️ Modelo Lógico</h4>
-                            <ul>
-                                <li>Modelo relacional</li>
-                                <li>Aplicación de formas normales</li>
-                                <li>Optimización teórica</li>
-                            </ul>
-                        </div>
-                    </div>
-
-                    <div class="definition-box">
-                        <h3>💡 Interfaces como Generadores SQL</h3>
-                        <p>Tanto <strong>HANA Studio</strong> como <strong>WebIDE</strong> son esencialmente <strong>generadores de código SQL</strong>. Pueden comunicarse con la base de datos HANA tanto trabajando de forma textual (código directo) como con entornos gráficos que traducen nuestras acciones a SQL.</p>
                     </div>
 
                     <div class="concept-card">
-                        <h3>🔄 Proceso de Comunicación</h3>
-                        <ol>
-                            <li><strong>Instrucciones del usuario:</strong> Gráficas o textuales</li>
-                            <li><strong>Generación SQL:</strong> El cliente traduce a SQL</li>
-                            <li><strong>Envío a HANA:</strong> Comando SQL ejecutado</li>
-                            <li><strong>Interpretación:</strong> La base de datos procesa</li>
-                            <li><strong>Respuesta:</strong> Resultado al usuario</li>
-                        </ol>
-                    </div>
-
-                    <div class="example-box">
-                        <h3>🛠️ Ejemplo Práctico</h3>
-                        <p>Cuando trabajemos con plantillas gráficas o documentos XML, el sistema:</p>
+                        <h3>🚀 Beneficios Esperados</h3>
                         <ul>
-                            <li>Interpreta nuestras configuraciones visuales</li>
-                            <li>Genera automáticamente el código SQL correspondiente</li>
-                            <li>Ejecuta ese SQL contra la base de datos</li>
-                            <li>Nos presenta el resultado de forma amigable</li>
+                            <li><strong>Dominio completo</strong> del proceso de modelado</li>
+                            <li><strong>Capacidad de análisis</strong> de requisitos complejos</li>
+                            <li><strong>Habilidad para identificar</strong> patrones de diseño</li>
+                            <li><strong>Preparación para casos reales</strong> de trabajo profesional</li>
                         </ul>
                     </div>
                 </section>
 
-                <section id="sql-concepts" class="section">
-                    <h2>💡 Conceptos SQL</h2>
+                <section id="methodology" class="section">
+                    <h2>📚 Metodología de Trabajo</h2>
                     
-                    <div class="concept-card">
-                        <h3>📖 ¿Qué es SQL?</h3>
-                        <p><strong>SQL</strong> son las siglas de <strong>Structured Query Language</strong> (Lenguaje Estructurado de Consultas). Es un lenguaje estándar para la comunicación con bases de datos relacionales que se utiliza para obtener, introducir o manipular información.</p>
-                    </div>
-
-                    <div class="definition-box">
-                        <h3>🔧 HANA SQL vs SQL Estándar</h3>
-                        <p>SAP no ha inventado un lenguaje nuevo. Ha tomado el <strong>lenguaje SQL estándar (SQL-92)</strong> y lo ha implementado sobre su producto, realizando algunas modificaciones específicas para adaptarlo a las características particulares de SAP HANA.</p>
-                    </div>
-
-                    <div class="comparison-grid">
-                        <div class="comparison-card">
-                            <h4>✅ Ventajas de HANA SQL</h4>
-                            <ul>
-                                <li>Basado en estándar SQL-92</li>
-                                <li>Compatible con conocimientos previos</li>
-                                <li>Sintaxis familiar para desarrolladores</li>
-                                <li>Optimizado para HANA</li>
-                            </ul>
-                        </div>
-                        <div class="comparison-card">
-                            <h4>⚠️ Diferencias con otros SQL</h4>
-                            <ul>
-                                <li>SQL Server: Variaciones significativas</li>
-                                <li>Oracle: Mayor compatibilidad</li>
-                                <li>MySQL: Algunas diferencias menores</li>
-                                <li>PostgreSQL: Buena compatibilidad</li>
-                            </ul>
+                    <div class="methodology-box">
+                        <h3>🔧 Proceso Sistemático</h3>
+                        <p>Seguiremos un proceso estructurado de 5 pasos para cada ejercicio:</p>
+                        
+                        <div class="step-container">
+                            <div class="step">
+                                <strong>Análisis del texto:</strong> Identificar sustantivos que representen entidades y sus atributos correspondientes.
+                            </div>
+                            <div class="step">
+                                <strong>Identificación de entidades:</strong> Extraer los objetos de la realidad sobre los que necesitamos guardar información.
+                            </div>
+                            <div class="step">
+                                <strong>Definición de atributos:</strong> Determinar qué datos necesitamos almacenar para cada entidad.
+                            </div>
+                            <div class="step">
+                                <strong>Establecimiento de relaciones:</strong> Definir cómo se conectan las entidades entre sí.
+                            </div>
+                            <div class="step">
+                                <strong>Conversión a modelo relacional:</strong> Transformar el diagrama entidad-relación en tablas relacionales.
+                            </div>
                         </div>
                     </div>
 
                     <div class="concept-card">
-                        <h3>🎯 Propósito del Lenguaje SQL</h3>
-                        <p>El SQL nos permite realizar tres funcionalidades básicas y fundamentales:</p>
+                        <h3>🎯 Criterios de Calidad</h3>
                         <ul>
-                            <li><strong>Definir estructuras:</strong> Crear, modificar y eliminar objetos</li>
-                            <li><strong>Manipular datos:</strong> Insertar, consultar, actualizar y borrar información</li>
-                            <li><strong>Controlar acceso:</strong> Gestionar permisos y usuarios</li>
+                            <li><strong>Completitud:</strong> Capturar todos los requisitos del enunciado</li>
+                            <li><strong>Consistencia:</strong> Mantener coherencia en el diseño</li>
+                            <li><strong>Normalización:</strong> Evitar redundancia de datos</li>
+                            <li><strong>Eficiencia:</strong> Optimizar para consultas frecuentes</li>
                         </ul>
                     </div>
 
-                    <div class="warning-box">
-                        <strong>💡 Nota Importante:</strong>
-                        <p>Si has trabajado anteriormente con SQL de Oracle o bases de datos similares, podrás utilizar la mayoría de tu conocimiento aquí también, con pocas excepciones específicas de SAP HANA.</p>
+                    <div class="important-note">
+                        <strong>💡 Recomendación Metodológica</strong>
+                        <p>Cada paso debe completarse antes de pasar al siguiente. Es fundamental no acelerar el proceso y verificar cada decisión antes de continuar.</p>
                     </div>
                 </section>
 
-                <section id="ddl" class="section">
-                    <h2>🏗️ DDL - Data Definition Language</h2>
+                <section id="exercise1" class="section">
+                    <h2>🏢 Ejercicio 1: Sistema de Empresa</h2>
                     
-                    <div class="concept-card">
-                        <h3>🔍 ¿Qué es DDL?</h3>
-                        <p><strong>DDL (Data Definition Language)</strong> es la parte del lenguaje SQL dedicada a la <strong>definición de los objetos</strong> que podremos encontrarnos en la base de datos. Nos permite crear, modificar y eliminar estructuras.</p>
-                    </div>
+                    <div class="exercise-box">
+                        <div class="exercise-title">🏢 Sistema de Empresa (Clientes, Artículos y Pedidos)</div>
+                        
+                        <h3>📋 Enunciado</h3>
+                        <p><strong>Contexto:</strong> Crear una base de datos para una pequeña empresa que debe contener información acerca de clientes, artículos y pedidos.</p>
 
-                    <div class="sql-type-card" style="margin: 20px 0;">
-                        <h4>🏗️ Comandos DDL Principales</h4>
-                        <div class="commands">CREATE • ALTER • DROP</div>
-                    </div>
+                        <div class="entities-section">
+                            <h4>🏗️ Entidades Identificadas</h4>
+                            <div class="entities-grid">
+                                <div class="entity-card">
+                                    <div class="entity-name">CLIENTES</div>
+                                    <div class="attributes">
+                                        • <span class="pk">ID_Cliente</span> (PK)<br>
+                                        • Saldo<br>
+                                        • Límite_Crédito<br>
+                                        • Descuento
+                                    </div>
+                                </div>
+                                <div class="entity-card">
+                                    <div class="entity-name">ARTÍCULOS</div>
+                                    <div class="attributes">
+                                        • <span class="pk">ID_Artículo</span> (PK)<br>
+                                        • Descripción<br>
+                                        • <span class="fk">ID_Fábrica</span> (FK)
+                                    </div>
+                                </div>
+                                <div class="entity-card">
+                                    <div class="entity-name">PEDIDOS</div>
+                                    <div class="attributes">
+                                        • <span class="pk">ID_Pedido</span> (PK)<br>
+                                        • Dirección_Envío<br>
+                                        • Fecha<br>
+                                        • <span class="fk">ID_Cliente</span> (FK)
+                                    </div>
+                                </div>
+                                <div class="entity-card">
+                                    <div class="entity-name">FÁBRICAS</div>
+                                    <div class="attributes">
+                                        • <span class="pk">ID_Fábrica</span> (PK)<br>
+                                        • Teléfono<br>
+                                        • Existencias<br>
+                                        • Alternativa
+                                    </div>
+                                </div>
+                                <div class="entity-card">
+                                    <div class="entity-name">CUERPO_PEDIDOS</div>
+                                    <div class="attributes">
+                                        • <span class="pk">ID_Pedido</span> (PK, FK)<br>
+                                        • <span class="pk">ID_Artículo</span> (PK, FK)<br>
+                                        • Cantidad
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
 
-                    <div class="concept-card">
-                        <h3>⚙️ Funcionalidades DDL</h3>
-                        <ul>
-                            <li><strong>CREATE:</strong> Crear nuevos objetos (tablas, vistas, procedimientos, funciones)</li>
-                            <li><strong>ALTER:</strong> Modificar objetos existentes (añadir columnas, cambiar tipos)</li>
-                            <li><strong>DROP:</strong> Eliminar objetos de la base de datos</li>
-                        </ul>
-                    </div>
+                        <div class="relationships-section">
+                            <h4>🔗 Relaciones del Sistema</h4>
+                            <div class="relationship-item"><strong>Clientes REALIZAN Pedidos:</strong> 1:N (Un cliente puede realizar varios pedidos)</div>
+                            <div class="relationship-item"><strong>Pedidos SE COMPONEN DE Artículos:</strong> N:M (Un pedido puede tener varios artículos, un artículo puede estar en varios pedidos)</div>
+                            <div class="relationship-item"><strong>Fábricas FABRICAN Artículos:</strong> 1:N (Una fábrica puede fabricar varios artículos)</div>
+                        </div>
 
-                    <div class="example-box">
-                        <h3>🛠️ Ejemplos de Objetos DDL</h3>
-                        <ul>
-                            <li><strong>Tablas:</strong> Estructuras principales de datos</li>
-                            <li><strong>Vistas:</strong> Consultas predefinidas para simplificar acceso</li>
-                            <li><strong>Procedimientos:</strong> Código reutilizable para operaciones complejas</li>
-                            <li><strong>Funciones:</strong> Lógica que retorna valores</li>
-                            <li><strong>Índices:</strong> Optimización de consultas</li>
-                        </ul>
-                    </div>
+                        <div class="tables-section">
+                            <h4>📊 Modelo Relacional - Tablas Resultantes</h4>
+                            
+                            <div class="table-container">
+                                <div class="table-header">CLIENTES</div>
+                                <div class="table-row">
+                                    <div class="table-cell"><strong>Campo</strong></div>
+                                    <div class="table-cell"><strong>Tipo</strong></div>
+                                    <div class="table-cell"><strong>Clave</strong></div>
+                                </div>
+                                <div class="table-row">
+                                    <div class="table-cell">ID_Cliente</div>
+                                    <div class="table-cell">Entero</div>
+                                    <div class="table-cell">PK</div>
+                                </div>
+                                <div class="table-row">
+                                    <div class="table-cell">Saldo</div>
+                                    <div class="table-cell">Decimal</div>
+                                    <div class="table-cell">-</div>
+                                </div>
+                                <div class="table-row">
+                                    <div class="table-cell">Límite_Crédito</div>
+                                    <div class="table-cell">Entero</div>
+                                    <div class="table-cell">-</div>
+                                </div>
+                                <div class="table-row">
+                                    <div class="table-cell">Descuento</div>
+                                    <div class="table-cell">Entero</div>
+                                    <div class="table-cell">-</div>
+                                </div>
+                            </div>
 
-                    <div class="code-example">
-<span class="comment">-- Ejemplo de comando CREATE (crear tabla)</span>
-<span class="keyword">CREATE TABLE</span> productos (
-    id <span class="keyword">INTEGER</span>,
-    nombre <span class="keyword">VARCHAR</span>(100),
-    precio <span class="keyword">DECIMAL</span>(10,2)
-);
+                            <div class="table-container">
+                                <div class="table-header">PEDIDOS</div>
+                                <div class="table-row">
+                                    <div class="table-cell"><strong>Campo</strong></div>
+                                    <div class="table-cell"><strong>Tipo</strong></div>
+                                    <div class="table-cell"><strong>Clave</strong></div>
+                                </div>
+                                <div class="table-row">
+                                    <div class="table-cell">ID_Pedido</div>
+                                    <div class="table-cell">Entero</div>
+                                    <div class="table-cell">PK</div>
+                                </div>
+                                <div class="table-row">
+                                    <div class="table-cell">Dirección_Envío</div>
+                                    <div class="table-cell">String</div>
+                                    <div class="table-cell">-</div>
+                                </div>
+                                <div class="table-row">
+                                    <div class="table-cell">Fecha</div>
+                                    <div class="table-cell">Fecha</div>
+                                    <div class="table-cell">-</div>
+                                </div>
+                                <div class="table-row">
+                                    <div class="table-cell">ID_Cliente</div>
+                                    <div class="table-cell">Entero</div>
+                                    <div class="table-cell">FK</div>
+                                </div>
+                            </div>
 
-<span class="comment">-- Ejemplo de comando ALTER (modificar tabla)</span>
-<span class="keyword">ALTER TABLE</span> productos 
-<span class="keyword">ADD COLUMN</span> categoria <span class="keyword">VARCHAR</span>(50);
+                            <div class="table-container">
+                                <div class="table-header">CUERPO_PEDIDOS</div>
+                                <div class="table-row">
+                                    <div class="table-cell"><strong>Campo</strong></div>
+                                    <div class="table-cell"><strong>Tipo</strong></div>
+                                    <div class="table-cell"><strong>Clave</strong></div>
+                                </div>
+                                <div class="table-row">
+                                    <div class="table-cell">ID_Pedido</div>
+                                    <div class="table-cell">Entero</div>
+                                    <div class="table-cell">PK, FK</div>
+                                </div>
+                                <div class="table-row">
+                                    <div class="table-cell">ID_Artículo</div>
+                                    <div class="table-cell">Entero</div>
+                                    <div class="table-cell">PK, FK</div>
+                                </div>
+                                <div class="table-row">
+                                    <div class="table-cell">Cantidad</div>
+                                    <div class="table-cell">Entero</div>
+                                    <div class="table-cell">-</div>
+                                </div>
+                            </div>
 
-<span class="comment">-- Ejemplo de comando DROP (eliminar tabla)</span>
-<span class="keyword">DROP TABLE</span> productos;
-                    </div>
+                            <div class="table-container">
+                                <div class="table-header">ARTÍCULOS</div>
+                                <div class="table-row">
+                                    <div class="table-cell"><strong>Campo</strong></div>
+                                    <div class="table-cell"><strong>Tipo</strong></div>
+                                    <div class="table-cell"><strong>Clave</strong></div>
+                                </div>
+                                <div class="table-row">
+                                    <div class="table-cell">ID_Artículo</div>
+                                    <div class="table-cell">Entero</div>
+                                    <div class="table-cell">PK</div>
+                                </div>
+                                <div class="table-row">
+                                    <div class="table-cell">Descripción</div>
+                                    <div class="table-cell">String</div>
+                                    <div class="table-cell">-</div>
+                                </div>
+                                <div class="table-row">
+                                    <div class="table-cell">ID_Fábrica</div>
+                                    <div class="table-cell">Entero</div>
+                                    <div class="table-cell">FK</div>
+                                </div>
+                            </div>
 
-                    <div class="concept-card">
-                        <h3>📊 Frecuencia de Uso</h3>
-                        <p>DDL se utiliza principalmente en las <strong>fases iniciales de desarrollo</strong> y durante <strong>modificaciones estructurales</strong>. Una vez que tenemos una base de datos que cubre nuestras necesidades, es menos habitual modificar la estructura constantemente.</p>
+                            <div class="table-container">
+                                <div class="table-header">FÁBRICAS</div>
+                                <div class="table-row">
+                                    <div class="table-cell"><strong>Campo</strong></div>
+                                    <div class="table-cell"><strong>Tipo</strong></div>
+                                    <div class="table-cell"><strong>Clave</strong></div>
+                                </div>
+                                <div class="table-row">
+                                    <div class="table-cell">ID_Fábrica</div>
+                                    <div class="table-cell">Entero</div>
+                                    <div class="table-cell">PK</div>
+                                </div>
+                                <div class="table-row">
+                                    <div class="table-cell">Teléfono</div>
+                                    <div class="table-cell">Alfanumérico</div>
+                                    <div class="table-cell">-</div>
+                                </div>
+                                <div class="table-row">
+                                    <div class="table-cell">Existencias</div>
+                                    <div class="table-cell">Entero</div>
+                                    <div class="table-cell">-</div>
+                                </div>
+                                <div class="table-row">
+                                    <div class="table-cell">Alternativa</div>
+                                    <div class="table-cell">Booleano</div>
+                                    <div class="table-cell">-</div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </section>
 
-                <section id="dml" class="section">
-                    <h2>📊 DML - Data Manipulation Language</h2>
+                <section id="exercise2" class="section">
+                    <h2>🏪 Ejercicio 2: Sistema de Ventas</h2>
                     
-                    <div class="concept-card">
-                        <h3>🎯 La Parte Más Utilizada</h3>
-                        <p><strong>DML (Data Manipulation Language)</strong> es posiblemente la parte del SQL más extendida y utilizada. Nos permite <strong>interactuar con los datos</strong> que tenemos en la base de datos de forma constante y dinámica.</p>
-                    </div>
+                    <div class="exercise-box">
+                        <div class="exercise-title">🏪 Sistema de Ventas</div>
+                        
+                        <h3>📋 Enunciado</h3>
+                        <p><strong>Contexto:</strong> Base de datos para apoyar la gestión de un sistema de ventas. La empresa necesita llevar control de proveedores, clientes, productos y ventas.</p>
 
-                    <div class="sql-type-card" style="margin: 20px 0;">
-                        <h4>📊 Comandos DML Principales</h4>
-                        <div class="commands">SELECT • INSERT • UPDATE • DELETE</div>
-                    </div>
+                        <div class="entities-section">
+                            <h4>🏗️ Entidades Identificadas</h4>
+                            <div class="entities-grid">
+                                <div class="entity-card">
+                                    <div class="entity-name">PROVEEDORES</div>
+                                    <div class="attributes">
+                                        • <span class="pk">ID_Proveedor</span> (PK)<br>
+                                        • Nombre<br>
+                                        • Calle<br>
+                                        • Número<br>
+                                        • Comuna<br>
+                                        • Ciudad<br>
+                                        • Teléfono<br>
+                                        • Web
+                                    </div>
+                                </div>
+                                <div class="entity-card">
+                                    <div class="entity-name">CLIENTES</div>
+                                    <div class="attributes">
+                                        • <span class="pk">ID_Cliente</span> (PK)<br>
+                                        • Nombre<br>
+                                        • Calle<br>
+                                        • Número<br>
+                                        • Comuna<br>
+                                        • Ciudad
+                                    </div>
+                                </div>
+                                <div class="entity-card">
+                                    <div class="entity-name">PRODUCTOS</div>
+                                    <div class="attributes">
+                                        • <span class="pk">ID_Producto</span> (PK)<br>
+                                        • Nombre<br>
+                                        • Precio<br>
+                                        • Stock<br>
+                                        • <span class="fk">ID_Proveedor</span> (FK)<br>
+                                        • <span class="fk">ID_Categoría</span> (FK)
+                                    </div>
+                                </div>
+                                <div class="entity-card">
+                                    <div class="entity-name">CATEGORÍAS</div>
+                                    <div class="attributes">
+                                        • <span class="pk">ID_Categoría</span> (PK)<br>
+                                        • Nombre<br>
+                                        • Descripción
+                                    </div>
+                                </div>
+                                <div class="entity-card">
+                                    <div class="entity-name">VENTAS</div>
+                                    <div class="attributes">
+                                        • <span class="pk">ID_Venta</span> (PK)<br>
+                                        • Fecha<br>
+                                        • Descuento<br>
+                                        • Monto<br>
+                                        • <span class="fk">ID_Cliente</span> (FK)
+                                    </div>
+                                </div>
+                                <div class="entity-card">
+                                    <div class="entity-name">TELÉFONOS</div>
+                                    <div class="attributes">
+                                        • <span class="pk">Número</span> (PK)<br>
+                                        • <span class="fk">ID_Cliente</span> (FK)
+                                    </div>
+                                </div>
+                                <div class="entity-card">
+                                    <div class="entity-name">CONTIENEN</div>
+                                    <div class="attributes">
+                                        • <span class="pk">ID_Producto</span> (PK, FK)<br>
+                                        • <span class="pk">ID_Venta</span> (PK, FK)<br>
+                                        • Cantidad
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
 
-                    <div class="concept-card">
-                        <h3>⚙️ Funcionalidades DML</h3>
-                        <ul>
-                            <li><strong>SELECT:</strong> Consultar y recuperar datos de las tablas</li>
-                            <li><strong>INSERT:</strong> Introducir nuevos datos en las tablas</li>
-                            <li><strong>UPDATE:</strong> Modificar datos existentes</li>
-                            <li><strong>DELETE:</strong> Borrar registros de las tablas</li>
-                        </ul>
-                    </div>
+                        <div class="relationships-section">
+                            <h4>🔗 Relaciones del Sistema</h4>
+                            <div class="relationship-item"><strong>Proveedores PROVEEN Productos:</strong> 1:N (Un proveedor puede proveer varios productos)</div>
+                            <div class="relationship-item"><strong>Productos PERTENECEN A Categorías:</strong> N:1 (Varios productos pueden pertenecer a una categoría)</div>
+                            <div class="relationship-item"><strong>Clientes REALIZAN Ventas:</strong> 1:N (Un cliente puede realizar varias ventas)</div>
+                            <div class="relationship-item"><strong>Ventas CONTIENEN Productos:</strong> N:M (Una venta puede contener varios productos, un producto puede estar en varias ventas)</div>
+                            <div class="relationship-item"><strong>Clientes TIENEN Teléfonos:</strong> 1:N (Un cliente puede tener varios teléfonos)</div>
+                        </div>
 
-                    <div class="definition-box">
-                        <h3>🌟 Comando SELECT - El Más Potente</h3>
-                        <p>El comando <strong>SELECT</strong> es extremadamente extenso y flexible. Nos permite una <strong>flexibilidad casi absoluta</strong> para recuperar información, unir datos de diferentes tablas y convertir datos en información útil para la toma de decisiones.</p>
-                    </div>
-
-                    <div class="example-box">
-                        <h3>🔄 Uso Diario de DML</h3>
-                        <p>A diferencia de DDL, el DML es algo que <strong>utilizamos constantemente</strong>:</p>
-                        <ul>
-                            <li>Consultas ad-hoc para análisis específicos</li>
-                            <li>Reportes que no tienen formularios predefinidos</li>
-                            <li>Exploración de datos para descubrir patrones</li>
-                            <li>Consultas temporales para resolver problemas puntuales</li>
-                        </ul>
-                    </div>
-
-                    <div class="concept-card">
-                        <h3>💼 Casos de Uso Prácticos</h3>
-                        <p>Conocer DML es fundamental porque:</p>
-                        <ul>
-                            <li><strong>Consultas no programadas:</strong> Información específica sin formularios</li>
-                            <li><strong>Análisis iterativo:</strong> Refinar consultas según resultados</li>
-                            <li><strong>Rapidez:</strong> No necesitar un desarrollador para cada consulta</li>
-                            <li><strong>Flexibilidad:</strong> Adaptar la consulta en tiempo real</li>
-                        </ul>
-                    </div>
-
-                    <div class="code-example">
-<span class="comment">-- Ejemplo básico de SELECT</span>
-<span class="keyword">SELECT</span> * <span class="keyword">FROM</span> categorias;
-
-<span class="comment">-- SELECT con filtro</span>
-<span class="keyword">SELECT</span> nombre, precio 
-<span class="keyword">FROM</span> productos 
-<span class="keyword">WHERE</span> categoria = <span class="string">'Bebidas'</span>;
-
-<span class="comment">-- INSERT de nuevos datos</span>
-<span class="keyword">INSERT INTO</span> productos (nombre, precio, categoria) 
-<span class="keyword">VALUES</span> (<span class="string">'Coca Cola'</span>, 2.50, <span class="string">'Bebidas'</span>);
-                    </div>
-
-                    <div class="warning-box">
-                        <strong>💡 Importancia del DML:</strong>
-                        <p>Considero el conocimiento de DML como algo <strong>totalmente básico</strong> para trabajar en cualquier entorno informático, aunque no seas modelador de bases de datos.</p>
+                        <div class="important-note">
+                            <strong>💡 Nota Importante sobre el Diseño</strong>
+                            <p>En este ejercicio se crea una entidad débil "TELÉFONOS" porque un cliente puede tener varios números de contacto. La dirección se desglosa en componentes (calle, número, comuna, ciudad) para mayor granularidad en la información y facilitar consultas específicas por ubicación.</p>
+                        </div>
                     </div>
                 </section>
 
-                <section id="dcl" class="section">
-                    <h2>🔐 DCL - Data Control Language</h2>
+                <section id="analysis" class="section">
+                    <h2>🔍 Puntos Clave del Análisis</h2>
                     
                     <div class="concept-card">
-                        <h3>🛡️ Control de Acceso</h3>
-                        <p><strong>DCL (Data Control Language)</strong> es la parte del SQL encargada de <strong>gestionar y administrar los usuarios</strong> de la base de datos y controlar qué pueden hacer y a qué pueden acceder.</p>
-                    </div>
-
-                    <div class="sql-type-card" style="margin: 20px 0;">
-                        <h4>🔐 Comandos DCL Principales</h4>
-                        <div class="commands">GRANT • REVOKE</div>
-                    </div>
-
-                    <div class="concept-card">
-                        <h3>⚙️ Funcionalidades DCL</h3>
+                        <h3>🎯 Identificación de Entidades</h3>
                         <ul>
-                            <li><strong>GRANT:</strong> Otorgar permisos y privilegios a usuarios o roles</li>
-                            <li><strong>REVOKE:</strong> Quitar permisos, roles o privilegios previamente concedidos</li>
+                            <li><strong>Sustantivos principales:</strong> Buscar palabras que representen objetos o conceptos sobre los que necesitamos almacenar información</li>
+                            <li><strong>Campos únicos:</strong> Identificar atributos que puedan servir como claves primarias</li>
+                            <li><strong>Entidades débiles:</strong> Reconocer cuando una entidad depende de otra para su existencia</li>
                         </ul>
                     </div>
 
                     <div class="concept-card">
-                        <h3>🔑 Tipos de Permisos</h3>
-                        <p>DCL nos permite controlar:</p>
+                        <h3>📊 Definición de Atributos</h3>
                         <ul>
-                            <li><strong>Acceso a tablas:</strong> Quién puede leer o modificar datos</li>
-                            <li><strong>Ejecución de procedimientos:</strong> Permisos para ejecutar código</li>
-                            <li><strong>Creación de objetos:</strong> Capacidad de crear nuevas estructuras</li>
-                            <li><strong>Administración:</strong> Permisos de gestión del sistema</li>
+                            <li><strong>Campos calculados:</strong> Evitar almacenar datos que se puedan calcular a partir de otros</li>
+                            <li><strong>Tipos de datos:</strong> Elegir el tipo más apropiado (entero, decimal, string, booleano, etc.)</li>
+                            <li><strong>Normalización:</strong> Evitar duplicidad de información entre tablas</li>
                         </ul>
-                    </div>
-
-                    <div class="example-box">
-                        <h3>👥 Gestión de Usuarios y Roles</h3>
-                        <p>Los <strong>privilegios</strong> se pueden asignar de dos formas:</p>
-                        <ul>
-                            <li><strong>Directamente a usuarios:</strong> Permisos específicos para una persona</li>
-                            <li><strong>A través de roles:</strong> Conjuntos de permisos asignables a múltiples usuarios</li>
-                        </ul>
-                    </div>
-
-                    <div class="code-example">
-<span class="comment">-- Otorgar permiso de lectura a un usuario</span>
-<span class="keyword">GRANT SELECT ON</span> productos <span class="keyword">TO</span> usuario_consulta;
-
-<span class="comment">-- Otorgar permisos completos a un administrador</span>
-<span class="keyword">GRANT ALL PRIVILEGES ON</span> ventas <span class="keyword">TO</span> admin_ventas;
-
-<span class="comment">-- Revocar permisos</span>
-<span class="keyword">REVOKE INSERT ON</span> productos <span class="keyword">FROM</span> usuario_consulta;
-
-<span class="comment">-- Asignar rol a usuario</span>
-<span class="keyword">GRANT</span> desarrollador <span class="keyword">TO</span> nuevo_empleado;
-                    </div>
-
-                    <div class="definition-box">
-                        <h3>🎯 Seguridad por Capas</h3>
-                        <p>DCL implementa el principio de <strong>menor privilegio</strong>: cada usuario debe tener únicamente los permisos mínimos necesarios para realizar su trabajo, no más.</p>
                     </div>
 
                     <div class="concept-card">
-                        <h3>🏢 Aplicación Empresarial</h3>
-                        <p>En entornos empresariales:</p>
+                        <h3>🔗 Establecimiento de Relaciones</h3>
                         <ul>
-                            <li><strong>Desarrolladores:</strong> Acceso completo a esquemas de desarrollo</li>
-                            <li><strong>Analistas:</strong> Solo lectura en tablas de producción</li>
-                            <li><strong>Usuarios finales:</strong> Acceso a través de aplicaciones específicas</li>
-                            <li><strong>Administradores:</strong> Control total del sistema</li>
+                            <li><strong>Cardinalidad 1:N:</strong> El lado "1" transfiere su clave primaria al lado "N"</li>
+                            <li><strong>Cardinalidad N:M:</strong> Se crea una tabla intermedia con las claves primarias de ambas entidades</li>
+                            <li><strong>Integridad referencial:</strong> Considerar acciones al eliminar registros relacionados</li>
+                        </ul>
+                    </div>
+
+                    <div class="methodology-box">
+                        <h3>🔧 Técnicas de Análisis Avanzadas</h3>
+                        <div class="stats-grid">
+                            <div class="stat-card">
+                                <div class="stat-number">📝</div>
+                                <div>Análisis Sintáctico</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-number">🧠</div>
+                                <div>Análisis Semántico</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-number">🔍</div>
+                                <div>Validación de Requisitos</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-number">⚖️</div>
+                                <div>Verificación de Consistencia</div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="recommendations" class="section">
+                    <h2>✅ Recomendaciones Finales</h2>
+                    
+                    <div class="methodology-box">
+                        <h3>📝 Proceso Recomendado</h3>
+                        <div class="step-container">
+                            <div class="step">Leer completamente el enunciado antes de comenzar</div>
+                            <div class="step">Subrayar sustantivos y posibles entidades</div>
+                            <div class="step">Identificar atributos de cada entidad</div>
+                            <div class="step">Determinar claves primarias</div>
+                            <div class="step">Establecer relaciones y cardinalidades</div>
+                            <div class="step">Revisar el texto para verificar que no falta información</div>
+                            <div class="step">Convertir a modelo relacional</div>
+                            <div class="step">Documentar acciones referenciales y restricciones adicionales</div>
+                        </div>
+                    </div>
+
+                    <div class="important-note">
+                        <strong>⚠️ Errores Comunes a Evitar</strong>
+                        <ul>
+                            <li>Duplicar información entre tablas relacionadas</li>
+                            <li>No identificar correctamente las relaciones N:M</li>
+                            <li>Olvidar transferir claves foráneas en relaciones 1:N</li>
+                            <li>Usar tipos de datos incorrectos</li>
+                            <li>No considerar la granularidad adecuada de los datos</li>
+                        </ul>
+                    </div>
+
+                    <div class="concept-card">
+                        <h3>🎯 Buenas Prácticas</h3>
+                        <ul>
+                            <li><strong>Verificación cruzada:</strong> Revisar que cada requisito del texto esté cubierto</li>
+                            <li><strong>Validación lógica:</strong> Comprobar que las relaciones tengan sentido</li>
+                            <li><strong>Optimización temprana:</strong> Considerar el rendimiento desde el diseño</li>
+                            <li><strong>Documentación completa:</strong> Mantener registro de decisiones de diseño</li>
+                        </ul>
+                    </div>
+
+                    <div class="concept-card">
+                        <h3>🔧 Herramientas de Validación</h3>
+                        <ul>
+                            <li><strong>Lista de verificación:</strong> Checklist de todos los requisitos</li>
+                            <li><strong>Matriz de trazabilidad:</strong> Relación entre requisitos y elementos del modelo</li>
+                            <li><strong>Casos de prueba:</strong> Escenarios para validar el diseño</li>
+                            <li><strong>Revisión por pares:</strong> Validación con otros desarrolladores</li>
                         </ul>
                     </div>
                 </section>
 
-                <section id="comments" class="section">
-                    <h2>💬 Comentarios en SQL</h2>
+                <section id="resources" class="section">
+                    <h2>📚 Recursos Adicionales</h2>
                     
                     <div class="concept-card">
-                        <h3>📝 Importancia de los Comentarios</h3>
-                        <p>Los comentarios son fundamentales para <strong>documentar nuestro código</strong>. Nos permiten añadir anotaciones que explican el propósito de cada acción sin que el sistema las interprete como código ejecutable.</p>
-                    </div>
-
-                    <div class="concept-card">
-                        <h3>🛠️ Acceso a la Consola SQL</h3>
-                        <p>Para practicar con comentarios y SQL:</p>
-                        <ol>
-                            <li>Conectarse al WebIDE</li>
-                            <li>Ir al Explorador de Base de Datos</li>
-                            <li>Seleccionar la base de datos del proyecto</li>
-                            <li>Hacer clic en el botón <strong>SQL</strong></li>
-                        </ol>
-                    </div>
-
-                    <div class="comparison-grid">
-                        <div class="comparison-card">
-                            <h4>📄 Comentario de Línea Única</h4>
-                            <p><strong>Sintaxis:</strong> <code>--</code></p>
-                            <p>Comenta desde <code>--</code> hasta el final de la línea</p>
-                        </div>
-                        <div class="comparison-card">
-                            <h4>📋 Comentario Multilínea</h4>
-                            <p><strong>Sintaxis:</strong> <code>/* */</code></p>
-                            <p>Comenta todo el texto entre los símbolos</p>
-                        </div>
-                    </div>
-
-                    <div class="code-example">
-<span class="comment">-- Comentario de una sola línea
--- Este comentario explica la siguiente consulta</span>
-<span class="keyword">SELECT</span> * <span class="keyword">FROM</span> categorias;
-
-<span class="comment">/*
-    Comentario multilínea
-    Este tipo de comentario puede
-    abarcar múltiples líneas
-*/</span>
-<span class="keyword">SELECT</span> nombre, precio 
-<span class="keyword">FROM</span> productos 
-<span class="keyword">WHERE</span> categoria = <span class="string">'Bebidas'</span>;  <span class="comment">-- Filtro por categoría</span>
-                    </div>
-
-                    <div class="example-box">
-                        <h3>🎨 Comentarios Decorativos</h3>
-                        <p>Es común crear comentarios más llamativos para organizar el código:</p>
-                    </div>
-
-                    <div class="code-example">
-<span class="comment">/************************************************
- * CONSULTAS DE PRODUCTOS
- * Autor: Desarrollador
- * Fecha: 2025
- ************************************************/</span>
-
-<span class="comment">-- ========================================
--- PARÁMETRO 1: Filtro por categoría
--- PARÁMETRO 2: Rango de precios
--- ========================================</span>
-
-<span class="keyword">SELECT</span> nombre, precio, categoria
-<span class="keyword">FROM</span> productos 
-<span class="keyword">WHERE</span> categoria = <span class="string">'Bebidas'</span>    <span class="comment">-- Parámetro 1</span>
-  <span class="keyword">AND</span> precio <span class="keyword">BETWEEN</span> 1.0 <span class="keyword">AND</span> 5.0;  <span class="comment">-- Parámetro 2</span>
-                    </div>
-
-                    <div class="concept-card">
-                        <h3>✅ Buenas Prácticas de Comentarios</h3>
+                        <h3>📋 Para Completar tu Aprendizaje</h3>
+                        <p>Para completar tu aprendizaje, recuerda:</p>
                         <ul>
-                            <li><strong>Explica el "por qué":</strong> No solo qué hace, sino por qué lo hace</li>
-                            <li><strong>Documenta parámetros:</strong> Especifica qué representa cada valor</li>
-                            <li><strong>Usa títulos:</strong> Organiza secciones de código largo</li>
-                            <li><strong>Mantén actualizado:</strong> Los comentarios obsoletos confunden</li>
+                            <li><strong>Realizar el cuestionario</strong> correspondiente a esta clase</li>
+                            <li><strong>Completar el ejercicio práctico</strong> relacionado</li>
+                            <li><strong>Consultar dudas por email</strong> si es necesario</li>
+                            <li><strong>Practicar con enunciados similares</strong> para dominar la técnica</li>
                         </ul>
                     </div>
 
-                    <div class="definition-box">
-                        <h3>🔍 Reconocimiento Visual</h3>
-                        <p>El editor SQL de HANA muestra los comentarios en <strong>color gris</strong>, las palabras clave en <strong>color morado/lila</strong>, y las tablas en <strong>color negro</strong>, facilitando la lectura del código.</p>
-                    </div>
-
-                    <div class="warning-box">
-                        <strong>💡 Consejo Profesional:</strong>
-                        <p>Los comentarios son especialmente útiles cuando trabajas en equipo o cuando regresas a código que escribiste hace tiempo. Úsalos generosamente pero con propósito.</p>
-                    </div>
-                </section>
-
-                <section id="conclusions" class="section">
-                    <h2>🎯 Conclusiones</h2>
-                    
-                    <div class="concept-card">
-                        <h3>📋 Resumen de Conceptos</h3>
-                        <p>En esta introducción al lenguaje HANA SQL hemos establecido las bases fundamentales para el trabajo con bases de datos:</p>
-                    </div>
-
-                    <div class="sql-types-grid">
-                        <div class="sql-type-card">
-                            <h4>🏗️ DDL</h4>
-                            <div class="commands">CREATE • ALTER • DROP</div>
-                            <p>Para crear y gestionar la estructura de la base de datos</p>
-                        </div>
-                        <div class="sql-type-card">
-                            <h4>📊 DML</h4>
-                            <div class="commands">SELECT • INSERT • UPDATE • DELETE</div>
-                            <p>Para manipular y consultar los datos diariamente</p>
-                        </div>
-                        <div class="sql-type-card">
-                            <h4>🔐 DCL</h4>
-                            <div class="commands">GRANT • REVOKE</div>
-                            <p>Para controlar accesos y permisos de usuarios</p>
-                        </div>
-                    </div>
-
-                    <div class="concept-card">
-                        <h3>🔑 Puntos Clave</h3>
+                    <div class="methodology-box">
+                        <h3>📖 Ejercicios Adicionales Sugeridos</h3>
                         <ul>
-                            <li><strong>SQL es universal:</strong> Conocimientos transferibles entre sistemas</li>
-                            <li><strong>DML es lo más usado:</strong> Especialmente SELECT para consultas</li>
-                            <li><strong>Las interfaces generan SQL:</strong> Por debajo todo es código SQL</li>
-                            <li><strong>Los comentarios son esenciales:</strong> Para documentar y mantener código</li>
+                            <li><strong>Sistema de Biblioteca:</strong> Libros, autores, préstamos</li>
+                            <li><strong>Gestión Hospitalaria:</strong> Pacientes, médicos, citas</li>
+                            <li><strong>Control Académico:</strong> Estudiantes, materias, calificaciones</li>
+                            <li><strong>E-commerce:</strong> Productos, categorías, carritos de compra</li>
+                            <li><strong>Recursos Humanos:</strong> Empleados, departamentos, proyectos</li>
+                            <li><strong>Inventario:</strong> Productos, almacenes, movimientos</li>
+                            <li><strong>Red Social:</strong> Usuarios, publicaciones, amistades</li>
+                            <li><strong>Sistema Bancario:</strong> Cuentas, transacciones, clientes</li>
                         </ul>
                     </div>
 
-                    <div class="definition-box">
-                        <h3>🎯 Objetivo Cumplido</h3>
-                        <p>Hemos sentado las <strong>bases conceptuales del lenguaje SQL</strong> y comprendido cómo las herramientas de HANA utilizan este lenguaje para comunicarse con la base de datos.</p>
+                    <div class="important-note">
+                        <strong>📧 Soporte y Consultas</strong>
+                        <p>Si tienes dudas sobre estos ejercicios, puedes consultarlas por email para recibir ayuda adicional y resolverlas de forma ágil. El instructor está disponible para aclarar conceptos y revisar tus soluciones.</p>
                     </div>
 
                     <div class="concept-card">
                         <h3>🚀 Próximos Pasos</h3>
-                        <p>Con estos fundamentos establecidos, en las próximas clases profundizaremos en:</p>
                         <ul>
-                            <li><strong>DDL detallado:</strong> Creación de tablas y objetos</li>
-                            <li><strong>DML avanzado:</strong> Consultas complejas con SELECT</li>
-                            <li><strong>Casos prácticos:</strong> Aplicación real en proyectos</li>
-                            <li><strong>Optimización:</strong> Mejores prácticas para rendimiento</li>
+                            <li><strong>Implementación en SAP HANA:</strong> Crear las tablas reales</li>
+                            <li><strong>Optimización de consultas:</strong> Índices y performance</li>
+                            <li><strong>Procedimientos almacenados:</strong> Lógica de negocio</li>
+                            <li><strong>Integración con aplicaciones:</strong> APIs y servicios</li>
+                        </ul>
+                    </div>
+                </section>
+
+                <section id="video-info" class="section">
+                    <h2>📹 Video Original</h2>
+                    
+                    <div class="concept-card">
+                        <h3>🎥 Información del Video</h3>
+                        <p>Este documento está basado en la clase completa de YouTube sobre modelado en Sabana con 10 ejercicios prácticos.</p>
+                        
+                        <div style="text-align: center; margin: 20px 0;">
+                            <a href="https://www.youtube.com/watch?v=PMfeSPMnudM" target="_blank" class="video-link">
+                                📺 Ver Video Completo en YouTube
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="methodology-box">
+                        <h3>📊 Contenido del Video</h3>
+                        <ul>
+                            <li><strong>Duración:</strong> Clase completa con explicaciones detalladas</li>
+                            <li><strong>Nivel:</strong> Intermedio a avanzado</li>
+                            <li><strong>Ejercicios:</strong> 10 casos prácticos completos</li>
+                            <li><strong>Metodología:</strong> Paso a paso desde análisis hasta implementación</li>
                         </ul>
                     </div>
 
-                    <div class="example-box">
-                        <h3>🎓 Preparación para el Aprendizaje</h3>
-                        <p>Recuerda que el aprendizaje de SQL es:</p>
+                    <div class="concept-card">
+                        <h3>💡 Recomendaciones para Ver el Video</h3>
                         <ul>
-                            <li><strong>Iterativo:</strong> Se mejora con la práctica constante</li>
-                            <li><strong>Fundamental:</strong> Base para todo trabajo con datos</li>
-                            <li><strong>Versátil:</strong> Útil en múltiples contextos profesionales</li>
-                            <li><strong>Evolutivo:</strong> Siempre hay nuevas técnicas que aprender</li>
+                            <li><strong>Ver con este documento:</strong> Seguir el contenido en paralelo</li>
+                            <li><strong>Pausar para practicar:</strong> Intentar resolver antes de ver la solución</li>
+                            <li><strong>Tomar notas:</strong> Anotar dudas y observaciones</li>
+                            <li><strong>Revisar múltiples veces:</strong> Cada visualización aporta nuevos insights</li>
                         </ul>
                     </div>
 
-                    <div class="warning-box">
-                        <strong>💡 Mensaje de Ánimo:</strong>
-                        <p>No tengas miedo de hacer preguntas. Las dudas que consideras "simples" a menudo son las que permiten que todas las piezas encajen finalmente. ¡Estamos aquí para aprender juntos!</p>
+                    <div class="important-note">
+                        <strong>🎯 Beneficios de Combinar Video y Documento</strong>
+                        <p>La combinación del video explicativo con este documento estructurado proporciona una experiencia de aprendizaje completa, permitiendo tanto la comprensión auditiva-visual como la referencia rápida escrita.</p>
                     </div>
                 </section>
             </main>
@@ -1052,7 +1256,7 @@
             }
 
             // Animación de entrada
-            const cards = document.querySelectorAll('.concept-card, .definition-box, .example-box');
+            const cards = document.querySelectorAll('.concept-card, .exercise-box, .methodology-box');
             cards.forEach((card, index) => {
                 setTimeout(() => {
                     card.style.opacity = '0';

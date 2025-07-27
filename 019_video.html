@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Curso SAP HANA - Comando INSERT</title>
+    <title>Curso SAP HANA - Interfaces de Desarrollo</title>
     <style>
         * {
             margin: 0;
@@ -47,6 +47,23 @@
         .header p {
             color: #666;
             font-size: 1.2em;
+        }
+
+        .recording-badge {
+            background: linear-gradient(45deg, #dc3545, #c82333);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: bold;
+            margin: 10px 0;
+            display: inline-block;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
         }
 
         .dashboard {
@@ -156,7 +173,7 @@
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
         }
 
-        .concept-card h3 {
+        .concept-card h3, .concept-card h4 {
             color: #2c3e50;
             margin-bottom: 15px;
             font-size: 1.4em;
@@ -168,7 +185,7 @@
             margin-bottom: 15px;
         }
 
-        .concept-card ul {
+        .concept-card ul, .concept-card ol {
             margin-left: 20px;
             margin-top: 10px;
         }
@@ -178,7 +195,38 @@
             color: #555;
         }
 
-        .definition-box {
+        .interface-box {
+            background: linear-gradient(135deg, #e8f5e8, #d4edda);
+            border-radius: 15px;
+            padding: 25px;
+            margin: 20px 0;
+            border-left: 5px solid #28a745;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        .interface-box h3, .interface-box h4 {
+            color: #155724;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        .interface-box p {
+            color: #155724;
+            line-height: 1.8;
+            margin-bottom: 10px;
+        }
+
+        .interface-box ul, .interface-box ol {
+            margin-left: 20px;
+            margin-top: 10px;
+        }
+
+        .interface-box li {
+            margin: 8px 0;
+            color: #155724;
+        }
+
+        .studio-box {
             background: linear-gradient(135deg, #fff3cd, #ffeaa7);
             border-radius: 15px;
             padding: 25px;
@@ -187,50 +235,60 @@
             box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
         }
 
-        .definition-box h3 {
+        .studio-box h3, .studio-box h4 {
             color: #856404;
             margin-bottom: 15px;
             font-size: 1.3em;
         }
 
-        .definition-box p {
+        .studio-box p {
             color: #856404;
             line-height: 1.8;
             margin-bottom: 10px;
         }
 
-        .example-box {
-            background: linear-gradient(135deg, #e8f5e8, #d4edda);
-            border-radius: 15px;
-            padding: 25px;
-            margin: 20px 0;
-            border-left: 5px solid #27ae60;
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
-        }
-
-        .example-box h3 {
-            color: #155724;
-            margin-bottom: 15px;
-            font-size: 1.3em;
-        }
-
-        .example-box p {
-            color: #155724;
-            line-height: 1.8;
-            margin-bottom: 10px;
-        }
-
-        .example-box ul {
+        .studio-box ul, .studio-box ol {
             margin-left: 20px;
             margin-top: 10px;
         }
 
-        .example-box li {
+        .studio-box li {
             margin: 8px 0;
-            color: #155724;
+            color: #856404;
         }
 
-        .warning-box {
+        .webide-box {
+            background: linear-gradient(135deg, #d1ecf1, #b8daff);
+            border-radius: 15px;
+            padding: 25px;
+            margin: 20px 0;
+            border-left: 5px solid #17a2b8;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        .webide-box h3, .webide-box h4 {
+            color: #0c5460;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        .webide-box p {
+            color: #0c5460;
+            line-height: 1.8;
+            margin-bottom: 10px;
+        }
+
+        .webide-box ul, .webide-box ol {
+            margin-left: 20px;
+            margin-top: 10px;
+        }
+
+        .webide-box li {
+            margin: 8px 0;
+            color: #0c5460;
+        }
+
+        .important-note {
             background: linear-gradient(135deg, #ffebee, #ffcdd2);
             border-radius: 15px;
             padding: 20px;
@@ -239,14 +297,24 @@
             box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
         }
 
-        .warning-box strong {
+        .important-note strong {
             color: #c62828;
         }
 
-        .warning-box p {
+        .important-note p {
             color: #c62828;
             line-height: 1.8;
             margin-top: 10px;
+        }
+
+        .important-note ul, .important-note ol {
+            margin-left: 20px;
+            margin-top: 10px;
+        }
+
+        .important-note li {
+            margin: 8px 0;
+            color: #c62828;
         }
 
         .stats-grid {
@@ -289,138 +357,68 @@
             transition: width 0.5s ease;
         }
 
-        .syntax-box {
-            background: #2d3748;
-            color: #e2e8f0;
-            padding: 20px;
-            border-radius: 10px;
-            font-family: 'Courier New', monospace;
-            margin: 20px 0;
-            overflow-x: auto;
-            border-left: 5px solid #667eea;
-        }
-
-        .syntax-box .keyword {
-            color: #63b3ed;
-            font-weight: bold;
-        }
-
-        .syntax-box .optional {
-            color: #fbb6ce;
-        }
-
-        .syntax-box .placeholder {
-            color: #68d391;
-            font-style: italic;
-        }
-
-        .code-example {
-            background: #2d3748;
-            color: #e2e8f0;
-            padding: 20px;
-            border-radius: 10px;
-            font-family: 'Courier New', monospace;
-            margin: 20px 0;
-            overflow-x: auto;
-        }
-
-        .code-example .keyword {
-            color: #63b3ed;
-        }
-
-        .code-example .comment {
-            color: #68d391;
-        }
-
-        .code-example .string {
-            color: #fbb6ce;
-        }
-
-        .code-example .error {
-            color: #f56565;
-            background: rgba(245, 101, 101, 0.1);
-            padding: 2px 4px;
-            border-radius: 3px;
-        }
-
-        .insert-steps {
+        .comparison-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            grid-template-columns: 1fr 1fr;
             gap: 20px;
             margin: 20px 0;
         }
 
-        .step-card {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
-            padding: 25px;
+        .interface-card {
+            background: white;
             border-radius: 15px;
+            padding: 20px;
             text-align: center;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
             transition: transform 0.3s ease;
         }
 
-        .step-card:hover {
-            transform: scale(1.05);
+        .interface-card:hover {
+            transform: translateY(-5px);
         }
 
-        .step-number {
-            font-size: 2em;
-            font-weight: bold;
-            margin-bottom: 10px;
-            background: rgba(255, 255, 255, 0.2);
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 15px;
-        }
-
-        .error-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-            margin: 20px 0;
-        }
-
-        .error-card {
-            background: linear-gradient(135deg, #ffebee, #ffcdd2);
-            border-radius: 15px;
-            padding: 20px;
-            border-left: 5px solid #e74c3c;
-        }
-
-        .error-card h4 {
-            color: #c62828;
-            margin-bottom: 10px;
-            font-size: 1.2em;
-        }
-
-        .error-card p {
-            color: #c62828;
-            line-height: 1.6;
-        }
-
-        .null-comparison {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-            margin: 20px 0;
-        }
-
-        .null-card {
-            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
-            border-radius: 15px;
-            padding: 25px;
-            border-left: 5px solid #667eea;
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
-        }
-
-        .null-card h4 {
-            color: #2c3e50;
+        .interface-icon {
+            font-size: 3em;
             margin-bottom: 15px;
-            font-size: 1.3em;
+        }
+
+        .timeline {
+            position: relative;
+            padding: 20px 0;
+        }
+
+        .timeline-item {
+            position: relative;
+            padding-left: 50px;
+            margin-bottom: 30px;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: 15px;
+            top: 0;
+            width: 3px;
+            height: 100%;
+            background: linear-gradient(to bottom, #667eea, #764ba2);
+        }
+
+        .timeline-item::after {
+            content: '';
+            position: absolute;
+            left: 10px;
+            top: 10px;
+            width: 13px;
+            height: 13px;
+            border-radius: 50%;
+            background: #667eea;
+        }
+
+        .timeline-content {
+            background: white;
+            padding: 15px 20px;
+            border-radius: 10px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
         }
 
         @media (max-width: 768px) {
@@ -466,17 +464,17 @@
                 font-size: 1.5em;
             }
 
-            .concept-card, .definition-box, .example-box {
+            .concept-card, .interface-box, .studio-box, .webide-box {
                 padding: 20px;
                 margin: 15px 0;
             }
 
-            .stats-grid, .insert-steps {
+            .stats-grid {
                 grid-template-columns: 1fr;
                 gap: 15px;
             }
 
-            .error-grid, .null-comparison {
+            .comparison-grid {
                 grid-template-columns: 1fr;
             }
 
@@ -484,6 +482,10 @@
                 padding: 15px 20px;
                 font-size: 1em;
                 text-align: center;
+            }
+
+            .timeline-item {
+                padding-left: 40px;
             }
         }
 
@@ -496,7 +498,7 @@
                 padding: 15px;
             }
 
-            .concept-card, .definition-box, .example-box {
+            .concept-card, .interface-box, .studio-box, .webide-box {
                 padding: 15px;
             }
         }
@@ -507,8 +509,9 @@
         <header class="header">
             <img src="https://gessof.cl/wp-content/uploads/2025/05/Logo-minimalista-con-simbolismo-global.png" alt="Gessof Logo" style="height: 80px; margin-bottom: 20px; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.1));">
             <h1>Curso SAP HANA</h1>
-            <h2 style="color: #667eea; font-size: 1.5em; margin: 10px 0; font-weight: 600;">VIDEO 019</h2>
-            <p>Comando INSERT - Inserción de Datos</p>
+            <h2 style="color: #667eea; font-size: 1.5em; margin: 10px 0; font-weight: 600;">Clase 019</h2>
+            <p>Interfaces de Desarrollo - HANA SQL</p>
+            <div class="recording-badge">🔴 Esta conferencia comenzará a grabarse</div>
             <div class="progress-bar">
                 <div class="progress" style="width: 100%"></div>
             </div>
@@ -522,13 +525,14 @@
             <nav class="sidebar" id="sidebar">
                 <h3>Contenidos del Módulo</h3>
                 <div class="nav-item active" onclick="showSection('overview')">📋 Resumen General</div>
-                <div class="nav-item" onclick="showSection('introduction')">🚀 Introducción</div>
-                <div class="nav-item" onclick="showSection('syntax')">📝 Sintaxis INSERT</div>
-                <div class="nav-item" onclick="showSection('basic-usage')">⭐ Uso Básico</div>
-                <div class="nav-item" onclick="showSection('column-specification')">🎯 Especificar Columnas</div>
-                <div class="nav-item" onclick="showSection('partial-values')">📊 Valores Parciales</div>
-                <div class="nav-item" onclick="showSection('common-errors')">⚠️ Errores Comunes</div>
-                <div class="nav-item" onclick="showSection('conclusions')">🎯 Conclusiones</div>
+                <div class="nav-item" onclick="showSection('introduction')">🚀 Introducción HANA SQL</div>
+                <div class="nav-item" onclick="showSection('interfaces-overview')">🖥️ Interfaces Disponibles</div>
+                <div class="nav-item" onclick="showSection('sap-studio')">🔧 SAP HANA Studio</div>
+                <div class="nav-item" onclick="showSection('web-ide')">🌐 Web IDE</div>
+                <div class="nav-item" onclick="showSection('cockpit')">⚙️ Cockpit</div>
+                <div class="nav-item" onclick="showSection('comparison')">⚖️ Comparación</div>
+                <div class="nav-item" onclick="showSection('evolution')">📈 Evolución Histórica</div>
+                <div class="nav-item" onclick="showSection('next-steps')">🎯 Próximos Pasos</div>
             </nav>
 
             <main class="content">
@@ -537,554 +541,570 @@
                     
                     <div class="stats-grid">
                         <div class="stat-card">
-                            <div class="stat-number">1</div>
-                            <div>Comando DML</div>
-                        </div>
-                        <div class="stat-card">
                             <div class="stat-number">3</div>
-                            <div>Formas de Inserción</div>
+                            <div>Interfaces Principales</div>
                         </div>
                         <div class="stat-card">
                             <div class="stat-number">2</div>
-                            <div>Tipos de NULL</div>
+                            <div>Versiones HANA</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number">1</div>
+                            <div>Futuro Recomendado</div>
                         </div>
                     </div>
 
                     <div class="concept-card">
-                        <h3>🎯 Objetivos del Módulo</h3>
-                        <p>En esta clase introducimos el <strong>comando INSERT</strong> de SQL, que nos permite agregar nuevos registros a las tablas de nuestra base de datos. Aprenderemos las diferentes formas de insertar datos y los errores más comunes.</p>
+                        <h3>🎯 Objetivo del Módulo</h3>
+                        <p>En esta unidad comenzamos con el <strong>lenguaje de consultas HANA SQL</strong>, que nos permitirá tomar los modelos relacionales creados en la unidad anterior y <strong>crear la base de datos propiamente dicha</strong>.</p>
                     </div>
 
-                    <div class="definition-box">
-                        <h3>🔑 Concepto Fundamental</h3>
-                        <p><strong>INSERT:</strong> Comando del lenguaje DML que sirve para introducir nuevos registros en las tablas de la base de datos. Su sintaxis es mucho más sencilla que SELECT.</p>
-                    </div>
-
-                    <div class="insert-steps">
-                        <div class="step-card">
-                            <div class="step-number">1</div>
-                            <h4>INSERT INTO</h4>
-                            <p>Especifica la tabla destino</p>
-                        </div>
-                        <div class="step-card">
-                            <div class="step-number">2</div>
-                            <h4>Columnas (opcional)</h4>
-                            <p>Define campos específicos</p>
-                        </div>
-                        <div class="step-card">
-                            <div class="step-number">3</div>
-                            <h4>VALUES</h4>
-                            <p>Proporciona los valores a insertar</p>
-                        </div>
+                    <div class="important-note">
+                        <strong>🔑 Concepto Clave</strong>
+                        <p>A diferencia de otros lenguajes donde basta con abrir un bloc de notas, necesitamos una <strong>interfaz o entorno</strong> que nos permita conectarnos contra la base de datos y escribir nuestro código para que el sistema lo interprete.</p>
                     </div>
 
                     <div class="concept-card">
-                        <h3>📚 Contenido del Módulo</h3>
+                        <h3>📚 Contenido de la Clase</h3>
                         <ul>
-                            <li><strong>Sintaxis básica:</strong> INSERT INTO tabla VALUES</li>
-                            <li><strong>Inserción completa:</strong> Todos los campos en orden</li>
-                            <li><strong>Inserción específica:</strong> Campos seleccionados</li>
-                            <li><strong>Valores NULL:</strong> Estados nulos vs literales</li>
-                            <li><strong>Errores comunes:</strong> Tipos de datos y orden</li>
+                            <li><strong>Interfaces disponibles</strong> - SAP HANA Studio, Web IDE, Cockpit</li>
+                            <li><strong>Evolución histórica</strong> - De HANA 1.0 a HANA 2.0</li>
+                            <li><strong>Comparación detallada</strong> - Ventajas y desventajas</li>
+                            <li><strong>Recomendaciones actuales</strong> - Qué usar en 2024</li>
+                            <li><strong>Material de certificación</strong> - Contenido para exámenes SAP</li>
                         </ul>
+                    </div>
+
+                    <div class="interface-box">
+                        <h3>💡 Importancia para Certificación</h3>
+                        <p>Este material puede aparecer en las <strong>preguntas de certificación SAP</strong>, por lo que es importante conocer las características y diferencias entre cada interfaz.</p>
                     </div>
                 </section>
 
                 <section id="introduction" class="section">
-                    <h2>🚀 Introducción</h2>
+                    <h2>🚀 Introducción al HANA SQL</h2>
                     
                     <div class="concept-card">
-                        <h3>🎯 Propósito del INSERT</h3>
-                        <p>El comando <strong>INSERT</strong> es fundamental para alimentar nuestras tablas con datos. Como su nombre indica, nos sirve para insertar nuevos registros en las tablas de nuestra base de datos.</p>
-                    </div>
-
-                    <div class="definition-box">
-                        <h3>💡 Simplicidad vs SELECT</h3>
-                        <p>A diferencia del comando SELECT que tiene una sintaxis muy compleja, el <strong>INSERT es mucho más sencillo</strong>. Su estructura es directa y fácil de comprender, pero requiere precisión en los tipos de datos.</p>
-                    </div>
-
-                    <div class="concept-card">
-                        <h3">🛠️ Preparación Práctica</h3>
-                        <p>Para los ejemplos prácticos, crearemos una tabla de prueba que nos permitirá experimentar con diferentes formas de inserción de datos:</p>
-                    </div>
-
-                    <div class="code-example">
-<span class="comment">-- Crear tabla de prueba (adelantando DDL)</span>
-<span class="keyword">CREATE COLUMN TABLE</span> prueba_insert (
-    campo1 <span class="keyword">INTEGER</span>,
-    campo2 <span class="keyword">VARCHAR</span>(50)
-);
-                    </div>
-
-                    <div class="example-box">
-                        <h3">🔍 Explorando la Estructura</h3>
-                        <p>Antes de insertar datos, es importante conocer la estructura de la tabla:</p>
+                        <h3>🎯 ¿Qué es HANA SQL?</h3>
+                        <p>HANA SQL es el <strong>lenguaje de consultas</strong> específico de SAP HANA que nos permite:</p>
                         <ul>
-                            <li><strong>Doble clic en la tabla:</strong> Ver definición completa</li>
-                            <li><strong>SELECT * FROM tabla:</strong> Ver orden de campos</li>
-                            <li><strong>Tipos de datos:</strong> INTEGER, VARCHAR, etc.</li>
+                            <li><strong>Crear estructuras de base de datos</strong> a partir de nuestros modelos relacionales</li>
+                            <li><strong>Manipular datos</strong> - insertar, actualizar, eliminar</li>
+                            <li><strong>Realizar consultas complejas</strong> aprovechando las capacidades in-memory</li>
+                            <li><strong>Administrar la base de datos</strong> - usuarios, permisos, etc.</li>
                         </ul>
                     </div>
 
-                    <div class="warning-box">
-                        <strong>📌 Nota Importante:</strong>
-                        <p>En este módulo nos adelantamos ligeramente al usar CREATE TABLE, que pertenece al lenguaje DDL. Lo veremos en detalle en la siguiente unidad.</p>
-                    </div>
-                </section>
-
-                <section id="syntax" class="section">
-                    <h2>📝 Sintaxis del INSERT</h2>
-                    
-                    <div class="concept-card">
-                        <h3>🔧 Sintaxis Completa</h3>
-                        <p>La sintaxis del comando INSERT es directa y comprensible:</p>
-                    </div>
-
-                    <div class="syntax-box">
-<span class="keyword">INSERT INTO</span> <span class="placeholder">nombre_tabla</span> 
-<span class="optional">[(columna1, columna2, ...)]</span>
-<span class="keyword">VALUES</span> (<span class="placeholder">valor1, valor2, ...</span>);
-                    </div>
-
-                    <div class="concept-card">
-                        <h3">📋 Componentes de la Sintaxis</h3>
+                    <div class="important-note">
+                        <strong>⚠️ Requisito Fundamental</strong>
+                        <p>Para trabajar con HANA SQL necesitamos una <strong>interfaz o entorno</strong> que nos permita:</p>
                         <ul>
-                            <li><strong>INSERT INTO:</strong> Palabra clave que indica la operación</li>
-                            <li><strong>nombre_tabla:</strong> Tabla donde insertar los datos</li>
-                            <li><strong>(columnas):</strong> Lista opcional de campos específicos</li>
-                            <li><strong>VALUES:</strong> Palabra clave que precede los valores</li>
-                            <li><strong>(valores):</strong> Datos a insertar en el orden correspondiente</li>
+                            <li>Conectarnos contra la base de datos</li>
+                            <li>Escribir nuestro código SQL</li>
+                            <li>Ejecutar las consultas</li>
+                            <li>Ver los resultados</li>
                         </ul>
                     </div>
 
-                    <div class="example-box">
-                        <h3">✅ Ejemplo Básico</h3>
-                        <p>Forma más simple de insertar datos:</p>
-                    </div>
-
-                    <div class="code-example">
-<span class="comment">-- Inserción básica (todos los campos en orden)</span>
-<span class="keyword">INSERT INTO</span> prueba_insert 
-<span class="keyword">VALUES</span> (1, <span class="string">'valor uno'</span>);
-                    </div>
-
                     <div class="concept-card">
-                        <h3">🎯 Dos Enfoques de Inserción</h3>
-                        <ol>
-                            <li><strong>Sin especificar columnas:</strong> Requiere valores para todos los campos en el orden exacto de la tabla</li>
-                            <li><strong>Especificando columnas:</strong> Permite insertar valores desordenados o solo en algunos campos</li>
-                        </ol>
-                    </div>
-
-                    <div class="definition-box">
-                        <h3">🔑 Reglas Importantes</h3>
-                        <p><strong>Si no especificas columnas:</strong> Debes proporcionar valores para todos los campos en el orden exacto que tienen en la tabla. <strong>Si especificas columnas:</strong> Puedes insertar solo algunos valores o cambiar el orden.</p>
-                    </div>
-
-                    <div class="warning-box">
-                        <strong>⚠️ Tipos de Datos:</strong>
-                        <p>Los valores deben coincidir con los tipos de datos de las columnas. Los textos van entre comillas simples, los números sin comillas.</p>
-                    </div>
-                </section>
-
-                <section id="basic-usage" class="section">
-                    <h2>⭐ Uso Básico del INSERT</h2>
-                    
-                    <div class="concept-card">
-                        <h3">🔍 Inserción Completa</h3>
-                        <p>La forma más básica de usar INSERT es proporcionando valores para <strong>todos los campos de la tabla en orden</strong>:</p>
-                    </div>
-
-                    <div class="code-example">
-<span class="comment">-- Conocer el orden de los campos</span>
-<span class="keyword">SELECT</span> * <span class="keyword">FROM</span> prueba_insert;
-
-<span class="comment">-- Insertar datos en orden: campo1 (INTEGER), campo2 (VARCHAR)</span>
-<span class="keyword">INSERT INTO</span> prueba_insert 
-<span class="keyword">VALUES</span> (1, <span class="string">'valor uno'</span>);
-                    </div>
-
-                    <div class="concept-card">
-                        <h3">📊 Verificación de la Inserción</h3>
-                        <p>Después de insertar, siempre es buena práctica verificar que los datos se guardaron correctamente:</p>
-                    </div>
-
-                    <div class="code-example">
-<span class="comment">-- Verificar la inserción</span>
-<span class="keyword">SELECT</span> * <span class="keyword">FROM</span> prueba_insert;
-
-<span class="comment">-- Resultado esperado:</span>
-<span class="comment">-- campo1 | campo2</span>
-<span class="comment">--   1    | valor uno</span>
-                    </div>
-
-                    <div class="example-box">
-                        <h3">🔄 Múltiples Inserciones</h3>
-                        <p>Podemos ejecutar múltiples INSERT seguidos:</p>
-                    </div>
-
-                    <div class="code-example">
-<span class="comment">-- Primera inserción</span>
-<span class="keyword">INSERT INTO</span> prueba_insert 
-<span class="keyword">VALUES</span> (1, <span class="string">'valor uno'</span>);
-
-<span class="comment">-- Segunda inserción</span>
-<span class="keyword">INSERT INTO</span> prueba_insert 
-<span class="keyword">VALUES</span> (2, <span class="string">'valor dos'</span>);
-
-<span class="comment">-- Tercera inserción</span>
-<span class="keyword">INSERT INTO</span> prueba_insert 
-<span class="keyword">VALUES</span> (3, <span class="string">'valor tres'</span>);
-                    </div>
-
-                    <div class="concept-card">
-                        <h3">📋 Conocer la Estructura de la Tabla</h3>
-                        <p>Antes de insertar, necesitas conocer:</p>
-                        <ul>
-                            <li><strong>Orden de las columnas:</strong> Consulta SELECT * o doble clic en la tabla</li>
-                            <li><strong>Tipos de datos:</strong> INTEGER, VARCHAR, DATE, etc.</li>
-                            <li><strong>Longitudes:</strong> VARCHAR(50) acepta hasta 50 caracteres</li>
-                            <li><strong>Restricciones:</strong> NOT NULL, claves primarias, etc.</li>
-                        </ul>
-                    </div>
-
-                    <div class="definition-box">
-                        <h3">💡 Buenas Prácticas</h3>
-                        <p><strong>Siempre verifica:</strong> El orden correcto de los campos y que los tipos de datos coincidan. <strong>Usa comillas simples</strong> para cadenas de texto. <strong>No uses comillas</strong> para números.</p>
-                    </div>
-
-                    <div class="warning-box">
-                        <strong>⚠️ Error Común - Longitud de Campo:</strong>
-                        <p>Si defines VARCHAR sin longitud, solo acepta 1 carácter. Siempre especifica la longitud: VARCHAR(50), VARCHAR(100), etc.</p>
-                    </div>
-                </section>
-
-                <section id="column-specification" class="section">
-                    <h2>🎯 Especificación de Columnas</h2>
-                    
-                    <div class="concept-card">
-                        <h3">🔧 Inserción con Columnas Específicas</h3>
-                        <p>Cuando especificamos las columnas, ganamos <strong>flexibilidad en el orden</strong> y podemos insertar solo los campos que necesitemos:</p>
-                    </div>
-
-                    <div class="code-example">
-<span class="comment">-- Especificar columnas en orden original</span>
-<span class="keyword">INSERT INTO</span> prueba_insert (campo1, campo2)
-<span class="keyword">VALUES</span> (2, <span class="string">'valor dos'</span>);
-
-<span class="comment">-- Cambiar el orden de las columnas</span>
-<span class="keyword">INSERT INTO</span> prueba_insert (campo2, campo1)
-<span class="keyword">VALUES</span> (<span class="string">'valor dos'</span>, 2);
-                    </div>
-
-                    <div class="concept-card">
-                        <h3">🔄 Flexibilidad de Orden</h3>
-                        <p>Al especificar columnas, el <strong>orden de los valores debe coincidir con el orden de las columnas</strong> que especificaste, no con el orden original de la tabla:</p>
-                    </div>
-
-                    <div class="code-example">
-<span class="comment">-- Tabla original: campo1 (INTEGER), campo2 (VARCHAR)</span>
-<span class="comment">-- Pero podemos invertir el orden:</span>
-
-<span class="keyword">INSERT INTO</span> prueba_insert (campo2, campo1)
-<span class="keyword">VALUES</span> (<span class="string">'nuevo valor'</span>, 5);
-                    </div>
-
-                    <div class="example-box">
-                        <h3">✅ Ventajas de Especificar Columnas</h3>
-                        <ul>
-                            <li><strong>Orden flexible:</strong> No necesitas recordar el orden original</li>
-                            <li><strong>Claridad:</strong> El código es más autodocumentado</li>
-                            <li><strong>Inserción parcial:</strong> Solo algunos campos</li>
-                            <li><strong>Mantenibilidad:</strong> Si cambia la estructura, el código sigue funcionando</li>
-                        </ul>
-                    </div>
-
-                    <div class="error-grid">
-                        <div class="error-card">
-                            <h4>❌ Error de Orden</h4>
-                            <p>Si cambias el orden de columnas pero no el de valores, obtienes errores de tipo de datos.</p>
-                        </div>
-                        <div class="error-card">
-                            <h4">✅ Orden Correcto</h4>
-                            <p>Los valores deben coincidir exactamente con el orden de columnas especificado.</p>
+                        <h3>🔄 Del Modelo a la Implementación</h3>
+                        <p>El proceso completo es:</p>
+                        <div class="timeline">
+                            <div class="timeline-item">
+                                <div class="timeline-content">
+                                    <h4>1. Modelo Conceptual</h4>
+                                    <p>Diagrama Entidad-Relación</p>
+                                </div>
+                            </div>
+                            <div class="timeline-item">
+                                <div class="timeline-content">
+                                    <h4>2. Modelo Relacional</h4>
+                                    <p>Tablas con atributos y relaciones</p>
+                                </div>
+                            </div>
+                            <div class="timeline-item">
+                                <div class="timeline-content">
+                                    <h4>3. Implementación SQL</h4>
+                                    <p>Código HANA SQL para crear la BD</p>
+                                </div>
+                            </div>
+                            <div class="timeline-item">
+                                <div class="timeline-content">
+                                    <h4>4. Base de Datos Funcional</h4>
+                                    <p>Sistema listo para usar</p>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
-                    <div class="code-example">
-<span class="comment">-- ❌ INCORRECTO: Orden de valores no coincide</span>
-<span class="keyword">INSERT INTO</span> prueba_insert (campo2, campo1)
-<span class="keyword">VALUES</span> (3, <span class="string">'texto'</span>); <span class="error">-- Error: INTEGER en VARCHAR, VARCHAR en INTEGER</span>
-
-<span class="comment">-- ✅ CORRECTO: Valores en orden correcto</span>
-<span class="keyword">INSERT INTO</span> prueba_insert (campo2, campo1)
-<span class="keyword">VALUES</span> (<span class="string">'texto'</span>, 3); <span class="comment">-- Correcto: VARCHAR en campo2, INTEGER en campo1</span>
+                    <div class="interface-box">
+                        <h3>🎮 Interfaces vs Editores Simples</h3>
+                        <p>A diferencia de otros lenguajes donde puedes usar un simple editor de texto, con HANA SQL necesitas herramientas especializadas que gestionen la <strong>conexión, autenticación y ejecución</strong> contra el servidor de base de datos.</p>
                     </div>
-
-                    <div class="definition-box">
-                        <h3">🔑 Regla de Oro</h3>
-                        <p><strong>La secuencia de valores debe coincidir exactamente con la secuencia de columnas que especifiques</strong>, independientemente del orden original de la tabla.</p>
-                    </div>
-
-                    <div class="warning-box">
-                        <strong>⚠️ Conversiones de Tipos:</strong>
-                        <p>SQL puede convertir números a texto, pero <strong>NO puede convertir texto a números</strong>. Insertar 'texto' en un campo INTEGER causará error.</p>
-                    </warning-box>
                 </section>
 
-                <section id="partial-values" class="section">
-                    <h2>📊 Inserción de Valores Parciales</h2>
+                <section id="interfaces-overview" class="section">
+                    <h2>🖥️ Interfaces Disponibles</h2>
                     
                     <div class="concept-card">
-                        <h3">🎯 Inserción Parcial</h3>
-                        <p>No siempre necesitamos insertar valores en todos los campos. Podemos insertar solo en <strong>algunos campos específicos</strong>, dejando otros con valores NULL.</p>
+                        <h3>📊 Panorama General</h3>
+                        <p>SAP proporciona <strong>dos grandes interfaces principales</strong> que son consideradas estándar:</p>
+                    </div>
+
+                    <div class="comparison-grid">
+                        <div class="interface-card">
+                            <div class="interface-icon">🔧</div>
+                            <h3>SAP HANA Studio</h3>
+                            <p><strong>HANA 1.0</strong></p>
+                            <p>Interfaz de escritorio basada en Eclipse</p>
+                            <p style="color: #f39c12;">🟡 En declive</p>
+                        </div>
+                        <div class="interface-card">
+                            <div class="interface-icon">🌐</div>
+                            <h3>Web IDE</h3>
+                            <p><strong>HANA 2.0+</strong></p>
+                            <p>Entorno web moderno</p>
+                            <p style="color: #28a745;">🟢 Recomendado</p>
+                        </div>
+                    </div>
+
+                    <div class="interface-box">
+                        <h3>🎯 Interfaces Oficiales SAP</h3>
+                        <div class="stats-grid">
+                            <div class="stat-card">
+                                <div class="stat-number">🔧</div>
+                                <div>SAP HANA Studio</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-number">🌐</div>
+                                <div>Web IDE</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-number">⚙️</div>
+                                <div>Cockpit</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="important-note">
+                        <strong>📌 Interfaces No Oficiales</strong>
+                        <p>Existen otros sistemas además de estos, pero no son los oficiales provistos por SAP. Los oficiales garantizan compatibilidad, soporte y actualizaciones continuas.</p>
                     </div>
 
                     <div class="concept-card">
-                        <h3">📝 Dos Formas de Inserción Parcial</h3>
+                        <h3>🎯 Enfoque Actual de SAP</h3>
+                        <p>La estrategia actual es trabajar <strong>100% con el entorno web</strong>:</p>
+                        <ul>
+                            <li><strong>Web IDE</strong> - Para desarrollo y consultas</li>
+                            <li><strong>Cockpit</strong> - Para administración del sistema</li>
+                            <li><strong>Eliminación gradual</strong> del HANA Studio</li>
+                        </ul>
+                    </div>
+                </section>
+
+                <section id="sap-studio" class="section">
+                    <h2>🔧 SAP HANA Studio</h2>
+                    
+                    <div class="studio-box">
+                        <h3>📋 Características Principales</h3>
+                        <p>SAP HANA Studio era la <strong>interfaz principal en HANA 1.0</strong> y se basaba en tecnología Eclipse.</p>
+                    </div>
+
+                    <div class="concept-card">
+                        <h3>🛠️ Tecnología Base: Eclipse</h3>
+                        <p>Eclipse es un <strong>entorno de desarrollo libre</strong> que:</p>
+                        <ul>
+                            <li><strong>Sirve para todo tipo de lenguajes</strong> de programación</li>
+                            <li><strong>Es extensible</strong> mediante plugins</li>
+                            <li><strong>Tiene una gran comunidad</strong> de desarrolladores</li>
+                            <li><strong>Es multiplataforma</strong> (Windows, Linux, macOS)</li>
+                        </ul>
+                    </div>
+
+                    <div class="studio-box">
+                        <h3>🔌 Sistema de Plugins SAP</h3>
+                        <p>Para usar HANA Studio necesitabas:</p>
                         <ol>
-                            <li><strong>Con NULL explícito:</strong> Especificar NULL para campos vacíos</li>
-                            <li><strong>Especificando solo columnas:</strong> Omitir campos no necesarios</li>
+                            <li><strong>Descargar Eclipse</strong> (entorno base)</li>
+                            <li><strong>Descargar plugins de SAP</strong> desde la página oficial</li>
+                            <li><strong>Configurar la conexión</strong> a HANA</li>
+                            <li><strong>Instalar en tu equipo local</strong></li>
                         </ol>
                     </div>
 
-                    <div class="code-example">
-<span class="comment">-- Forma 1: NULL explícito (sin especificar columnas)</span>
-<span class="keyword">INSERT INTO</span> prueba_insert 
-<span class="keyword">VALUES</span> (<span class="keyword">NULL</span>, <span class="string">'solo campo2'</span>);
+                    <div class="concept-card">
+                        <h3>✅ Ventajas del HANA Studio</h3>
+                        <ul>
+                            <li><strong>Interfaz rica y completa</strong> - Todas las funcionalidades</li>
+                            <li><strong>Trabajo offline</strong> - Desarrollar sin conexión permanente</li>
+                            <li><strong>Integración con Eclipse</strong> - Familiar para desarrolladores Java</li>
+                            <li><strong>Herramientas avanzadas</strong> - Debugging, profiling, etc.</li>
+                        </ul>
+                    </div>
 
-<span class="comment">-- Forma 2: Especificar solo la columna que queremos</span>
-<span class="keyword">INSERT INTO</span> prueba_insert (campo2)
-<span class="keyword">VALUES</span> (<span class="string">'nuevo valor campo2'</span>);
-                    </code>
+                    <div class="important-note">
+                        <strong>⚠️ Estado Actual</strong>
+                        <p>HANA Studio <strong>sigue en activo</strong> a fecha de hoy y todavía se puede conectar, pero está <strong>condenado a desaparecer</strong>. SAP recomienda migrar completamente al entorno web.</p>
+                    </div>
 
-                    <div class="null-comparison">
-                        <div class="null-card">
-                            <h4>🔄 NULL como Estado</h4>
-                            <p><strong>Sin comillas:</strong> NULL</p>
+                    <div class="studio-box">
+                        <h3>📉 Razones del Declive</h3>
+                        <ul>
+                            <li><strong>Mantenimiento complejo</strong> - Requiere instalación en cada equipo</li>
+                            <li><strong>Dependencias de versiones</strong> - Problemas de compatibilidad</li>
+                            <li><strong>Enfoque cloud</strong> - SAP se orienta hacia soluciones web</li>
+                            <li><strong>Modernización</strong> - Tecnologías más actuales en web</li>
+                        </ul>
+                    </div>
+                </section>
+
+                <section id="web-ide" class="section">
+                    <h2>🌐 Web IDE (Entorno Web)</h2>
+                    
+                    <div class="webide-box">
+                        <h3>🚀 La Interfaz del Futuro</h3>
+                        <p>El Web IDE se inició con <strong>HANA 2.0</strong> y es la <strong>interfaz actual recomendada</strong> por SAP para todo desarrollo y gestión de HANA.</p>
+                    </div>
+
+                    <div class="concept-card">
+                        <h3>🌟 Características Principales</h3>
+                        <ul>
+                            <li><strong>Entorno web completo</strong> - Acceso desde cualquier navegador</li>
+                            <li><strong>No requiere instalación</strong> - Solo navegador web</li>
+                            <li><strong>Interfaz moderna</strong> - Diseño actual y responsive</li>
+                            <li><strong>Actualizaciones automáticas</strong> - Siempre la última versión</li>
+                        </ul>
+                    </div>
+
+                    <div class="webide-box">
+                        <h3>💻 Proceso de Acceso</h3>
+                        <ol>
+                            <li><strong>Abrir navegador web</strong></li>
+                            <li><strong>Navegar a la URL del servidor HANA</strong></li>
+                            <li><strong>Login con credenciales</strong></li>
+                            <li><strong>¡Listo para trabajar!</strong></li>
+                        </ol>
+                    </div>
+
+                    <div class="concept-card">
+                        <h3>✅ Ventajas del Web IDE</h3>
+                        <ul>
+                            <li><strong>Acceso universal</strong> - Desde cualquier dispositivo con navegador</li>
+                            <li><strong>Sin instalaciones</strong> - Reduce problemas de IT</li>
+                            <li><strong>Colaboración mejorada</strong> - Múltiples usuarios simultáneos</li>
+                            <li><strong>Integración cloud</strong> - Perfecta para entornos cloud</li>
+                            <li><strong>Actualizaciones transparentes</strong> - Sin gestión de versiones local</li>
+                        </ul>
+                    </div>
+
+                    <div class="webide-box">
+                        <h3>🎯 Funcionalidades Incluidas</h3>
+                        <div class="stats-grid">
+                            <div class="stat-card">
+                                <div class="stat-number">📝</div>
+                                <div>Editor SQL</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-number">🔍</div>
+                                <div>Explorador BD</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-number">📊</div>
+                                <div>Visualizaciones</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-number">🔧</div>
+                                <div>Herramientas Desarrollo</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="important-note">
+                        <strong>🎯 Recomendación SAP</strong>
+                        <p>SAP recomienda trabajar <strong>100% con el entorno web</strong> en todos los nuevos proyectos y migrar gradualmente los existentes desde HANA Studio.</p>
+                    </div>
+                </section>
+
+                <section id="cockpit" class="section">
+                    <h2>⚙️ Cockpit - Administración</h2>
+                    
+                    <div class="concept-card">
+                        <h3>🎛️ ¿Qué es el Cockpit?</h3>
+                        <p>El Cockpit es la <strong>interfaz de administración web</strong> que complementa al Web IDE, enfocada específicamente en tareas administrativas del sistema HANA.</p>
+                    </div>
+
+                    <div class="interface-box">
+                        <h3>🔧 Funciones Principales del Cockpit</h3>
+                        <ul>
+                            <li><strong>Administración de usuarios</strong> - Crear, modificar, eliminar usuarios</li>
+                            <li><strong>Gestión de permisos</strong> - Roles y privilegios</li>
+                            <li><strong>Monitoreo del sistema</strong> - Performance, memoria, CPU</li>
+                            <li><strong>Configuración del servidor</strong> - Parámetros y ajustes</li>
+                            <li><strong>Backup y recovery</strong> - Gestión de copias de seguridad</li>
+                        </ul>
+                    </div>
+
+                    <div class="concept-card">
+                        <h3>🎯 División de Responsabilidades</h3>
+                        <div class="comparison-grid">
+                            <div class="webide-box">
+                                <h4>🌐 Web IDE</h4>
+                                <ul>
+                                    <li>Desarrollo de aplicaciones</li>
+                                    <li>Consultas SQL</li>
+                                    <li>Creación de vistas</li>
+                                    <li>Modelado de datos</li>
+                                </ul>
+                            </div>
+                            <div class="interface-box">
+                                <h4>⚙️ Cockpit</h4>
+                                <ul>
+                                    <li>Administración del sistema</li>
+                                    <li>Gestión de usuarios</li>
+                                    <li>Monitoreo y performance</li>
+                                    <li>Configuración avanzada</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="important-note">
+                        <strong>👥 Roles de Usuario</strong>
+                        <p>Típicamente, los <strong>desarrolladores</strong> usan Web IDE mientras que los <strong>administradores de sistema</strong> usan Cockpit. Algunos usuarios avanzados pueden necesitar acceso a ambos.</p>
+                    </div>
+
+                    <div class="concept-card">
+                        <h3>🔒 Seguridad y Acceso</h3>
+                        <ul>
+                            <li><strong>Acceso basado en roles</strong> - Diferentes permisos según función</li>
+                            <li><strong>Interfaz web segura</strong> - HTTPS y autenticación robusta</li>
+                            <li><strong>Auditoría completa</strong> - Log de todas las acciones administrativas</li>
+                            <li><strong>Integración con directorio</strong> - LDAP, Active Directory, etc.</li>
+                        </ul>
+                    </div>
+                </section>
+
+                <section id="comparison" class="section">
+                    <h2>⚖️ Comparación de Interfaces</h2>
+                    
+                    <div class="concept-card">
+                        <h3>📊 Tabla Comparativa</h3>
+                        <div style="overflow-x: auto;">
+                            <table style="width: 100%; border-collapse: collapse; margin: 20px 0;">
+                                <thead>
+                                    <tr style="background: linear-gradient(45deg, #667eea, #764ba2); color: white;">
+                                        <th style="padding: 12px; border: 1px solid #ddd;">Característica</th>
+                                        <th style="padding: 12px; border: 1px solid #ddd;">HANA Studio</th>
+                                        <th style="padding: 12px; border: 1px solid #ddd;">Web IDE</th>
+                                        <th style="padding: 12px; border: 1px solid #ddd;">Cockpit</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td style="padding: 12px; border: 1px solid #ddd; font-weight: bold;">Tipo</td>
+                                        <td style="padding: 12px; border: 1px solid #ddd;">Aplicación de escritorio</td>
+                                        <td style="padding: 12px; border: 1px solid #ddd;">Aplicación web</td>
+                                        <td style="padding: 12px; border: 1px solid #ddd;">Aplicación web</td>
+                                    </tr>
+                                    <tr style="background: #f8f9fa;">
+                                        <td style="padding: 12px; border: 1px solid #ddd; font-weight: bold;">Instalación</td>
+                                        <td style="padding: 12px; border: 1px solid #ddd;">Sí (Eclipse + plugins)</td>
+                                        <td style="padding: 12px; border: 1px solid #ddd;">No</td>
+                                        <td style="padding: 12px; border: 1px solid #ddd;">No</td>
+                                    </tr>
+                                    <tr>
+                                        <td style="padding: 12px; border: 1px solid #ddd; font-weight: bold;">Acceso</td>
+                                        <td style="padding: 12px; border: 1px solid #ddd;">Solo desde PC instalado</td>
+                                        <td style="padding: 12px; border: 1px solid #ddd;">Cualquier navegador</td>
+                                        <td style="padding: 12px; border: 1px solid #ddd;">Cualquier navegador</td>
+                                    </tr>
+                                    <tr style="background: #f8f9fa;">
+                                        <td style="padding: 12px; border: 1px solid #ddd; font-weight: bold;">Propósito</td>
+                                        <td style="padding: 12px; border: 1px solid #ddd;">Desarrollo completo</td>
+                                        <td style="padding: 12px; border: 1px solid #ddd;">Desarrollo y consultas</td>
+                                        <td style="padding: 12px; border: 1px solid #ddd;">Administración</td>
+                                    </tr>
+                                    <tr>
+                                        <td style="padding: 12px; border: 1px solid #ddd; font-weight: bold;">Estado</td>
+                                        <td style="padding: 12px; border: 1px solid #ddd;">🟡 Obsoleto</td>
+                                        <td style="padding: 12px; border: 1px solid #ddd;">🟢 Recomendado</td>
+                                        <td style="padding: 12px; border: 1px solid #ddd;">🟢 Activo</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="concept-card">
+                        <h3>🎯 Recomendaciones por Escenario</h3>
+                        
+                        <div class="webide-box">
+                            <h4>🌐 Usa Web IDE cuando:</h4>
                             <ul>
-                                <li>Representa ausencia de valor</li>
-                                <li>Estado especial de la base de datos</li>
-                                <li>Se consulta con: IS NULL</li>
+                                <li>Desarrollo nuevo de aplicaciones</li>
+                                <li>Consultas SQL regulares</li>
+                                <li>Trabajo colaborativo en equipo</li>
+                                <li>Acceso desde múltiples ubicaciones</li>
+                                <li>Proyectos cloud o híbridos</li>
                             </ul>
                         </div>
-                        <div class="null-card">
-                            <h4>📝 'NULL' como Texto</h4>
-                            <p><strong>Con comillas:</strong> 'NULL'</p>
+
+                        <div class="interface-box">
+                            <h4>⚙️ Usa Cockpit cuando:</h4>
                             <ul>
-                                <li>Es un texto que dice "NULL"</li>
-                                <li>Tiene valor: las letras N-U-L-L</li>
-                                <li>Se consulta con: = 'NULL'</li>
+                                <li>Administración del sistema</li>
+                                <li>Gestión de usuarios y permisos</li>
+                                <li>Monitoreo de performance</li>
+                                <li>Configuración de backup</li>
+                                <li>Tareas de DBA</li>
+                            </ul>
+                        </div>
+
+                        <div class="studio-box">
+                            <h4>🔧 Considera HANA Studio solo si:</h4>
+                            <ul>
+                                <li>Proyecto legacy existente</li>
+                                <li>Migración gradual en proceso</li>
+                                <li>Funcionalidades específicas no disponibles en web</li>
                             </ul>
                         </div>
                     </div>
 
-                    <div class="example-box">
-                        <h3">🔍 Diferencias en Consultas</h3>
-                        <p>La diferencia entre NULL y 'NULL' se aprecia al consultar:</p>
-                    </div>
-
-                    <div class="code-example">
-<span class="comment">-- Insertar NULL como estado</span>
-<span class="keyword">INSERT INTO</span> prueba_insert 
-<span class="keyword">VALUES</span> (<span class="keyword">NULL</span>, <span class="string">'valor'</span>);
-
-<span class="comment">-- Insertar 'NULL' como texto</span>
-<span class="keyword">INSERT INTO</span> prueba_insert 
-<span class="keyword">VALUES</span> (2, <span class="string">'NULL'</span>);
-
-<span class="comment">-- Consultar registros con NULL verdadero</span>
-<span class="keyword">SELECT</span> * <span class="keyword">FROM</span> prueba_insert 
-<span class="keyword">WHERE</span> campo1 <span class="keyword">IS NULL</span>; <span class="comment">-- Encuentra el primer registro</span>
-
-<span class="comment">-- Consultar registros con texto 'NULL'</span>
-<span class="keyword">SELECT</span> * <span class="keyword">FROM</span> prueba_insert 
-<span class="keyword">WHERE</span> campo2 = <span class="string">'NULL'</span>; <span class="comment">-- Encuentra el segundo registro</span>
-                    </div>
-
-                    <div class="concept-card">
-                        <h3">🎯 Cuándo Usar Cada Método</h3>
-                        <ul>
-                            <li><strong>NULL explícito:</strong> Cuando conoces el orden pero algunos campos no tienen valor</li>
-                            <li><strong>Columnas específicas:</strong> Más claro y mantenible, especialmente con muchos campos</li>
-                            <li><strong>Inserción parcial:</strong> Para formularios donde no todos los campos son obligatorios</li>
-                        </ul>
-                    </div>
-
-                    <div class="warning-box">
-                        <strong>⚠️ Cuidado con NULL:</strong>
-                        <p><strong>NULL sin comillas</strong> = ausencia de valor (estado especial). <strong>'NULL' con comillas</strong> = texto que contiene las letras N-U-L-L. ¡Son completamente diferentes!</p>
+                    <div class="important-note">
+                        <strong>💡 Recomendación General</strong>
+                        <p>Para nuevos proyectos, usa <strong>Web IDE + Cockpit</strong> exclusivamente. Solo considera HANA Studio para mantenimiento de sistemas legacy que aún no se han migrado.</p>
                     </div>
                 </section>
 
-                <section id="common-errors" class="section">
-                    <h2>⚠️ Errores Comunes</h2>
+                <section id="evolution" class="section">
+                    <h2>📈 Evolución Histórica</h2>
                     
                     <div class="concept-card">
-                        <h3">🚨 Principales Errores al Usar INSERT</h3>
-                        <p>Los errores más frecuentes están relacionados con <strong>tipos de datos incompatibles</strong> y <strong>orden incorrecto de valores</strong>:</p>
-                    </div>
-
-                    <div class="error-grid">
-                        <div class="error-card">
-                            <h4>🔢 Error de Tipo de Datos</h4>
-                            <p>Intentar insertar texto en campo numérico o superar la longitud permitida en VARCHAR.</p>
+                        <h3>🕰️ Línea de Tiempo SAP HANA</h3>
+                        <div class="timeline">
+                            <div class="timeline-item">
+                                <div class="timeline-content">
+                                    <h4>HANA 1.0 (2010-2016)</h4>
+                                    <p><strong>SAP HANA Studio</strong> era el método principal y prácticamente único de acceso</p>
+                                </div>
+                            </div>
+                            <div class="timeline-item">
+                                <div class="timeline-content">
+                                    <h4>HANA 2.0 (2016-presente)</h4>
+                                    <p>Introducción del <strong>Web IDE</strong> como nueva interfaz principal</p>
+                                </div>
+                            </div>
+                            <div class="timeline-item">
+                                <div class="timeline-content">
+                                    <h4>Actualidad (2020+)</h4>
+                                    <p><strong>Web IDE + Cockpit</strong> como estándar, Studio en declive</p>
+                                </div>
+                            </div>
+                            <div class="timeline-item">
+                                <div class="timeline-content">
+                                    <h4>Futuro</h4>
+                                    <p>Eliminación completa de Studio, <strong>100% entorno web</strong></p>
+                                </div>
+                            </div>
                         </div>
-                        <div class="error-card">
-                            <h4>📐 Error de Longitud</h4>
-                            <p>Crear VARCHAR sin especificar tamaño o insertar texto más largo que el límite.</p>
-                        </div>
-                        <div class="error-card">
-                            <h4>🔄 Error de Orden</h4>
-                            <p>No coincidir el orden de valores con el orden de columnas especificadas.</p>
-                        </div>
-                        <div class="error-card">
-                            <h4>💭 Error de NULL</h4>
-                            <p>Confundir NULL (estado) con 'NULL' (texto literal).</p>
-                        </div>
-                    </div>
-
-                    <div class="example-box">
-                        <h3">❌ Ejemplos de Errores</h3>
-                        <p>Veamos los errores más comunes y cómo evitarlos:</p>
-                    </div>
-
-                    <div class="code-example">
-<span class="comment">-- ❌ ERROR 1: Tipo de datos incompatible</span>
-<span class="keyword">INSERT INTO</span> prueba_insert 
-<span class="keyword">VALUES</span> (<span class="string">'texto'</span>, 123); <span class="error">-- No se puede convertir 'texto' a INTEGER</span>
-
-<span class="comment">-- ✅ CORRECTO:</span>
-<span class="keyword">INSERT INTO</span> prueba_insert 
-<span class="keyword">VALUES</span> (123, <span class="string">'texto'</span>); <span class="comment">-- INTEGER en campo1, VARCHAR en campo2</span>
-
-<span class="comment">-- ❌ ERROR 2: Valor muy largo para VARCHAR</span>
-<span class="keyword">INSERT INTO</span> prueba_insert 
-<span class="keyword">VALUES</span> (1, <span class="string">'Este texto es demasiado largo para un VARCHAR(50) y causará error'</span>);
-
-<span class="comment">-- ✅ CORRECTO:</span>
-<span class="keyword">INSERT INTO</span> prueba_insert 
-<span class="keyword">VALUES</span> (1, <span class="string">'Texto adecuado'</span>); <span class="comment">-- Dentro del límite de 50 caracteres</span>
                     </div>
 
                     <div class="concept-card">
-                        <h3">🔧 Cómo Evitar Errores</h3>
-                        <ol>
-                            <li><strong>Verificar tipos:</strong> INTEGER para números, VARCHAR para texto</li>
-                            <li><strong>Respetar longitudes:</strong> VARCHAR(50) acepta máximo 50 caracteres</li>
-                            <li><strong>Orden correcto:</strong> Valores en el mismo orden que las columnas</li>
-                            <li><strong>Usar comillas:</strong> Solo para texto, nunca para números</li>
-                            <li><strong>NULL correcto:</strong> Sin comillas para estado nulo</li>
-                        </ol>
+                        <h3>🔄 Razones del Cambio</h3>
+                        <ul>
+                            <li><strong>Adopción cloud</strong> - Mayor enfoque en soluciones en la nube</li>
+                            <li><strong>Accesibilidad</strong> - Acceso desde cualquier dispositivo</li>
+                            <li><strong>Mantenimiento simplificado</strong> - Sin instalaciones locales</li>
+                            <li><strong>Colaboración mejorada</strong> - Trabajo en equipo más eficiente</li>
+                            <li><strong>Tecnologías modernas</strong> - Interfaces más actuales y responsive</li>
+                        </ul>
                     </div>
 
-                    <div class="code-example">
-<span class="comment">-- ❌ ERROR 3: Orden incorrecto con columnas especificadas</span>
-<span class="keyword">INSERT INTO</span> prueba_insert (campo2, campo1)
-<span class="keyword">VALUES</span> (5, <span class="string">'texto'</span>); <span class="error">-- Orden de valores no coincide con columnas</span>
-
-<span class="comment">-- ✅ CORRECTO:</span>
-<span class="keyword">INSERT INTO</span> prueba_insert (campo2, campo1)
-<span class="keyword">VALUES</span> (<span class="string">'texto'</span>, 5); <span class="comment">-- VARCHAR primero, INTEGER segundo</span>
-
-<span class="comment">-- ❌ ERROR 4: Confundir NULL estado con 'NULL' texto</span>
-<span class="keyword">INSERT INTO</span> prueba_insert 
-<span class="keyword">VALUES</span> (<span class="string">'NULL'</span>, <span class="string">'valor'</span>); <span class="error">-- Intenta insertar texto 'NULL' en INTEGER</span>
-
-<span class="comment">-- ✅ CORRECTO:</span>
-<span class="keyword">INSERT INTO</span> prueba_insert 
-<span class="keyword">VALUES</span> (<span class="keyword">NULL</span>, <span class="string">'valor'</span>); <span class="comment">-- NULL sin comillas para estado nulo</span>
+                    <div class="studio-box">
+                        <h3>📉 Estado Actual de HANA Studio</h3>
+                        <p>Aunque HANA Studio <strong>sigue funcionando</strong> en HANA 2.0, su estado es:</p>
+                        <ul>
+                            <li><strong>Mantenimiento mínimo</strong> - Solo correcciones críticas</li>
+                            <li><strong>No nuevas funcionalidades</strong> - Desarrollo pausado</li>
+                            <li><strong>Migración recomendada</strong> - SAP sugiere cambiar a Web IDE</li>
+                            <li><strong>Soporte limitado</strong> - Eventual discontinuación</li>
+                        </ul>
                     </div>
 
-                    <div class="definition-box">
-                        <h3">💡 Mensajes de Error Comunes</h3>
-                        <p><strong>"Invalid column name":</strong> Nombre de columna incorrecto. <strong>"Invalid data type":</strong> Tipo de datos incompatible. <strong>"Value too long":</strong> Texto demasiado largo para el campo.</p>
+                    <div class="webide-box">
+                        <h3>🚀 Futuro del Ecosistema HANA</h3>
+                        <p>La visión de SAP es clara:</p>
+                        <ul>
+                            <li><strong>100% interfaz web</strong> para todas las operaciones</li>
+                            <li><strong>Integración cloud nativa</strong> desde el diseño</li>
+                            <li><strong>Experiencia unificada</strong> entre desarrollo y administración</li>
+                            <li><strong>APIs modernas</strong> para integración con terceros</li>
+                        </ul>
                     </div>
 
-                    <div class="warning-box">
-                        <strong>🔍 Debugging:</strong>
-                        <p>Cuando tengas errores, verifica: 1) Tipos de datos, 2) Orden de valores, 3) Longitud de texto, 4) Uso correcto de comillas. Los mensajes de error de SQL suelen ser específicos sobre el problema.</p>
-                    </warning-box>
+                    <div class="important-note">
+                        <strong>⚠️ Impacto para Profesionales</strong>
+                        <p>Los profesionales SAP HANA deben <strong>dominar las interfaces web</strong> ya que son el presente y futuro de la plataforma. El conocimiento de Studio es útil para legacy pero no esencial para nuevos proyectos.</p>
+                    </div>
                 </section>
 
-                <section id="conclusions" class="section">
-                    <h2>🎯 Conclusiones</h2>
+                <section id="next-steps" class="section">
+                    <h2>🎯 Próximos Pasos</h2>
                     
                     <div class="concept-card">
-                        <h3">📋 Resumen del Comando INSERT</h3>
-                        <p>Hemos cubierto todos los aspectos fundamentales del <strong>comando INSERT</strong>, desde la sintaxis básica hasta los errores más comunes. Este comando es esencial para alimentar nuestras tablas con datos.</p>
+                        <h3>📋 Lo que Veremos a Continuación</h3>
+                        <p>Esta ha sido una <strong>pequeña presentación</strong> de cara a las siguientes clases. Ahora vamos a:</p>
+                        <ul>
+                            <li><strong>Ver cada entorno en profundidad</strong> - Exploración detallada</li>
+                            <li><strong>Aprender cómo se compone</strong> cada interfaz</li>
+                            <li><strong>Practicar el uso</strong> de las herramientas</li>
+                            <li><strong>Empezar a trabajar</strong> con código HANA SQL</li>
+                        </ul>
                     </div>
 
-                    <div class="insert-steps">
-                        <div class="step-card">
-                            <div class="step-number">1</div>
-                            <h4>Sintaxis Simple</h4>
-                            <p>INSERT INTO tabla VALUES (valores)</p>
-                        </div>
-                        <div class="step-card">
-                            <div class="step-number">2</div>
-                            <h4>Flexibilidad</h4>
-                            <p>Especificar columnas para mayor control</p>
-                        </div>
-                        <div class="step-card">
-                            <div class="step-number">3</div>
-                            <h4>Precisión</h4>
-                            <p>Respetar tipos de datos y longitudes</p>
+                    <div class="webide-box">
+                        <h3>🎮 Plan de Aprendizaje Práctico</h3>
+                        <div class="timeline">
+                            <div class="timeline-item">
+                                <div class="timeline-content">
+                                    <h4>Siguiente Clase: Web IDE en Detalle</h4>
+                                    <p>Exploración completa de la interfaz web</p>
+                                </div>
+                            </div>
+                            <div class="timeline-item">
+                                <div class="timeline-content">
+                                    <h4>Después: Cockpit y Administración</h4>
+                                    <p>Herramientas administrativas y monitoreo</p>
+                                </div>
+                            </div>
+                            <div class="timeline-item">
+                                <div class="timeline-content">
+                                    <h4>Finalmente: Desarrollo Práctico</h4>
+                                    <p>Creación de bases de datos con HANA SQL</p>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
                     <div class="concept-card">
-                        <h3">🔑 Conceptos Clave Dominados</h3>
+                        <h3>🎯 Objetivos de Aprendizaje</h3>
                         <ul>
-                            <li><strong>Sintaxis básica:</strong> INSERT INTO tabla VALUES como estructura fundamental</li>
-                            <li><strong>Dos enfoques:</strong> Con y sin especificación de columnas</li>
-                            <li><strong>Tipos de datos:</strong> INTEGER sin comillas, VARCHAR con comillas</li>
-                            <li><strong>NULL vs 'NULL':</strong> Estado nulo vs texto literal</li>
-                            <li><strong>Orden crítico:</strong> Valores deben coincidir con columnas especificadas</li>
+                            <li><strong>Dominar Web IDE</strong> - Interfaz principal de desarrollo</li>
+                            <li><strong>Conocer Cockpit</strong> - Herramientas administrativas</li>
+                            <li><strong>Escribir HANA SQL</strong> - Implementar nuestros modelos</li>
+                            <li><strong>Gestionar conexiones</strong> - Configuración y seguridad</li>
+                            <li><strong>Buenas prácticas</strong> - Desarrollo profesional</li>
                         </ul>
                     </div>
 
-                    <div class="definition-box">
-                        <h3">🎯 Formas de Inserción</h3>
-                        <p><strong>Completa:</strong> Todos los campos en orden de tabla. <strong>Específica:</strong> Solo columnas seleccionadas con flexibilidad de orden. <strong>Parcial:</strong> Algunos campos, otros quedan NULL.</p>
+                    <div class="important-note">
+                        <strong>📚 Preparación para Certificación</strong>
+                        <p>Todo este contenido es relevante para las <strong>certificaciones SAP HANA</strong>. Asegúrate de entender las diferencias entre interfaces y cuándo usar cada una.</p>
                     </div>
 
-                    <div class="concept-card">
-                        <h3">⚠️ Errores a Evitar</h3>
-                        <ul>
-                            <li><strong>Incompatibilidad de tipos:</strong> Texto en campo numérico</li>
-                            <li><strong>Longitud excesiva:</strong> Superar límite de VARCHAR</li>
-                            <li><strong>Orden incorrecto:</strong> Valores no alineados con columnas</li>
-                            <li><strong>Comillas incorrectas:</strong> NULL debe ir sin comillas</li>
-                            <li><strong>Campo sin tamaño:</strong> VARCHAR debe especificar longitud</li>
-                        </ul>
-                    </div>
-
-                    <div class="example-box">
-                        <h3">🚀 Mejores Prácticas</h3>
-                        <ul>
-                            <li><strong>Especifica siempre columnas:</strong> Hace el código más mantenible</li>
-                            <li><strong>Verifica tipos de datos:</strong> Consulta la estructura antes de insertar</li>
-                            <li><strong>Usa comillas correctamente:</strong> Solo para texto, nunca para números</li>
-                            <li><strong>Valida después de insertar:</strong> SELECT para confirmar los datos</li>
-                        </ul>
-                    </div>
-
-                    <div class="warning-box">
-                        <strong>💡 Preparación para lo Siguiente:</strong>
-                        <p>Con el dominio del INSERT, estás preparado para alimentar tus tablas con datos. En próximas clases veremos UPDATE (modificar datos) y DELETE (eliminar registros), completando el conjunto de comandos DML.</p>
-                    </warning-box>
-
-                    <div class="concept-card">
-                        <h3">📚 Recuerda Siempre</h3>
-                        <ul>
-                            <li>INSERT es mucho más simple que SELECT</li>
-                            <li>La precisión en tipos de datos es fundamental</li>
-                            <li>Especificar columnas da mayor flexibilidad</li>
-                            <li>NULL y 'NULL' son completamente diferentes</li>
-                            <li>Los errores suelen ser claros y específicos</li>
-                            <li>Siempre verifica el resultado con SELECT</li>
-                        </ul>
+                    <div class="interface-box">
+                        <h3>💪 ¿Estás Listo?</h3>
+                        <p>Con esta base conceptual sobre las interfaces disponibles, estamos preparados para sumergirnos en el mundo práctico del desarrollo con SAP HANA. ¡Empecemos a construir nuestras bases de datos!</p>
                     </div>
                 </section>
             </main>
@@ -1145,7 +1165,7 @@
             }
 
             // Animación de entrada
-            const cards = document.querySelectorAll('.concept-card, .definition-box, .example-box');
+            const cards = document.querySelectorAll('.concept-card, .interface-box, .studio-box, .webide-box');
             cards.forEach((card, index) => {
                 setTimeout(() => {
                     card.style.opacity = '0';
