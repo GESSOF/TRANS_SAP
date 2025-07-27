@@ -1,0 +1,1536 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Curso SAP HANA - INNER JOIN</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .header h1 {
+            color: #2c3e50;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header p {
+            color: #666;
+            font-size: 1.2em;
+        }
+
+        .dashboard {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .sidebar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            height: fit-content;
+            position: sticky;
+            top: 20px;
+        }
+
+        .sidebar h3 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #667eea;
+        }
+
+        .nav-item {
+            padding: 12px 20px;
+            margin: 5px 0;
+            background: linear-gradient(45deg, #f8f9fa, #e9ecef);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-left: 4px solid transparent;
+            font-size: 0.9em;
+        }
+
+        .nav-item:hover {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            transform: translateX(10px);
+            border-left-color: #fff;
+        }
+
+        .nav-item.active {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border-left-color: #fff;
+        }
+
+        .mobile-menu-toggle {
+            display: none;
+            background: rgba(255, 255, 255, 0.95);
+            border: none;
+            padding: 15px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            font-size: 1.2em;
+            cursor: pointer;
+            width: 100%;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .content {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .section {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .section h2 {
+            color: #2c3e50;
+            font-size: 2em;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #667eea;
+        }
+
+        .concept-card {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-radius: 15px;
+            padding: 25px;
+            margin: 20px 0;
+            border-left: 5px solid #27ae60;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease;
+        }
+
+        .concept-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .concept-card h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 1.4em;
+        }
+
+        .concept-card p {
+            line-height: 1.8;
+            color: #555;
+            margin-bottom: 15px;
+        }
+
+        .concept-card ul {
+            margin-left: 20px;
+            margin-top: 10px;
+        }
+
+        .concept-card li {
+            margin: 8px 0;
+            color: #555;
+        }
+
+        .definition-box {
+            background: linear-gradient(135deg, #fff3cd, #ffeaa7);
+            border-radius: 15px;
+            padding: 25px;
+            margin: 20px 0;
+            border-left: 5px solid #f39c12;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        .definition-box h3 {
+            color: #856404;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        .definition-box p {
+            color: #856404;
+            line-height: 1.8;
+            margin-bottom: 10px;
+        }
+
+        .example-box {
+            background: linear-gradient(135deg, #e8f5e8, #d4edda);
+            border-radius: 15px;
+            padding: 25px;
+            margin: 20px 0;
+            border-left: 5px solid #27ae60;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        .example-box h3 {
+            color: #155724;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        .example-box p {
+            color: #155724;
+            line-height: 1.8;
+            margin-bottom: 10px;
+        }
+
+        .example-box ul {
+            margin-left: 20px;
+            margin-top: 10px;
+        }
+
+        .example-box li {
+            margin: 8px 0;
+            color: #155724;
+        }
+
+        .inner-join-card {
+            background: linear-gradient(135deg, #27ae60, #2ecc71);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+            transition: transform 0.3s ease;
+            margin: 20px 0;
+        }
+
+        .inner-join-card:hover {
+            transform: scale(1.05);
+        }
+
+        .inner-join-icon {
+            font-size: 3em;
+            margin-bottom: 15px;
+        }
+
+        .inner-join-title {
+            font-size: 1.4em;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .inner-join-description {
+            font-size: 0.9em;
+            opacity: 0.9;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .feature-card {
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            border-radius: 15px;
+            padding: 25px;
+            text-align: center;
+            border-left: 5px solid #27ae60;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        .feature-card h4 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        .feature-card .feature-icon {
+            font-size: 2em;
+            margin-bottom: 10px;
+            color: #27ae60;
+        }
+
+        .table-example {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .table-example h4 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            text-align: center;
+            font-size: 1.2em;
+        }
+
+        .table-display {
+            font-family: 'Courier New', monospace;
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #dee2e6;
+            overflow-x: auto;
+        }
+
+        .progress-bar {
+            background: #e9ecef;
+            border-radius: 10px;
+            padding: 3px;
+            margin: 20px 0;
+        }
+
+        .progress {
+            background: linear-gradient(45deg, #27ae60, #2ecc71);
+            height: 20px;
+            border-radius: 8px;
+            transition: width 0.5s ease;
+        }
+
+        .syntax-box {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 20px;
+            border-radius: 10px;
+            font-family: 'Courier New', monospace;
+            margin: 20px 0;
+            overflow-x: auto;
+            border-left: 5px solid #27ae60;
+        }
+
+        .syntax-box .keyword {
+            color: #63b3ed;
+            font-weight: bold;
+        }
+
+        .syntax-box .table {
+            color: #68d391;
+        }
+
+        .syntax-box .condition {
+            color: #fbb6ce;
+        }
+
+        .syntax-box .alias {
+            color: #f6ad55;
+        }
+
+        .process-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .process-step {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+
+        .process-step:hover {
+            transform: scale(1.05);
+        }
+
+        .step-number {
+            font-size: 2em;
+            font-weight: bold;
+            margin-bottom: 10px;
+            background: rgba(255, 255, 255, 0.2);
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 15px;
+        }
+
+        .cartesian-demo {
+            background: linear-gradient(135deg, #ffebee, #ffcdd2);
+            border-radius: 15px;
+            padding: 25px;
+            margin: 20px 0;
+            border-left: 5px solid #e74c3c;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        .cartesian-demo h3 {
+            color: #c62828;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        .cartesian-demo p {
+            color: #c62828;
+            line-height: 1.8;
+            margin-bottom: 10px;
+        }
+
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .comparison-card {
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            border-radius: 15px;
+            padding: 25px;
+            border-left: 5px solid #667eea;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        .comparison-card.recommended {
+            border-left-color: #27ae60;
+            background: linear-gradient(135deg, #e8f5e8, #d4edda);
+        }
+
+        .comparison-card.not-recommended {
+            border-left-color: #e74c3c;
+            background: linear-gradient(135deg, #ffebee, #ffcdd2);
+        }
+
+        .comparison-card h4 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        .comparison-card.recommended h4 {
+            color: #155724;
+        }
+
+        .comparison-card.not-recommended h4 {
+            color: #c62828;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+
+            .header {
+                padding: 20px;
+                margin-bottom: 20px;
+            }
+
+            .header h1 {
+                font-size: 1.8em;
+            }
+
+            .dashboard {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .sidebar {
+                position: static;
+                padding: 20px;
+                order: 2;
+            }
+
+            .mobile-menu-toggle {
+                display: block;
+                order: 1;
+            }
+
+            .sidebar.mobile-hidden {
+                display: none;
+            }
+
+            .content {
+                padding: 20px;
+                order: 3;
+            }
+
+            .section h2 {
+                font-size: 1.5em;
+            }
+
+            .concept-card, .definition-box, .example-box {
+                padding: 20px;
+                margin: 15px 0;
+            }
+
+            .feature-grid, .process-grid {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+
+            .comparison-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .nav-item {
+                padding: 15px 20px;
+                font-size: 1em;
+                text-align: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .header h1 {
+                font-size: 1.5em;
+            }
+
+            .content {
+                padding: 15px;
+            }
+
+            .concept-card, .definition-box, .example-box {
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <img src="https://gessof.cl/wp-content/uploads/2025/05/Logo-minimalista-con-simbolismo-global.png" alt="Gessof Logo" style="height: 80px; margin-bottom: 20px; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.1));">
+            <h1>Curso SAP HANA</h1>
+            <h2 style="color: #27ae60; font-size: 1.5em; margin: 10px 0; font-weight: 600;">Clase 030</h2>
+            <p>INNER JOIN - El JOIN Más Estricto</p>
+            <div class="progress-bar">
+                <div class="progress" style="width: 100%"></div>
+            </div>
+        </header>
+
+        <div class="dashboard">
+            <button class="mobile-menu-toggle" onclick="toggleMobileMenu()">
+                📋 Menú de Contenidos
+            </button>
+
+            <nav class="sidebar" id="sidebar">
+                <h3>Contenidos del Módulo</h3>
+                <div class="nav-item active" onclick="showSection('overview')">📋 Resumen General</div>
+                <div class="nav-item" onclick="showSection('introduction')">🚀 Introducción</div>
+                <div class="nav-item" onclick="showSection('characteristics')">⭐ Características</div>
+                <div class="nav-item" onclick="showSection('syntax')">📝 Sintaxis y Estructura</div>
+                <div class="nav-item" onclick="showSection('practical-example')">💻 Ejemplo Práctico</div>
+                <div class="nav-item" onclick="showSection('internal-process')">⚙️ Proceso Interno</div>
+                <div class="nav-item" onclick="showSection('alias-usage')">🏷️ Uso de Alias</div>
+                <div class="nav-item" onclick="showSection('alternatives')">🔄 Alternativas</div>
+                <div class="nav-item" onclick="showSection('conclusions')">🎯 Conclusiones</div>
+            </nav>
+
+            <main class="content">
+                <section id="overview" class="section active">
+                    <h2>📋 Resumen General del Módulo</h2>
+                    
+                    <div class="inner-join-card">
+                        <div class="inner-join-icon">🎯</div>
+                        <div class="inner-join-title">INNER JOIN</div>
+                        <div class="inner-join-description">El JOIN más estricto - Solo coincidencias en ambas tablas</div>
+                    </div>
+
+                    <div class="feature-grid">
+                        <div class="feature-card">
+                            <div class="feature-icon">🔍</div>
+                            <h4>Solo Coincidencias</h4>
+                            <p>Devuelve registros únicamente cuando hay coincidencia en ambas tablas</p>
+                        </div>
+                        <div class="feature-card">
+                            <div class="feature-icon">⚡</div>
+                            <h4>Siempre se Ejecuta</h4>
+                            <p>Procesa todas las combinaciones, incluso si no devuelve resultados</p>
+                        </div>
+                        <div class="feature-card">
+                            <div class="feature-icon">🔢</div>
+                            <h4>Producto Cartesiano</h4>
+                            <p>Combina todos los registros de ambas tablas y luego filtra</p>
+                        </div>
+                        <div class="feature-card">
+                            <div class="feature-icon">🏷️</div>
+                            <h4>Requiere Alias</h4>
+                            <p>Necesario cuando hay campos con nombres idénticos</p>
+                        </div>
+                    </div>
+
+                    <div class="concept-card">
+                        <h3>🎯 Objetivos del Módulo</h3>
+                        <p>En esta clase nos enfocaremos específicamente en el <strong>INNER JOIN</strong>, el tipo de JOIN más utilizado y estricto. Aprenderemos su funcionamiento interno, sintaxis y casos de uso prácticos.</p>
+                    </div>
+
+                    <div class="concept-card">
+                        <h3>📚 Contenido del Módulo</h3>
+                        <ul>
+                            <li><strong>Definición y características:</strong> Qué es y cómo funciona INNER JOIN</li>
+                            <li><strong>Sintaxis completa:</strong> FROM, INNER JOIN, ON con ejemplos</li>
+                            <li><strong>Creación de datos de prueba:</strong> Tablas reales para practicar</li>
+                            <li><strong>Proceso interno:</strong> Producto cartesiano y filtrado paso a paso</li>
+                            <li><strong>Uso de alias:</strong> Gestión de campos ambiguos</li>
+                            <li><strong>Alternativas antiguas:</strong> Método WHERE vs INNER JOIN</li>
+                            <li><strong>Mejores prácticas:</strong> Cuándo y cómo usar INNER JOIN</li>
+                        </ul>
+                    </concept-card>
+
+                    <div class="definition-box">
+                        <h3>💡 Definición Clave</h3>
+                        <p><strong>INNER JOIN</strong> es una unión que devuelve registros cuando hay una coincidencia en ambos lados del join. Debe haber registros relacionados en ambas tablas para que aparezcan en el resultado.</p>
+                    </definition-box>
+                </section>
+
+                <section id="introduction" class="section">
+                    <h2>🚀 Introducción al INNER JOIN</h2>
+                    
+                    <div class="concept-card">
+                        <h3>🔍 El JOIN Más Selectivo</h3>
+                        <p>El <strong>INNER JOIN</strong> es el tipo de JOIN más utilizado en el mundo real. Su característica principal es que <strong>solo devuelve registros que tienen correspondencia en ambas tablas</strong>. Si un registro existe en una tabla pero no tiene relación en la otra, queda excluido del resultado.</p>
+                    </div>
+
+                    <div class="concept-card">
+                        <h3>⚡ Características Fundamentales</h3>
+                        <ul>
+                            <li><strong>Coincidencias obligatorias:</strong> Ambas tablas deben contener el registro relacionado</li>
+                            <li><strong>Procesamiento completo:</strong> Siempre se ejecuta, aunque no devuelva resultados</li>
+                            <li><strong>Producto cartesiano:</strong> Combina todos los registros y luego filtra</li>
+                            <li><strong>Resultado limpio:</strong> No aparecen valores NULL por falta de relación</li>
+                            <li><strong>Rendimiento óptimo:</strong> Generalmente el más eficiente de los JOINs</li>
+                        </ul>
+                    </concept-card>
+
+                    <div class="example-box">
+                        <h3>📝 Analogía Simple</h3>
+                        <p>Imagina el INNER JOIN como una <strong>fiesta exclusiva</strong> donde solo pueden entrar las personas que están en <strong>ambas listas de invitados</strong>. Si alguien está solo en una lista, no puede entrar. Solo entran quienes están confirmados en las dos listas.</p>
+                    </example-box>
+
+                    <div class="cartesian-demo">
+                        <h3>🔢 El Producto Cartesiano</h3>
+                        <p>Una característica importante del INNER JOIN es que <strong>realiza el producto cartesiano</strong> de las tablas implicadas. Esto significa que internamente combina cada registro de la primera tabla con cada registro de la segunda tabla, y luego filtra solo las combinaciones que cumplen la condición del ON.</p>
+                    </cartesian-demo>
+
+                    <div class="concept-card">
+                        <h3">🎯 Cuándo Usar INNER JOIN</h3>
+                        <ul>
+                            <li><strong>Datos relacionados:</strong> Cuando necesitas información que debe existir en ambas tablas</li>
+                            <li><strong>Reportes estrictos:</strong> Solo mostrar datos completos y verificados</li>
+                            <li><strong>Análisis limpio:</strong> Evitar valores NULL en los resultados</li>
+                            <li><strong>Rendimiento crítico:</strong> Obtener el máximo rendimiento en consultas</li>
+                            <li><strong>Integridad referencial:</strong> Cuando sabes que las relaciones están bien definidas</li>
+                        </ul>
+                    </concept-card>
+
+                    <div class="definition-box">
+                        <h3">⚠️ Consideración Importante</h3>
+                        <p>El INNER JOIN <strong>siempre se ejecuta completamente</strong>, incluso cuando no devuelve resultados. Esto significa que procesa todas las combinaciones posibles entre las tablas antes de aplicar el filtro del ON. Es importante entender esto para optimización de consultas.</p>
+                    </definition-box>
+                </section>
+
+                <section id="characteristics" class="section">
+                    <h2">⭐ Características del INNER JOIN</h2>
+                    
+                    <div class="concept-card">
+                        <h3">🔍 Comportamiento Selectivo</h3>
+                        <p>La característica más distintiva del INNER JOIN es su <strong>naturaleza selectiva</strong>. Solo incluye en el resultado aquellos registros que tienen una correspondencia válida en ambas tablas según la condición especificada en la cláusula ON.</p>
+                    </concept-card>
+
+                    <div class="feature-grid">
+                        <div class="feature-card">
+                            <div class="feature-icon">✅</div>
+                            <h4>Solo Coincidencias</h4>
+                            <p>Únicamente aparecen registros que existen en ambas tablas con la relación especificada</p>
+                        </div>
+
+                        <div class="feature-card">
+                            <div class="feature-icon">🚫</div>
+                            <h4>Excluye Huérfanos</h4>
+                            <p>Los registros sin correspondencia en alguna tabla quedan automáticamente excluidos</p>
+                        </div>
+
+                        <div class="feature-card">
+                            <div class="feature-icon">💯</div>
+                            <h4>Datos Completos</h4>
+                            <p>No aparecen valores NULL por falta de relación - todos los campos tienen valores</p>
+                        </div>
+
+                        <div class="feature-card">
+                            <div class="feature-icon">⚡</div>
+                            <h4>Alto Rendimiento</h4>
+                            <p>Generalmente el JOIN más rápido debido a su naturaleza restrictiva</p>
+                        </div>
+
+                        <div class="feature-card">
+                            <div class="feature-icon">🔄</div>
+                            <h4>Procesamiento Completo</h4>
+                            <p>Siempre procesa todas las combinaciones, incluso si el resultado final está vacío</p>
+                        </div>
+
+                        <div class="feature-card">
+                            <div class="feature-icon">🎯</div>
+                            <h4>Resultado Predecible</h4>
+                            <p>El resultado es consistente y no depende del orden de las tablas en la consulta</p>
+                        </div>
+                    </feature-grid>
+
+                    <div class="concept-card">
+                        <h3">🔢 Producto Cartesiano Interno</h3>
+                        <p>Aunque el resultado final sea selectivo, internamente el INNER JOIN:</p>
+                        <ul>
+                            <li><strong>Combina todos los registros:</strong> Cada fila de tabla A con cada fila de tabla B</li>
+                            <li><strong>Evalúa la condición ON:</strong> Verifica si cada combinación cumple el criterio</li>
+                            <li><strong>Filtra el resultado:</strong> Solo mantiene las combinaciones válidas</li>
+                            <li><strong>Descarta el resto:</strong> Elimina todas las combinaciones que no coinciden</li>
+                        </ul>
+                    </concept-card>
+
+                    <div class="example-box">
+                        <h3">📊 Ejemplo Visual</h3>
+                        <p>Si tienes <strong>Tabla A (4 registros)</strong> y <strong>Tabla B (2 registros)</strong>:</p>
+                        <ul>
+                            <li><strong>Combinaciones totales:</strong> 4 × 2 = 8 combinaciones posibles</li>
+                            <li><strong>Evaluación:</strong> Se verifican las 8 combinaciones</li>
+                            <li><strong>Resultado:</strong> Solo se muestran las que cumplen la condición ON</li>
+                        </ul>
+                    </example-box>
+
+                    <div class="cartesian-demo">
+                        <h3">⚠️ Implicaciones de Rendimiento</h3>
+                        <p>El procesamiento del producto cartesiano implica que:</p>
+                        <ul>
+                            <li><strong>Más registros = más procesamiento:</strong> El costo crece exponencialmente</li>
+                            <li><strong>Siempre hay procesamiento:</strong> Incluso con resultado vacío</li>
+                            <li><strong>Índices son cruciales:</strong> Optimizan la evaluación de la condición ON</li>
+                            <li><strong>Filtros adicionales ayudan:</strong> WHERE puede reducir el conjunto antes del JOIN</li>
+                        </ul>
+                    </cartesian-demo>
+
+                    <div class="definition-box">
+                        <h3">💡 Diferencia Clave con Otros JOINs</h3>
+                        <p><strong>INNER JOIN:</strong> Solo intersección - datos que existen en ambas tablas.</p>
+                        <p><strong>LEFT/RIGHT OUTER:</strong> Incluye datos de una tabla aunque no tengan correspondencia.</p>
+                        <p><strong>FULL OUTER:</strong> Incluye todos los datos de ambas tablas, con o sin correspondencia.</p>
+                    </definition-box>
+                </section>
+
+                <section id="syntax" class="section">
+                    <h2">📝 Sintaxis y Estructura</h2>
+                    
+                    <div class="concept-card">
+                        <h3">🔧 Sintaxis Básica del INNER JOIN</h3>
+                        <p>La sintaxis del INNER JOIN sigue una estructura clara y predecible que extiende la consulta SELECT básica:</p>
+                    </concept-card>
+
+                    <div class="syntax-box">
+<span class="keyword">SELECT</span> <span class="condition">campos_deseados</span>
+<span class="keyword">FROM</span> <span class="table">tabla_izquierda</span> <span class="keyword">AS</span> <span class="alias">alias1</span>
+<span class="keyword">INNER JOIN</span> <span class="table">tabla_derecha</span> <span class="keyword">AS</span> <span class="alias">alias2</span>
+<span class="keyword">ON</span> <span class="condition">alias1.campo = alias2.campo</span>
+                    </syntax-box>
+
+                    <div class="concept-card">
+                        <h3">📋 Componentes de la Sintaxis</h3>
+                        <ul>
+                            <li><strong>SELECT campos_deseados:</strong> Especifica qué columnas mostrar en el resultado</li>
+                            <li><strong>FROM tabla_izquierda:</strong> Define la primera tabla de la unión</li>
+                            <li><strong>INNER JOIN tabla_derecha:</strong> Indica la segunda tabla y el tipo de unión</li>
+                            <li><strong>AS alias:</strong> Asigna nombres cortos a las tablas (opcional pero recomendado)</li>
+                            <li><strong>ON condición:</strong> Especifica cómo se relacionan las tablas</li>
+                        </ul>
+                    </concept-card>
+
+                    <div class="example-box">
+                        <h3">📝 Ejemplo de Sintaxis Completa</h3>
+                    </example-box>
+
+                    <div class="syntax-box">
+<span class="keyword">SELECT</span> 
+    c.customer_id,
+    c.customer_name,
+    c.state,
+    s.state_name
+<span class="keyword">FROM</span> <span class="table">join_customer</span> <span class="keyword">AS</span> <span class="alias">c</span>
+<span class="keyword">INNER JOIN</span> <span class="table">join_state</span> <span class="keyword">AS</span> <span class="alias">s</span>
+<span class="keyword">ON</span> <span class="condition">c.state = s.state</span>
+                    </syntax-box>
+
+                    <div class="concept-card">
+                        <h3">🔗 Múltiples INNER JOINs</h3>
+                        <p>Puedes encadenar múltiples INNER JOINs para unir tres o más tablas:</p>
+                    </concept-card>
+
+                    <div class="syntax-box">
+<span class="keyword">SELECT</span> o.order_id, c.customer_name, s.state_name
+<span class="keyword">FROM</span> <span class="table">join_order</span> <span class="keyword">AS</span> <span class="alias">o</span>
+<span class="keyword">INNER JOIN</span> <span class="table">join_customer</span> <span class="keyword">AS</span> <span class="alias">c</span>
+    <span class="keyword">ON</span> <span class="condition">o.customer_id = c.customer_id</span>
+<span class="keyword">INNER JOIN</span> <span class="table">join_state</span> <span class="keyword">AS</span> <span class="alias">s</span>
+    <span class="keyword">ON</span> <span class="condition">c.state = s.state</span>
+                    </syntax-box>
+
+                    <div class="concept-card">
+                        <h3">⚙️ Cláusulas Adicionales</h3>
+                        <p>Después del INNER JOIN puedes agregar las cláusulas habituales de SELECT:</p>
+                    </concept-card>
+
+                    <div class="syntax-box">
+<span class="keyword">SELECT</span> c.customer_name, s.state_name
+<span class="keyword">FROM</span> <span class="table">join_customer</span> <span class="keyword">AS</span> <span class="alias">c</span>
+<span class="keyword">INNER JOIN</span> <span class="table">join_state</span> <span class="keyword">AS</span> <span class="alias">s</span>
+<span class="keyword">ON</span> <span class="condition">c.state = s.state</span>
+<span class="keyword">WHERE</span> <span class="condition">c.age > 25</span>
+<span class="keyword">ORDER BY</span> <span class="condition">c.customer_name</span>
+<span class="keyword">GROUP BY</span> <span class="condition">s.state_name</span>
+<span class="keyword">HAVING</span> <span class="condition">COUNT(*) > 1</span>
+                    </syntax-box>
+
+                    <div class="feature-grid">
+                        <div class="feature-card">
+                            <div class="feature-icon">🎯</div>
+                            <h4>ON vs WHERE</h4>
+                            <p><strong>ON:</strong> Condición de unión entre tablas<br>
+                            <strong>WHERE:</strong> Filtro del resultado final</p>
+                        </div>
+
+                        <div class="feature-card">
+                            <div class="feature-icon">🏷️</div>
+                            <h4>Alias Obligatorios</h4>
+                            <p>Necesarios cuando hay campos con el mismo nombre en ambas tablas</p>
+                        </div>
+
+                        <div class="feature-card">
+                            <div class="feature-icon">🔗</div>
+                            <h4>Múltiples Condiciones</h4>
+                            <p>Puedes usar AND/OR en la cláusula ON para condiciones complejas</p>
+                        </div>
+
+                        <div class="feature-card">
+                            <div class="feature-icon">📊</div>
+                            <h4>Orden de Tablas</h4>
+                            <p>El resultado es el mismo independientemente del orden de las tablas</p>
+                        </div>
+                    </feature-grid>
+
+                    <div class="definition-box">
+                        <h3">💡 Mejores Prácticas de Sintaxis</h3>
+                        <p><strong>Usa siempre alias:</strong> Mejora la legibilidad y evita ambigüedades.</p>
+                        <p><strong>Indenta correctamente:</strong> Facilita la lectura de consultas complejas.</p>
+                        <p><strong>Nombra alias descriptivos:</strong> 'c' para customer, 'o' para orders, etc.</p>
+                        <p><strong>Ordena JOINs lógicamente:</strong> Desde la tabla principal hacia las de detalle.</p>
+                    </definition-box>
+                </section>
+
+                <section id="practical-example" class="section">
+                    <h2">💻 Ejemplo Práctico</h2>
+                    
+                    <div class="concept-card">
+                        <h3">🛠️ Creación de Datos de Prueba</h3>
+                        <p>Vamos a crear las mismas tablas que se usan en la clase para practicar INNER JOIN. Esto nos permitirá entender perfectamente cómo funciona con datos reales.</p>
+                    </concept-card>
+
+                    <div class="example-box">
+                        <h3">📝 Paso 1: Creación de Tablas</h3>
+                    </example-box>
+
+                    <div class="syntax-box">
+<span class="keyword">-- Tabla de órdenes</span>
+<span class="keyword">CREATE COLUMN TABLE</span> join_order (
+    order_id <span class="keyword">INTEGER</span>,
+    customer_id <span class="keyword">INTEGER</span>,
+    amount <span class="keyword">INTEGER</span>
+);
+
+<span class="keyword">-- Tabla de clientes</span>
+<span class="keyword">CREATE COLUMN TABLE</span> join_customer (
+    customer_id <span class="keyword">INTEGER</span>,
+    customer_name <span class="keyword">VARCHAR</span>(20),
+    state <span class="keyword">VARCHAR</span>(2),
+    age <span class="keyword">INTEGER</span>
+);
+
+<span class="keyword">-- Tabla de estados</span>
+<span class="keyword">CREATE COLUMN TABLE</span> join_state (
+    state <span class="keyword">VARCHAR</span>(2),
+    state_name <span class="keyword">VARCHAR</span>(20)
+);
+                    </syntax-box>
+
+                    <div class="example-box">
+                        <h3">📊 Paso 2: Inserción de Datos</h3>
+                    </example-box>
+
+                    <div class="syntax-box">
+<span class="keyword">-- Datos de órdenes</span>
+<span class="keyword">INSERT INTO</span> join_order <span class="keyword">VALUES</span> (1, 1, 100);
+<span class="keyword">INSERT INTO</span> join_order <span class="keyword">VALUES</span> (2, 2, 200);
+<span class="keyword">INSERT INTO</span> join_order <span class="keyword">VALUES</span> (3, 4, 150);
+<span class="keyword">INSERT INTO</span> join_order <span class="keyword">VALUES</span> (8, 77, 300);
+
+<span class="keyword">-- Datos de clientes</span>
+<span class="keyword">INSERT INTO</span> join_customer <span class="keyword">VALUES</span> (1, <span class="condition">'Werner'</span>, <span class="condition">'MI'</span>, 10);
+<span class="keyword">INSERT INTO</span> join_customer <span class="keyword">VALUES</span> (2, <span class="condition">'Mark'</span>, <span class="condition">'MI'</span>, 11);
+<span class="keyword">INSERT INTO</span> join_customer <span class="keyword">VALUES</span> (3, <span class="condition">'Tom'</span>, <span class="condition">'TX'</span>, 12);
+<span class="keyword">INSERT INTO</span> join_customer <span class="keyword">VALUES</span> (4, <span class="condition">'Bob'</span>, <span class="condition">'TX'</span>, 13);
+
+<span class="keyword">-- Datos de estados</span>
+<span class="keyword">INSERT INTO</span> join_state <span class="keyword">VALUES</span> (<span class="condition">'MI'</span>, <span class="condition">'Michigan'</span>);
+<span class="keyword">INSERT INTO</span> join_state <span class="keyword">VALUES</span> (<span class="condition">'AL'</span>, <span class="condition">'Alabama'</span>);
+                    </syntax-box>
+
+                    <div class="table-example">
+                        <h4>📊 Tabla join_order</h4>
+                        <div class="table-display">
+order_id | customer_id | amount
+    1    |      1      |  100
+    2    |      2      |  200
+    3    |      4      |  150
+    8    |     77      |  300  ← Cliente inexistente
+                        </div>
+                    </div>
+
+                    <div class="table-example">
+                        <h4">👥 Tabla join_customer</h4>
+                        <div class="table-display">
+customer_id | customer_name | state | age
+     1      |    Werner     |  MI   | 10
+     2      |     Mark      |  MI   | 11
+     3      |     Tom       |  TX   | 12  ← Sin órdenes
+     4      |     Bob       |  TX   | 13
+                        </div>
+                    </div>
+
+                    <div class="table-example">
+                        <h4">🏛️ Tabla join_state</h4>
+                        <div class="table-display">
+state | state_name
+  MI  |  Michigan
+  AL  |  Alabama   ← Sin clientes
+                        </div>
+                    </div>
+
+                    <div class="example-box">
+                        <h3">🎯 Paso 3: INNER JOIN en Acción</h3>
+                    </example-box>
+
+                    <div class="syntax-box">
+<span class="keyword">SELECT</span> *
+<span class="keyword">FROM</span> <span class="table">join_customer</span> <span class="keyword">AS</span> <span class="alias">c</span>
+<span class="keyword">INNER JOIN</span> <span class="table">join_state</span> <span class="keyword">AS</span> <span class="alias">s</span>
+<span class="keyword">ON</span> <span class="condition">c.state = s.state</span>
+                    </syntax-box>
+
+                    <div class="table-example">
+                        <h4">✅ Resultado del INNER JOIN</h4>
+                        <div class="table-display">
+customer_id | customer_name | state | age | state | state_name
+     1      |    Werner     |  MI   | 10  |  MI   |  Michigan
+     2      |     Mark      |  MI   | 11  |  MI   |  Michigan
+                        </div>
+                    </div>
+
+                    <div class="concept-card">
+                        <h3">🔍 Análisis del Resultado</h3>
+                        <ul>
+                            <li><strong>Werner y Mark aparecen:</strong> Tienen state='MI' que existe en join_state</li>
+                            <li><strong>Tom y Bob NO aparecen:</strong> Tienen state='TX' que no existe en join_state</li>
+                            <li><strong>Alabama NO aparece:</strong> No hay clientes con state='AL'</li>
+                            <li><strong>Solo coincidencias:</strong> El INNER JOIN cumple su promesa</li>
+                        </ul>
+                    </concept-card>
+
+                    <div class="definition-box">
+                        <h3">💡 Observaciones Importantes</h3>
+                        <p><strong>Campos duplicados:</strong> Aparece 'state' dos veces (una de cada tabla).</p>
+                        <p><strong>Registros excluidos:</strong> Tom y Bob quedan fuera por no tener estado válido.</p>
+                        <p><strong>Estado Alabama:</strong> No aparece porque no tiene clientes asociados.</p>
+                        <p><strong>Orden predecible:</strong> Los resultados siguen el orden de la tabla izquierda.</p>
+                    </definition-box>
+                </section>
+
+                <section id="internal-process" class="section">
+                    <h2">⚙️ Proceso Interno del INNER JOIN</h2>
+                    
+                    <div class="concept-card">
+                        <h3">🔍 Cómo Funciona Internamente</h3>
+                        <p>Para entender completamente el INNER JOIN, es crucial conocer su <strong>proceso interno</strong>. Aunque el resultado final sea selectivo, internamente realiza un proceso exhaustivo que incluye todas las combinaciones posibles.</p>
+                    </concept-card>
+
+                    <div class="process-grid">
+                        <div class="process-step">
+                            <div class="step-number">1</div>
+                            <h4>Producto Cartesiano</h4>
+                            <p>Combina cada registro de tabla A con cada registro de tabla B</p>
+                        </div>
+
+                        <div class="process-step">
+                            <div class="step-number">2</div>
+                            <h4>Evaluación ON</h4>
+                            <p>Verifica la condición ON para cada combinación</p>
+                        </div>
+
+                        <div class="process-step">
+                            <div class="step-number">3</div>
+                            <h4">Filtrado</h4>
+                            <p>Mantiene solo las combinaciones que cumplen la condición</p>
+                        </div>
+
+                        <div class="process-step">
+                            <div class="step-number">4</div>
+                            <h4">Resultado Final</h4>
+                            <p>Devuelve únicamente las filas que pasaron el filtro</p>
+                        </div>
+                    </process-grid>
+
+                    <div class="cartesian-demo">
+                        <h3">🔢 Demostración del Producto Cartesiano</h3>
+                        <p>Con nuestros datos de ejemplo, el proceso interno sería:</p>
+                        <p><strong>Tabla customer (4 registros) × Tabla state (2 registros) = 8 combinaciones</strong></p>
+                    </cartesian-demo>
+
+                    <div class="table-example">
+                        <h4">📊 Todas las Combinaciones Posibles</h4>
+                        <div class="table-display">
+Combinación | customer_name | c.state | s.state | state_name | ¿Coincide?
+     1      |    Werner     |   MI    |   MI    |  Michigan  |    ✅
+     2      |    Werner     |   MI    |   AL    |  Alabama   |    ❌
+     3      |     Mark      |   MI    |   MI    |  Michigan  |    ✅
+     4      |     Mark      |   MI    |   AL    |  Alabama   |    ❌
+     5      |     Tom       |   TX    |   MI    |  Michigan  |    ❌
+     6      |     Tom       |   TX    |   AL    |  Alabama   |    ❌
+     7      |     Bob       |   TX    |   MI    |  Michigan  |    ❌
+     8      |     Bob       |   TX    |   AL    |  Alabama   |    ❌
+                        </div>
+                    </div>
+
+                    <div class="concept-card">
+                        <h3">🎯 Evaluación de la Condición</h3>
+                        <p>El sistema evalúa <code>c.state = s.state</code> para cada combinación:</p>
+                        <ul>
+                            <li><strong>Combinación 1:</strong> MI = MI → ✅ Pasa al resultado</li>
+                            <li><strong>Combinación 2:</strong> MI = AL → ❌ Se descarta</li>
+                            <li><strong>Combinación 3:</strong> MI = MI → ✅ Pasa al resultado</li>
+                            <li><strong>Combinaciones 4-8:</strong> Todas fallan → ❌ Se descartan</li>
+                        </ul>
+                    </concept-card>
+
+                    <div class="table-example">
+                        <h4">✅ Resultado Final (Solo las Coincidencias)</h4>
+                        <div class="table-display">
+customer_name | c.state | s.state | state_name
+   Werner     |   MI    |   MI    |  Michigan
+    Mark      |   MI    |   MI    |  Michigan
+                        </div>
+                    </div>
+
+                    <div class="concept-card">
+                        <h3">⚡ Implicaciones de Rendimiento</h3>
+                        <ul>
+                            <li><strong>Procesamiento completo:</strong> Siempre evalúa todas las combinaciones</li>
+                            <li><strong>Crecimiento exponencial:</strong> n × m combinaciones para n y m registros</li>
+                            <li><strong>Ejecución garantizada:</strong> Se ejecuta incluso si no hay coincidencias</li>
+                            <li><strong>Optimización crucial:</strong> Los índices mejoran dramáticamente el rendimiento</li>
+                        </ul>
+                    </concept-card>
+
+                    <div class="example-box">
+                        <h3">📈 Ejemplo de Escalabilidad</h3>
+                        <ul>
+                            <li><strong>100 × 50 registros:</strong> 5,000 evaluaciones</li>
+                            <li><strong>1,000 × 500 registros:</strong> 500,000 evaluaciones</li>
+                            <li><strong>10,000 × 5,000 registros:</strong> 50,000,000 evaluaciones</li>
+                        </ul>
+                        <p>Por esto son tan importantes los índices y la optimización de consultas.</p>
+                    </example-box>
+
+                    <div class="definition-box">
+                        <h3">💡 Por Qué Es Importante Entender Esto</h3>
+                        <p><strong>Optimización:</strong> Ayuda a escribir consultas más eficientes.</p>
+                        <p><strong>Debugging:</strong> Facilita entender por qué una consulta es lenta.</p>
+                        <p><strong>Diseño de índices:</strong> Sabes exactamente qué campos indexar.</p>
+                        <p><strong>Estimación de rendimiento:</strong> Puedes predecir el comportamiento de la consulta.</p>
+                    </definition-box>
+                </section>
+
+                <section id="alias-usage" class="section">
+                    <h2">🏷️ Uso de Alias</h2>
+                    
+                    <div class="concept-card">
+                        <h3">🔧 La Necesidad de los Alias</h3>
+                        <p>Los <strong>alias de tabla</strong> no son solo una conveniencia en INNER JOIN - son <strong>esenciales</strong> cuando las tablas tienen campos con nombres idénticos. Sin alias, obtienes errores de "columna ambigua".</p>
+                    </concept-card>
+
+                    <div class="concept-card">
+                        <h3">⚠️ El Problema: Campos Ambiguos</h3>
+                        <p>En nuestro ejemplo, el campo <code>state</code> existe en ambas tablas. Sin alias, SQL no sabe cuál usar:</p>
+                    </concept-card>
+
+                    <div class="syntax-box">
+<span class="keyword">-- ❌ ESTO FALLA - Error de columna ambigua</span>
+<span class="keyword">SELECT</span> *
+<span class="keyword">FROM</span> <span class="table">join_customer</span>
+<span class="keyword">INNER JOIN</span> <span class="table">join_state</span>
+<span class="keyword">ON</span> <span class="condition">state = state</span>  <span class="keyword">-- ¿Cuál state?</span>
+
+<span class="keyword">-- Error: "Columna definida de forma ambigua: state"</span>
+                    </syntax-box>
+
+                    <div class="concept-card">
+                        <h3">✅ La Solución: Alias de Tabla</h3>
+                        <p>Los alias resuelven la ambigüedad especificando exactamente de qué tabla viene cada campo:</p>
+                    </concept-card>
+
+                    <div class="syntax-box">
+<span class="keyword">-- ✅ ESTO FUNCIONA - Con alias</span>
+<span class="keyword">SELECT</span> *
+<span class="keyword">FROM</span> <span class="table">join_customer</span> <span class="keyword">AS</span> <span class="alias">c</span>
+<span class="keyword">INNER JOIN</span> <span class="table">join_state</span> <span class="keyword">AS</span> <span class="alias">s</span>
+<span class="keyword">ON</span> <span class="condition">c.state = s.state</span>  <span class="keyword">-- Ahora es claro</span>
+                    </syntax-box>
+
+                    <div class="comparison-grid">
+                        <div class="comparison-card not-recommended">
+                            <h4">❌ Sin Alias (Problemático)</h4>
+                            <div class="syntax-box">
+<span class="keyword">SELECT</span> *
+<span class="keyword">FROM</span> <span class="table">join_customer</span>
+<span class="keyword">INNER JOIN</span> <span class="table">join_state</span>
+<span class="keyword">ON</span> join_customer.state = join_state.state
+                            </div>
+                            <p><strong>Problemas:</strong></p>
+                            <ul>
+                                <li>Nombres largos y repetitivos</li>
+                                <li>Código difícil de leer</li>
+                                <li>Propenso a errores tipográficos</li>
+                                <li>Mantenimiento complicado</li>
+                            </ul>
+                        </div>
+
+                        <div class="comparison-card recommended">
+                            <h4">✅ Con Alias (Recomendado)</h4>
+                            <div class="syntax-box">
+<span class="keyword">SELECT</span> *
+<span class="keyword">FROM</span> <span class="table">join_customer</span> <span class="keyword">AS</span> <span class="alias">c</span>
+<span class="keyword">INNER JOIN</span> <span class="table">join_state</span> <span class="keyword">AS</span> <span class="alias">s</span>
+<span class="keyword">ON</span> <span class="condition">c.state = s.state</span>
+                            </div>
+                            <p><strong>Ventajas:</strong></p>
+                            <ul>
+                                <li>Código limpio y legible</li>
+                                <li>Menos propenso a errores</li>
+                                <li>Fácil mantenimiento</li>
+                                <li>Estándar de la industria</li>
+                            </ul>
+                        </div>
+                    </comparison-grid>
+
+                    <div class="concept-card">
+                        <h3">🎯 Mejores Prácticas para Alias</h3>
+                        <ul>
+                            <li><strong>Usa nombres descriptivos:</strong> 'c' para customer, 'o' para order, etc.</li>
+                            <li><strong>Sé consistente:</strong> Usa el mismo alias para la misma tabla en toda la consulta</li>
+                            <li><strong>Evita letras solas:</strong> En consultas complejas, usa 'cust' en lugar de 'c'</li>
+                            <li><strong>Sigue convenciones:</strong> Usa las mismas reglas que tu equipo</li>
+                        </ul>
+                    </concept-card>
+
+                    <div class="example-box">
+                        <h3">📝 Ejemplos de Buenos Alias</h3>
+                    </example-box>
+
+                    <div class="syntax-box">
+<span class="keyword">-- Para tablas simples</span>
+<span class="keyword">FROM</span> <span class="table">customers</span> <span class="keyword">AS</span> <span class="alias">c</span>
+<span class="keyword">FROM</span> <span class="table">orders</span> <span class="keyword">AS</span> <span class="alias">o</span>
+<span class="keyword">FROM</span> <span class="table">products</span> <span class="keyword">AS</span> <span class="alias">p</span>
+
+<span class="keyword">-- Para consultas complejas</span>
+<span class="keyword">FROM</span> <span class="table">customer_details</span> <span class="keyword">AS</span> <span class="alias">cust</span>
+<span class="keyword">FROM</span> <span class="table">order_history</span> <span class="keyword">AS</span> <span class="alias">ord_hist</span>
+<span class="keyword">FROM</span> <span class="table">product_catalog</span> <span class="keyword">AS</span> <span class="alias">prod_cat</span>
+
+<span class="keyword">-- Para múltiples instancias de la misma tabla</span>
+<span class="keyword">FROM</span> <span class="table">employees</span> <span class="keyword">AS</span> <span class="alias">emp</span>
+<span class="keyword">JOIN</span> <span class="table">employees</span> <span class="keyword">AS</span> <span class="alias">mgr</span> <span class="keyword">ON</span> emp.manager_id = mgr.employee_id
+                    </syntax-box>
+
+                    <div class="concept-card">
+                        <h3">🔍 Especificación de Campos con Alias</h3>
+                        <p>Una vez que usas alias, es recomendable especificar de qué tabla viene cada campo en el SELECT:</p>
+                    </concept-card>
+
+                    <div class="syntax-box">
+<span class="keyword">SELECT</span> 
+    c.customer_id,
+    c.customer_name,
+    c.state <span class="keyword">AS</span> customer_state,
+    s.state <span class="keyword">AS</span> state_code,
+    s.state_name
+<span class="keyword">FROM</span> <span class="table">join_customer</span> <span class="keyword">AS</span> <span class="alias">c</span>
+<span class="keyword">INNER JOIN</span> <span class="table">join_state</span> <span class="keyword">AS</span> <span class="alias">s</span>
+<span class="keyword">ON</span> <span class="condition">c.state = s.state</span>
+                    </syntax-box>
+
+                    <div class="definition-box">
+                        <h3">💡 Alias: Obligatorio vs Recomendado</h3>
+                        <p><strong>Obligatorio:</strong> Cuando hay campos con nombres idénticos en las tablas.</p>
+                        <p><strong>Recomendado siempre:</strong> Mejora la legibilidad y mantenibilidad del código.</p>
+                        <p><strong>AS opcional:</strong> Puedes escribir 'tabla t' en lugar de 'tabla AS t'.</p>
+                        <p><strong>Consistencia clave:</strong> Una vez que usas alias, úsalo en toda la consulta.</p>
+                    </definition-box>
+                </section>
+
+                <section id="alternatives" class="section">
+                    <h2">🔄 Alternativas y Métodos</h2>
+                    
+                    <div class="concept-card">
+                        <h3">🔍 Método Alternativo: WHERE en lugar de INNER JOIN</h3>
+                        <p>Existe una forma alternativa de realizar INNER JOIN usando la cláusula <strong>WHERE</strong> en lugar de la sintaxis estándar. Aunque funciona, <strong>no se recomienda</strong> en el desarrollo moderno.</p>
+                    </concept-card>
+
+                    <div class="comparison-grid">
+                        <div class="comparison-card recommended">
+                            <h4">✅ Método Recomendado (INNER JOIN)</h4>
+                            <div class="syntax-box">
+<span class="keyword">SELECT</span> *
+<span class="keyword">FROM</span> <span class="table">join_customer</span> <span class="keyword">AS</span> <span class="alias">c</span>
+<span class="keyword">INNER JOIN</span> <span class="table">join_state</span> <span class="keyword">AS</span> <span class="alias">s</span>
+<span class="keyword">ON</span> <span class="condition">c.state = s.state</span>
+                            </div>
+                            <p><strong>Ventajas:</strong></p>
+                            <ul>
+                                <li>Estándar SQL actual</li>
+                                <li>Intención clara y explícita</li>
+                                <li>Separación entre JOIN y filtros</li>
+                                <li>Mejor optimización del motor</li>
+                                <li>Requerido en certificaciones</li>
+                            </ul>
+                        </div>
+
+                        <div class="comparison-card not-recommended">
+                            <h4">❌ Método Antiguo (WHERE)</h4>
+                            <div class="syntax-box">
+<span class="keyword">SELECT</span> *
+<span class="keyword">FROM</span> <span class="table">join_customer</span> <span class="keyword">AS</span> <span class="alias">c</span>, 
+     <span class="table">join_state</span> <span class="keyword">AS</span> <span class="alias">s</span>
+<span class="keyword">WHERE</span> <span class="condition">c.state = s.state</span>
+                            </div>
+                            <p><strong>Problemas:</strong></p>
+                            <ul>
+                                <li>Sintaxis obsoleta</li>
+                                <li>Menos legible</li>
+                                <li>Mezcla JOIN con filtros</li>
+                                <li>No estándar en SAP HANA</li>
+                                <li>Confuso en consultas complejas</li>
+                            </ul>
+                        </div>
+                    </comparison-grid>
+
+                    <div class="concept-card">
+                        <h3">🔍 Demostración de Equivalencia</h3>
+                        <p>Ambos métodos producen el <strong>mismo resultado</strong>, pero la forma de expresarlo es muy diferente:</p>
+                    </concept-card>
+
+                    <div class="table-example">
+                        <h4">📊 Resultado Idéntico con Ambos Métodos</h4>
+                        <div class="table-display">
+customer_id | customer_name | state | age | state | state_name
+     1      |    Werner     |  MI   | 10  |  MI   |  Michigan
+     2      |     Mark      |  MI   | 11  |  MI   |  Michigan
+                        </div>
+                    </div>
+
+                    <div class="concept-card">
+                        <h3">⚠️ Por Qué No Se Recomienda el Método WHERE</h3>
+                        <ul>
+                            <li><strong>Estándar obsoleto:</strong> Forma antigua de hacer JOINs</li>
+                            <li><strong>Confusión de propósitos:</strong> WHERE debería ser solo para filtros</li>
+                            <li><strong>Legibilidad reducida:</strong> Especialmente en consultas complejas</li>
+                            <li><strong>Certificaciones:</strong> SAP HANA requiere la sintaxis INNER JOIN</li>
+                            <li><strong>Optimización:</strong> Los motores modernos están optimizados para la sintaxis estándar</li>
+                        </ul>
+                    </concept-card>
+
+                    <div class="example-box">
+                        <h3">📝 Ejemplo de Consulta Compleja</h3>
+                        <p>En consultas complejas, la diferencia en legibilidad es dramática:</p>
+                    </example-box>
+
+                    <div class="syntax-box">
+<span class="keyword">-- ✅ Con INNER JOIN (claro y legible)</span>
+<span class="keyword">SELECT</span> o.order_id, c.customer_name, s.state_name
+<span class="keyword">FROM</span> <span class="table">join_order</span> <span class="keyword">AS</span> <span class="alias">o</span>
+<span class="keyword">INNER JOIN</span> <span class="table">join_customer</span> <span class="keyword">AS</span> <span class="alias">c</span>
+    <span class="keyword">ON</span> <span class="condition">o.customer_id = c.customer_id</span>
+<span class="keyword">INNER JOIN</span> <span class="table">join_state</span> <span class="keyword">AS</span> <span class="alias">s</span>
+    <span class="keyword">ON</span> <span class="condition">c.state = s.state</span>
+<span class="keyword">WHERE</span> <span class="condition">o.amount > 100</span>
+
+<span class="keyword">-- ❌ Con WHERE (confuso y difícil de mantener)</span>
+<span class="keyword">SELECT</span> o.order_id, c.customer_name, s.state_name
+<span class="keyword">FROM</span> <span class="table">join_order</span> <span class="keyword">AS</span> <span class="alias">o</span>, 
+     <span class="table">join_customer</span> <span class="keyword">AS</span> <span class="alias">c</span>, 
+     <span class="table">join_state</span> <span class="keyword">AS</span> <span class="alias">s</span>
+<span class="keyword">WHERE</span> <span class="condition">o.customer_id = c.customer_id</span>
+  <span class="keyword">AND</span> <span class="condition">c.state = s.state</span>
+  <span class="keyword">AND</span> <span class="condition">o.amount > 100</span>
+                    </syntax-box>
+
+                    <div class="concept-card">
+                        <h3">🏢 Contexto Histórico</h3>
+                        <p>El método WHERE era común en bases de datos muy antiguas como:</p>
+                        <ul>
+                            <li><strong>Oracle versiones muy antigas:</strong> Antes de que adoptaran el estándar SQL</li>
+                            <li><strong>Sistemas legacy:</strong> Código escrito hace décadas</li>
+                            <li><strong>Desarrolladores autodidactas:</strong> Que aprendieron con tutoriales obsoletos</li>
+                        </ul>
+                    </concept-card>
+
+                    <div class="definition-box">
+                        <h3">💡 Recomendación Final</h3>
+                        <p><strong>Usa SIEMPRE la sintaxis INNER JOIN:</strong> Es el estándar actual y futuro.</p>
+                        <p><strong>Si encuentras código con WHERE:</strong> Entiéndelo, pero refactorízalo cuando sea posible.</p>
+                        <p><strong>En el trabajo:</strong> Sigue las convenciones del equipo, pero sugiere el estándar.</p>
+                        <p><strong>En certificaciones:</strong> Solo se acepta la sintaxis INNER JOIN estándar.</p>
+                    </definition-box>
+                </section>
+
+                <section id="conclusions" class="section">
+                    <h2">🎯 Conclusiones</h2>
+                    
+                    <div class="concept-card">
+                        <h3">📋 Resumen del INNER JOIN</h3>
+                        <p>Hemos dominado completamente el <strong>INNER JOIN</strong>, el tipo de JOIN más importante y utilizado en el desarrollo de bases de datos. Es la base fundamental para consultas que involucran múltiples tablas relacionadas.</p>
+                    </div>
+
+                    <div class="feature-grid">
+                        <div class="feature-card">
+                            <div class="feature-icon">🎯</div>
+                            <h4>MÁXIMA SELECTIVIDAD</h4>
+                            <p>Solo registros con coincidencias en ambas tablas</p>
+                        </div>
+
+                        <div class="feature-card">
+                            <div class="feature-icon">⚙️</div>
+                            <h4>PROCESO INTERNO</h4>
+                            <p>Producto cartesiano seguido de filtrado</p>
+                        </div>
+
+                        <div class="feature-card">
+                            <div class="feature-icon">🏷️</div>
+                            <h4>ALIAS ESENCIALES</h4>
+                            <p>Resuelven ambigüedades y mejoran legibilidad</p>
+                        </div>
+
+                        <div class="feature-card">
+                            <div class="feature-icon">📊</div>
+                            <h4>EJEMPLOS PRÁCTICOS</h4>
+                            <p>Datos reales para entender el comportamiento</p>
+                        </div>
+                    </feature-grid>
+
+                    <div class="concept-card">
+                        <h3">🔑 Conceptos Clave Dominados</h3>
+                        <ul>
+                            <li><strong>Definición clara:</strong> Devuelve solo registros con coincidencias en ambas tablas</li>
+                            <li><strong>Sintaxis estándar:</strong> FROM tabla1 INNER JOIN tabla2 ON condición</li>
+                            <li><strong>Proceso interno:</strong> Producto cartesiano + filtrado de coincidencias</li>
+                            <li><strong>Uso de alias:</strong> Resolución de campos ambiguos y mejora de legibilidad</li>
+                            <li><strong>Creación de datos:</strong> Configuración de tablas para prácticas reales</li>
+                            <li><strong>Métodos alternativos:</strong> Conocimiento del método WHERE obsoleto</li>
+                        </ul>
+                    </concept-card>
+
+                    <div class="concept-card">
+                        <h3">⚡ Características Distintivas del INNER JOIN</h3>
+                        <ul>
+                            <li><strong>El más estricto:</strong> Excluye cualquier registro sin correspondencia</li>
+                            <li><strong>Resultado limpio:</strong> No aparecen valores NULL por falta de relación</li>
+                            <li><strong>Siempre se ejecuta:</strong> Procesa todas las combinaciones, devuelva o no resultados</li>
+                            <li><strong>Óptimo rendimiento:</strong> Generalmente el JOIN más rápido</li>
+                            <li><strong>Base para otros JOINs:</strong> Los demás tipos son extensiones de este concepto</li>
+                        </ul>
+                    </concept-card>
+
+                    <div class="comparison-grid">
+                        <div class="comparison-card recommended">
+                            <h4">✅ Mejores Prácticas Aprendidas</h4>
+                            <ul>
+                                <li>Usar siempre sintaxis INNER JOIN estándar</li>
+                                <li>Aplicar alias descriptivos consistentemente</li>
+                                <li>Especificar tabla.campo para evitar ambigüedades</li>
+                                <li>Entender el proceso interno para optimización</li>
+                                <li>Separar condiciones JOIN de filtros WHERE</li>
+                            </ul>
+                        </div>
+
+                        <div class="comparison-card not-recommended">
+                            <h4">❌ Errores Comunes a Evitar</h4>
+                            <ul>
+                                <li>Usar método WHERE obsoleto para JOINs</li>
+                                <li>Omitir alias en consultas con múltiples tablas</li>
+                                <li>Confundir condiciones ON con filtros WHERE</li>
+                                <li>No considerar el impacto del producto cartesiano</li>
+                                <li>Escribir consultas sin especificar origen de campos</li>
+                            </ul>
+                        </div>
+                    </comparison-grid>
+
+                    <div class="definition-box">
+                        <h3">🎯 Cuándo Usar INNER JOIN</h3>
+                        <p><strong>Datos relacionados obligatorios:</strong> Cuando necesitas información que debe existir en ambas tablas.</p>
+                        <p><strong>Reportes de integridad:</strong> Para mostrar solo datos completos y verificados.</p>
+                        <p><strong>Análisis limpio:</strong> Cuando no quieres valores NULL en los resultados.</p>
+                        <p><strong>Máximo rendimiento:</strong> Para obtener el mejor desempeño en consultas relacionales.</p>
+                    </definition-box>
+
+                    <div class="concept-card">
+                        <h3">🚀 Preparación para Siguientes JOINs</h3>
+                        <p>Con INNER JOIN dominado, estás preparado para:</p>
+                        <ul>
+                            <li><strong>LEFT OUTER JOIN:</strong> Incluir todos los registros de la tabla izquierda</li>
+                            <li><strong>RIGHT OUTER JOIN:</strong> Incluir todos los registros de la tabla derecha</li>
+                            <li><strong>FULL OUTER JOIN:</strong> Incluir todos los registros de ambas tablas</li>
+                            <li><strong>JOINs múltiples:</strong> Combinar tres o más tablas en una consulta</li>
+                            <li><strong>JOINs complejos:</strong> Condiciones avanzadas y subconsultas</li>
+                        </ul>
+                    </concept-card>
+
+                    <div class="example-box">
+                        <h3">💡 Reflexión Final</h3>
+                        <p>El INNER JOIN es el <strong>corazón de las consultas relacionales</strong>. Su dominio marca la diferencia entre hacer consultas básicas y construir análisis sofisticados que combinan información de múltiples fuentes de datos de manera eficiente y precisa.</p>
+                    </example-box>
+
+                    <div class="concept-card">
+                        <h3">🎓 Logros Desbloqueados</h3>
+                        <ul>
+                            <li>✅ Comprendes el JOIN más importante de SQL</li>
+                            <li>✅ Dominas la sintaxis estándar INNER JOIN</li>
+                            <li>✅ Entiendes el proceso interno del producto cartesiano</li>
+                            <li>✅ Manejas alias para resolver ambigüedades</li>
+                            <li>✅ Puedes crear y usar datos de prueba reales</li>
+                            <li>✅ Conoces alternativas y mejores prácticas</li>
+                            <li>✅ Estás preparado para JOINs más complejos</li>
+                        </ul>
+                    </concept-card>
+                </section>
+            </main>
+        </div>
+    </div>
+
+    <script>
+        function showSection(sectionId) {
+            // Ocultar todas las secciones
+            const sections = document.querySelectorAll('.section');
+            sections.forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            // Mostrar la sección seleccionada
+            document.getElementById(sectionId).classList.add('active');
+            
+            // Actualizar navegación
+            const navItems = document.querySelectorAll('.nav-item');
+            navItems.forEach(item => {
+                item.classList.remove('active');
+            });
+            
+            // Marcar el elemento activo
+            event.target.classList.add('active');
+            
+            // Scroll al inicio del contenido
+            document.querySelector('.content').scrollTop = 0;
+
+            // En móviles, ocultar el menú después de seleccionar
+            if (window.innerWidth <= 768) {
+                const sidebar = document.getElementById('sidebar');
+                sidebar.classList.add('mobile-hidden');
+                
+                const toggleButton = document.querySelector('.mobile-menu-toggle');
+                toggleButton.textContent = '📋 Menú de Contenidos';
+            }
+        }
+
+        function toggleMobileMenu() {
+            const sidebar = document.getElementById('sidebar');
+            const toggleButton = document.querySelector('.mobile-menu-toggle');
+            
+            if (sidebar.classList.contains('mobile-hidden')) {
+                sidebar.classList.remove('mobile-hidden');
+                toggleButton.textContent = '❌ Cerrar Menú';
+            } else {
+                sidebar.classList.add('mobile-hidden');
+                toggleButton.textContent = '📋 Menú de Contenidos';
+            }
+        }
+
+        // Inicializar en móviles
+        document.addEventListener('DOMContentLoaded', function() {
+            if (window.innerWidth <= 768) {
+                const sidebar = document.getElementById('sidebar');
+                sidebar.classList.add('mobile-hidden');
+            }
+
+            // Animación de entrada
+            const cards = document.querySelectorAll('.concept-card, .definition-box, .example-box');
+            cards.forEach((card, index) => {
+                setTimeout(() => {
+                    card.style.opacity = '0';
+                    card.style.transform = 'translateY(20px)';
+                    card.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+                    
+                    setTimeout(() => {
+                        card.style.opacity = '1';
+                        card.style.transform = 'translateY(0)';
+                    }, 100);
+                }, index * 100);
+            });
+        });
+
+        // Manejar cambios de tamaño de ventana
+        window.addEventListener('resize', function() {
+            const sidebar = document.getElementById('sidebar');
+            const toggleButton = document.querySelector('.mobile-menu-toggle');
+            
+            if (window.innerWidth > 768) {
+                sidebar.classList.remove('mobile-hidden');
+                toggleButton.textContent = '📋 Menú de Contenidos';
+            } else if (window.innerWidth <= 768 && !sidebar.classList.contains('mobile-hidden')) {
+                sidebar.classList.add('mobile-hidden');
+            }
+        });
+    </script>
+</body>
+</html>

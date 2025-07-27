@@ -1,0 +1,1528 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Curso SAP HANA - Comentarios e Identificadores</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .header h1 {
+            color: #2c3e50;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header p {
+            color: #666;
+            font-size: 1.2em;
+        }
+
+        .dashboard {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .sidebar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            height: fit-content;
+            position: sticky;
+            top: 20px;
+        }
+
+        .sidebar h3 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #667eea;
+        }
+
+        .nav-item {
+            padding: 12px 20px;
+            margin: 5px 0;
+            background: linear-gradient(45deg, #f8f9fa, #e9ecef);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-left: 4px solid transparent;
+            font-size: 0.9em;
+        }
+
+        .nav-item:hover {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            transform: translateX(10px);
+            border-left-color: #fff;
+        }
+
+        .nav-item.active {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border-left-color: #fff;
+        }
+
+        .mobile-menu-toggle {
+            display: none;
+            background: rgba(255, 255, 255, 0.95);
+            border: none;
+            padding: 15px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            font-size: 1.2em;
+            cursor: pointer;
+            width: 100%;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .content {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .section {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .section h2 {
+            color: #2c3e50;
+            font-size: 2em;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #667eea;
+        }
+
+        .concept-card {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-radius: 15px;
+            padding: 25px;
+            margin: 20px 0;
+            border-left: 5px solid #667eea;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease;
+        }
+
+        .concept-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .concept-card h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 1.4em;
+        }
+
+        .concept-card p {
+            line-height: 1.8;
+            color: #555;
+            margin-bottom: 15px;
+        }
+
+        .concept-card ul {
+            margin-left: 20px;
+            margin-top: 10px;
+        }
+
+        .concept-card li {
+            margin: 8px 0;
+            color: #555;
+        }
+
+        .definition-box {
+            background: linear-gradient(135deg, #fff3cd, #ffeaa7);
+            border-radius: 15px;
+            padding: 25px;
+            margin: 20px 0;
+            border-left: 5px solid #f39c12;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        .definition-box h3 {
+            color: #856404;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        .definition-box p {
+            color: #856404;
+            line-height: 1.8;
+            margin-bottom: 10px;
+        }
+
+        .example-box {
+            background: linear-gradient(135deg, #e8f5e8, #d4edda);
+            border-radius: 15px;
+            padding: 25px;
+            margin: 20px 0;
+            border-left: 5px solid #27ae60;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        .example-box h3 {
+            color: #155724;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        .example-box p {
+            color: #155724;
+            line-height: 1.8;
+            margin-bottom: 10px;
+        }
+
+        .example-box ul {
+            margin-left: 20px;
+            margin-top: 10px;
+        }
+
+        .example-box li {
+            margin: 8px 0;
+            color: #155724;
+        }
+
+        .warning-box {
+            background: linear-gradient(135deg, #ffebee, #ffcdd2);
+            border-radius: 15px;
+            padding: 25px;
+            margin: 20px 0;
+            border-left: 5px solid #f39c12;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        .warning-box h3 {
+            color: #d32f2f;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        .warning-box p {
+            color: #d32f2f;
+            line-height: 1.8;
+            margin-bottom: 10px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: scale(1.05);
+        }
+
+        .stat-card.warning {
+            background: linear-gradient(135deg, #f39c12, #e67e22);
+        }
+
+        .stat-number {
+            font-size: 2.5em;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .progress-bar {
+            background: #e9ecef;
+            border-radius: 10px;
+            padding: 3px;
+            margin: 20px 0;
+        }
+
+        .progress {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            height: 20px;
+            border-radius: 8px;
+            transition: width 0.5s ease;
+        }
+
+        .syntax-box {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 20px;
+            border-radius: 10px;
+            font-family: 'Courier New', monospace;
+            margin: 20px 0;
+            overflow-x: auto;
+            border-left: 5px solid #667eea;
+        }
+
+        .syntax-box .keyword {
+            color: #63b3ed;
+            font-weight: bold;
+        }
+
+        .syntax-box .comment {
+            color: #68d391;
+            font-style: italic;
+        }
+
+        .syntax-box .identifier {
+            color: #fbb6ce;
+        }
+
+        .code-example {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 20px;
+            border-radius: 10px;
+            font-family: 'Courier New', monospace;
+            margin: 20px 0;
+            overflow-x: auto;
+        }
+
+        .code-example .keyword {
+            color: #63b3ed;
+        }
+
+        .code-example .comment {
+            color: #68d391;
+        }
+
+        .code-example .string {
+            color: #fbb6ce;
+        }
+
+        .code-example .identifier {
+            color: #ffd700;
+        }
+
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .comparison-card {
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            border-radius: 15px;
+            padding: 25px;
+            border-left: 5px solid #667eea;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        .comparison-card.delimited {
+            border-left-color: #27ae60;
+            background: linear-gradient(135deg, #e8f5e8, #d4edda);
+        }
+
+        .comparison-card.non-delimited {
+            border-left-color: #3498db;
+            background: linear-gradient(135deg, #e3f2fd, #bbdefb);
+        }
+
+        .comparison-card h4 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        .comparison-card.delimited h4 {
+            color: #155724;
+        }
+
+        .comparison-card.non-delimited h4 {
+            color: #1565c0;
+        }
+
+        .unicode-box {
+            background: linear-gradient(135deg, #f3e5f5, #e1bee7);
+            border-radius: 15px;
+            padding: 25px;
+            margin: 20px 0;
+            border-left: 5px solid #9c27b0;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        .unicode-box h3 {
+            color: #7b1fa2;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        .unicode-box p {
+            color: #7b1fa2;
+            line-height: 1.8;
+            margin-bottom: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+
+            .header {
+                padding: 20px;
+                margin-bottom: 20px;
+            }
+
+            .header h1 {
+                font-size: 1.8em;
+            }
+
+            .dashboard {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .sidebar {
+                position: static;
+                padding: 20px;
+                order: 2;
+            }
+
+            .mobile-menu-toggle {
+                display: block;
+                order: 1;
+            }
+
+            .sidebar.mobile-hidden {
+                display: none;
+            }
+
+            .content {
+                padding: 20px;
+                order: 3;
+            }
+
+            .section h2 {
+                font-size: 1.5em;
+            }
+
+            .concept-card, .definition-box, .example-box, .warning-box {
+                padding: 20px;
+                margin: 15px 0;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+
+            .comparison-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .nav-item {
+                padding: 15px 20px;
+                font-size: 1em;
+                text-align: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .header h1 {
+                font-size: 1.5em;
+            }
+
+            .content {
+                padding: 15px;
+            }
+
+            .concept-card, .definition-box, .example-box, .warning-box {
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <img src="https://gessof.cl/wp-content/uploads/2025/05/Logo-minimalista-con-simbolismo-global.png" alt="Gessof Logo" style="height: 80px; margin-bottom: 20px; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.1));">
+            <h1>Curso SAP HANA</h1>
+            <h2 style="color: #667eea; font-size: 1.5em; margin: 10px 0; font-weight: 600;">Clase 034</h2>
+            <p>Comentarios e Identificadores en SAP HANA</p>
+            <div class="progress-bar">
+                <div class="progress" style="width: 85%"></div>
+            </div>
+        </header>
+
+        <div class="dashboard">
+            <button class="mobile-menu-toggle" onclick="toggleMobileMenu()">
+                📋 Menú de Contenidos
+            </button>
+
+            <nav class="sidebar" id="sidebar">
+                <h3>Contenidos del Módulo</h3>
+                <div class="nav-item active" onclick="showSection('overview')">📋 Resumen General</div>
+                <div class="nav-item" onclick="showSection('introduction')">🚀 Introducción</div>
+                <div class="nav-item" onclick="showSection('comments')">💬 Comentarios</div>
+                <div class="nav-item" onclick="showSection('identifiers-basics')">🏷️ Identificadores Básicos</div>
+                <div class="nav-item" onclick="showSection('non-delimited')">📝 No Delimitados</div>
+                <div class="nav-item" onclick="showSection('delimited')">🔤 Delimitados</div>
+                <div class="nav-item" onclick="showSection('unicode')">🌍 Unicode</div>
+                <div class="nav-item" onclick="showSection('best-practices')">✅ Mejores Prácticas</div>
+                <div class="nav-item" onclick="showSection('conclusions')">🎯 Conclusiones</div>
+            </nav>
+
+            <main class="content">
+                <section id="overview" class="section active">
+                    <h2>📋 Resumen General del Módulo</h2>
+                    
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-number">2</div>
+                            <div>Conceptos Fundamentales</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number">💬</div>
+                            <div>Comentarios</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number">🏷️</div>
+                            <div>Identificadores</div>
+                        </div>
+                        <div class="stat-card warning">
+                            <div class="stat-number">⚠️</div>
+                            <div>Cuidado con Delimitados</div>
+                        </div>
+                    </div>
+
+                    <div class="concept-card">
+                        <h3>🎯 Objetivos del Módulo</h3>
+                        <p>En esta clase complementaremos nuestro conocimiento de SQL con dos conceptos fundamentales: los <strong>comentarios</strong> para documentar nuestro código y los <strong>identificadores</strong> para nombrar objetos de base de datos correctamente.</p>
+                    </div>
+
+                    <div class="concept-card">
+                        <h3>📚 Contenido del Módulo</h3>
+                        <ul>
+                            <li><strong>Comentarios:</strong> Documentación que no se ejecuta como código</li>
+                            <li><strong>Tipos de comentarios:</strong> De línea (--) y de bloque (/* */)</li>
+                            <li><strong>Identificadores:</strong> Nombres de objetos de base de datos</li>
+                            <li><strong>No delimitados:</strong> Sin comillas, se convierten a mayúsculas</li>
+                            <li><strong>Delimitados:</strong> Entre comillas dobles, sensibles a mayúsculas</li>
+                            <li><strong>Unicode:</strong> Soporte para caracteres internacionales</li>
+                            <li><strong>Mejores prácticas:</strong> Convenciones y recomendaciones</li>
+                        </ul>
+                    </div>
+
+                    <div class="definition-box">
+                        <h3>💡 Conceptos Complementarios</h3>
+                        <p>Estos temas son <strong>complementos esenciales</strong> al conocimiento de SELECT, INSERT, UPDATE y DELETE que hemos adquirido. Nos ayudan a escribir código más legible y a trabajar correctamente con los objetos de SAP HANA.</p>
+                    </div>
+
+                    <div class="comparison-grid">
+                        <div class="comparison-card">
+                            <h4>💬 Comentarios</h4>
+                            <ul>
+                                <li>Documentan el código</li>
+                                <li>No se ejecutan</li>
+                                <li>Mejoran legibilidad</li>
+                                <li>Facilitan mantenimiento</li>
+                            </ul>
+                        </div>
+                        <div class="comparison-card">
+                            <h4>🏷️ Identificadores</h4>
+                            <ul>
+                                <li>Nombres de objetos DB</li>
+                                <li>Tablas, columnas, funciones</li>
+                                <li>Esquemas y namespaces</li>
+                                <li>Reglas específicas SAP HANA</li>
+                            </ul>
+                        </div>
+                    </comparison-grid>
+                </section>
+
+                <section id="introduction" class="section">
+                    <h2>🚀 Introducción</h2>
+                    
+                    <div class="concept-card">
+                        <h3>📖 Contexto de la Lección</h3>
+                        <p>Después de dominar los comandos DML fundamentales (SELECT, INSERT, UPDATE, DELETE), es momento de aprender sobre elementos que mejoran la <strong>calidad y legibilidad</strong> de nuestro código SQL.</p>
+                    </div>
+
+                    <div class="concept-card">
+                        <h3>🔍 ¿Por Qué Son Importantes?</h3>
+                        <p>Aunque estos elementos pueden parecer "detalles menores", son fundamentales para:</p>
+                        <ul>
+                            <li><strong>Documentación:</strong> Explicar qué hace el código</li>
+                            <li><strong>Mantenimiento:</strong> Facilitar futuras modificaciones</li>
+                            <li><strong>Colaboración:</strong> Permitir que otros entiendan tu código</li>
+                            <li><strong>Profesionalismo:</strong> Escribir código de calidad empresarial</li>
+                        </ul>
+                    </div>
+
+                    <div class="example-box">
+                        <h3>📝 Ejemplo de Código Sin Comentarios</h3>
+                    </div>
+
+                    <div class="code-example">
+<span class="keyword">SELECT</span> campo1, campo2 
+<span class="keyword">FROM</span> BB_MODELADO_HDI_BBDD_1.tabla_clientes 
+<span class="keyword">WHERE</span> campo1 > 100;
+
+<span class="keyword">UPDATE</span> tabla_productos 
+<span class="keyword">SET</span> precio = precio * 1.1 
+<span class="keyword">WHERE</span> categoria = <span class="string">'electronica'</span>;
+                    </div>
+
+                    <div class="example-box">
+                        <h3>✨ El Mismo Código Con Comentarios e Identificadores Claros</h3>
+                    </div>
+
+                    <div class="code-example">
+<span class="comment">-- Obtener clientes con ventas superiores a 100</span>
+<span class="keyword">SELECT</span> <span class="identifier">id_cliente</span>, <span class="identifier">nombre_cliente</span>
+<span class="keyword">FROM</span> <span class="identifier">BB_MODELADO_HDI_BBDD_1</span>.<span class="identifier">tabla_clientes</span>
+<span class="keyword">WHERE</span> <span class="identifier">total_ventas</span> > 100;
+
+<span class="comment">/* 
+   Aplicar incremento del 10% en precios
+   de productos electrónicos para Q2 2024
+*/</span>
+<span class="keyword">UPDATE</span> <span class="identifier">tabla_productos</span>
+<span class="keyword">SET</span> <span class="identifier">precio</span> = <span class="identifier">precio</span> * 1.1
+<span class="keyword">WHERE</span> <span class="identifier">categoria</span> = <span class="string">'electronica'</span>;
+                    </div>
+
+                    <div class="definition-box">
+                        <h3>🎯 Objetivo de Claridad</h3>
+                        <p>Al final de esta lección, tu código SQL será <strong>autodocumentado</strong> y seguirá las mejores prácticas de nombrado en SAP HANA, facilitando el trabajo en equipo y el mantenimiento futuro.</p>
+                    </definition-box>
+                </section>
+
+                <section id="comments" class="section">
+                    <h2>💬 Comentarios en SAP HANA</h2>
+                    
+                    <div class="concept-card">
+                        <h3>📝 ¿Qué Son los Comentarios?</h3>
+                        <p>Los comentarios son <strong>líneas escritas que la base de datos no interpreta como código</strong>. Su propósito es documentar y explicar qué hace el código para futuros desarrolladores (incluido tú mismo).</p>
+                    </div>
+
+                    <div class="concept-card">
+                        <h3>🎨 Identificación Visual</h3>
+                        <p>En los editores de SAP HANA, los comentarios se distinguen visualmente:</p>
+                        <ul>
+                            <li><strong>Color gris:</strong> Texto comentado</li>
+                            <li><strong>Colores vivos:</strong> Código SQL ejecutable</li>
+                            <li><strong>Sintaxis destacada:</strong> Palabras clave, strings, etc.</li>
+                        </ul>
+                    </div>
+
+                    <div class="comparison-grid">
+                        <div class="comparison-card non-delimited">
+                            <h4>-- Comentario de Línea</h4>
+                            <ul>
+                                <li>Se inicia con dos guiones</li>
+                                <li>Comenta desde ese punto hasta el final de la línea</li>
+                                <li>Ideal para explicaciones breves</li>
+                                <li>Más común en SQL</li>
+                            </ul>
+                        </div>
+                        <div class="comparison-card delimited">
+                            <h4>/* Comentario de Bloque */</h4>
+                            <ul>
+                                <li>Se inicia con /* y termina con */</li>
+                                <li>Puede abarcar múltiples líneas</li>
+                                <li>Ideal para explicaciones extensas</li>
+                                <li>Útil para documentación de cabecera</li>
+                            </ul>
+                        </div>
+                    </comparison-grid>
+
+                    <div class="example-box">
+                        <h3>📋 Ejemplos Prácticos de Comentarios</h3>
+                    </div>
+
+                    <div class="code-example">
+<span class="comment">-- Comentario de línea simple</span>
+<span class="keyword">SELECT</span> * <span class="keyword">FROM</span> clientes; <span class="comment">-- También al final de la línea</span>
+
+<span class="comment">-- Consulta de ventas del mes actual</span>
+<span class="keyword">SELECT</span> 
+    cliente_id,
+    <span class="keyword">SUM</span>(total) <span class="keyword">AS</span> ventas_totales <span class="comment">-- Suma de todas las ventas</span>
+<span class="keyword">FROM</span> facturas 
+<span class="keyword">WHERE</span> fecha >= <span class="string">'2024-01-01'</span> <span class="comment">-- Solo del año actual</span>
+<span class="keyword">GROUP BY</span> cliente_id;
+
+<span class="comment">/*
+   Comentario de múltiples líneas
+   útil para explicaciones más extensas
+   o documentación de procedimientos
+*/</span>
+<span class="keyword">UPDATE</span> productos 
+<span class="keyword">SET</span> estado = <span class="string">'activo'</span>
+<span class="keyword">WHERE</span> fecha_creacion > <span class="string">'2024-01-01'</span>;
+
+<span class="comment">/*
+   PROCEDIMIENTO: Actualización de precios Q2 2024
+   AUTOR: Equipo de desarrollo
+   FECHA: Enero 2024
+   PROPÓSITO: Aplicar incrementos de precio basados en inflación
+*/</span>
+<span class="keyword">UPDATE</span> productos 
+<span class="keyword">SET</span> precio = precio * 1.05 
+<span class="keyword">WHERE</span> categoria <span class="keyword">IN</span> (<span class="string">'alimentacion'</span>, <span class="string">'bebidas'</span>);
+                    </code>
+
+                    <div class="concept-card">
+                        <h3>✅ Buenas Prácticas para Comentarios</h3>
+                        <ul>
+                            <li><strong>Explica el "por qué", no el "qué":</strong> El código ya muestra qué hace</li>
+                            <li><strong>Mantén comentarios actualizados:</strong> Código obsoleto confunde</li>
+                            <li><strong>Usa comentarios de cabecera:</strong> Para scripts complejos</li>
+                            <li><strong>Comenta lógica compleja:</strong> WHERE complicados, cálculos especiales</li>
+                            <li><strong>Documenta parámetros:</strong> En procedimientos y funciones</li>
+                        </ul>
+                    </concept-card>
+
+                    <div class="warning-box">
+                        <h3>⚠️ Comentarios Contraproducentes</h3>
+                        <p>Evita comentarios obvios que no agregan valor:</p>
+                    </div>
+
+                    <div class="code-example">
+<span class="comment">-- ❌ MAL: Comentario obvio</span>
+<span class="keyword">SELECT</span> * <span class="keyword">FROM</span> clientes; <span class="comment">-- Selecciona todo de clientes</span>
+
+<span class="comment">-- ✅ BIEN: Comentario que explica propósito</span>
+<span class="keyword">SELECT</span> * <span class="keyword">FROM</span> clientes; <span class="comment">-- Para migración a nuevo sistema CRM</span>
+
+<span class="comment">-- ❌ MAL: Información que puede quedar obsoleta</span>
+<span class="keyword">UPDATE</span> productos <span class="keyword">SET</span> precio = 29.99; <span class="comment">-- Precio actualizado 15/01/2024</span>
+
+<span class="comment">-- ✅ BIEN: Información contextual duradera</span>
+<span class="keyword">UPDATE</span> productos <span class="keyword">SET</span> precio = 29.99; <span class="comment">-- Precio especial lanzamiento</span>
+                    </code>
+                </section>
+
+                <section id="identifiers-basics" class="section">
+                    <h2>🏷️ Identificadores - Conceptos Básicos</h2>
+                    
+                    <div class="definition-box">
+                        <h3>🎯 Definición de Identificadores</h3>
+                        <p>Los identificadores son utilizados para representar <strong>nombres en comandos HANA SQL</strong>, como nombres de tablas, vistas, sinónimos, columnas, índices, funciones, etc.</p>
+                    </definition-box>
+
+                    <div class="concept-card">
+                        <h3>🔍 Identificadores en Acción</h3>
+                        <p>Ya has estado usando identificadores sin darte cuenta. En cada consulta que escribes aparecen varios:</p>
+                    </div>
+
+                    <div class="code-example">
+<span class="keyword">SELECT</span> * <span class="keyword">FROM</span> <span class="identifier">BB_MODELADO_HDI_BBDD_1</span>.<span class="identifier">tabla_clientes</span>;
+<span class="comment">--           ↑                    ↑</span>
+<span class="comment">--      Esquema              Tabla</span>
+<span class="comment">--      (Identificador)     (Identificador)</span>
+                    </code>
+
+                    <div class="concept-card">
+                        <h3>🗂️ Tipos de Objetos que Usan Identificadores</h3>
+                        <ul>
+                            <li><strong>Esquemas:</strong> BB_MODELADO_HDI_BBDD_1</li>
+                            <li><strong>Tablas:</strong> clientes, productos, facturas</li>
+                            <li><strong>Columnas:</strong> id, nombre, precio, fecha</li>
+                            <li><strong>Vistas:</strong> vista_ventas_mensuales</li>
+                            <li><strong>Índices:</strong> idx_cliente_nombre</li>
+                            <li><strong>Funciones:</strong> calcular_descuento</li>
+                            <li><strong>Procedimientos:</strong> sp_procesar_ventas</li>
+                            <li><strong>Sinónimos:</strong> syn_tabla_externa</li>
+                        </ul>
+                    </concept-card>
+
+                    <div class="example-box">
+                        <h3>📊 Anatomía de una Consulta con Identificadores</h3>
+                    </div>
+
+                    <div class="code-example">
+<span class="keyword">SELECT</span> 
+    <span class="identifier">c</span>.<span class="identifier">nombre_cliente</span>,        <span class="comment">-- Alias y columna</span>
+    <span class="identifier">p</span>.<span class="identifier">nombre_producto</span>,      <span class="comment">-- Alias y columna</span>
+    <span class="identifier">f</span>.<span class="identifier">total_factura</span>        <span class="comment">-- Alias y columna</span>
+<span class="keyword">FROM</span> 
+    <span class="identifier">ESQUEMA_VENTAS</span>.<span class="identifier">clientes</span> <span class="keyword">AS</span> <span class="identifier">c</span>,    <span class="comment">-- Esquema.tabla AS alias</span>
+    <span class="identifier">ESQUEMA_PRODUCTOS</span>.<span class="identifier">productos</span> <span class="keyword">AS</span> <span class="identifier">p</span>, <span class="comment">-- Esquema.tabla AS alias</span>
+    <span class="identifier">ESQUEMA_VENTAS</span>.<span class="identifier">facturas</span> <span class="keyword">AS</span> <span class="identifier">f</span>    <span class="comment">-- Esquema.tabla AS alias</span>
+<span class="keyword">WHERE</span> 
+    <span class="identifier">c</span>.<span class="identifier">id_cliente</span> = <span class="identifier">f</span>.<span class="identifier">cliente_id</span>    <span class="comment">-- Identificadores en condiciones</span>
+    <span class="keyword">AND</span> <span class="identifier">p</span>.<span class="identifier">id_producto</span> = <span class="identifier">f</span>.<span class="identifier">producto_id</span>;
+                    </code>
+
+                    <div class="concept-card">
+                        <h3">📍 Namespaces y Esquemas</h3>
+                        <p>En SAP HANA, los identificadores incluyen a menudo <strong>namespaces completos</strong>:</p>
+                        <ul>
+                            <li><strong>Esquema simple:</strong> MI_ESQUEMA</li>
+                            <li><strong>Namespace complejo:</strong> BB_MODELADO_HDI_BBDD_1.MI_CONTAINER.tabla_clientes</li>
+                            <li><strong>Path completo:</strong> proyecto.modulo.esquema.tabla</li>
+                        </ul>
+                    </concept-card>
+
+                    <div class="concept-card">
+                        <h3">🎯 ¿Cuándo Especificar el Esquema?</h3>
+                        <p>El esquema no siempre es obligatorio:</p>
+                        <ul>
+                            <li><strong>Conexión al esquema:</strong> Si estás conectado, puedes omitir el esquema</li>
+                            <li><strong>Buena práctica:</strong> Especificar siempre para claridad</li>
+                            <li><strong>Esquemas externos:</strong> OBLIGATORIO para objetos de otros esquemas</li>
+                            <li><strong>Scripts de producción:</strong> Siempre explícito</li>
+                        </ul>
+                    </concept-card>
+                </section>
+
+                <section id="non-delimited" class="section">
+                    <h2>📝 Identificadores No Delimitados</h2>
+                    
+                    <div class="definition-box">
+                        <h3>🔤 Características de los No Delimitados</h3>
+                        <p>Los identificadores <strong>no delimitados</strong> son aquellos que NO están entre comillas dobles. SAP HANA los procesa con reglas específicas que debemos conocer.</p>
+                    </definition-box>
+
+                    <div class="concept-card">
+                        <h3">📋 Reglas de los Identificadores No Delimitados</h3>
+                        <ul>
+                            <li><strong>Sin comillas dobles:</strong> tabla_clientes (no "tabla_clientes")</li>
+                            <li><strong>Conversión automática:</strong> SAP HANA los convierte a MAYÚSCULAS</li>
+                            <li><strong>Inicio obligatorio:</strong> Debe comenzar por letra o guión bajo (_)</li>
+                            <li><strong>Caracteres permitidos:</strong> Letras, números, guiones bajos</li>
+                            <li><strong>Case insensitive:</strong> clientes = CLIENTES = Clientes</li>
+                        </ul>
+                    </concept-card>
+
+                    <div class="example-box">
+                        <h3">✅ Ejemplos de Identificadores No Delimitados Válidos</h3>
+                    </div>
+
+                    <div class="code-example">
+<span class="comment">-- ✅ Todos estos son válidos y equivalentes</span>
+<span class="keyword">SELECT</span> * <span class="keyword">FROM</span> <span class="identifier">clientes</span>;
+<span class="keyword">SELECT</span> * <span class="keyword">FROM</span> <span class="identifier">CLIENTES</span>;
+<span class="keyword">SELECT</span> * <span class="keyword">FROM</span> <span class="identifier">Clientes</span>;
+
+<span class="comment">-- ✅ Nombres con guión bajo</span>
+<span class="keyword">SELECT</span> * <span class="keyword">FROM</span> <span class="identifier">tabla_productos</span>;
+<span class="keyword">SELECT</span> * <span class="keyword">FROM</span> <span class="identifier">ventas_2024</span>;
+<span class="keyword">SELECT</span> * <span class="keyword">FROM</span> <span class="identifier">_temp_datos</span>;
+
+<span class="comment">-- ✅ Nombres con números (pero no al inicio)</span>
+<span class="keyword">SELECT</span> * <span class="keyword">FROM</span> <span class="identifier">productos_v2</span>;
+<span class="keyword">SELECT</span> * <span class="keyword">FROM</span> <span class="identifier">tabla2024</span>;
+                    </code>
+
+                    <div class="warning-box">
+                        <h3">❌ Identificadores No Delimitados Inválidos</h3>
+                    </div>
+
+                    <div class="code-example">
+<span class="comment">-- ❌ No puede empezar con número</span>
+<span class="keyword">SELECT</span> * <span class="keyword">FROM</span> <span class="identifier">2024_ventas</span>; <span class="comment">-- ERROR</span>
+
+<span class="comment">-- ❌ No puede empezar con símbolos</span>
+<span class="keyword">SELECT</span> * <span class="keyword">FROM</span> <span class="identifier">$productos</span>; <span class="comment">-- ERROR</span>
+<span class="keyword">SELECT</span> * <span class="keyword">FROM</span> <span class="identifier">#temporal</span>; <span class="comment">-- ERROR</span>
+
+<span class="comment">-- ❌ No puede contener espacios o caracteres especiales</span>
+<span class="keyword">SELECT</span> * <span class="keyword">FROM</span> <span class="identifier">tabla productos</span>; <span class="comment">-- ERROR</span>
+<span class="keyword">SELECT</span> * <span class="keyword">FROM</span> <span class="identifier">tabla-productos</span>; <span class="comment">-- ERROR</span>
+                    </code>
+
+                    <div class="concept-card">
+                        <h3">🔄 Conversión Automática a Mayúsculas</h3>
+                        <p>Esta es la característica más importante de los identificadores no delimitados:</p>
+                    </div>
+
+                    <div class="comparison-grid">
+                        <div class="comparison-card non-delimited">
+                            <h4">📝 Lo Que Escribes</h4>
+                            <div class="code-example">
+<span class="keyword">CREATE TABLE</span> <span class="identifier">mi_tabla</span> (
+    <span class="identifier">id</span> <span class="keyword">INTEGER</span>,
+    <span class="identifier">nombre</span> <span class="keyword">VARCHAR</span>(50)
+);
+                            </div>
+                        </div>
+                        <div class="comparison-card non-delimited">
+                            <h4">🔄 Lo Que SAP HANA Almacena</h4>
+                            <div class="code-example">
+<span class="keyword">CREATE TABLE</span> <span class="identifier">MI_TABLA</span> (
+    <span class="identifier">ID</span> <span class="keyword">INTEGER</span>,
+    <span class="identifier">NOMBRE</span> <span class="keyword">VARCHAR</span>(50)
+);
+                            </div>
+                        </div>
+                    </comparison-grid>
+
+                    <div class="concept-card">
+                        <h3">✅ Ventajas de los No Delimitados</h3>
+                        <ul>
+                            <li><strong>Simplicidad:</strong> No necesitas recordar comillas</li>
+                            <li><strong>Consistencia:</strong> Siempre en mayúsculas internamente</li>
+                            <li><strong>Flexibilidad:</strong> Puedes escribir en cualquier case</li>
+                            <li><strong>Compatibilidad:</strong> Estándar en la mayoría de SGBD</li>
+                            <li><strong>Menos errores:</strong> No hay problemas de mayúsculas/minúsculas</li>
+                        </ul>
+                    </concept-card>
+
+                    <div class="example-box">
+                        <h3">📊 Comportamiento en Consultas</h3>
+                    </div>
+
+                    <div class="code-example">
+<span class="comment">-- Todas estas consultas son idénticas para SAP HANA</span>
+<span class="keyword">SELECT</span> <span class="identifier">nombre</span>, <span class="identifier">apellido</span> <span class="keyword">FROM</span> <span class="identifier">clientes</span>;
+<span class="keyword">SELECT</span> <span class="identifier">NOMBRE</span>, <span class="identifier">APELLIDO</span> <span class="keyword">FROM</span> <span class="identifier">CLIENTES</span>;
+<span class="keyword">SELECT</span> <span class="identifier">Nombre</span>, <span class="identifier">Apellido</span> <span class="keyword">FROM</span> <span class="identifier">Clientes</span>;
+
+<span class="comment">-- SAP HANA internamente ejecuta:</span>
+<span class="keyword">SELECT</span> <span class="identifier">NOMBRE</span>, <span class="identifier">APELLIDO</span> <span class="keyword">FROM</span> <span class="identifier">CLIENTES</span>;
+                    </code>
+                </section>
+
+                <section id="delimited" class="section">
+                    <h2">🔤 Identificadores Delimitados</h2>
+                    
+                    <div class="definition-box">
+                        <h3">🎯 Características de los Delimitados</h3>
+                        <p>Los identificadores <strong>delimitados</strong> van entre comillas dobles y se interpretan <strong>exactamente como los escribes</strong>, distinguiendo entre mayúsculas y minúsculas.</p>
+                    </definition-box>
+
+                    <div class="concept-card">
+                        <h3">📋 Reglas de los Identificadores Delimitados</h3>
+                        <ul>
+                            <li><strong>Entre comillas dobles:</strong> "tabla_clientes" o "MiTabla"</li>
+                            <li><strong>Case sensitive:</strong> "clientes" ≠ "CLIENTES" ≠ "Clientes"</li>
+                            <li><strong>Sin conversión:</strong> SAP HANA respeta exactamente lo que escribes</li>
+                            <li><strong>Caracteres especiales:</strong> Permite espacios y símbolos especiales</li>
+                            <li><strong>Flexibilidad total:</strong> Cualquier carácter Unicode válido</li>
+                        </ul>
+                    </concept-card>
+
+                    <div class="comparison-grid">
+                        <div class="comparison-card non-delimited">
+                            <h4">📝 No Delimitados</h4>
+                            <ul>
+                                <li>clientes → CLIENTES</li>
+                                <li>Case insensitive</li>
+                                <li>Solo letras, números, _</li>
+                                <li>No puede empezar con número</li>
+                            </ul>
+                        </div>
+                        <div class="comparison-card delimited">
+                            <h4">🔤 Delimitados</h4>
+                            <ul>
+                                <li>"clientes" = "clientes"</li>
+                                <li>Case sensitive</li>
+                                <li>Cualquier carácter Unicode</li>
+                                <li>Puede empezar con cualquier cosa</li>
+                            </ul>
+                        </div>
+                    </comparison-grid>
+
+                    <div class="example-box">
+                        <h3">✅ Ejemplos de Identificadores Delimitados</h3>
+                    </div>
+
+                    <div class="code-example">
+<span class="comment">-- ✅ Identificadores con mayúsculas/minúsculas específicas</span>
+<span class="keyword">CREATE TABLE</span> <span class="string">"MiTablaEspecial"</span> (
+    <span class="string">"idCliente"</span> <span class="keyword">INTEGER</span>,
+    <span class="string">"nombreCompleto"</span> <span class="keyword">VARCHAR</span>(100)
+);
+
+<span class="comment">-- ✅ Identificadores con espacios</span>
+<span class="keyword">CREATE TABLE</span> <span class="string">"Tabla de Productos"</span> (
+    <span class="string">"ID Producto"</span> <span class="keyword">INTEGER</span>,
+    <span class="string">"Nombre del Producto"</span> <span class="keyword">VARCHAR</span>(100)
+);
+
+<span class="comment">-- ✅ Identificadores con caracteres especiales</span>
+<span class="keyword">CREATE TABLE</span> <span class="string">"datos_2024-Q1"</span> (
+    <span class="string">"fecha@timestamp"</span> <span class="keyword">TIMESTAMP</span>,
+    <span class="string">"valor$precio"</span> <span class="keyword">DECIMAL</span>(10,2)
+);
+
+<span class="comment">-- ✅ Identificadores que empiezan con número</span>
+<span class="keyword">CREATE TABLE</span> <span class="string">"2024_ventas"</span> (
+    <span class="string">"1_trimestre"</span> <span class="keyword">DECIMAL</span>(10,2),
+    <span class="string">"2_trimestre"</span> <span class="keyword">DECIMAL</span>(10,2)
+);
+                    </code>
+
+                    <div class="warning-box">
+                        <h3">⚠️ El Gran Peligro de los Delimitados</h3>
+                        <p>La flexibilidad de los identificadores delimitados puede convertirse en una <strong>pesadilla de mantenimiento</strong>. Debes recordar exactamente las mayúsculas y minúsculas para siempre.</p>
+                    </warning-box>
+
+                    <div class="example-box">
+                        <h3">💀 Ejemplo del Problema</h3>
+                    </div>
+
+                    <div class="code-example">
+<span class="comment">-- Creamos tabla con identificador delimitado</span>
+<span class="keyword">CREATE TABLE</span> <span class="string">"ClienteS"</span> (
+    <span class="string">"idCliente"</span> <span class="keyword">INTEGER</span>,
+    <span class="string">"Nombre"</span> <span class="keyword">VARCHAR</span>(50)
+);
+
+<span class="comment">-- ✅ Consulta CORRECTA - Respeta mayúsculas exactas</span>
+<span class="keyword">SELECT</span> <span class="string">"idCliente"</span>, <span class="string">"Nombre"</span> 
+<span class="keyword">FROM</span> <span class="string">"ClienteS"</span>;
+
+<span class="comment">-- ❌ ERROR - No respeta mayúsculas</span>
+<span class="keyword">SELECT</span> <span class="string">"idcliente"</span>, <span class="string">"nombre"</span> 
+<span class="keyword">FROM</span> <span class="string">"clientes"</span>; <span class="comment">-- Tabla no encontrada</span>
+
+<span class="comment">-- ❌ ERROR - Sin comillas (buscaría CLIENTES)</span>
+<span class="keyword">SELECT</span> * <span class="keyword">FROM</span> <span class="identifier">ClienteS</span>; <span class="comment">-- Buscaría tabla CLIENTES</span>
+                    </code>
+
+                    <div class="concept-card">
+                        <h3">🤔 ¿Cuándo Usar Identificadores Delimitados?</h3>
+                        <p>Casos específicos donde podrían ser necesarios:</p>
+                        <ul>
+                            <li><strong>Sistemas legados:</strong> Bases de datos migradas con convenciones específicas</li>
+                            <li><strong>Integración externa:</strong> Compatibilidad con sistemas que requieren case sensitivity</li>
+                            <li><strong>Nombres descriptivos:</strong> Cuando necesitas espacios en nombres (no recomendado)</li>
+                            <li><strong>Estándares corporativos:</strong> Si la empresa requiere nomenclatura específica</li>
+                        </ul>
+                    </concept-card>
+
+                    <div class="concept-card">
+                        <h3">✅ Recomendación Profesional</h3>
+                        <p><strong>Evita los identificadores delimitados siempre que sea posible.</strong> Mantén la simplicidad con identificadores no delimitados siguiendo convenciones claras como:</p>
+                        <ul>
+                            <li><strong>snake_case:</strong> tabla_clientes, id_producto</li>
+                            <li><strong>Nombres descriptivos:</strong> ventas_mensuales, not vm</li>
+                            <li><strong>Prefijos consistentes:</strong> tbl_productos, vw_resumen</li>
+                            <li><strong>Sin ambigüedades:</strong> fecha_creacion, not fecha</li>
+                        </ul>
+                    </concept-card>
+                </section>
+
+                <section id="unicode" class="section">
+                    <h2">🌍 Soporte Unicode y Caracteres Especiales</h2>
+                    
+                    <div class="unicode-box">
+                        <h3">🎯 ¿Qué es Unicode?</h3>
+                        <p>Unicode es un estándar que permite representar texto de cualquier sistema de escritura del mundo. SAP HANA soporta caracteres Unicode en identificadores, permitiendo usar alfabetos no latinos.</p>
+                    </div>
+
+                    <div class="concept-card">
+                        <h3">📚 Evolución de los Sistemas de Caracteres</h3>
+                        <p>Para entender Unicode, es útil conocer su contexto histórico:</p>
+                        <ul>
+                            <li><strong>ASCII original:</strong> 127 caracteres (inglés básico)</li>
+                            <li><strong>ASCII extendido:</strong> 255 caracteres (algunos idiomas europeos)</li>
+                            <li><strong>Limitación global:</strong> No incluía ruso, chino, japonés, árabe</li>
+                            <li><strong>Unicode:</strong> Millones de caracteres de todos los idiomas</li>
+                        </ul>
+                    </concept-card>
+
+                    <div class="example-box">
+                        <h3">🗺️ Ejemplos de ASCII vs Unicode</h3>
+                    </div>
+
+                    <div class="code-example">
+<span class="comment">-- ASCII básico (código 65 = A, 48 = 0, etc.)</span>
+<span class="identifier">A B C D E F G H I J K L M N O P Q R S T U V W X Y Z</span>
+<span class="identifier">a b c d e f g h i j k l m n o p q r s t u v w x y z</span>
+<span class="identifier">0 1 2 3 4 5 6 7 8 9</span>
+<span class="identifier">! @ # $ % ^ & * ( ) - _ = + [ ] { } | \ : ; " ' < > , . ? /</span>
+
+<span class="comment">-- Unicode incluye caracteres de todo el mundo</span>
+<span class="identifier">á é í ó ú ñ ç ü</span>          <span class="comment">-- Español, francés, alemán</span>
+<span class="identifier">А Б В Г Д Е Ё Ж З И</span>      <span class="comment">-- Ruso (cirílico)</span>
+<span class="identifier">你好世界</span>                <span class="comment">-- Chino</span>
+<span class="identifier">こんにちは</span>             <span class="comment">-- Japonés</span>
+<span class="identifier">안녕하세요</span>             <span class="comment">-- Coreano</span>
+<span class="identifier">مرحبا</span>                 <span class="comment">-- Árabe</span>
+                    </code>
+
+                    <div class="concept-card">
+                        <h3">🔧 Unicode en SAP HANA</h3>
+                        <p>SAP HANA permite usar cualquier carácter Unicode estándar en identificadores delimitados:</p>
+                    </div>
+
+                    <div class="code-example">
+<span class="comment">-- ✅ Identificadores con caracteres Unicode</span>
+<span class="keyword">CREATE TABLE</span> <span class="string">"Empleados_España"</span> (
+    <span class="string">"Año"</span> <span class="keyword">INTEGER</span>,
+    <span class="string">"Niño"</span> <span class="keyword">VARCHAR</span>(50),
+    <span class="string">"Señoría"</span> <span class="keyword">VARCHAR</span>(50)
+);
+
+<span class="comment">-- ✅ Nombres en diferentes idiomas</span>
+<span class="keyword">CREATE TABLE</span> <span class="string">"продукты"</span> (              <span class="comment">-- "productos" en ruso</span>
+    <span class="string">"имя"</span> <span class="keyword">VARCHAR</span>(100),           <span class="comment">-- "nombre" en ruso</span>
+    <span class="string">"цена"</span> <span class="keyword">DECIMAL</span>(10,2)        <span class="comment">-- "precio" en ruso</span>
+);
+
+<span class="comment">-- ✅ Caracteres especiales Unicode</span>
+<span class="keyword">CREATE TABLE</span> <span class="string">"Datos€2024"</span> (
+    <span class="string">"Precio€"</span> <span class="keyword">DECIMAL</span>(10,2),
+    <span class="string">"Temperatura°C"</span> <span class="keyword">DECIMAL</span>(5,2)
+);
+                    </code>
+
+                    <div class="warning-box">
+                        <h3">⚠️ Consideraciones Prácticas</h3>
+                        <p>Aunque SAP HANA soporta Unicode, su uso presenta desafíos:</p>
+                        <ul>
+                            <li><strong>Compatibilidad:</strong> No todas las herramientas manejan bien Unicode</li>
+                            <li><strong>Teclados:</strong> Dificultad para escribir caracteres especiales</li>
+                            <li><strong>Documentación:</strong> Problemas al compartir código entre equipos</li>
+                            <li><strong>Migración:</strong> Complicaciones al mover entre sistemas</li>
+                        </ul>
+                    </warning-box>
+
+                    <div class="concept-card">
+                        <h3">✅ Recomendaciones para Unicode</h3>
+                        <ul>
+                            <li><strong>Úsalo con moderación:</strong> Solo cuando sea realmente necesario</li>
+                            <li><strong>Documenta bien:</strong> Explica por qué usas caracteres especiales</li>
+                            <li><strong>Consistencia del equipo:</strong> Asegúrate de que todos pueden trabajar con ellos</li>
+                            <li><strong>Considera alternativas:</strong> transliteración o nombres en inglés</li>
+                            <li><strong>Entornos internacionales:</strong> Útil en sistemas multiidioma</li>
+                        </ul>
+                    </concept-card>
+
+                    <div class="example-box">
+                        <h3">🌟 Ejemplo Práctico: Sistema Multiidioma</h3>
+                    </div>
+
+                    <div class="code-example">
+<span class="comment">-- En un sistema internacional, podrías tener:</span>
+<span class="keyword">CREATE TABLE</span> <span class="string">"customers_global"</span> (
+    <span class="identifier">customer_id</span> <span class="keyword">INTEGER</span>,
+    <span class="string">"name_English"</span> <span class="keyword">VARCHAR</span>(100),
+    <span class="string">"nombre_Español"</span> <span class="keyword">VARCHAR</span>(100),
+    <span class="string">"nom_Français"</span> <span class="keyword">VARCHAR</span>(100),
+    <span class="string">"имя_Русский"</span> <span class="keyword">VARCHAR</span>(100)
+);
+
+<span class="comment">-- Pero es más práctico usar una tabla de traducciones:</span>
+<span class="keyword">CREATE TABLE</span> <span class="identifier">customers</span> (
+    <span class="identifier">customer_id</span> <span class="keyword">INTEGER</span>,
+    <span class="identifier">default_name</span> <span class="keyword">VARCHAR</span>(100)
+);
+
+<span class="keyword">CREATE TABLE</span> <span class="identifier">customer_translations</span> (
+    <span class="identifier">customer_id</span> <span class="keyword">INTEGER</span>,
+    <span class="identifier">language_code</span> <span class="keyword">VARCHAR</span>(5),
+    <span class="identifier">translated_name</span> <span class="keyword">VARCHAR</span>(100)
+);
+                    </code>
+                </section>
+
+                <section id="best-practices" class="section">
+                    <h2">✅ Mejores Prácticas y Restricciones</h2>
+                    
+                    <div class="concept-card">
+                        <h3">🚫 Restricciones Importantes en SAP HANA</h3>
+                        <p>SAP HANA tiene algunas restricciones específicas que debemos conocer:</p>
+                    </div>
+
+                    <div class="warning-box">
+                        <h3">⛔ Identificadores Reservados</h3>
+                        <ul>
+                            <li><strong>SYS:</strong> Reservado exclusivamente para el motor de la base de datos</li>
+                            <li><strong>Usuarios y roles:</strong> Deben ser identificadores no delimitados</li>
+                            <li><strong>Palabras clave SQL:</strong> SELECT, FROM, WHERE, etc. (no recomendado)</li>
+                        </ul>
+                    </warning-box>
+
+                    <div class="concept-card">
+                        <h3">📏 Limitaciones de Tamaño</h3>
+                        <ul>
+                            <li><strong>Longitud máxima:</strong> 127 caracteres por identificador</li>
+                            <li><strong>Tamaño práctico:</strong> Raramente necesitarás más de 50 caracteres</li>
+                            <li><strong>Legibilidad:</strong> Nombres muy largos dificultan la lectura</li>
+                        </ul>
+                    </concept-card>
+
+                    <div class="example-box">
+                        <h3">❌ Ejemplos de Identificadores Problemáticos</h3>
+                    </div>
+
+                    <div class="code-example">
+<span class="comment">-- ❌ MAL: Usar identificador reservado</span>
+<span class="keyword">CREATE TABLE</span> <span class="identifier">SYS</span> (id <span class="keyword">INTEGER</span>); <span class="comment">-- ERROR: Reservado</span>
+
+<span class="comment">-- ❌ MAL: Identificador demasiado largo</span>
+<span class="keyword">CREATE TABLE</span> <span class="string">"esta_tabla_tiene_un_nombre_extremadamente_largo_que_excede_las_mejores_practicas_de_nomenclatura_y_hace_el_codigo_ilegible_y_dificil_de_mantener"</span>;
+
+<span class="comment">-- ❌ MAL: Nombres ambiguos</span>
+<span class="keyword">CREATE TABLE</span> <span class="identifier">datos</span>; <span class="comment">-- ¿Qué tipo de datos?</span>
+<span class="keyword">CREATE TABLE</span> <span class="identifier">temp</span>;  <span class="comment">-- ¿Temporal de qué?</span>
+<span class="keyword">CREATE TABLE</span> <span class="identifier">tabla1</span>; <span class="comment">-- No descriptivo</span>
+
+<span class="comment">-- ❌ MAL: Caracteres especiales innecesarios</span>
+<span class="keyword">CREATE TABLE</span> <span class="string">"💰ventas🚀"</span>; <span class="comment">-- Divertido pero impractico</span>
+                    </code>
+
+                    <div class="concept-card">
+                        <h3">✅ Convenciones Recomendadas</h3>
+                        <p>Sigue estas convenciones para código profesional y mantenible:</p>
+                    </div>
+
+                    <div class="example-box">
+                        <h3">🏆 Ejemplos de Excelente Nomenclatura</h3>
+                    </div>
+
+                    <div class="code-example">
+<span class="comment">-- ✅ EXCELENTE: Nombres descriptivos y claros</span>
+<span class="keyword">CREATE TABLE</span> <span class="identifier">customer_orders</span> (
+    <span class="identifier">order_id</span> <span class="keyword">INTEGER PRIMARY KEY</span>,
+    <span class="identifier">customer_id</span> <span class="keyword">INTEGER</span>,
+    <span class="identifier">order_date</span> <span class="keyword">DATE</span>,
+    <span class="identifier">total_amount</span> <span class="keyword">DECIMAL</span>(10,2),
+    <span class="identifier">order_status</span> <span class="keyword">VARCHAR</span>(20)
+);
+
+<span class="comment">-- ✅ EXCELENTE: Prefijos consistentes</span>
+<span class="keyword">CREATE TABLE</span> <span class="identifier">sales_monthly_summary</span> (
+    <span class="identifier">summary_id</span> <span class="keyword">INTEGER</span>,
+    <span class="identifier">month_year</span> <span class="keyword">VARCHAR</span>(7), <span class="comment">-- '2024-01'</span>
+    <span class="identifier">total_sales</span> <span class="keyword">DECIMAL</span>(15,2),
+    <span class="identifier">customer_count</span> <span class="keyword">INTEGER</span>
+);
+
+<span class="comment">-- ✅ EXCELENTE: Vistas con nomenclatura clara</span>
+<span class="keyword">CREATE VIEW</span> <span class="identifier">vw_active_customers_with_orders</span> <span class="keyword">AS</span>
+<span class="keyword">SELECT</span> 
+    <span class="identifier">c</span>.<span class="identifier">customer_id</span>,
+    <span class="identifier">c</span>.<span class="identifier">customer_name</span>,
+    <span class="keyword">COUNT</span>(<span class="identifier">o</span>.<span class="identifier">order_id</span>) <span class="keyword">AS</span> <span class="identifier">total_orders</span>
+<span class="keyword">FROM</span> <span class="identifier">customers</span> <span class="identifier">c</span>
+<span class="keyword">JOIN</span> <span class="identifier">customer_orders</span> <span class="identifier">o</span> <span class="keyword">ON</span> <span class="identifier">c</span>.<span class="identifier">customer_id</span> = <span class="identifier">o</span>.<span class="identifier">customer_id</span>
+<span class="keyword">GROUP BY</span> <span class="identifier">c</span>.<span class="identifier">customer_id</span>, <span class="identifier">c</span>.<span class="identifier">customer_name</span>;
+                    </code>
+
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-number">snake_case</div>
+                            <div>Estilo Recomendado</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number">15-30</div>
+                            <div>Caracteres Óptimos</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number">NO</div>
+                            <div>Delimitados por Defecto</div>
+                        </div>
+                        <div class="stat-card warning">
+                            <div class="stat-number">127</div>
+                            <div>Máximo de Caracteres</div>
+                        </div>
+                    </stats-grid>
+
+                    <div class="concept-card">
+                        <h3">📋 Checklist de Nomenclatura</h3>
+                        <p>Antes de nombrar un identificador, pregúntate:</p>
+                        <ul>
+                            <li>☑️ ¿Es descriptivo y claro el propósito?</li>
+                            <li>☑️ ¿Sigue las convenciones del equipo?</li>
+                            <li>☑️ ¿Es lo suficientemente específico?</li>
+                            <li>☑️ ¿No es ni muy corto ni muy largo?</li>
+                            <li>☑️ ¿Evita palabras reservadas?</li>
+                            <li>☑️ ¿Es fácil de escribir y recordar?</li>
+                            <li>☑️ ¿Será entendible dentro de 6 meses?</li>
+                        </ul>
+                    </concept-card>
+
+                    <div class="comparison-grid">
+                        <div class="comparison-card">
+                            <h4">❌ Nomenclatura Problemática</h4>
+                            <ul>
+                                <li><strong>t1, t2, t3:</strong> No descriptivo</li>
+                                <li><strong>data, info:</strong> Muy genérico</li>
+                                <li><strong>temp, aux:</strong> Ambiguo</li>
+                                <li><strong>tabla_con_todos_los_datos_importantes:</strong> Muy largo</li>
+                                <li><strong>"MiTabla":</strong> Delimitado innecesario</li>
+                            </ul>
+                        </div>
+                        <div class="comparison-card delimited">
+                            <h4">✅ Nomenclatura Excelente</h4>
+                            <ul>
+                                <li><strong>customer_orders:</strong> Descriptivo y claro</li>
+                                <li><strong>sales_2024_q1:</strong> Específico en tiempo</li>
+                                <li><strong>vw_monthly_revenue:</strong> Vista claramente identificada</li>
+                                <li><strong>idx_customer_email:</strong> Índice con propósito claro</li>
+                                <li><strong>sp_calculate_taxes:</strong> Procedimiento descriptivo</li>
+                            </ul>
+                        </div>
+                    </comparison-grid>
+                </section>
+
+                <section id="conclusions" class="section">
+                    <h2">🎯 Conclusiones</h2>
+                    
+                    <div class="concept-card">
+                        <h3">📋 Resumen de Conceptos Dominados</h3>
+                        <p>Hemos explorado dos elementos fundamentales que complementan nuestro conocimiento de SQL y mejoran significativamente la calidad de nuestro código.</p>
+                    </div>
+
+                    <div class="comparison-grid">
+                        <div class="comparison-card">
+                            <h4">💬 Comentarios</h4>
+                            <ul>
+                                <li><strong>Propósito:</strong> Documentar y explicar código</li>
+                                <li><strong>Tipos:</strong> Línea (--) y bloque (/* */)</li>
+                                <li><strong>No ejecutable:</strong> Ignorado por SAP HANA</li>
+                                <li><strong>Beneficio:</strong> Código autodocumentado</li>
+                            </ul>
+                        </div>
+                        <div class="comparison-card">
+                            <h4">🏷️ Identificadores</h4>
+                            <ul>
+                                <li><strong>Propósito:</strong> Nombrar objetos de BD</li>
+                                <li><strong>Tipos:</strong> Delimitados y no delimitados</li>
+                                <li><strong>Unicode:</strong> Soporte internacional</li>
+                                <li><strong>Restricciones:</strong> 127 caracteres máximo</li>
+                            </ul>
+                        </div>
+                    </comparison-grid>
+
+                    <div class="concept-card">
+                        <h3">🔑 Lecciones Clave</h3>
+                        <ul>
+                            <li><strong>Comentarios son inversión:</strong> Tiempo dedicado hoy ahorra horas mañana</li>
+                            <li><strong>Identificadores no delimitados son más seguros:</strong> Evitan problemas de mayúsculas</li>
+                            <li><strong>La simplicidad gana:</strong> Nombres claros > nombres elaborados</li>
+                            <li><strong>Consistencia es clave:</strong> Seguir convenciones del equipo</li>
+                            <li><strong>Unicode con moderación:</strong> Útil pero puede complicar</li>
+                        </ul>
+                    </concept-card>
+
+                    <div class="example-box">
+                        <h3">✨ Código de Ejemplo Final</h3>
+                        <p>Aplicando todo lo aprendido:</p>
+                    </div>
+
+                    <div class="code-example">
+<span class="comment">/*
+   MÓDULO: Gestión de Ventas Mensuales
+   AUTOR: Equipo de Desarrollo
+   FECHA: 2024-01-15
+   PROPÓSITO: Calcular resumen de ventas por cliente y mes
+*/</span>
+
+<span class="comment">-- Crear tabla principal de resumen de ventas</span>
+<span class="keyword">CREATE TABLE</span> <span class="identifier">monthly_sales_summary</span> (
+    <span class="identifier">summary_id</span> <span class="keyword">INTEGER PRIMARY KEY</span>,     <span class="comment">-- Clave única del resumen</span>
+    <span class="identifier">customer_id</span> <span class="keyword">INTEGER NOT NULL</span>,        <span class="comment">-- ID del cliente</span>
+    <span class="identifier">month_year</span> <span class="keyword">VARCHAR</span>(7) <span class="keyword">NOT NULL</span>,        <span class="comment">-- Formato: '2024-01'</span>
+    <span class="identifier">total_orders</span> <span class="keyword">INTEGER DEFAULT</span> 0,      <span class="comment">-- Cantidad de pedidos</span>
+    <span class="identifier">total_amount</span> <span class="keyword">DECIMAL</span>(15,2) <span class="keyword">DEFAULT</span> 0, <span class="comment">-- Monto total de ventas</span>
+    <span class="identifier">created_date</span> <span class="keyword">TIMESTAMP DEFAULT CURRENT_TIMESTAMP</span>
+);
+
+<span class="comment">-- Consulta de ejemplo: Top 10 clientes del mes actual</span>
+<span class="keyword">SELECT</span> 
+    <span class="identifier">ms</span>.<span class="identifier">customer_id</span>,
+    <span class="identifier">c</span>.<span class="identifier">customer_name</span>,
+    <span class="identifier">ms</span>.<span class="identifier">total_orders</span>,
+    <span class="identifier">ms</span>.<span class="identifier">total_amount</span>
+<span class="keyword">FROM</span> 
+    <span class="identifier">monthly_sales_summary</span> <span class="identifier">ms</span>
+    <span class="keyword">JOIN</span> <span class="identifier">customers</span> <span class="identifier">c</span> <span class="keyword">ON</span> <span class="identifier">ms</span>.<span class="identifier">customer_id</span> = <span class="identifier">c</span>.<span class="identifier">customer_id</span>
+<span class="keyword">WHERE</span> 
+    <span class="identifier">ms</span>.<span class="identifier">month_year</span> = <span class="string">'2024-01'</span>  <span class="comment">-- Solo enero 2024</span>
+<span class="keyword">ORDER BY</span> 
+    <span class="identifier">ms</span>.<span class="identifier">total_amount</span> <span class="keyword">DESC</span>      <span class="comment">-- Ordenar por mayor venta</span>
+<span class="keyword">LIMIT</span> 10;                        <span class="comment">-- Top 10 clientes</span>
+                    </code>
+
+                    <div class="definition-box">
+                        <h3">💡 Impacto en el Desarrollo Profesional</h3>
+                        <p>Estos "pequeños detalles" marcan la diferencia entre código amateur y código profesional. Los equipos de desarrollo valoran enormemente la capacidad de escribir código <strong>legible, mantenible y bien documentado</strong>.</p>
+                    </definition-box>
+
+                    <div class="concept-card">
+                        <h3">🚀 Siguientes Pasos</h3>
+                        <p>Con el dominio de comentarios e identificadores, estás listo para:</p>
+                        <ul>
+                            <li><strong>WHERE avanzado:</strong> Condiciones complejas con mejor documentación</li>
+                            <li><strong>JOINs:</strong> Combinaciones de tablas con nombres claros</li>
+                            <li><strong>Vistas y procedimientos:</strong> Objetos complejos bien documentados</li>
+                            <li><strong>Proyectos en equipo:</strong> Colaboración efectiva</li>
+                            <li><strong>Mantenimiento:</strong> Código que otros (y tú) pueden entender</li>
+                        </ul>
+                    </concept-card>
+
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-number">💬</div>
+                            <div>Comentarios Dominados</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number">🏷️</div>
+                            <div>Identificadores Claros</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number">✅</div>
+                            <div>Mejores Prácticas</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number">🎯</div>
+                            <div>Código Profesional</div>
+                        </div>
+                    </stats-grid>
+
+                    <div class="concept-card">
+                        <h3">📚 Recuerda Siempre</h3>
+                        <ul>
+                            <li>Los comentarios explican el "por qué", no el "qué"</li>
+                            <li>Identificadores no delimitados evitan problemas de mayúsculas</li>
+                            <li>La simplicidad y claridad siempre ganan</li>
+                            <li>Código autodocumentado es código profesional</li>
+                            <li>Las convenciones del equipo son sagradas</li>
+                            <li>Un nombre descriptivo vale más que mil comentarios</li>
+                        </ul>
+                    </concept-card>
+
+                    <div class="definition-box">
+                        <h3">🎉 ¡Felicitaciones!</h3>
+                        <p>Has completado otro módulo fundamental del curso SAP HANA. Tu código ahora será más legible, mantenible y profesional. ¡Nos vemos en la próxima clase!</p>
+                    </definition-box>
+                </section>
+            </main>
+        </div>
+    </div>
+
+    <script>
+        function showSection(sectionId) {
+            // Ocultar todas las secciones
+            const sections = document.querySelectorAll('.section');
+            sections.forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            // Mostrar la sección seleccionada
+            document.getElementById(sectionId).classList.add('active');
+            
+            // Actualizar navegación
+            const navItems = document.querySelectorAll('.nav-item');
+            navItems.forEach(item => {
+                item.classList.remove('active');
+            });
+            
+            // Marcar el elemento activo
+            event.target.classList.add('active');
+            
+            // Scroll al inicio del contenido
+            document.querySelector('.content').scrollTop = 0;
+
+            // En móviles, ocultar el menú después de seleccionar
+            if (window.innerWidth <= 768) {
+                const sidebar = document.getElementById('sidebar');
+                sidebar.classList.add('mobile-hidden');
+                
+                const toggleButton = document.querySelector('.mobile-menu-toggle');
+                toggleButton.textContent = '📋 Menú de Contenidos';
+            }
+        }
+
+        function toggleMobileMenu() {
+            const sidebar = document.getElementById('sidebar');
+            const toggleButton = document.querySelector('.mobile-menu-toggle');
+            
+            if (sidebar.classList.contains('mobile-hidden')) {
+                sidebar.classList.remove('mobile-hidden');
+                toggleButton.textContent = '❌ Cerrar Menú';
+            } else {
+                sidebar.classList.add('mobile-hidden');
+                toggleButton.textContent = '📋 Menú de Contenidos';
+            }
+        }
+
+        // Inicializar en móviles
+        document.addEventListener('DOMContentLoaded', function() {
+            if (window.innerWidth <= 768) {
+                const sidebar = document.getElementById('sidebar');
+                sidebar.classList.add('mobile-hidden');
+            }
+
+            // Animación de entrada
+            const cards = document.querySelectorAll('.concept-card, .definition-box, .example-box, .warning-box');
+            cards.forEach((card, index) => {
+                setTimeout(() => {
+                    card.style.opacity = '0';
+                    card.style.transform = 'translateY(20px)';
+                    card.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+                    
+                    setTimeout(() => {
+                        card.style.opacity = '1';
+                        card.style.transform = 'translateY(0)';
+                    }, 100);
+                }, index * 100);
+            });
+        });
+
+        // Manejar cambios de tamaño de ventana
+        window.addEventListener('resize', function() {
+            const sidebar = document.getElementById('sidebar');
+            const toggleButton = document.querySelector('.mobile-menu-toggle');
+            
+            if (window.innerWidth > 768) {
+                sidebar.classList.remove('mobile-hidden');
+                toggleButton.textContent = '📋 Menú de Contenidos';
+            } else if (window.innerWidth <= 768 && !sidebar.classList.contains('mobile-hidden')) {
+                sidebar.classList.add('mobile-hidden');
+            }
+        });
+    </script>
+</body>
+</html>

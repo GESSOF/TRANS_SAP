@@ -1,0 +1,1422 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Curso SAP HANA - Expresiones</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .header h1 {
+            color: #2c3e50;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header p {
+            color: #666;
+            font-size: 1.2em;
+        }
+
+        .dashboard {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .sidebar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            height: fit-content;
+            position: sticky;
+            top: 20px;
+        }
+
+        .sidebar h3 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #667eea;
+        }
+
+        .nav-item {
+            padding: 12px 20px;
+            margin: 5px 0;
+            background: linear-gradient(45deg, #f8f9fa, #e9ecef);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-left: 4px solid transparent;
+            font-size: 0.9em;
+        }
+
+        .nav-item:hover {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            transform: translateX(10px);
+            border-left-color: #fff;
+        }
+
+        .nav-item.active {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border-left-color: #fff;
+        }
+
+        .mobile-menu-toggle {
+            display: none;
+            background: rgba(255, 255, 255, 0.95);
+            border: none;
+            padding: 15px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            font-size: 1.2em;
+            cursor: pointer;
+            width: 100%;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .content {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .section {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .section h2 {
+            color: #2c3e50;
+            font-size: 2em;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #667eea;
+        }
+
+        .concept-card {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-radius: 15px;
+            padding: 25px;
+            margin: 20px 0;
+            border-left: 5px solid #ff6b6b;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease;
+        }
+
+        .concept-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .concept-card h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 1.4em;
+        }
+
+        .concept-card p {
+            line-height: 1.8;
+            color: #555;
+            margin-bottom: 15px;
+        }
+
+        .concept-card ul {
+            margin-left: 20px;
+            margin-top: 10px;
+        }
+
+        .concept-card li {
+            margin: 8px 0;
+            color: #555;
+        }
+
+        .definition-box {
+            background: linear-gradient(135deg, #fff3cd, #ffeaa7);
+            border-radius: 15px;
+            padding: 25px;
+            margin: 20px 0;
+            border-left: 5px solid #f39c12;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        .definition-box h3 {
+            color: #856404;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        .definition-box p {
+            color: #856404;
+            line-height: 1.8;
+            margin-bottom: 10px;
+        }
+
+        .example-box {
+            background: linear-gradient(135deg, #e8f5e8, #d4edda);
+            border-radius: 15px;
+            padding: 25px;
+            margin: 20px 0;
+            border-left: 5px solid #27ae60;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        .example-box h3 {
+            color: #155724;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        .example-box p {
+            color: #155724;
+            line-height: 1.8;
+            margin-bottom: 10px;
+        }
+
+        .example-box ul {
+            margin-left: 20px;
+            margin-top: 10px;
+        }
+
+        .example-box li {
+            margin: 8px 0;
+            color: #155724;
+        }
+
+        .expression-card {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a52);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+            transition: transform 0.3s ease;
+            margin: 20px 0;
+        }
+
+        .expression-card:hover {
+            transform: scale(1.05);
+        }
+
+        .expression-icon {
+            font-size: 3em;
+            margin-bottom: 15px;
+        }
+
+        .expression-title {
+            font-size: 1.4em;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .expression-description {
+            font-size: 0.9em;
+            opacity: 0.9;
+        }
+
+        .types-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .type-card {
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            border-radius: 15px;
+            padding: 25px;
+            text-align: center;
+            border-left: 5px solid #ff6b6b;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        .type-card h4 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        .type-card .type-icon {
+            font-size: 2em;
+            margin-bottom: 10px;
+            color: #ff6b6b;
+        }
+
+        .progress-bar {
+            background: #e9ecef;
+            border-radius: 10px;
+            padding: 3px;
+            margin: 20px 0;
+        }
+
+        .progress {
+            background: linear-gradient(45deg, #ff6b6b, #ee5a52);
+            height: 20px;
+            border-radius: 8px;
+            transition: width 0.5s ease;
+        }
+
+        .syntax-box {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 20px;
+            border-radius: 10px;
+            font-family: 'Courier New', monospace;
+            margin: 20px 0;
+            overflow-x: auto;
+            border-left: 5px solid #ff6b6b;
+        }
+
+        .syntax-box .keyword {
+            color: #63b3ed;
+            font-weight: bold;
+        }
+
+        .syntax-box .function {
+            color: #68d391;
+        }
+
+        .syntax-box .string {
+            color: #fbb6ce;
+        }
+
+        .syntax-box .comment {
+            color: #a0aec0;
+            font-style: italic;
+        }
+
+        .procedure-demo {
+            background: linear-gradient(135deg, #e3f2fd, #bbdefb);
+            border-radius: 15px;
+            padding: 25px;
+            margin: 20px 0;
+            border-left: 5px solid #2196f3;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        .procedure-demo h3 {
+            color: #1565c0;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        .procedure-demo p {
+            color: #1565c0;
+            line-height: 1.8;
+            margin-bottom: 10px;
+        }
+
+        .case-example {
+            background: linear-gradient(135deg, #f3e5f5, #e1bee7);
+            border-radius: 15px;
+            padding: 25px;
+            margin: 20px 0;
+            border-left: 5px solid #9c27b0;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        .case-example h3 {
+            color: #6a1b9a;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        .case-example p {
+            color: #6a1b9a;
+            line-height: 1.8;
+            margin-bottom: 10px;
+        }
+
+        .function-intro {
+            background: linear-gradient(135deg, #fff8e1, #ffecb3);
+            border-radius: 15px;
+            padding: 25px;
+            margin: 20px 0;
+            border-left: 5px solid #ff9800;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        .function-intro h3 {
+            color: #e65100;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        .function-intro p {
+            color: #e65100;
+            line-height: 1.8;
+            margin-bottom: 10px;
+        }
+
+        .syntax-tips {
+            background: linear-gradient(135deg, #ffebee, #ffcdd2);
+            border-radius: 15px;
+            padding: 25px;
+            margin: 20px 0;
+            border-left: 5px solid #e74c3c;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        .syntax-tips h3 {
+            color: #c62828;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        .syntax-tips p {
+            color: #c62828;
+            line-height: 1.8;
+            margin-bottom: 10px;
+        }
+
+        .result-demo {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .result-demo h4 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            text-align: center;
+            font-size: 1.2em;
+        }
+
+        .result-display {
+            font-family: 'Courier New', monospace;
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #dee2e6;
+            text-align: center;
+            font-size: 1.1em;
+            color: #2c3e50;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+
+            .header {
+                padding: 20px;
+                margin-bottom: 20px;
+            }
+
+            .header h1 {
+                font-size: 1.8em;
+            }
+
+            .dashboard {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .sidebar {
+                position: static;
+                padding: 20px;
+                order: 2;
+            }
+
+            .mobile-menu-toggle {
+                display: block;
+                order: 1;
+            }
+
+            .sidebar.mobile-hidden {
+                display: none;
+            }
+
+            .content {
+                padding: 20px;
+                order: 3;
+            }
+
+            .section h2 {
+                font-size: 1.5em;
+            }
+
+            .concept-card, .definition-box, .example-box {
+                padding: 20px;
+                margin: 15px 0;
+            }
+
+            .types-grid {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+
+            .nav-item {
+                padding: 15px 20px;
+                font-size: 1em;
+                text-align: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .header h1 {
+                font-size: 1.5em;
+            }
+
+            .content {
+                padding: 15px;
+            }
+
+            .concept-card, .definition-box, .example-box {
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <img src="https://gessof.cl/wp-content/uploads/2025/05/Logo-minimalista-con-simbolismo-global.png" alt="Gessof Logo" style="height: 80px; margin-bottom: 20px; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.1));">
+            <h1>Curso SAP HANA</h1>
+            <h2 style="color: #ff6b6b; font-size: 1.5em; margin: 10px 0; font-weight: 600;">Clase 035</h2>
+            <p>Expresiones en HAN SQL - Evaluación y Retorno de Valores</p>
+            <div class="progress-bar">
+                <div class="progress" style="width: 100%"></div>
+            </div>
+        </header>
+
+        <div class="dashboard">
+            <button class="mobile-menu-toggle" onclick="toggleMobileMenu()">
+                📋 Menú de Contenidos
+            </button>
+
+            <nav class="sidebar" id="sidebar">
+                <h3>Contenidos del Módulo</h3>
+                <div class="nav-item active" onclick="showSection('overview')">📋 Resumen General</div>
+                <div class="nav-item" onclick="showSection('introduction')">🚀 Introducción</div>
+                <div class="nav-item" onclick="showSection('definition')">📖 Definición de Expresiones</div>
+                <div class="nav-item" onclick="showSection('types')">🔄 Tipos de Expresiones</div>
+                <div class="nav-item" onclick="showSection('conditional')">⚡ Expresiones Condicionales</div>
+                <div class="nav-item" onclick="showSection('case-statement')">📝 Comando CASE</div>
+                <div class="nav-item" onclick="showSection('functions')">🛠️ Funciones y Herramientas</div>
+                <div class="nav-item" onclick="showSection('practical-example')">💻 Ejemplo Práctico</div>
+                <div class="nav-item" onclick="showSection('conclusions')">🎯 Conclusiones</div>
+            </nav>
+
+            <main class="content">
+                <section id="overview" class="section active">
+                    <h2>📋 Resumen General del Módulo</h2>
+                    
+                    <div class="expression-card">
+                        <div class="expression-icon">📊</div>
+                        <div class="expression-title">EXPRESIONES EN HAN SQL</div>
+                        <div class="expression-description">Cláusulas que pueden ser evaluadas para retornar un valor</div>
+                    </div>
+
+                    <div class="types-grid">
+                        <div class="type-card">
+                            <div class="type-icon">⚡</div>
+                            <h4>Expresiones Condicionales</h4>
+                            <p>Seleccionan valores según condiciones sin usar procedimientos</p>
+                        </div>
+                        <div class="type-card">
+                            <div class="type-icon">🛠️</div>
+                            <h4>Expresiones de Función</h4>
+                            <p>Funciones del lenguaje HAN SQL usadas como expresiones</p>
+                        </div>
+                        <div class="type-card">
+                            <div class="type-icon">📝</div>
+                            <h4>Comando CASE</h4>
+                            <p>Herramienta principal para expresiones condicionales</p>
+                        </div>
+                        <div class="type-card">
+                            <div class="type-icon">📅</div>
+                            <h4>Funciones de Sistema</h4>
+                            <p>CURRENT_DATE, TOCHAR y otras funciones útiles</p>
+                        </div>
+                    </div>
+
+                    <div class="concept-card">
+                        <h3>🎯 Objetivos del Módulo</h3>
+                        <p>En esta clase introducimos el concepto de <strong>expresiones en HAN SQL</strong>. Las expresiones son elementos fundamentales que nos permiten evaluar condiciones y retornar valores de forma dinámica en nuestras consultas.</p>
+                    </div>
+
+                    <div class="concept-card">
+                        <h3>📚 Contenido del Módulo</h3>
+                        <ul>
+                            <li><strong>Definición de expresiones:</strong> Qué son y ejemplos básicos</li>
+                            <li><strong>Tipos principales:</strong> Condicionales y de función</li>
+                            <li><strong>Concepto de procedimientos:</strong> Comparación y diferencias</li>
+                            <li><strong>Comando CASE:</strong> Sintaxis completa y funcionamiento</li>
+                            <li><strong>Funciones nuevas:</strong> CURRENT_DATE, TOCHAR y tabla DUMMY</li>
+                            <li><strong>Ejemplo práctico:</strong> Conversión de números de mes a nombres</li>
+                            <li><strong>Consejos de sintaxis:</strong> Comas, puntos y comas, y buenas prácticas</li>
+                        </ul>
+                    </div>
+
+                    <div class="definition-box">
+                        <h3>💡 Definición Principal</h3>
+                        <p>Una <strong>expresión</strong> es una cláusula que puede ser evaluada para retornar un valor. Por ejemplo: <code>1 = 1</code> (verdadero), <code>1 ≠ 2</code> (verdadero), o <code>1 = 2</code> (falso).</p>
+                    </definition-box>
+                </section>
+
+                <section id="introduction" class="section">
+                    <h2>🚀 Introducción a las Expresiones</h2>
+                    
+                    <div class="concept-card">
+                        <h3>🌟 Continuando con HAN SQL</h3>
+                        <p>Continuamos avanzando con más elementos del <strong>lenguaje HAN SQL</strong>. Hoy nos enfocamos en las expresiones, un concepto fundamental que amplía significativamente nuestras capacidades de manipulación de datos.</p>
+                    </div>
+
+                    <div class="concept-card">
+                        <h3">📖 ¿Qué es una Expresión?</h3>
+                        <p>Como definición genérica, podríamos decir que <strong>una expresión es una cláusula que puede ser evaluada para retornar un valor</strong>. Es un concepto simple pero muy poderoso en SQL.</p>
+                    </div>
+
+                    <div class="example-box">
+                        <h3">📝 Ejemplos Básicos de Expresiones</h3>
+                        <p>Para entender el concepto, veamos algunos ejemplos fundamentales:</p>
+                        <ul>
+                            <li><strong>1 = 1</strong> → Sabemos que esto es cierto (retorna TRUE)</li>
+                            <li><strong>1 ≠ 2</strong> → También es cierto (retorna TRUE)</li>
+                            <li><strong>1 = 2</strong> → Esto es falso (retorna FALSE)</li>
+                        </ul>
+                        <p>Todos estos son ejemplos de expresiones, independientemente de su resultado.</p>
+                    </example-box>
+
+                    <div class="concept-card">
+                        <h3">🎯 Importancia de las Expresiones</h3>
+                        <p>Las expresiones nos permiten:</p>
+                        <ul>
+                            <li><strong>Evaluar condiciones:</strong> Tomar decisiones basadas en datos</li>
+                            <li><strong>Transformar valores:</strong> Convertir datos de un formato a otro</li>
+                            <li><strong>Crear lógica condicional:</strong> Comportamiento dinámico en consultas</li>
+                            <li><strong>Manipular datos:</strong> Aplicar funciones y operaciones</li>
+                        </ul>
+                    </concept-card>
+
+                    <div class="concept-card">
+                        <h3">🔍 Contexto en el Curso</h3>
+                        <p>Este tema nos introduce conceptos que veremos más adelante:</p>
+                        <ul>
+                            <li><strong>Funciones avanzadas:</strong> Manipulación de fechas, textos y números</li>
+                            <li><strong>Lógica condicional:</strong> IF statements y casos complejos</li>
+                            <li><strong>Procedimientos:</strong> Encapsulación de código reutilizable</li>
+                            <li><strong>Expresiones complejas:</strong> Combinaciones de múltiples operaciones</li>
+                        </ul>
+                    </concept-card>
+
+                    <div class="definition-box">
+                        <h3">💡 Concepto Clave</h3>
+                        <p>Una expresión <strong>siempre retorna un valor</strong>. Puede ser verdadero/falso, un número, una fecha, texto, o NULL. Lo importante es que el resultado puede ser utilizado en otras partes de la consulta.</p>
+                    </definition-box>
+                </section>
+
+                <section id="definition" class="section">
+                    <h2">📖 Definición y Ejemplos de Expresiones</h2>
+                    
+                    <div class="definition-box">
+                        <h3">📚 Definición Formal</h3>
+                        <p>Una <strong>expresión</strong> es una cláusula que puede ser evaluada para retornar un valor. Es la unidad básica de evaluación en SQL que produce un resultado específico.</p>
+                    </definition-box>
+
+                    <div class="concept-card">
+                        <h3">🔍 Características de las Expresiones</h3>
+                        <ul>
+                            <li><strong>Evaluables:</strong> Pueden ser procesadas por el motor de base de datos</li>
+                            <li><strong>Retornan valores:</strong> Siempre producen un resultado</li>
+                            <li><strong>Reutilizables:</strong> Pueden usarse en diferentes contextos</li>
+                            <li><strong>Combinables:</strong> Se pueden combinar para crear expresiones más complejas</li>
+                        </ul>
+                    </concept-card>
+
+                    <div class="example-box">
+                        <h3">📝 Ejemplos Fundamentales</h3>
+                        <p>Veamos los ejemplos más básicos que nos ayudan a entender el concepto:</p>
+                    </example-box>
+
+                    <div class="syntax-box">
+<span class="comment">-- Expresiones de comparación</span>
+<span class="keyword">1 = 1</span>    <span class="comment">-- Retorna TRUE (verdadero)</span>
+<span class="keyword">1 != 2</span>   <span class="comment">-- Retorna TRUE (verdadero)</span>
+<span class="keyword">1 = 2</span>    <span class="comment">-- Retorna FALSE (falso)</span>
+
+<span class="comment">-- Expresiones aritméticas</span>
+<span class="keyword">5 + 3</span>    <span class="comment">-- Retorna 8</span>
+<span class="keyword">10 / 2</span>   <span class="comment">-- Retorna 5</span>
+<span class="keyword">2 * 4</span>    <span class="comment">-- Retorna 8</span>
+                    </syntax-box>
+
+                    <div class="concept-card">
+                        <h3">⚡ Tipos de Valores Retornados</h3>
+                        <p>Las expresiones pueden retornar diferentes tipos de valores:</p>
+                        <ul>
+                            <li><strong>Booleanos:</strong> TRUE/FALSE (verdadero/falso)</li>
+                            <li><strong>Números:</strong> Enteros, decimales, etc.</li>
+                            <li><strong>Texto:</strong> Cadenas de caracteres</li>
+                            <li><strong>Fechas:</strong> Valores temporales</li>
+                            <li><strong>NULL:</strong> Valor nulo o ausente</li>
+                        </ul>
+                    </concept-card>
+
+                    <div class="concept-card">
+                        <h3">🎯 Contextos de Uso</h3>
+                        <p>Las expresiones se pueden usar en:</p>
+                        <ul>
+                            <li><strong>Cláusula SELECT:</strong> Para calcular campos derivados</li>
+                            <li><strong>Cláusula WHERE:</strong> Para filtrar registros</li>
+                            <li><strong>Cláusula HAVING:</strong> Para filtrar grupos</li>
+                            <li><strong>Cláusula ORDER BY:</strong> Para ordenar resultados</li>
+                            <li><strong>Funciones:</strong> Como parámetros de entrada</li>
+                        </ul>
+                    </concept-card>
+
+                    <div class="result-demo">
+                        <h4">✅ Ejemplo de Evaluación</h4>
+                        <div class="result-display">
+Expresión: 1 = 1<br>
+Evaluación: ¿Es 1 igual a 1?<br>
+Resultado: TRUE
+                        </div>
+                    </result-demo>
+
+                    <div class="concept-card">
+                        <h3">🔧 Expresiones en SQL</h3>
+                        <p>En el contexto de SQL, las expresiones son fundamentales para:</p>
+                        <ul>
+                            <li><strong>Transformación de datos:</strong> Cambiar formato o tipo</li>
+                            <li><strong>Cálculos:</strong> Operaciones matemáticas</li>
+                            <li><strong>Lógica condicional:</strong> Decisiones basadas en datos</li>
+                            <li><strong>Validaciones:</strong> Verificar condiciones</li>
+                        </ul>
+                    </concept-card>
+
+                    <div class="definition-box">
+                        <h3">💡 Punto Clave</h3>
+                        <p>Lo importante no es si el resultado de la expresión es verdadero o falso, sino que <strong>puede ser evaluada y retorna un valor</strong>. Incluso <code>1 = 2</code> (que es falso) sigue siendo una expresión válida.</p>
+                    </definition-box>
+                </section>
+
+                <section id="types" class="section">
+                    <h2">🔄 Tipos de Expresiones</h2>
+                    
+                    <div class="concept-card">
+                        <h3">📊 Clasificación de Expresiones</h3>
+                        <p>Una vez sentada la base del concepto, podemos indicar que <strong>existen distintos tipos de expresiones</strong>. Cada tipo tiene características y usos específicos en HAN SQL.</p>
+                    </div>
+
+                    <div class="types-grid">
+                        <div class="type-card">
+                            <div class="type-icon">⚡</div>
+                            <h4>Expresiones Condicionales</h4>
+                            <p>Permiten seleccionar un valor según una condición <strong>sin usar procedimientos</strong></p>
+                        </div>
+                        <div class="type-card">
+                            <div class="type-icon">🛠️</div>
+                            <h4>Expresiones de Función</h4>
+                            <p>Funciones del lenguaje HAN SQL que se pueden usar como expresiones</p>
+                        </div>
+                    </types-grid>
+
+                    <div class="concept-card">
+                        <h3">⚡ Expresiones Condicionales</h3>
+                        <p>Son expresiones que <strong>permiten seleccionar un valor según una condición sin usar procedimientos</strong>. Esto es muy importante porque nos da flexibilidad sin la complejidad de crear procedimientos separados.</p>
+                    </concept-card>
+
+                    <div class="procedure-demo">
+                        <h3">🔧 ¿Qué es un Procedimiento?</h3>
+                        <p>Un <strong>procedimiento</strong> es un conjunto de líneas de código con un nombre que podemos llamar o reutilizar tantas veces como queramos o necesitemos.</p>
+                        
+                        <div class="syntax-box">
+<span class="comment">-- Concepto visual de procedimiento</span>
+<span class="keyword">Mi Código Principal:</span>
+    Línea 1
+    Línea 2
+    <span class="function">CALL mi_procedimiento()</span>  <span class="comment">-- Llama al procedimiento</span>
+    Línea 4
+    Línea 5
+
+<span class="keyword">mi_procedimiento:</span>  <span class="comment">-- Código encapsulado</span>
+    Línea A
+    Línea B  
+    Línea C
+    <span class="keyword">RETURN</span>  <span class="comment">-- Vuelve al código principal</span>
+                        </div>
+                    </procedure-demo>
+
+                    <div class="concept-card">
+                        <h3">🎯 Ventaja de las Expresiones Condicionales</h3>
+                        <p>Las expresiones condicionales nos permiten <strong>hacer lógica condicional directamente en la consulta</strong>, sin necesidad de:</p>
+                        <ul>
+                            <li><strong>Crear procedimientos separados</strong></li>
+                            <li><strong>Escribir código adicional</strong></li>
+                            <li><strong>Gestionar llamadas a funciones</strong></li>
+                            <li><strong>Mantener código en múltiples lugares</strong></li>
+                        </ul>
+                    </concept-card>
+
+                    <div class="example-box">
+                        <h3">📝 Ejemplos de Expresiones Condicionales</h3>
+                        <ul>
+                            <li><strong>Comando CASE:</strong> El más utilizado en SQL</li>
+                            <li><strong>Comando IF:</strong> Para lógica simple (lo veremos más adelante)</li>
+                            <li><strong>Funciones condicionales:</strong> NULLIF, COALESCE, etc.</li>
+                        </ul>
+                    </example-box>
+
+                    <div class="concept-card">
+                        <h3">🛠️ Expresiones de Función</h3>
+                        <p>Son <strong>funciones del lenguaje HAN SQL que se pueden usar como expresiones</strong>. Estas funciones realizan operaciones específicas y retornan valores que pueden ser utilizados en nuestras consultas.</p>
+                    </concept-card>
+
+                    <div class="function-intro">
+                        <h3">📅 Ejemplo: CURRENT_DATE</h3>
+                        <p>La función <strong>CURRENT_DATE</strong> es un ejemplo perfecto de expresión de función. Retorna la fecha actual del sistema y puede ser utilizada en cualquier contexto donde se necesite una expresión.</p>
+                    </function-intro>
+
+                    <div class="syntax-box">
+<span class="comment">-- Ejemplo de expresión de función</span>
+<span class="keyword">SELECT</span> <span class="function">CURRENT_DATE</span> <span class="keyword">FROM</span> <span class="function">DUMMY</span>;
+
+<span class="comment">-- Resultado: 2024-12-24 (fecha actual del sistema)</span>
+                    </syntax-box>
+
+                    <div class="definition-box">
+                        <h3">💡 Comparación de Tipos</h3>
+                        <p><strong>Expresiones Condicionales:</strong> Evalúan condiciones y retornan valores basados en esas condiciones.</p>
+                        <p><strong>Expresiones de Función:</strong> Ejecutan operaciones específicas y retornan sus resultados.</p>
+                        <p><strong>Ambas son expresiones:</strong> Porque pueden ser evaluadas y retornan valores.</p>
+                    </definition-box>
+                </section>
+
+                <section id="conditional" class="section">
+                    <h2">⚡ Expresiones Condicionales</h2>
+                    
+                    <div class="concept-card">
+                        <h3">🎯 Concepto Principal</h3>
+                        <p>Las expresiones condicionales son herramientas que nos permiten <strong>seleccionar un valor según una condición sin usar procedimientos</strong>. Esto significa que podemos implementar lógica directamente en nuestras consultas SQL.</p>
+                    </div>
+
+                    <div class="concept-card">
+                        <h3">🔧 ¿Por Qué "Sin Procedimientos"?</h3>
+                        <p>Esta característica es importante porque:</p>
+                        <ul>
+                            <li><strong>Simplicidad:</strong> No necesitamos crear código separado</li>
+                            <li><strong>Rendimiento:</strong> Evaluación directa en la consulta</li>
+                            <li><strong>Mantenimiento:</strong> Todo el código está en un lugar</li>
+                            <li><strong>Portabilidad:</strong> Funciona sin dependencias externas</li>
+                        </ul>
+                    </concept-card>
+
+                    <div class="procedure-demo">
+                        <h3">📊 Visualización del Concepto de Procedimiento</h3>
+                        <p>Para entender mejor por qué es ventajoso no usar procedimientos, veamos cómo funciona conceptualmente un procedimiento:</p>
+                        
+                        <div class="syntax-box">
+<span class="comment">-- Código principal</span>
+Línea 1: Obtener datos
+Línea 2: Procesar información
+Línea 3: <span class="function">CALL obtener_nombre_mes()</span>  <span class="comment">-- Salto a procedimiento</span>
+Línea 4: Continuar procesamiento
+Línea 5: Finalizar
+
+<span class="comment">-- Procedimiento separado (en otra ubicación)</span>
+<span class="keyword">PROCEDURE</span> obtener_nombre_mes:
+    Evaluar mes actual
+    Retornar nombre correspondiente
+    <span class="keyword">RETURN</span> resultado  <span class="comment">-- Vuelve a línea 4</span>
+                        </div>
+                    </procedure-demo>
+
+                    <div class="concept-card">
+                        <h3">✨ Ventajas de las Expresiones Condicionales</h3>
+                        <ul>
+                            <li><strong>Evaluación inmediata:</strong> El resultado se calcula directamente</li>
+                            <li><strong>Código cohesivo:</strong> Toda la lógica está en la consulta</li>
+                            <li><strong>Fácil debugging:</strong> Puedes ver toda la lógica de una vez</li>
+                            <li><strong>Menos dependencias:</strong> No relies en código externo</li>
+                            <li><strong>Mejor rendimiento:</strong> Sin overhead de llamadas a funciones</li>
+                        </ul>
+                    </concept-card>
+
+                    <div class="example-box">
+                        <h3">📝 Herramientas Principales</h3>
+                        <p>Las principales herramientas para expresiones condicionales en HAN SQL son:</p>
+                        <ul>
+                            <li><strong>CASE:</strong> La más utilizada y versátil</li>
+                            <li><strong>IF:</strong> Para lógica simple (tema futuro)</li>
+                            <li><strong>NULLIF:</strong> Para manejar valores nulos</li>
+                            <li><strong>COALESCE:</strong> Para seleccionar el primer valor no nulo</li>
+                        </ul>
+                    </example-box>
+
+                    <div class="case-example">
+                        <h3">🌟 El Comando CASE</h3>
+                        <p>El <strong>comando CASE</strong> es la herramienta principal para expresiones condicionales en SQL. Nos permite evaluar múltiples condiciones y retornar diferentes valores según cada caso.</p>
+                    </case-example>
+
+                    <div class="concept-card">
+                        <h3">🔍 Casos de Uso Comunes</h3>
+                        <ul>
+                            <li><strong>Transformación de códigos:</strong> Convertir números en texto descriptivo</li>
+                            <li><strong>Categorización:</strong> Agrupar valores en rangos o categorías</li>
+                            <li><strong>Formateo condicional:</strong> Mostrar datos según el contexto</li>
+                            <li><strong>Cálculos condicionales:</strong> Aplicar diferentes fórmulas según condiciones</li>
+                            <li><strong>Validación de datos:</strong> Verificar y corregir inconsistencias</li>
+                        </ul>
+                    </concept-card>
+
+                    <div class="definition-box">
+                        <h3">💡 Próximo Paso</h3>
+                        <p>En la siguiente sección nos enfocaremos específicamente en el <strong>comando CASE</strong>, que es la herramienta más importante y versátil para implementar expresiones condicionales en HAN SQL.</p>
+                    </definition-box>
+                </section>
+
+                <section id="case-statement" class="section">
+                    <h2">📝 Comando CASE</h2>
+                    
+                    <div class="concept-card">
+                        <h3">🌟 La Herramienta Principal</h3>
+                        <p>El <strong>comando CASE</strong> es la herramienta más importante para expresiones condicionales en SQL. Nos permite evaluar múltiples condiciones y retornar diferentes valores según cada caso específico.</p>
+                    </div>
+
+                    <div class="case-example">
+                        <h3">📋 Sintaxis del Comando CASE</h3>
+                        <p>La estructura básica del comando CASE sigue un patrón específico y ordenado:</p>
+                    </case-example>
+
+                    <div class="syntax-box">
+<span class="comment">-- Sintaxis básica del comando CASE</span>
+<span class="keyword">CASE</span> variable
+    <span class="keyword">WHEN</span> valor1 <span class="keyword">THEN</span> resultado1
+    <span class="keyword">WHEN</span> valor2 <span class="keyword">THEN</span> resultado2
+    <span class="keyword">WHEN</span> valor3 <span class="keyword">THEN</span> resultado3
+    <span class="keyword">ELSE</span> resultado_por_defecto
+<span class="keyword">END</span>
+                    </syntax-box>
+
+                    <div class="concept-card">
+                        <h3">🔧 Componentes del CASE</h3>
+                        <ul>
+                            <li><strong>CASE variable:</strong> Inicia la expresión e indica qué valor evaluar</li>
+                            <li><strong>WHEN valor:</strong> Especifica cada condición a verificar</li>
+                            <li><strong>THEN resultado:</strong> Define qué retornar si se cumple la condición</li>
+                            <li><strong>ELSE:</strong> Valor por defecto si no se cumple ninguna condición (opcional)</li>
+                            <li><strong>END:</strong> Cierra la expresión CASE</li>
+                        </ul>
+                    </concept-card>
+
+                    <div class="concept-card">
+                        <h3">⚡ Funcionamiento</h3>
+                        <p>El CASE evalúa la variable contra cada WHEN en orden:</p>
+                        <ol>
+                            <li><strong>Evalúa</strong> si variable = valor1 → Si es cierto, retorna resultado1</li>
+                            <li><strong>Si no,</strong> evalúa si variable = valor2 → Si es cierto, retorna resultado2</li>
+                            <li><strong>Continúa</strong> hasta encontrar una coincidencia</li>
+                            <li><strong>Si no encuentra ninguna,</strong> retorna el valor del ELSE</li>
+                            <li><strong>Si no hay ELSE,</strong> retorna NULL</li>
+                        </ol>
+                    </concept-card>
+
+                    <div class="example-box">
+                        <h3">📝 Ejemplo Simple</h3>
+                        <p>Veamos un ejemplo básico para entender el funcionamiento:</p>
+                    </example-box>
+
+                    <div class="syntax-box">
+<span class="comment">-- Ejemplo: Convertir código de estado civil a texto</span>
+<span class="keyword">SELECT</span> 
+    <span class="keyword">CASE</span> estado_civil
+        <span class="keyword">WHEN</span> <span class="string">'S'</span> <span class="keyword">THEN</span> <span class="string">'Soltero'</span>
+        <span class="keyword">WHEN</span> <span class="string">'C'</span> <span class="keyword">THEN</span> <span class="string">'Casado'</span>
+        <span class="keyword">WHEN</span> <span class="string">'D'</span> <span class="keyword">THEN</span> <span class="string">'Divorciado'</span>
+        <span class="keyword">ELSE</span> <span class="string">'Estado Desconocido'</span>
+    <span class="keyword">END</span> <span class="keyword">AS</span> estado_descripcion
+<span class="keyword">FROM</span> personas;
+                    </syntax-box>
+
+                    <div class="concept-card">
+                        <h3">🔍 Características Importantes</h3>
+                        <ul>
+                            <li><strong>Evaluación secuencial:</strong> Se detiene en la primera coincidencia</li>
+                            <li><strong>Tipos consistentes:</strong> Todos los THEN deben retornar el mismo tipo de dato</li>
+                            <li><strong>ELSE opcional:</strong> Pero recomendado para evitar NULLs inesperados</li>
+                            <li><strong>Anidable:</strong> Puedes poner un CASE dentro de otro CASE</li>
+                            <li><strong>Usable en cualquier lugar:</strong> SELECT, WHERE, ORDER BY, etc.</li>
+                        </ul>
+                    </concept-card>
+
+                    <div class="syntax-tips">
+                        <h3">⚠️ Consejos de Sintaxis</h3>
+                        <p><strong>Importante para principiantes:</strong> Presta mucha atención a la puntuación en el comando CASE. Los errores de comas y puntos y comas son muy comunes y pueden ser difíciles de detectar.</p>
+                        <ul>
+                            <li><strong>No hay comas entre WHEN:</strong> Cada WHEN va en su propia línea sin coma</li>
+                            <li><strong>Sin punto y coma interno:</strong> El CASE es una sola expresión</li>
+                            <li><strong>END obligatorio:</strong> Siempre cierra con END</li>
+                            <li><strong>Consistencia de tipos:</strong> Todos los THEN deben ser del mismo tipo</li>
+                        </ul>
+                    </syntax-tips>
+
+                    <div class="definition-box">
+                        <h3">💡 Próximo Paso</h3>
+                        <p>En la siguiente sección veremos las <strong>funciones auxiliares</strong> que nos ayudarán a construir nuestro ejemplo práctico completo, incluyendo CURRENT_DATE, TOCHAR y la tabla DUMMY.</p>
+                    </definition-box>
+                </section>
+
+                <section id="functions" class="section">
+                    <h2">🛠️ Funciones y Herramientas</h2>
+                    
+                    <div class="concept-card">
+                        <h3">🎯 Funciones para el Ejemplo</h3>
+                        <p>Para crear un ejemplo completo y útil del comando CASE, necesitamos introducir algunas <strong>funciones y herramientas avanzadas</strong>. Aunque las estudiaremos en detalle más adelante, las presentamos ahora para entender mejor las expresiones.</p>
+                    </concept-card>
+
+                    <div class="function-intro">
+                        <h3">📅 Función CURRENT_DATE</h3>
+                        <p><strong>CURRENT_DATE</strong> es una función del sistema que nos devuelve la fecha actual del sistema. Es muy útil para trabajar con fechas dinámicas.</p>
+                    </function-intro>
+
+                    <div class="syntax-box">
+<span class="comment">-- Uso básico de CURRENT_DATE</span>
+<span class="keyword">SELECT</span> <span class="function">CURRENT_DATE</span> <span class="keyword">FROM</span> <span class="function">DUMMY</span>;
+
+<span class="comment">-- Resultado: 2024-12-24 (fecha actual del sistema)</span>
+                    </syntax-box>
+
+                    <div class="concept-card">
+                        <h3">🔧 Puntos Importantes sobre CURRENT_DATE</h3>
+                        <ul>
+                            <li><strong>Sin parámetros:</strong> No necesita argumentos</li>
+                            <li><strong>Valor dinámico:</strong> Cambia automáticamente cada día</li>
+                            <li><strong>Formato estándar:</strong> Retorna en formato YYYY-MM-DD</li>
+                            <li><strong>Función del sistema:</strong> Obtiene la fecha del servidor</li>
+                        </ul>
+                    </concept-card>
+
+                    <div class="function-intro">
+                        <h3">📝 Tabla DUMMY</h3>
+                        <p><strong>DUMMY</strong> es una tabla especial del sistema que nos sirve para hacer pruebas y mostrar datos por pantalla. Es una tabla vacía pero muy útil.</p>
+                    </function-intro>
+
+                    <div class="syntax-box">
+<span class="comment">-- Verificar contenido de DUMMY</span>
+<span class="keyword">SELECT</span> * <span class="keyword">FROM</span> <span class="function">DUMMY</span>;
+
+<span class="comment">-- Resultado: tabla vacía, pero permite ejecutar funciones</span>
+                    </syntax-box>
+
+                    <div class="concept-card">
+                        <h3">🎯 Características de DUMMY</h3>
+                        <ul>
+                            <li><strong>Tabla del sistema:</strong> Siempre disponible</li>
+                            <li><strong>Vacía:</strong> No contiene datos reales</li>
+                            <li><strong>Para pruebas:</strong> Ideal para probar funciones</li>
+                            <li><strong>Sin overhead:</strong> No impacta rendimiento</li>
+                            <li><strong>Estándar:</strong> Usada frecuentemente en ejemplos</li>
+                        </ul>
+                    </concept-card>
+
+                    <div class="function-intro">
+                        <h3">🔄 Función TOCHAR</h3>
+                        <p><strong>TOCHAR</strong> es una función que transforma el tipo de dato del valor que le pasemos, convirtiéndolo a tipo carácter (texto).</p>
+                    </function-intro>
+
+                    <div class="concept-card">
+                        <h3">🔧 Funcionamiento de TOCHAR</h3>
+                        <ul>
+                            <li><strong>Número → Texto:</strong> Convierte números a cadenas de caracteres</li>
+                            <li><strong>Fecha → Texto:</strong> Convierte fechas a formato texto</li>
+                            <li><strong>Con máscaras:</strong> Permite especificar el formato de salida</li>
+                            <li><strong>Flexible:</strong> Múltiples opciones de formateo</li>
+                        </ul>
+                    </concept-card>
+
+                    <div class="syntax-box">
+<span class="comment">-- Ejemplos de TOCHAR</span>
+<span class="keyword">SELECT</span> <span class="function">TOCHAR</span>(123) <span class="keyword">FROM</span> <span class="function">DUMMY</span>;        <span class="comment">-- '123' (como texto)</span>
+<span class="keyword">SELECT</span> <span class="function">TOCHAR</span>(<span class="function">CURRENT_DATE</span>) <span class="keyword">FROM</span> <span class="function">DUMMY</span>; <span class="comment">-- '2024-12-24'</span>
+
+<span class="comment">-- Con máscara para obtener mes abreviado</span>
+<span class="keyword">SELECT</span> <span class="function">TOCHAR</span>(<span class="function">CURRENT_DATE</span>, <span class="string">'MON'</span>) <span class="keyword">FROM</span> <span class="function">DUMMY</span>; <span class="comment">-- 'DEC'</span>
+                    </syntax-box>
+
+                    <div class="concept-card">
+                        <h3">🎨 Máscaras de Formato</h3>
+                        <p>Las <strong>máscaras</strong> sirven para especificar cómo queremos que se muestre la salida:</p>
+                        <ul>
+                            <li><strong>'MON':</strong> Mes abreviado (JAN, FEB, MAR...)</li>
+                            <li><strong>'MONTH':</strong> Mes completo (JANUARY, FEBRUARY...)</li>
+                            <li><strong>'DD':</strong> Día del mes (01, 02, 03...)</li>
+                            <li><strong>'YYYY':</strong> Año completo (2024, 2025...)</li>
+                        </ul>
+                    </concept-card>
+
+                    <div class="concept-card">
+                        <h3">🌟 Familia de Funciones de Conversión</h3>
+                        <p>TOCHAR pertenece a una familia de funciones de conversión:</p>
+                        <ul>
+                            <li><strong>TOCHAR:</strong> Convierte a tipo carácter/texto</li>
+                            <li><strong>TO_INTEGER:</strong> Convierte a números enteros</li>
+                            <li><strong>TO_DATE:</strong> Convierte a tipo fecha</li>
+                            <li><strong>TO_DECIMAL:</strong> Convierte a números decimales</li>
+                        </ul>
+                    </concept-card>
+
+                    <div class="definition-box">
+                        <h3">💡 Preparación para el Ejemplo</h3>
+                        <p>Con estas herramientas podemos crear un ejemplo práctico que combine CASE + CURRENT_DATE + TOCHAR + DUMMY para mostrar el nombre del mes actual en español.</p>
+                    </definition-box>
+                </section>
+
+                <section id="practical-example" class="section">
+                    <h2">💻 Ejemplo Práctico Completo</h2>
+                    
+                    <div class="concept-card">
+                        <h3">🎯 Objetivo del Ejemplo</h3>
+                        <p>Vamos a crear una consulta que <strong>nos indicará el nombre del mes en el que nos encontramos</strong>, combinando todas las herramientas que hemos aprendido: CASE, CURRENT_DATE, TOCHAR y la tabla DUMMY.</p>
+                    </div>
+
+                    <div class="case-example">
+                        <h3">🔧 Construcción Paso a Paso</h3>
+                        <p>Construiremos la consulta de forma incremental para entender cada parte:</p>
+                    </case-example>
+
+                    <div class="syntax-box">
+<span class="comment">-- Paso 1: Obtener el mes actual abreviado</span>
+<span class="keyword">SELECT</span> <span class="function">TOCHAR</span>(<span class="function">CURRENT_DATE</span>, <span class="string">'MON'</span>) <span class="keyword">FROM</span> <span class="function">DUMMY</span>;
+<span class="comment">-- Resultado: 'DEC' (para diciembre)</span>
+                    </syntax-box>
+
+                    <div class="syntax-box">
+<span class="comment">-- Paso 2: Consulta completa con CASE</span>
+<span class="keyword">SELECT</span> 
+    <span class="keyword">CASE</span> <span class="function">TOCHAR</span>(<span class="function">CURRENT_DATE</span>, <span class="string">'MON'</span>)
+        <span class="keyword">WHEN</span> <span class="string">'JAN'</span> <span class="keyword">THEN</span> <span class="string">'Enero'</span>
+        <span class="keyword">WHEN</span> <span class="string">'FEB'</span> <span class="keyword">THEN</span> <span class="string">'Febrero'</span>
+        <span class="keyword">WHEN</span> <span class="string">'MAR'</span> <span class="keyword">THEN</span> <span class="string">'Marzo'</span>
+        <span class="keyword">WHEN</span> <span class="string">'APR'</span> <span class="keyword">THEN</span> <span class="string">'Abril'</span>
+        <span class="keyword">WHEN</span> <span class="string">'MAY'</span> <span class="keyword">THEN</span> <span class="string">'Mayo'</span>
+        <span class="keyword">WHEN</span> <span class="string">'JUN'</span> <span class="keyword">THEN</span> <span class="string">'Junio'</span>
+        <span class="keyword">WHEN</span> <span class="string">'JUL'</span> <span class="keyword">THEN</span> <span class="string">'Julio'</span>
+        <span class="keyword">WHEN</span> <span class="string">'AUG'</span> <span class="keyword">THEN</span> <span class="string">'Agosto'</span>
+        <span class="keyword">WHEN</span> <span class="string">'SEP'</span> <span class="keyword">THEN</span> <span class="string">'Septiembre'</span>
+        <span class="keyword">WHEN</span> <span class="string">'OCT'</span> <span class="keyword">THEN</span> <span class="string">'Octubre'</span>
+        <span class="keyword">WHEN</span> <span class="string">'NOV'</span> <span class="keyword">THEN</span> <span class="string">'Noviembre'</span>
+        <span class="keyword">WHEN</span> <span class="string">'DEC'</span> <span class="keyword">THEN</span> <span class="string">'Diciembre'</span>
+        <span class="keyword">ELSE</span> <span class="string">'Mes desconocido'</span>
+    <span class="keyword">END</span> <span class="keyword">AS</span> mes_actual
+<span class="keyword">FROM</span> <span class="function">DUMMY</span>;
+                    </syntax-box>
+
+                    <div class="result-demo">
+                        <h4">✅ Resultado de la Consulta</h4>
+                        <div class="result-display">
+mes_actual<br>
+----------<br>
+Diciembre
+                        </div>
+                        <p><em>Estamos en diciembre de 2024, por lo que muestra "Diciembre"</em></p>
+                    </result-demo>
+
+                    <div class="concept-card">
+                        <h3">🔍 Análisis del Funcionamiento</h3>
+                        <ol>
+                            <li><strong>CURRENT_DATE</strong> obtiene la fecha actual del sistema</li>
+                            <li><strong>TOCHAR(..., 'MON')</strong> extrae el mes abreviado ('DEC')</li>
+                            <li><strong>CASE</strong> evalúa el valor 'DEC' contra cada WHEN</li>
+                            <li><strong>Encuentra coincidencia</strong> con WHEN 'DEC'</li>
+                            <li><strong>Retorna</strong> 'Diciembre' como resultado</li>
+                        </ol>
+                    </concept-card>
+
+                    <div class="example-box">
+                        <h3">🧪 Probando con Otras Fechas</h3>
+                        <p>Podemos probar la lógica con fechas específicas:</p>
+                    </example-box>
+
+                    <div class="syntax-box">
+<span class="comment">-- Probando con una fecha específica (marzo)</span>
+<span class="keyword">SELECT</span> 
+    <span class="keyword">CASE</span> <span class="function">TOCHAR</span>(<span class="string">'2024-03-12'</span>, <span class="string">'MON'</span>)
+        <span class="keyword">WHEN</span> <span class="string">'JAN'</span> <span class="keyword">THEN</span> <span class="string">'Enero'</span>
+        <span class="keyword">WHEN</span> <span class="string">'FEB'</span> <span class="keyword">THEN</span> <span class="string">'Febrero'</span>
+        <span class="keyword">WHEN</span> <span class="string">'MAR'</span> <span class="keyword">THEN</span> <span class="string">'Marzo'</span>
+        <span class="comment">-- ... resto de meses ...</span>
+        <span class="keyword">ELSE</span> <span class="string">'Mes desconocido'</span>
+    <span class="keyword">END</span> <span class="keyword">AS</span> mes_especifico
+<span class="keyword">FROM</span> <span class="function">DUMMY</span>;
+
+<span class="comment">-- Resultado: 'Marzo'</span>
+                    </syntax-box>
+
+                    <div class="syntax-tips">
+                        <h3">⚠️ Consejos de Sintaxis Aplicados</h3>
+                        <p>Observa los detalles importantes de sintaxis en el ejemplo:</p>
+                        <ul>
+                            <li><strong>Sin comas entre WHEN:</strong> Cada línea WHEN va independiente</li>
+                            <li><strong>Saltos de línea permitidos:</strong> La consulta puede ocupar múltiples líneas</li>
+                            <li><strong>ELSE incluido:</strong> Para manejar casos inesperados</li>
+                            <li><strong>END obligatorio:</strong> Cierra correctamente el CASE</li>
+                            <li><strong>AS para alias:</strong> Nombra el resultado como 'mes_actual'</li>
+                        </ul>
+                    </syntax-tips>
+
+                    <div class="concept-card">
+                        <h3">🎯 Verificación del Resultado</h3>
+                        <p>Para verificar que funciona correctamente, podemos ver el valor intermedio:</p>
+                    </concept-card>
+
+                    <div class="syntax-box">
+<span class="comment">-- Verificar el valor que evalúa el CASE</span>
+<span class="keyword">SELECT</span> <span class="function">TOCHAR</span>(<span class="function">CURRENT_DATE</span>, <span class="string">'MON'</span>) <span class="keyword">FROM</span> <span class="function">DUMMY</span>;
+<span class="comment">-- Resultado: 'DEC'</span>
+
+<span class="comment">-- Este valor 'DEC' es lo que evalúa el CASE</span>
+<span class="comment">-- Coincide con WHEN 'DEC' THEN 'Diciembre'</span>
+                    </syntax-box>
+
+                    <div class="definition-box">
+                        <h3">💡 Valor del Ejemplo</h3>
+                        <p>Este ejemplo demuestra el <strong>poder de las expresiones</strong>: combinamos una función de fecha, conversión de tipos y lógica condicional en una sola consulta para obtener un resultado útil y legible.</p>
+                    </definition-box>
+                </section>
+
+                <section id="conclusions" class="section">
+                    <h2">🎯 Conclusiones</h2>
+                    
+                    <div class="concept-card">
+                        <h3">📋 Resumen de Expresiones</h3>
+                        <p>Hemos introducido el concepto fundamental de <strong>expresiones en HAN SQL</strong>. Las expresiones son la base para crear consultas dinámicas e inteligentes que pueden evaluar condiciones y transformar datos sobre la marcha.</p>
+                    </div>
+
+                    <div class="types-grid">
+                        <div class="type-card">
+                            <div class="type-icon">✅</div>
+                            <h4>CONCEPTO DOMINADO</h4>
+                            <p>Expresiones como cláusulas evaluables que retornan valores</p>
+                        </div>
+                        <div class="type-card">
+                            <div class="type-icon">⚡</div>
+                            <h4>TIPOS APRENDIDOS</h4>
+                            <p>Condicionales y de función, cada una con sus características</p>
+                        </div>
+                        <div class="type-card">
+                            <div class="type-icon">📝</div>
+                            <h4>CASE IMPLEMENTADO</h4>
+                            <p>Comando principal para expresiones condicionales</p>
+                        </div>
+                        <div class="type-card">
+                            <div class="type-icon">🛠️</div>
+                            <h4>FUNCIONES INTRODUCIDAS</h4>
+                            <p>CURRENT_DATE, TOCHAR y tabla DUMMY</p>
+                        </div>
+                    </types-grid>
+
+                    <div class="concept-card">
+                        <h3">🔑 Conceptos Clave Aprendidos</h3>
+                        <ul>
+                            <li><strong>Definición fundamental:</strong> Expresión = cláusula evaluable que retorna valor</li>
+                            <li><strong>Tipos principales:</strong> Condicionales (sin procedimientos) y de función</li>
+                            <li><strong>Comando CASE:</strong> Herramienta principal para lógica condicional</li>
+                            <li><strong>Funciones del sistema:</strong> CURRENT_DATE para fechas dinámicas</li>
+                            <li><strong>Conversión de tipos:</strong> TOCHAR para transformar datos</li>
+                            <li><strong>Tabla de pruebas:</strong> DUMMY para experimentar sin datos reales</li>
+                        </ul>
+                    </concept-card>
+
+                    <div class="concept-card">
+                        <h3">🎯 Valor Práctico</h3>
+                        <p>Las expresiones nos permiten:</p>
+                        <ul>
+                            <li><strong>Lógica en consultas:</strong> Decisiones directamente en SQL</li>
+                            <li><strong>Transformación de datos:</strong> Convertir códigos en texto legible</li>
+                            <li><strong>Cálculos dinámicos:</strong> Resultados que cambian según condiciones</li>
+                            <li><strong>Consultas inteligentes:</strong> Adaptación automática a diferentes escenarios</li>
+                            <li><strong>Código más limpio:</strong> Menos dependencia de código externo</li>
+                        </ul>
+                    </concept-card>
+
+                    <div class="syntax-tips">
+                        <h3">⚠️ Lecciones de Sintaxis</h3>
+                        <p>Puntos importantes para recordar:</p>
+                        <ul>
+                            <li><strong>Atención a las comas:</strong> Su presencia o ausencia puede causar errores</li>
+                            <li><strong>Estructura del CASE:</strong> CASE → WHEN → THEN → ELSE → END</li>
+                            <li><strong>Tipos consistentes:</strong> Todos los THEN deben retornar el mismo tipo</li>
+                            <li><strong>ELSE recomendado:</strong> Para evitar valores NULL inesperados</li>
+                            <li><strong>Debugging sistemático:</strong> Verificar errores de puntuación primero</li>
+                        </ul>
+                    </syntax-tips>
+
+                    <div class="example-box">
+                        <h3">📈 Ejemplo Logrado</h3>
+                        <p>Nuestro ejemplo práctico demostró cómo:</p>
+                        <ul>
+                            <li><strong>Combinar múltiples funciones</strong> en una sola expresión</li>
+                            <li><strong>Crear salida legible</strong> a partir de datos técnicos</li>
+                            <li><strong>Usar fechas dinámicas</strong> que se actualizan automáticamente</li>
+                            <li><strong>Aplicar lógica condicional</strong> sin procedimientos externos</li>
+                        </ul>
+                    </example-box>
+
+                    <div class="concept-card">
+                        <h3">🚀 Preparación para Temas Avanzados</h3>
+                        <p>Con las expresiones dominadas, estás preparado para:</p>
+                        <ul>
+                            <li><strong>Funciones avanzadas:</strong> Matemáticas, texto, fechas complejas</li>
+                            <li><strong>Expresiones complejas:</strong> CASE anidados y combinaciones</li>
+                            <li><strong>Procedimientos:</strong> Cuando realmente necesites código reutilizable</li>
+                            <li><strong>Lógica IF:</strong> Alternativas más simples para casos específicos</li>
+                            <li><strong>Funciones de ventana:</strong> Análisis de datos avanzado</li>
+                        </ul>
+                    </concept-card>
+
+                    <div class="definition-box">
+                        <h3">🎓 Próximo Paso</h3>
+                        <p>En las siguientes clases profundizaremos en las <strong>funciones específicas</strong> que hemos introducido hoy, especialmente el manejo avanzado de fechas, conversiones de tipos y otras herramientas del lenguaje HAN SQL.</p>
+                    </definition-box>
+
+                    <div class="concept-card">
+                        <h3">🎓 Logros Desbloqueados</h3>
+                        <ul>
+                            <li>✅ Comprendes el concepto fundamental de expresiones</li>
+                            <li>✅ Distingues entre expresiones condicionales y de función</li>
+                            <li>✅ Dominas la sintaxis del comando CASE</li>
+                            <li>✅ Conoces funciones básicas del sistema (CURRENT_DATE, TOCHAR)</li>
+                            <li>✅ Puedes usar la tabla DUMMY para pruebas</li>
+                            <li>✅ Has creado tu primer ejemplo práctico complejo</li>
+                            <li>✅ Entiendes la importancia de la sintaxis correcta</li>
+                        </ul>
+                    </concept-card>
+                </section>
+            </main>
+        </div>
+    </div>
+
+    <script>
+        function showSection(sectionId) {
+            // Ocultar todas las secciones
+            const sections = document.querySelectorAll('.section');
+            sections.forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            // Mostrar la sección seleccionada
+            document.getElementById(sectionId).classList.add('active');
+            
+            // Actualizar navegación
+            const navItems = document.querySelectorAll('.nav-item');
+            navItems.forEach(item => {
+                item.classList.remove('active');
+            });
+            
+            // Marcar el elemento activo
+            event.target.classList.add('active');
+            
+            // Scroll al inicio del contenido
+            document.querySelector('.content').scrollTop = 0;
+
+            // En móviles, ocultar el menú después de seleccionar
+            if (window.innerWidth <= 768) {
+                const sidebar = document.getElementById('sidebar');
+                sidebar.classList.add('mobile-hidden');
+                
+                const toggleButton = document.querySelector('.mobile-menu-toggle');
+                toggleButton.textContent = '📋 Menú de Contenidos';
+            }
+        }
+
+        function toggleMobileMenu() {
+            const sidebar = document.getElementById('sidebar');
+            const toggleButton = document.querySelector('.mobile-menu-toggle');
+            
+            if (sidebar.classList.contains('mobile-hidden')) {
+                sidebar.classList.remove('mobile-hidden');
+                toggleButton.textContent = '❌ Cerrar Menú';
+            } else {
+                sidebar.classList.add('mobile-hidden');
+                toggleButton.textContent = '📋 Menú de Contenidos';
+            }
+        }
+
+        // Inicializar en móviles
+        document.addEventListener('DOMContentLoaded', function() {
+            if (window.innerWidth <= 768) {
+                const sidebar = document.getElementById('sidebar');
+                sidebar.classList.add('mobile-hidden');
+            }
+
+            // Animación de entrada
+            const cards = document.querySelectorAll('.concept-card, .definition-box, .example-box');
+            cards.forEach((card, index) => {
+                setTimeout(() => {
+                    card.style.opacity = '0';
+                    card.style.transform = 'translateY(20px)';
+                    card.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+                    
+                    setTimeout(() => {
+                        card.style.opacity = '1';
+                        card.style.transform = 'translateY(0)';
+                    }, 100);
+                }, index * 100);
+            });
+        });
+
+        // Manejar cambios de tamaño de ventana
+        window.addEventListener('resize', function() {
+            const sidebar = document.getElementById('sidebar');
+            const toggleButton = document.querySelector('.mobile-menu-toggle');
+            
+            if (window.innerWidth > 768) {
+                sidebar.classList.remove('mobile-hidden');
+                toggleButton.textContent = '📋 Menú de Contenidos';
+            } else if (window.innerWidth <= 768 && !sidebar.classList.contains('mobile-hidden')) {
+                sidebar.classList.add('mobile-hidden');
+            }
+        });
+    </script>
+</body>
+</html>

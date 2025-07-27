@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clase 039 - Predicados SQL SAP HANA</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .header h1 {
+            color: #2c3e50;
+            font-size: 2.2em;
+            margin-bottom: 8px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .header h2 {
+            color: #667eea;
+            font-size: 1.3em;
+            margin: 8px 0;
+        }
+
+        .content {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        h3 {
+            color: #2c3e50;
+            font-size: 1.4em;
+            margin: 20px 0 12px 0;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #667eea;
+        }
+
+        .concept-card {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-radius: 10px;
+            padding: 18px;
+            margin: 15px 0;
+            border-left: 4px solid #667eea;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .concept-card h4 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+
+        .concept-card p, .concept-card li {
+            color: #555;
+            line-height: 1.5;
+            margin-bottom: 8px;
+        }
+
+        .definition-box {
+            background: linear-gradient(135deg, #fff3cd, #ffeaa7);
+            border-radius: 10px;
+            padding: 18px;
+            margin: 15px 0;
+            border-left: 4px solid #f39c12;
+        }
+
+        .definition-box h4 {
+            color: #856404;
+            margin-bottom: 10px;
+        }
+
+        .definition-box p {
+            color: #856404;
+            line-height: 1.5;
+        }
+
+        .example-box {
+            background: linear-gradient(135deg, #e8f5e8, #d4edda);
+            border-radius: 10px;
+            padding: 18px;
+            margin: 15px 0;
+            border-left: 4px solid #27ae60;
+        }
+
+        .example-box h4 {
+            color: #155724;
+            margin-bottom: 10px;
+        }
+
+        .example-box p {
+            color: #155724;
+            line-height: 1.5;
+        }
+
+        .warning-box {
+            background: linear-gradient(135deg, #ffebee, #ffcdd2);
+            border-radius: 10px;
+            padding: 18px;
+            margin: 15px 0;
+            border-left: 4px solid #d32f2f;
+        }
+
+        .warning-box h4 {
+            color: #b71c1c;
+            margin-bottom: 10px;
+        }
+
+        .warning-box p {
+            color: #b71c1c;
+            line-height: 1.5;
+        }
+
+        .code-example {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            margin: 15px 0;
+            overflow-x: auto;
+            font-size: 0.9em;
+        }
+
+        .code-example .keyword {
+            color: #63b3ed;
+            font-weight: bold;
+        }
+
+        .code-example .comment {
+            color: #68d391;
+        }
+
+        .code-example .string {
+            color: #fbb6ce;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin: 15px 0;
+        }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 15px;
+            margin: 15px 0;
+        }
+
+        .syntax-box {
+            background: linear-gradient(135deg, #e3f2fd, #bbdefb);
+            border-radius: 10px;
+            padding: 18px;
+            margin: 15px 0;
+            border-left: 4px solid #2196f3;
+            font-family: 'Courier New', monospace;
+        }
+
+        .syntax-box h4 {
+            color: #0d47a1;
+            margin-bottom: 10px;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        .syntax-box p {
+            color: #1565c0;
+            line-height: 1.5;
+        }
+
+        .result-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .result-table th {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 12px;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .result-table td {
+            padding: 10px 12px;
+            border-bottom: 1px solid #eee;
+            text-align: center;
+        }
+
+        .result-table tr:hover {
+            background-color: #f8f9fa;
+        }
+
+        .true {
+            color: #27ae60;
+            font-weight: bold;
+        }
+
+        .false {
+            color: #e74c3c;
+            font-weight: bold;
+        }
+
+        .unknown {
+            color: #f39c12;
+            font-weight: bold;
+        }
+
+        ul {
+            margin-left: 20px;
+            margin-top: 8px;
+        }
+
+        li {
+            margin: 5px 0;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+            
+            .header {
+                padding: 20px;
+            }
+            
+            .header h1 {
+                font-size: 1.8em;
+            }
+            
+            .content {
+                padding: 20px;
+            }
+            
+            .grid-2, .grid-3 {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>Curso SAP HANA</h1>
+            <h2>Clase 039 - Predicados SQL</h2>
+            <p>Combinaciones de expresiones que retornan valores lógicos</p>
+        </header>
+
+        <div class="content">
+            <h3>📋 ¿Qué son los Predicados?</h3>
+            
+            <div class="definition-box">
+                <h4>💡 Definición</h4>
+                <p>Los predicados son la combinación de una o más expresiones u operadores lógicos que retornan uno de estos tres valores: <strong>TRUE</strong>, <strong>FALSE</strong> o <strong>UNKNOWN</strong> (desconocido).</p>
+            </div>
+
+            <div class="concept-card">
+                <h4>🔗 Relación con Operadores Lógicos</h4>
+                <p>Los predicados están estrechamente relacionados con los operadores lógicos que vimos en la clase anterior (AND, OR). De hecho, estas combinaciones forman parte de los predicados.</p>
+            </div>
+
+            <h3>🏷️ Tipos de Predicados</h3>
+
+            <h3>📊 Predicados de Comparación</h3>
+            
+            <div class="syntax-box">
+                <h4>📝 Sintaxis General</h4>
+                <p>expresión1 [=|!=|<>|<|>|<=|>=] [ANY|SOME|ALL] expresión2|subconsulta</p>
+            </div>
+
+            <div class="concept-card">
+                <h4>🔍 Descripción</h4>
+                <p>Comparación entre una expresión y otra expresión, lista de valores o resultado de subconsulta usando operadores de comparación básicos.</p>
+            </div>
+
+            <h3>🎯 Operadores ANY y SOME</h3>
+            
+            <div class="example-box">
+                <h4>📝 Función</h4>
+                <p>Retornan <strong>TRUE</strong> si se encuentra una coincidencia dentro de una lista de expresiones o del resultado de una subconsulta. <em>Alguno</em> de los valores debe cumplir la condición.</p>
+            </div>
+
+            <div class="concept-card">
+                <h4>🔄 ANY vs SOME</h4>
+                <p><strong>ANY</strong> y <strong>SOME</strong> son sinónimos - funcionan exactamente igual. Ambos verifican si al menos uno de los valores cumple la condición.</p>
+            </div>
+
+            <h3>💡 Ejemplos Prácticos</h3>
+
+            <div class="grid-2">
+                <div class="concept-card">
+                    <h4>📋 Con Lista de Valores</h4>
+                    <p>Comparar con valores literales definidos manualmente</p>
+                </div>
+                <div class="concept-card">
+                    <h4>🔍 Con Subconsulta</h4>
+                    <p>Comparar con resultados dinámicos de otra consulta</p>
+                </div>
+            </div>
+
+            <div class="code-example">
+<span class="comment">-- Ejemplo con ANY y lista de valores</span>
+<span class="keyword">SELECT</span> * <span class="keyword">FROM</span> DUMMY 
+<span class="keyword">WHERE</span> 1 = <span class="keyword">ANY</span> (1, 2, 3, 4, 5);
+<span class="comment">-- Resultado: TRUE (1 está en la lista)</span>
+
+<span class="comment">-- Ejemplo con SOME y lista de valores</span>
+<span class="keyword">SELECT</span> * <span class="keyword">FROM</span> DUMMY 
+<span class="keyword">WHERE</span> 1 = <span class="keyword">SOME</span> (1, 2, 3, 4, 5);
+<span class="comment">-- Resultado: TRUE (mismo resultado que ANY)</span>
+            </div>
+
+            <div class="code-example">
+<span class="comment">-- Ejemplo con ANY y subconsulta</span>
+<span class="keyword">SELECT</span> * <span class="keyword">FROM</span> DUMMY 
+<span class="keyword">WHERE</span> 1 = <span class="keyword">ANY</span> (<span class="keyword">SELECT</span> 1 <span class="keyword">FROM</span> DUMMY);
+<span class="comment">-- Resultado: TRUE</span>
+
+<span class="keyword">SELECT</span> * <span class="keyword">FROM</span> DUMMY 
+<span class="keyword">WHERE</span> 1 = <span class="keyword">ANY</span> (<span class="keyword">SELECT</span> 3 <span class="keyword">FROM</span> DUMMY);
+<span class="comment">-- Resultado: FALSE</span>
+            </div>
+
+            <div class="code-example">
+<span class="comment">-- Ejemplo con SOME y subconsulta</span>
+<span class="keyword">SELECT</span> * <span class="keyword">FROM</span> DUMMY 
+<span class="keyword">WHERE</span> 1 = <span class="keyword">SOME</span> (<span class="keyword">SELECT</span> 1 <span class="keyword">FROM</span> DUMMY);
+<span class="comment">-- Resultado: TRUE</span>
+
+<span class="keyword">SELECT</span> * <span class="keyword">FROM</span> DUMMY 
+<span class="keyword">WHERE</span> 1 = <span class="keyword">SOME</span> (<span class="keyword">SELECT</span> 3 <span class="keyword">FROM</span> DUMMY);
+<span class="comment">-- Resultado: FALSE</span>
+            </code>
+
+            <h3>📊 Tabla de Resultados</h3>
+
+            <table class="result-table">
+                <thead>
+                    <tr>
+                        <th>Consulta</th>
+                        <th>Condición</th>
+                        <th>Resultado</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>1 = ANY (1,2,3,4,5)</td>
+                        <td>1 está en la lista</td>
+                        <td class="true">TRUE</td>
+                    </tr>
+                    <tr>
+                        <td>6 = ANY (1,2,3,4,5)</td>
+                        <td>6 NO está en la lista</td>
+                        <td class="false">FALSE</td>
+                    </tr>
+                    <tr>
+                        <td>1 = SOME (1,2,3,4,5)</td>
+                        <td>1 está en la lista</td>
+                        <td class="true">TRUE</td>
+                    </tr>
+                    <tr>
+                        <td>1 = ANY (SELECT 1 FROM DUMMY)</td>
+                        <td>Subconsulta devuelve 1</td>
+                        <td class="true">TRUE</td>
+                    </tr>
+                    <tr>
+                        <td>1 = ANY (SELECT 3 FROM DUMMY)</td>
+                        <td>Subconsulta devuelve 3</td>
+                        <td class="false">FALSE</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>🎯 Casos de Uso Prácticos</h3>
+
+            <div class="example-box">
+                <h4>📝 Ejemplo Real</h4>
+                <p>Encontrar empleados que trabajan en departamentos específicos:</p>
+            </div>
+
+            <div class="code-example">
+<span class="comment">-- Buscar empleados en departamentos de Ventas, Marketing o IT</span>
+<span class="keyword">SELECT</span> nombre, apellido, departamento
+<span class="keyword">FROM</span> empleados
+<span class="keyword">WHERE</span> departamento = <span class="keyword">ANY</span> (<span class="string">'Ventas'</span>, <span class="string">'Marketing'</span>, <span class="string">'IT'</span>);
+
+<span class="comment">-- Equivalente usando subconsulta</span>
+<span class="keyword">SELECT</span> e.nombre, e.apellido 
+<span class="keyword">FROM</span> empleados e
+<span class="keyword">WHERE</span> e.id_departamento = <span class="keyword">ANY</span> (
+    <span class="keyword">SELECT</span> d.id 
+    <span class="keyword">FROM</span> departamentos d 
+    <span class="keyword">WHERE</span> d.nombre <span class="keyword">IN</span> (<span class="string">'Ventas'</span>, <span class="string">'Marketing'</span>, <span class="string">'IT'</span>)
+);
+            </code>
+
+            <h3>💭 Conceptos Clave</h3>
+
+            <div class="grid-2">
+                <div class="concept-card">
+                    <h4>🎯 ANY/SOME</h4>
+                    <ul>
+                        <li>Son sinónimos exactos</li>
+                        <li>Verifican <em>al menos uno</em></li>
+                        <li>Útiles con listas de valores</li>
+                        <li>Funcionan con subconsultas</li>
+                    </ul>
+                </div>
+                <div class="concept-card">
+                    <h4>⚡ Valores de Retorno</h4>
+                    <ul>
+                        <li><span class="true">TRUE</span>: Se encuentra coincidencia</li>
+                        <li><span class="false">FALSE</span>: No hay coincidencias</li>
+                        <li><span class="unknown">UNKNOWN</span>: Valores NULL</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="warning-box">
+                <h4>⚠️ Importante</h4>
+                <p>Los predicados son fundamentales para construir condiciones complejas. ANY y SOME te permiten comparar contra múltiples valores de forma eficiente, especialmente útil cuando trabajas con subconsultas dinámicas.</p>
+            </div>
+
+            <div class="definition-box">
+                <h4>🎯 Próximos Pasos</h4>
+                <p>Los predicados incluyen más operadores como ALL, BETWEEN, LIKE, IN, EXISTS, etc. ANY y SOME son solo el comienzo de las herramientas avanzadas para filtrado de datos en SAP HANA.</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

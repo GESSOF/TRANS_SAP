@@ -1,0 +1,1520 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Curso SAP HANA - OUTER JOINs</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .header h1 {
+            color: #2c3e50;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header p {
+            color: #666;
+            font-size: 1.2em;
+        }
+
+        .dashboard {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .sidebar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            height: fit-content;
+            position: sticky;
+            top: 20px;
+        }
+
+        .sidebar h3 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #667eea;
+        }
+
+        .nav-item {
+            padding: 12px 20px;
+            margin: 5px 0;
+            background: linear-gradient(45deg, #f8f9fa, #e9ecef);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-left: 4px solid transparent;
+            font-size: 0.9em;
+        }
+
+        .nav-item:hover {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            transform: translateX(10px);
+            border-left-color: #fff;
+        }
+
+        .nav-item.active {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border-left-color: #fff;
+        }
+
+        .mobile-menu-toggle {
+            display: none;
+            background: rgba(255, 255, 255, 0.95);
+            border: none;
+            padding: 15px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            font-size: 1.2em;
+            cursor: pointer;
+            width: 100%;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .content {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .section {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .section h2 {
+            color: #2c3e50;
+            font-size: 2em;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #667eea;
+        }
+
+        .concept-card {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-radius: 15px;
+            padding: 25px;
+            margin: 20px 0;
+            border-left: 5px solid #3498db;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease;
+        }
+
+        .concept-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .concept-card h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 1.4em;
+        }
+
+        .concept-card p {
+            line-height: 1.8;
+            color: #555;
+            margin-bottom: 15px;
+        }
+
+        .concept-card ul {
+            margin-left: 20px;
+            margin-top: 10px;
+        }
+
+        .concept-card li {
+            margin: 8px 0;
+            color: #555;
+        }
+
+        .definition-box {
+            background: linear-gradient(135deg, #fff3cd, #ffeaa7);
+            border-radius: 15px;
+            padding: 25px;
+            margin: 20px 0;
+            border-left: 5px solid #f39c12;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        .definition-box h3 {
+            color: #856404;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        .definition-box p {
+            color: #856404;
+            line-height: 1.8;
+            margin-bottom: 10px;
+        }
+
+        .example-box {
+            background: linear-gradient(135deg, #e8f5e8, #d4edda);
+            border-radius: 15px;
+            padding: 25px;
+            margin: 20px 0;
+            border-left: 5px solid #27ae60;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        .example-box h3 {
+            color: #155724;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        .example-box p {
+            color: #155724;
+            line-height: 1.8;
+            margin-bottom: 10px;
+        }
+
+        .example-box ul {
+            margin-left: 20px;
+            margin-top: 10px;
+        }
+
+        .example-box li {
+            margin: 8px 0;
+            color: #155724;
+        }
+
+        .join-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .join-card {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+
+        .join-card:hover {
+            transform: scale(1.05);
+        }
+
+        .join-card.left {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+        }
+
+        .join-card.right {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+        }
+
+        .join-card.performance {
+            background: linear-gradient(135deg, #f39c12, #e67e22);
+        }
+
+        .join-icon {
+            font-size: 3em;
+            margin-bottom: 15px;
+        }
+
+        .join-title {
+            font-size: 1.4em;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .join-description {
+            font-size: 0.9em;
+            opacity: 0.9;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .feature-card {
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            border-radius: 15px;
+            padding: 25px;
+            text-align: center;
+            border-left: 5px solid #3498db;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        .feature-card h4 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        .feature-card .feature-icon {
+            font-size: 2em;
+            margin-bottom: 10px;
+            color: #3498db;
+        }
+
+        .table-example {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .table-example h4 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            text-align: center;
+            font-size: 1.2em;
+        }
+
+        .table-display {
+            font-family: 'Courier New', monospace;
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #dee2e6;
+            overflow-x: auto;
+        }
+
+        .null-highlight {
+            background: #ffebee;
+            color: #c62828;
+            padding: 2px 4px;
+            border-radius: 3px;
+            font-weight: bold;
+        }
+
+        .progress-bar {
+            background: #e9ecef;
+            border-radius: 10px;
+            padding: 3px;
+            margin: 20px 0;
+        }
+
+        .progress {
+            background: linear-gradient(45deg, #3498db, #2980b9);
+            height: 20px;
+            border-radius: 8px;
+            transition: width 0.5s ease;
+        }
+
+        .syntax-box {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 20px;
+            border-radius: 10px;
+            font-family: 'Courier New', monospace;
+            margin: 20px 0;
+            overflow-x: auto;
+            border-left: 5px solid #3498db;
+        }
+
+        .syntax-box .keyword {
+            color: #63b3ed;
+            font-weight: bold;
+        }
+
+        .syntax-box .table {
+            color: #68d391;
+        }
+
+        .syntax-box .condition {
+            color: #fbb6ce;
+        }
+
+        .syntax-box .alias {
+            color: #f6ad55;
+        }
+
+        .process-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .process-step {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+
+        .process-step:hover {
+            transform: scale(1.05);
+        }
+
+        .step-number {
+            font-size: 2em;
+            font-weight: bold;
+            margin-bottom: 10px;
+            background: rgba(255, 255, 255, 0.2);
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 15px;
+        }
+
+        .performance-warning {
+            background: linear-gradient(135deg, #ffebee, #ffcdd2);
+            border-radius: 15px;
+            padding: 25px;
+            margin: 20px 0;
+            border-left: 5px solid #e74c3c;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        .performance-warning h3 {
+            color: #c62828;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        .performance-warning p {
+            color: #c62828;
+            line-height: 1.8;
+            margin-bottom: 10px;
+        }
+
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .comparison-card {
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            border-radius: 15px;
+            padding: 25px;
+            border-left: 5px solid #667eea;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        .comparison-card.efficient {
+            border-left-color: #27ae60;
+            background: linear-gradient(135deg, #e8f5e8, #d4edda);
+        }
+
+        .comparison-card.inefficient {
+            border-left-color: #e74c3c;
+            background: linear-gradient(135deg, #ffebee, #ffcdd2);
+        }
+
+        .comparison-card h4 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        .comparison-card.efficient h4 {
+            color: #155724;
+        }
+
+        .comparison-card.inefficient h4 {
+            color: #c62828;
+        }
+
+        .conversion-demo {
+            background: linear-gradient(135deg, #e3f2fd, #bbdefb);
+            border-radius: 15px;
+            padding: 25px;
+            margin: 20px 0;
+            border-left: 5px solid #2196f3;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        .conversion-demo h3 {
+            color: #1565c0;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        .conversion-demo p {
+            color: #1565c0;
+            line-height: 1.8;
+            margin-bottom: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+
+            .header {
+                padding: 20px;
+                margin-bottom: 20px;
+            }
+
+            .header h1 {
+                font-size: 1.8em;
+            }
+
+            .dashboard {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .sidebar {
+                position: static;
+                padding: 20px;
+                order: 2;
+            }
+
+            .mobile-menu-toggle {
+                display: block;
+                order: 1;
+            }
+
+            .sidebar.mobile-hidden {
+                display: none;
+            }
+
+            .content {
+                padding: 20px;
+                order: 3;
+            }
+
+            .section h2 {
+                font-size: 1.5em;
+            }
+
+            .concept-card, .definition-box, .example-box {
+                padding: 20px;
+                margin: 15px 0;
+            }
+
+            .feature-grid, .process-grid, .join-grid {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+
+            .comparison-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .nav-item {
+                padding: 15px 20px;
+                font-size: 1em;
+                text-align: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .header h1 {
+                font-size: 1.5em;
+            }
+
+            .content {
+                padding: 15px;
+            }
+
+            .concept-card, .definition-box, .example-box {
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <img src="https://gessof.cl/wp-content/uploads/2025/05/Logo-minimalista-con-simbolismo-global.png" alt="Gessof Logo" style="height: 80px; margin-bottom: 20px; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.1));">
+            <h1>Curso SAP HANA</h1>
+            <h2 style="color: #3498db; font-size: 1.5em; margin: 10px 0; font-weight: 600;">Clase 031</h2>
+            <p>LEFT y RIGHT OUTER JOINs - JOINs Inclusivos</p>
+            <div class="progress-bar">
+                <div class="progress" style="width: 100%"></div>
+            </div>
+        </header>
+
+        <div class="dashboard">
+            <button class="mobile-menu-toggle" onclick="toggleMobileMenu()">
+                📋 Menú de Contenidos
+            </button>
+
+            <nav class="sidebar" id="sidebar">
+                <h3>Contenidos del Módulo</h3>
+                <div class="nav-item active" onclick="showSection('overview')">📋 Resumen General</div>
+                <div class="nav-item" onclick="showSection('introduction')">🚀 Introducción</div>
+                <div class="nav-item" onclick="showSection('left-outer')">⬅️ LEFT OUTER JOIN</div>
+                <div class="nav-item" onclick="showSection('left-internal')">⚙️ Funcionamiento LEFT</div>
+                <div class="nav-item" onclick="showSection('right-outer')">➡️ RIGHT OUTER JOIN</div>
+                <div class="nav-item" onclick="showSection('right-internal')">🔧 Funcionamiento RIGHT</div>
+                <div class="nav-item" onclick="showSection('conversion')">🔄 Conversión y Optimización</div>
+                <div class="nav-item" onclick="showSection('recommendations')">💡 Recomendaciones</div>
+                <div class="nav-item" onclick="showSection('conclusions')">🎯 Conclusiones</div>
+            </nav>
+
+            <main class="content">
+                <section id="overview" class="section active">
+                    <h2>📋 Resumen General del Módulo</h2>
+                    
+                    <div class="join-grid">
+                        <div class="join-card left">
+                            <div class="join-icon">⬅️</div>
+                            <div class="join-title">LEFT OUTER JOIN</div>
+                            <div class="join-description">Todos los registros de la tabla izquierda + coincidencias</div>
+                        </div>
+                        <div class="join-card right">
+                            <div class="join-icon">➡️</div>
+                            <div class="join-title">RIGHT OUTER JOIN</div>
+                            <div class="join-description">Todos los registros de la tabla derecha + coincidencias</div>
+                        </div>
+                        <div class="join-card performance">
+                            <div class="join-icon">⚡</div>
+                            <div class="join-title">RENDIMIENTO</div>
+                            <div class="join-description">LEFT más eficiente que RIGHT</div>
+                        </div>
+                        <div class="join-card">
+                            <div class="join-icon">🔄</div>
+                            <div class="join-title">CONVERSIÓN</div>
+                            <div class="join-description">RIGHT → LEFT cambiando orden</div>
+                        </div>
+                    </div>
+
+                    <div class="concept-card">
+                        <h3>🎯 Objetivos del Módulo</h3>
+                        <p>Continuamos con los JOINs explorando los <strong>OUTER JOINs</strong>. Estos son más inclusivos que el INNER JOIN porque incluyen registros que no tienen correspondencia, rellenando con valores NULL donde faltan datos.</p>
+                    </div>
+
+                    <div class="concept-card">
+                        <h3>📚 Contenido del Módulo</h3>
+                        <ul>
+                            <li><strong>LEFT OUTER JOIN:</strong> Preserva todos los registros de la tabla izquierda</li>
+                            <li><strong>Funcionamiento eficiente:</strong> Solo hace JOIN cuando hay correspondencia</li>
+                            <li><strong>RIGHT OUTER JOIN:</strong> Preserva todos los registros de la tabla derecha</li>
+                            <li><strong>Problemas de rendimiento:</strong> RIGHT funciona como INNER (producto cartesiano)</li>
+                            <li><strong>Conversión RIGHT a LEFT:</strong> Intercambio simple de orden de tablas</li>
+                            <li><strong>Valores NULL:</strong> Gestión de campos sin correspondencia</li>
+                            <li><strong>Recomendaciones de uso:</strong> Cuándo usar cada tipo</li>
+                        </ul>
+                    </concept-card>
+
+                    <div class="definition-box">
+                        <h3>💡 Diferencia Clave con INNER JOIN</h3>
+                        <p><strong>INNER JOIN:</strong> Solo registros que existen en ambas tablas.</p>
+                        <p><strong>OUTER JOINs:</strong> Incluyen registros que pueden existir solo en una tabla, completando con NULL.</p>
+                    </definition-box>
+
+                    <div class="performance-warning">
+                        <h3>⚠️ Advertencia de Rendimiento</h3>
+                        <p><strong>LEFT OUTER JOIN:</strong> Muy eficiente, solo procesa cuando hay correspondencia.</p>
+                        <p><strong>RIGHT OUTER JOIN:</strong> Menos eficiente, hace producto cartesiano completo.</p>
+                        <p><strong>Solución:</strong> Convertir RIGHT a LEFT cambiando el orden de las tablas.</p>
+                    </performance-warning>
+                </section>
+
+                <section id="introduction" class="section">
+                    <h2>🚀 Introducción a los OUTER JOINs</h2>
+                    
+                    <div class="concept-card">
+                        <h3>🔍 Evolución desde INNER JOIN</h3>
+                        <p>En la clase anterior vimos el <strong>INNER JOIN</strong>, que funciona como el producto cartesiano y solo devuelve registros con coincidencias en ambas tablas. Hoy exploramos los <strong>OUTER JOINs</strong>, que son más inclusivos.</p>
+                    </div>
+
+                    <div class="concept-card">
+                        <h3>🌟 ¿Qué son los OUTER JOINs?</h3>
+                        <p>Los <strong>OUTER JOINs</strong> extienden el concepto del INNER JOIN permitiendo incluir registros que <strong>no tienen correspondencia</strong> en la otra tabla. Donde no hay datos, se completa con valores <strong>NULL</strong>.</p>
+                    </concept-card>
+
+                    <div class="feature-grid">
+                        <div class="feature-card">
+                            <div class="feature-icon">⬅️</div>
+                            <h4>LEFT OUTER JOIN</h4>
+                            <p>Preserva <strong>todos</strong> los registros de la tabla de la izquierda, añadiendo NULL donde no hay correspondencia en la derecha</p>
+                        </div>
+
+                        <div class="feature-card">
+                            <div class="feature-icon">➡️</div>
+                            <h4>RIGHT OUTER JOIN</h4>
+                            <p>Preserva <strong>todos</strong> los registros de la tabla de la derecha, añadiendo NULL donde no hay correspondencia en la izquierda</p>
+                        </div>
+
+                        <div class="feature-card">
+                            <div class="feature-icon">🔄</div>
+                            <h4>Equivalencia</h4>
+                            <p>RIGHT OUTER JOIN = LEFT OUTER JOIN con <strong>orden de tablas intercambiado</strong></p>
+                        </div>
+
+                        <div class="feature-card">
+                            <div class="feature-icon">🎯</div>
+                            <h4>Casos de Uso</h4>
+                            <p>Útiles para análisis completos, auditorías y cuando necesitas preservar todos los datos de una tabla principal</p>
+                        </div>
+                    </feature-grid>
+
+                    <div class="concept-card">
+                        <h3>📊 Usando los Mismos Datos</h3>
+                        <p>Continuaremos usando las tablas creadas en la clase anterior:</p>
+                        <ul>
+                            <li><strong>join_customer:</strong> Werner, Mark, Tom, Bob</li>
+                            <li><strong>join_state:</strong> MI (Michigan), AL (Alabama)</li>
+                            <li><strong>Problema:</strong> Tom y Bob tienen estado TX que no existe</li>
+                            <li><strong>Problema:</strong> Alabama no tiene clientes asociados</li>
+                        </ul>
+                    </concept-card>
+
+                    <div class="example-box">
+                        <h3>🔍 Recordatorio: Resultado INNER JOIN</h3>
+                        <p>Con INNER JOIN obtuvimos solo Werner y Mark (los únicos con estado MI válido):</p>
+                        <div class="table-display">
+customer_name | state | state_name
+   Werner     |  MI   |  Michigan
+    Mark      |  MI   |  Michigan
+                        </div>
+                        <p><em>Tom, Bob y Alabama quedaron excluidos</em></p>
+                    </example-box>
+
+                    <div class="definition-box">
+                        <h3">🎯 ¿Qué Logran los OUTER JOINs?</h3>
+                        <p><strong>LEFT OUTER:</strong> Mostraría Werner, Mark, Tom y Bob (todos los clientes), con NULL para Tom y Bob.</p>
+                        <p><strong>RIGHT OUTER:</strong> Mostraría Michigan y Alabama (todos los estados), con NULL para Alabama.</p>
+                        <p><strong>Inclusión completa:</strong> Ningún dato de la tabla "preservada" se pierde.</p>
+                    </definition-box>
+                </section>
+
+                <section id="left-outer" class="section">
+                    <h2>⬅️ LEFT OUTER JOIN</h2>
+                    
+                    <div class="concept-card">
+                        <h3>🎯 Concepto del LEFT OUTER JOIN</h3>
+                        <p>El <strong>LEFT OUTER JOIN</strong> garantiza que aparezca <strong>como mínimo un registro por cada valor de la tabla de la izquierda</strong>. Si tiene correspondencia en la tabla derecha, rellena con los datos reales. Si no, rellena con valores NULL.</p>
+                    </concept-card>
+
+                    <div class="concept-card">
+                        <h3">⚙️ Comportamiento Detallado</h3>
+                        <ul>
+                            <li><strong>Tabla izquierda:</strong> TODOS sus registros aparecen en el resultado</li>
+                            <li><strong>Con correspondencia:</strong> Se rellenan los campos de la tabla derecha</li>
+                            <li><strong>Sin correspondencia:</strong> Los campos de la tabla derecha aparecen como NULL</li>
+                            <li><strong>Garantía:</strong> Nunca se pierde información de la tabla izquierda</li>
+                        </ul>
+                    </concept-card>
+
+                    <div class="example-box">
+                        <h3">📝 Sintaxis del LEFT OUTER JOIN</h3>
+                    </example-box>
+
+                    <div class="syntax-box">
+<span class="keyword">SELECT</span> *
+<span class="keyword">FROM</span> <span class="table">join_customer</span> <span class="keyword">AS</span> <span class="alias">c</span>
+<span class="keyword">LEFT OUTER JOIN</span> <span class="table">join_state</span> <span class="keyword">AS</span> <span class="alias">s</span>
+<span class="keyword">ON</span> <span class="condition">c.state = s.state</span>
+                    </syntax-box>
+
+                    <div class="concept-card">
+                        <h3">🔍 Comparación de Sintaxis</h3>
+                        <p>La única diferencia con INNER JOIN es cambiar <code>INNER JOIN</code> por <code>LEFT OUTER JOIN</code>. Todo lo demás permanece idéntico.</p>
+                    </concept-card>
+
+                    <div class="table-example">
+                        <h4">✅ Resultado del LEFT OUTER JOIN</h4>
+                        <div class="table-display">
+customer_id | customer_name | state | age | state | state_name
+     1      |    Werner     |  MI   | 10  |  MI   |  Michigan
+     2      |     Mark      |  MI   | 11  |  MI   |  Michigan
+     3      |     Tom       |  TX   | 12  |<span class="null-highlight">NULL</span>  |  <span class="null-highlight">NULL</span>
+     4      |     Bob       |  TX   | 13  |<span class="null-highlight">NULL</span>  |  <span class="null-highlight">NULL</span>
+                        </div>
+                    </div>
+
+                    <div class="concept-card">
+                        <h3">🔍 Análisis del Resultado</h3>
+                        <ul>
+                            <li><strong>Werner y Mark:</strong> Aparecen con datos completos (tienen estado MI válido)</li>
+                            <li><strong>Tom y Bob:</strong> Aparecen pero con NULL en campos de estado (TX no existe)</li>
+                            <li><strong>Todos los clientes preservados:</strong> Ningún cliente se pierde</li>
+                            <li><strong>Alabama no aparece:</strong> No hay clientes que lo referencien</li>
+                        </ul>
+                    </concept-card>
+
+                    <div class="concept-card">
+                        <h3">💡 Interpretación de los NULL</h3>
+                        <p>Los valores <strong>NULL</strong> en el resultado indican <strong>ausencia de valor</strong>. En este contexto específico, significa que no hay datos relacionados en la tabla de la derecha para esos registros.</p>
+                    </concept-card>
+
+                    <div class="example-box">
+                        <h3">🎯 Cuándo Usar LEFT OUTER JOIN</h3>
+                        <ul>
+                            <li><strong>Análisis completo de clientes:</strong> Ver todos los clientes, tengan o no datos adicionales</li>
+                            <li><strong>Auditorías:</strong> Detectar registros con información incompleta</li>
+                            <li><strong>Reportes inclusivos:</strong> No perder información de la tabla principal</li>
+                            <li><strong>Vistas analíticas:</strong> Especialmente útil cuando la tabla izquierda es de "hechos"</li>
+                        </ul>
+                    </example-box>
+
+                    <div class="definition-box">
+                        <h3">💡 Ventaja Clave del LEFT OUTER JOIN</h3>
+                        <p><strong>Preservación completa:</strong> Garantiza que todos los registros de la tabla izquierda estén en el resultado.</p>
+                        <p><strong>Detección de problemas:</strong> Los NULL revelan datos faltantes o inconsistencias.</p>
+                        <p><strong>Flexibilidad analítica:</strong> Permite análisis tanto de datos completos como incompletos.</p>
+                    </definition-box>
+                </section>
+
+                <section id="left-internal" class="section">
+                    <h2">⚙️ Funcionamiento Interno del LEFT OUTER</h2>
+                    
+                    <div class="concept-card">
+                        <h3">🚀 Eficiencia Superior</h3>
+                        <p>El <strong>LEFT OUTER JOIN es mucho más eficiente que el INNER JOIN</strong>. A diferencia del INNER JOIN que hace todas las combinaciones, el LEFT OUTER solo realiza el JOIN cuando encuentra correspondencias reales.</p>
+                    </concept-card>
+
+                    <div class="comparison-grid">
+                        <div class="comparison-card efficient">
+                            <h4">✅ LEFT OUTER JOIN (Eficiente)</h4>
+                            <ul>
+                                <li><strong>Procesamiento inteligente:</strong> Solo hace JOIN cuando hay correspondencia</li>
+                                <li><strong>Sin producto cartesiano:</strong> No genera todas las combinaciones</li>
+                                <li><strong>Resultado directo:</strong> Si no hay correspondencia, agrega NULL inmediatamente</li>
+                                <li><strong>Menor carga:</strong> Menos operaciones de comparación</li>
+                            </ul>
+                        </div>
+
+                        <div class="comparison-card inefficient">
+                            <h4">❌ INNER JOIN (Menos Eficiente)</h4>
+                            <ul>
+                                <li><strong>Producto cartesiano completo:</strong> Todas las combinaciones primero</li>
+                                <li><strong>Filtrado posterior:</strong> Luego descarta las que no coinciden</li>
+                                <li><strong>Más operaciones:</strong> Evalúa incluso combinaciones inválidas</li>
+                                <li><strong>Mayor carga:</strong> Procesamiento exhaustivo siempre</li>
+                            </ul>
+                        </div>
+                    </comparison-grid>
+
+                    <div class="process-grid">
+                        <div class="process-step">
+                            <div class="step-number">1</div>
+                            <h4>Primer Registro</h4>
+                            <p>Werner (MI) → Busca MI en tabla derecha → ✅ Encuentra → Hace JOIN</p>
+                        </div>
+
+                        <div class="process-step">
+                            <div class="step-number">2</div>
+                            <h4>Segundo Registro</h4>
+                            <p>Mark (MI) → Busca MI en tabla derecha → ✅ Encuentra → Hace JOIN</p>
+                        </div>
+
+                        <div class="process-step">
+                            <div class="step-number">3</div>
+                            <h4>Tercer Registro</h4>
+                            <p>Tom (TX) → Busca TX en tabla derecha → ❌ No encuentra → NULL directo</p>
+                        </div>
+
+                        <div class="process-step">
+                            <div class="step-number">4</div>
+                            <h4>Cuarto Registro</h4>
+                            <p>Bob (TX) → Busca TX en tabla derecha → ❌ No encuentra → NULL directo</p>
+                        </div>
+                    </process-grid>
+
+                    <div class="concept-card">
+                        <h3">📊 Demostración Paso a Paso</h3>
+                        <p>Veamos cómo procesa cada registro el LEFT OUTER JOIN:</p>
+                    </concept-card>
+
+                    <div class="table-example">
+                        <h4">🔍 Procesamiento Detallado</h4>
+                        <div class="table-display">
+Paso | Registro      | Busca en Derecha | ¿Encuentra? | Acción
+  1  | Werner (MI)   | MI              | ✅ Sí       | JOIN con Michigan
+  2  | Mark (MI)     | MI              | ✅ Sí       | JOIN con Michigan  
+  3  | Tom (TX)      | TX              | ❌ No       | Agregar con NULL
+  4  | Bob (TX)      | TX              | ❌ No       | Agregar con NULL
+                        </div>
+                    </div>
+
+                    <div class="concept-card">
+                        <h3">⚡ Ventajas de Rendimiento</h3>
+                        <ul>
+                            <li><strong>Evaluación temprana:</strong> Decide rápidamente si hay correspondencia</li>
+                            <li><strong>Sin trabajo innecesario:</strong> No procesa combinaciones que no van a usarse</li>
+                            <li><strong>Escalabilidad:</strong> El rendimiento se mantiene estable con más datos</li>
+                            <li><strong>Optimización de índices:</strong> Aprovecha mejor los índices de la tabla derecha</li>
+                        </ul>
+                    </concept-card>
+
+                    <div class="example-box">
+                        <h3">📈 Comparación de Rendimiento</h3>
+                        <p><strong>INNER JOIN:</strong> 4 clientes × 2 estados = 8 evaluaciones obligatorias</p>
+                        <p><strong>LEFT OUTER JOIN:</strong> 4 búsquedas directas + 2 JOINs = máximo 6 operaciones</p>
+                        <p><em>A mayor escala, la diferencia se vuelve más significativa</em></p>
+                    </example-box>
+
+                    <div class="definition-box">
+                        <h3">💡 Por Qué Es Más Eficiente</h3>
+                        <p><strong>Decisión temprana:</strong> Sabe inmediatamente si debe hacer JOIN o agregar NULL.</p>
+                        <p><strong>Sin desperdicio:</strong> No calcula combinaciones que no va a usar.</p>
+                        <p><strong>Procesamiento dirigido:</strong> Cada registro de la izquierda tiene un tratamiento específico.</p>
+                        <p><strong>Optimización natural:</strong> El algoritmo evita trabajo innecesario por diseño.</p>
+                    </definition-box>
+                </section>
+
+                <section id="right-outer" class="section">
+                    <h2">➡️ RIGHT OUTER JOIN</h2>
+                    
+                    <div class="concept-card">
+                        <h3">🔄 Concepto del RIGHT OUTER JOIN</h3>
+                        <p>El <strong>RIGHT OUTER JOIN</strong> es conceptualmente lo opuesto al LEFT OUTER JOIN. Garantiza que aparezca <strong>como mínimo un registro por cada valor de la tabla de la derecha</strong>, completando con NULL donde no hay correspondencia en la izquierda.</p>
+                    </concept-card>
+
+                    <div class="concept-card">
+                        <h3">📊 Comportamiento del RIGHT OUTER</h3>
+                        <ul>
+                            <li><strong>Tabla derecha:</strong> TODOS sus registros aparecen en el resultado</li>
+                            <li><strong>Con correspondencia:</strong> Se rellenan los campos de la tabla izquierda</li>
+                            <li><strong>Sin correspondencia:</strong> Los campos de la tabla izquierda aparecen como NULL</li>
+                            <li><strong>Garantía:</strong> Nunca se pierde información de la tabla derecha</li>
+                        </ul>
+                    </concept-card>
+
+                    <div class="example-box">
+                        <h3">📝 Sintaxis del RIGHT OUTER JOIN</h3>
+                    </example-box>
+
+                    <div class="syntax-box">
+<span class="keyword">SELECT</span> *
+<span class="keyword">FROM</span> <span class="table">join_customer</span> <span class="keyword">AS</span> <span class="alias">c</span>
+<span class="keyword">RIGHT OUTER JOIN</span> <span class="table">join_state</span> <span class="keyword">AS</span> <span class="alias">s</span>
+<span class="keyword">ON</span> <span class="condition">c.state = s.state</span>
+                    </syntax-box>
+
+                    <div class="table-example">
+                        <h4">✅ Resultado del RIGHT OUTER JOIN</h4>
+                        <div class="table-display">
+customer_id | customer_name | state | age | state | state_name
+     1      |    Werner     |  MI   | 10  |  MI   |  Michigan
+     2      |     Mark      |  MI   | 11  |  MI   |  Michigan
+   <span class="null-highlight">NULL</span>   |    <span class="null-highlight">NULL</span>      |<span class="null-highlight">NULL</span> |<span class="null-highlight">NULL</span>|  AL   |  Alabama
+                        </div>
+                    </div>
+
+                    <div class="concept-card">
+                        <h3">🔍 Análisis del Resultado RIGHT OUTER</h3>
+                        <ul>
+                            <li><strong>Michigan aparece:</strong> Con Werner y Mark (clientes que tienen MI)</li>
+                            <li><strong>Alabama aparece:</strong> Con NULL en campos de cliente (no hay clientes con AL)</li>
+                            <li><strong>Tom y Bob NO aparecen:</strong> Tienen TX que no está en la tabla de estados</li>
+                            <li><strong>Todos los estados preservados:</strong> Michigan y Alabama están en el resultado</li>
+                        </ul>
+                    </concept-card>
+
+                    <div class="concept-card">
+                        <h3">🆚 Comparación con LEFT OUTER</h3>
+                        <p><strong>LEFT OUTER:</strong> 4 resultados (todos los clientes), Alabama no aparece</p>
+                        <p><strong>RIGHT OUTER:</strong> 3 resultados (todos los estados), Tom y Bob no aparecen</p>
+                        <p>El resultado es <strong>claramente distinto</strong> según qué tabla queremos preservar completamente.</p>
+                    </concept-card>
+
+                    <div class="example-box">
+                        <h3">🎯 Cuándo Usar RIGHT OUTER JOIN</h3>
+                        <ul>
+                            <li><strong>Análisis de catálogos:</strong> Ver todos los productos, tengan o no ventas</li>
+                            <li><strong>Cobertura geográfica:</strong> Todos los estados/regiones, con o sin clientes</li>
+                            <li><strong>Inventario completo:</strong> Todos los items, se hayan vendido o no</li>
+                            <li><strong>Auditoría inversa:</strong> Detectar elementos sin uso o actividad</li>
+                        </ul>
+                    </example-box>
+
+                    <div class="performance-warning">
+                        <h3">⚠️ Problema de Rendimiento</h3>
+                        <p><strong>RIGHT OUTER JOIN no se suele utilizar por su bajo rendimiento.</strong> A diferencia del LEFT OUTER JOIN, funciona de manera similar al INNER JOIN, haciendo el producto cartesiano completo antes de filtrar.</p>
+                    </performance-warning>
+
+                    <div class="definition-box">
+                        <h3">💡 RIGHT OUTER: Mismo Concepto, Diferente Tabla</h3>
+                        <p><strong>LEFT OUTER:</strong> Preserva la tabla de la izquierda (primera en el FROM).</p>
+                        <p><strong>RIGHT OUTER:</strong> Preserva la tabla de la derecha (después del JOIN).</p>
+                        <p><strong>Identificación visual:</strong> Izquierda y derecha se refieren a la posición en la consulta.</p>
+                    </definition-box>
+                </section>
+
+                <section id="right-internal" class="section">
+                    <h2">🔧 Funcionamiento Interno del RIGHT OUTER</h2>
+                    
+                    <div class="concept-card">
+                        <h3">⚠️ Problema de Rendimiento del RIGHT OUTER</h3>
+                        <p>El <strong>RIGHT OUTER JOIN funciona de manera similar al INNER JOIN</strong>, realizando el producto cartesiano completo y luego filtrando. Esto lo hace mucho menos eficiente que el LEFT OUTER JOIN.</p>
+                    </concept-card>
+
+                    <div class="performance-warning">
+                        <h3">🐌 Por Qué Es Menos Eficiente</h3>
+                        <p>RIGHT OUTER JOIN hace <strong>todas las combinaciones posibles</strong> primero, luego evalúa cuáles mantener y cuáles descartar. Es el mismo proceso pesado del INNER JOIN, pero preservando todos los registros de la tabla derecha.</p>
+                    </performance-warning>
+
+                    <div class="concept-card">
+                        <h3">📊 Proceso Interno Detallado</h3>
+                        <p>Veamos cómo RIGHT OUTER JOIN procesa nuestro ejemplo:</p>
+                        <p><strong>4 clientes × 2 estados = 8 combinaciones a evaluar</strong></p>
+                    </concept-card>
+
+                    <div class="table-example">
+                        <h4">🔢 Todas las Combinaciones Generadas</h4>
+                        <div class="table-display">
+Combinación | customer_name | c.state | s.state | state_name | ¿Coincide? | ¿Mantener?
+     1      |    Werner     |   MI    |   MI    |  Michigan  |    ✅      |    ✅
+     2      |    Werner     |   MI    |   AL    |  Alabama   |    ❌      |    ❌
+     3      |     Mark      |   MI    |   MI    |  Michigan  |    ✅      |    ✅
+     4      |     Mark      |   MI    |   AL    |  Alabama   |    ❌      |    ❌
+     5      |     Tom       |   TX    |   MI    |  Michigan  |    ❌      |    ❌
+     6      |     Tom       |   TX    |   AL    |  Alabama   |    ❌      |    ❌
+     7      |     Bob       |   TX    |   MI    |  Michigan  |    ❌      |    ❌
+     8      |     Bob       |   TX    |   AL    |  Alabama   |    ❌      |    ❌
+                        </div>
+                    </div>
+
+                    <div class="process-grid">
+                        <div class="process-step">
+                            <div class="step-number">1</div>
+                            <h4>Producto Cartesiano</h4>
+                            <p>Genera las 8 combinaciones posibles de clientes × estados</p>
+                        </div>
+
+                        <div class="process-step">
+                            <div class="step-number">2</div>
+                            <h4>Evaluación</h4>
+                            <p>Verifica condición c.state = s.state para cada combinación</p>
+                        </div>
+
+                        <div class="process-step">
+                            <div class="step-number">3</div>
+                            <h4>Filtrado Especial</h4>
+                            <p>Mantiene coincidencias + asegura que aparezcan todos los estados</p>
+                        </div>
+
+                        <div class="process-step">
+                            <div class="step-number">4</div>
+                            <h4>Completar con NULL</h4>
+                            <p>Para estados sin clientes, agrega registro con NULL en campos de cliente</p>
+                        </div>
+                    </process-grid>
+
+                    <div class="concept-card">
+                        <h3">🔍 Análisis del Procesamiento</h3>
+                        <ul>
+                            <li><strong>Combinaciones 1 y 3:</strong> MI = MI, se mantienen</li>
+                            <li><strong>Combinaciones 2, 4, 5, 6, 7, 8:</strong> No coinciden, se descartan</li>
+                            <li><strong>Alabama sin clientes:</strong> Se detecta y se agrega con NULL</li>
+                            <li><strong>Trabajo innecesario:</strong> Evaluó 6 combinaciones que no servían</li>
+                        </ul>
+                    </concept-card>
+
+                    <div class="comparison-grid">
+                        <div class="comparison-card efficient">
+                            <h4">✅ LEFT OUTER (4 operaciones)</h4>
+                            <ul>
+                                <li>Werner (MI) → busca MI → encuentra</li>
+                                <li>Mark (MI) → busca MI → encuentra</li>
+                                <li>Tom (TX) → busca TX → no encuentra → NULL</li>
+                                <li>Bob (TX) → busca TX → no encuentra → NULL</li>
+                            </ul>
+                        </div>
+
+                        <div class="comparison-card inefficient">
+                            <h4">❌ RIGHT OUTER (8 evaluaciones)</h4>
+                            <ul>
+                                <li>Genera 8 combinaciones completas</li>
+                                <li>Evalúa todas las combinaciones</li>
+                                <li>Descarta 6 combinaciones inválidas</li>
+                                <li>Agrega registros NULL adicionales</li>
+                            </ul>
+                        </div>
+                    </comparison-grid>
+
+                    <div class="concept-card">
+                        <h3">📈 Impacto en Escalabilidad</h3>
+                        <p>Con tablas más grandes, la diferencia se vuelve dramática:</p>
+                        <ul>
+                            <li><strong>1,000 clientes × 50 estados:</strong> RIGHT OUTER = 50,000 evaluaciones</li>
+                            <li><strong>Mismo caso con LEFT OUTER:</strong> 1,000 búsquedas directas</li>
+                            <li><strong>Diferencia:</strong> 50x más operaciones con RIGHT OUTER</li>
+                        </ul>
+                    </concept-card>
+
+                    <div class="definition-box">
+                        <h3">💡 Por Qué RIGHT OUTER Es Ineficiente</h3>
+                        <p><strong>Herencia del INNER JOIN:</strong> Usa el mismo algoritmo de producto cartesiano.</p>
+                        <p><strong>Trabajo desperdiciado:</strong> Calcula combinaciones que no va a usar.</p>
+                        <p><strong>Procesamiento exhaustivo:</strong> No puede optimizar como el LEFT OUTER.</p>
+                        <p><strong>Escalabilidad pobre:</strong> El rendimiento empeora exponencialmente.</p>
+                    </definition-box>
+                </section>
+
+                <section id="conversion" class="section">
+                    <h2">🔄 Conversión y Optimización</h2>
+                    
+                    <div class="concept-card">
+                        <h3">💡 La Solución: Convertir RIGHT a LEFT</h3>
+                        <p>Debido al <strong>bajo rendimiento del RIGHT OUTER JOIN</strong>, se recomienda <strong>siempre convertirlo a LEFT OUTER JOIN</strong>. La conversión es sorprendentemente simple: solo hay que intercambiar el orden de las tablas.</p>
+                    </concept-card>
+
+                    <div class="conversion-demo">
+                        <h3">🔄 Conversión Paso a Paso</h3>
+                        <p>Para convertir RIGHT OUTER JOIN a LEFT OUTER JOIN es tan sencillo como <strong>cambiar el orden de las tablas</strong> en la consulta.</p>
+                    </conversion-demo>
+
+                    <div class="comparison-grid">
+                        <div class="comparison-card inefficient">
+                            <h4">❌ RIGHT OUTER JOIN (Original)</h4>
+                            <div class="syntax-box">
+<span class="keyword">SELECT</span> *
+<span class="keyword">FROM</span> <span class="table">join_customer</span> <span class="keyword">AS</span> <span class="alias">c</span>
+<span class="keyword">RIGHT OUTER JOIN</span> <span class="table">join_state</span> <span class="keyword">AS</span> <span class="alias">s</span>
+<span class="keyword">ON</span> <span class="condition">c.state = s.state</span>
+                            </div>
+                            <p><strong>Problema:</strong> Bajo rendimiento</p>
+                        </div>
+
+                        <div class="comparison-card efficient">
+                            <h4">✅ LEFT OUTER JOIN (Convertido)</h4>
+                            <div class="syntax-box">
+<span class="keyword">SELECT</span> *
+<span class="keyword">FROM</span> <span class="table">join_state</span> <span class="keyword">AS</span> <span class="alias">s</span>
+<span class="keyword">LEFT OUTER JOIN</span> <span class="table">join_customer</span> <span class="keyword">AS</span> <span class="alias">c</span>
+<span class="keyword">ON</span> <span class="condition">s.state = c.state</span>
+                            </div>
+                            <p><strong>Solución:</strong> Alto rendimiento</p>
+                        </div>
+                    </comparison-grid>
+
+                    <div class="concept-card">
+                        <h3">📊 Cambios en la Conversión</h3>
+                        <ul>
+                            <li><strong>Orden de tablas:</strong> join_state pasa a ser la primera (izquierda)</li>
+                            <li><strong>Tipo de JOIN:</strong> Cambia de RIGHT OUTER a LEFT OUTER</li>
+                            <li><strong>Condición ON:</strong> Se invierte: s.state = c.state</li>
+                            <li><strong>Alias:</strong> Se mantienen pero en orden inverso</li>
+                        </ul>
+                    </concept-card>
+
+                    <div class="table-example">
+                        <h4">🔍 Comparación de Resultados</h4>
+                        <div class="table-display">
+RIGHT OUTER JOIN:
+customer_id | customer_name | state | age | state | state_name
+     1      |    Werner     |  MI   | 10  |  MI   |  Michigan
+     2      |     Mark      |  MI   | 11  |  MI   |  Michigan
+    NULL    |     NULL      | NULL  |NULL |  AL   |  Alabama
+
+LEFT OUTER JOIN (convertido):
+state | state_name | customer_id | customer_name | state | age
+  MI  |  Michigan  |     1       |    Werner     |  MI   | 10
+  MI  |  Michigan  |     2       |    Mark       |  MI   | 11
+  AL  |  Alabama   |    NULL     |     NULL      | NULL  |NULL
+                        </div>
+                    </div>
+
+                    <div class="concept-card">
+                        <h3">🎯 Observaciones de la Conversión</h3>
+                        <ul>
+                            <li><strong>Mismo contenido:</strong> Los datos son exactamente los mismos</li>
+                            <li><strong>Orden de columnas:</strong> Cambia porque cambiamos el orden de las tablas</li>
+                            <li><strong>Rendimiento:</strong> Dramáticamente mejorado</li>
+                            <li><strong>Resultado funcional:</strong> Idéntico para análisis</li>
+                        </ul>
+                    </concept-card>
+
+                    <div class="concept-card">
+                        <h3">🧭 Identificación de Izquierda y Derecha</h3>
+                        <p>Para evitar confusiones sobre qué tabla está a la "izquierda" o "derecha":</p>
+                        <ul>
+                            <li><strong>Tabla izquierda:</strong> La que aparece inmediatamente después de FROM</li>
+                            <li><strong>Tabla derecha:</strong> La que aparece después de LEFT/RIGHT/INNER JOIN</li>
+                            <li><strong>Visualización:</strong> Escribe la consulta en una línea para verlo claramente</li>
+                        </ul>
+                    </concept-card>
+
+                    <div class="example-box">
+                        <h3">📝 Ejemplo Visual de Posición</h3>
+                        <div class="syntax-box">
+<span class="keyword">SELECT</span> * <span class="keyword">FROM</span> <span class="table">tabla_izquierda</span> <span class="keyword">LEFT OUTER JOIN</span> <span class="table">tabla_derecha</span> <span class="keyword">ON</span> condición
+                        </div>
+                        <p>Cuando se empieza, estos detalles visuales ayudan a ubicarse correctamente.</p>
+                    </example-box>
+
+                    <div class="definition-box">
+                        <h3">💡 Regla de Oro de Optimización</h3>
+                        <p><strong>Siempre usa LEFT OUTER JOIN:</strong> Es más eficiente en todos los casos.</p>
+                        <p><strong>Convierte RIGHT a LEFT:</strong> Simplemente intercambia el orden de las tablas.</p>
+                        <p><strong>Mismo resultado, mejor rendimiento:</strong> No sacrificas funcionalidad por velocidad.</p>
+                        <p><strong>Estándar de la industria:</strong> La mayoría de desarrolladores prefieren LEFT OUTER.</p>
+                    </definition-box>
+                </section>
+
+                <section id="recommendations" class="section">
+                    <h2">💡 Recomendaciones de Uso</h2>
+                    
+                    <div class="concept-card">
+                        <h3">🎯 Guía de Decisión: ¿Qué JOIN Usar?</h3>
+                        <p>La elección entre diferentes tipos de JOIN depende de tus necesidades específicas y las características de tus datos. Aquí tienes una guía práctica para tomar la decisión correcta.</p>
+                    </concept-card>
+
+                    <div class="feature-grid">
+                        <div class="feature-card">
+                            <div class="feature-icon">⬅️</div>
+                            <h4>Usar LEFT OUTER JOIN</h4>
+                            <p><strong>Cuándo:</strong> Necesitas preservar todos los registros de la tabla principal</p>
+                            <p><strong>Ejemplo:</strong> Todos los clientes, tengan o no pedidos</p>
+                        </div>
+
+                        <div class="feature-card">
+                            <div class="feature-icon">🎯</div>
+                            <h4>Usar INNER JOIN</h4>
+                            <p><strong>Cuándo:</strong> Solo quieres datos que existen en ambas tablas</p>
+                            <p><strong>Ejemplo:</strong> Solo clientes que han hecho pedidos</p>
+                        </div>
+
+                        <div class="feature-card">
+                            <div class="feature-icon">❌</div>
+                            <h4>Evitar RIGHT OUTER</h4>
+                            <p><strong>Por qué:</strong> Rendimiento pobre comparado con LEFT OUTER</p>
+                            <p><strong>Solución:</strong> Convertir a LEFT OUTER cambiando orden</p>
+                        </div>
+
+                        <div class="feature-card">
+                            <div class="feature-icon">🔧</div>
+                            <h4>Considerar Integridad</h4>
+                            <p><strong>Con integridad referencial:</strong> INNER y LEFT OUTER dan mismo resultado</p>
+                            <p><strong>Sin garantías:</strong> LEFT OUTER es más seguro</p>
+                        </div>
+                    </feature-grid>
+
+                    <div class="concept-card">
+                        <h3">🔍 Integridad Referencial</h3>
+                        <p>Un concepto clave para decidir entre INNER y LEFT OUTER JOIN:</p>
+                        <ul>
+                            <li><strong>Integridad asegurada:</strong> Cuando TODOS los registros de la tabla izquierda tienen correspondencia en la derecha</li>
+                            <li><strong>Resultado idéntico:</strong> INNER JOIN y LEFT OUTER JOIN devuelven lo mismo</li>
+                            <li><strong>Ventaja del LEFT OUTER:</strong> Mejor rendimiento + seguridad ante datos inconsistentes</li>
+                            <li><strong>Cuándo usarlo:</strong> Si no puedes garantizar la integridad al 100%</li>
+                        </ul>
+                    </concept-card>
+
+                    <div class="comparison-grid">
+                        <div class="comparison-card efficient">
+                            <h4">✅ Recomendaciones de Rendimiento</h4>
+                            <ul>
+                                <li><strong>Primera opción:</strong> LEFT OUTER JOIN</li>
+                                <li><strong>Convierte siempre:</strong> RIGHT OUTER → LEFT OUTER</li>
+                                <li><strong>INNER JOIN:</strong> Solo cuando estés seguro de que no necesitas preservar registros</li>
+                                <li><strong>Indexación:</strong> Indexa los campos de la condición ON</li>
+                            </ul>
+                        </div>
+
+                        <div class="comparison-card inefficient">
+                            <h4">❌ Errores Comunes</h4>
+                            <ul>
+                                <li><strong>Usar RIGHT OUTER:</strong> Por costumbre o desconocimiento</li>
+                                <li><strong>No considerar NULL:</strong> Olvidar que LEFT OUTER puede generar NULL</li>
+                                <li><strong>Orden incorrecto:</strong> No entender qué tabla se preserva</li>
+                                <li><strong>Falta de índices:</strong> No optimizar las condiciones de JOIN</li>
+                            </ul>
+                        </div>
+                    </comparison-grid>
+
+                    <div class="concept-card">
+                        <h3">📊 Casos de Uso Prácticos</h3>
+                    </div>
+
+                    <div class="example-box">
+                        <h3">🛒 Ejemplo: Sistema de E-commerce</h3>
+                        <ul>
+                            <li><strong>Todos los productos (LEFT OUTER):</strong> productos LEFT JOIN ventas → Ve productos sin ventas</li>
+                            <li><strong>Solo productos vendidos (INNER):</strong> productos INNER JOIN ventas → Solo productos con ventas</li>
+                            <li><strong>Análisis de clientes (LEFT OUTER):</strong> clientes LEFT JOIN pedidos → Incluye clientes sin pedidos</li>
+                        </ul>
+                    </example-box>
+
+                    <div class="example-box">
+                        <h3">🏢 Ejemplo: Sistema de RRHH</h3>
+                        <ul>
+                            <li><strong>Todos los empleados (LEFT OUTER):</strong> empleados LEFT JOIN departamentos → Empleados sin departamento asignado</li>
+                            <li><strong>Solo empleados activos (INNER):</strong> empleados INNER JOIN departamentos → Solo empleados con departamento</li>
+                            <li><strong>Cobertura de capacitación (LEFT OUTER):</strong> empleados LEFT JOIN cursos → Empleados sin capacitación</li>
+                        </ul>
+                    </example-box>
+
+                    <div class="concept-card">
+                        <h3">🎯 Reglas de Decisión Rápida</h3>
+                        <ul>
+                            <li><strong>¿Necesitas ver TODO de una tabla?</strong> → LEFT OUTER JOIN</li>
+                            <li><strong>¿Solo quieres datos completos?</strong> → INNER JOIN</li>
+                            <li><strong>¿Tienes un RIGHT OUTER JOIN?</strong> → Conviértelo a LEFT OUTER</li>
+                            <li><strong>¿No estás seguro?</strong> → LEFT OUTER JOIN es la opción más segura</li>
+                        </ul>
+                    </concept-card>
+
+                    <div class="definition-box">
+                        <h3">💡 Mantra del Desarrollador</h3>
+                        <p><strong>"LEFT OUTER JOIN es tu amigo":</strong> Mejor rendimiento y más inclusivo.</p>
+                        <p><strong>"RIGHT OUTER JOIN evita":</strong> Siempre hay una alternativa LEFT OUTER mejor.</p>
+                        <p><strong>"INNER JOIN cuando estés seguro":</strong> Solo si realmente no necesitas preservar registros.</p>
+                        <p><strong>"En la duda, LEFT OUTER":</strong> Es la opción más segura y eficiente.</p>
+                    </definition-box>
+                </section>
+
+                <section id="conclusions" class="section">
+                    <h2">🎯 Conclusiones</h2>
+                    
+                    <div class="concept-card">
+                        <h3">📋 Resumen de los OUTER JOINs</h3>
+                        <p>Hemos completado nuestra exploración de los <strong>OUTER JOINs</strong>, entendiendo tanto su funcionamiento conceptual como sus implicaciones de rendimiento. Estos JOINs nos permiten crear consultas más inclusivas que preservan información importante.</p>
+                    </div>
+
+                    <div class="join-grid">
+                        <div class="join-card left">
+                            <div class="join-icon">✅</div>
+                            <div class="join-title">LEFT OUTER</div>
+                            <div class="join-description">Eficiente, inclusivo y recomendado</div>
+                        </div>
+
+                        <div class="join-card right">
+                            <div class="join-icon">❌</div>
+                            <div class="join-title">RIGHT OUTER</div>
+                            <div class="join-description">Funcional pero ineficiente</div>
+                        </div>
+
+                        <div class="join-card performance">
+                            <div class="join-icon">🔄</div>
+                            <div class="join-title">CONVERSIÓN</div>
+                            <div class="join-description">RIGHT → LEFT cambiando orden</div>
+                        </div>
+
+                        <div class="join-card">
+                            <div class="join-icon">🎯</div>
+                            <div class="join-title">ELECCIÓN</div>
+                            <div class="join-description">LEFT OUTER como estándar</div>
+                        </div>
+                    </join-grid>
+
+                    <div class="concept-card">
+                        <h3">🔑 Conceptos Clave Dominados</h3>
+                        <ul>
+                            <li><strong>LEFT OUTER JOIN:</strong> Preserva todos los registros de la tabla izquierda</li>
+                            <li><strong>Eficiencia superior:</strong> LEFT OUTER es más eficiente que INNER JOIN</li>
+                            <li><strong>RIGHT OUTER JOIN:</strong> Preserva tabla derecha pero con bajo rendimiento</li>
+                            <li><strong>Conversión simple:</strong> RIGHT → LEFT intercambiando orden de tablas</li>
+                            <li><strong>Valores NULL:</strong> Indican ausencia de correspondencia</li>
+                            <li><strong>Integridad referencial:</strong> Influye en la elección entre INNER y LEFT OUTER</li>
+                        </ul>
+                    </concept-card>
+
+                    <div class="concept-card">
+                        <h3">⚡ Lecciones de Rendimiento</h3>
+                        <ul>
+                            <li><strong>LEFT OUTER JOIN:</strong> Procesamiento inteligente, solo JOIN cuando necesario</li>
+                            <li><strong>RIGHT OUTER JOIN:</strong> Producto cartesiano completo, ineficiente</li>
+                            <li><strong>INNER JOIN:</strong> Producto cartesiano, menos eficiente que LEFT OUTER</li>
+                            <li><strong>Escalabilidad:</strong> Las diferencias se amplifican con más datos</li>
+                            <li><strong>Optimización:</strong> Índices en campos de condición ON son cruciales</li>
+                        </ul>
+                    </concept-card>
+
+                    <div class="comparison-grid">
+                        <div class="comparison-card efficient">
+                            <h4">✅ Mejores Prácticas Aprendidas</h4>
+                            <ul>
+                                <li>Usar LEFT OUTER JOIN como estándar</li>
+                                <li>Convertir RIGHT OUTER a LEFT OUTER siempre</li>
+                                <li>Considerar integridad referencial para la elección</li>
+                                <li>Entender que NULL indica ausencia de datos</li>
+                                <li>Aprovechar la eficiencia del procesamiento dirigido</li>
+                            </ul>
+                        </div>
+
+                        <div class="comparison-card inefficient">
+                            <h4">❌ Errores Comunes a Evitar</h4>
+                            <ul>
+                                <li>Usar RIGHT OUTER JOIN por desconocimiento</li>
+                                <li>No considerar el impacto de rendimiento</li>
+                                <li>Confundir qué tabla se preserva</li>
+                                <li>No manejar adecuadamente los valores NULL</li>
+                                <li>Elegir INNER JOIN sin considerar pérdida de datos</li>
+                            </ul>
+                        </div>
+                    </comparison-grid>
+
+                    <div class="definition-box">
+                        <h3">🎯 Guía de Decisión Final</h3>
+                        <p><strong>¿Necesitas preservar una tabla completa?</strong> → LEFT OUTER JOIN (tabla a preservar va a la izquierda)</p>
+                        <p><strong>¿Solo datos que existen en ambas?</strong> → INNER JOIN</p>
+                        <p><strong>¿Tienes RIGHT OUTER JOIN?</strong> → Conviértelo a LEFT OUTER</p>
+                        <p><strong>¿En duda?</strong> → LEFT OUTER JOIN es la opción más segura</p>
+                    </definition-box>
+
+                    <div class="concept-card">
+                        <h3">🚀 Preparación para Temas Avanzados</h3>
+                        <p>Con INNER y OUTER JOINs dominados, estás preparado para:</p>
+                        <ul>
+                            <li><strong>FULL OUTER JOIN:</strong> Combinación de LEFT y RIGHT OUTER</li>
+                            <li><strong>JOINs múltiples:</strong> Cadenas de tres o más tablas</li>
+                            <li><strong>JOINs complejos:</strong> Condiciones avanzadas y subconsultas</li>
+                            <li><strong>Optimización avanzada:</strong> Índices, hints y estrategias de rendimiento</li>
+                            <li><strong>Casos reales:</strong> Aplicación en sistemas empresariales complejos</li>
+                        </ul>
+                    </concept-card>
+
+                    <div class="example-box">
+                        <h3">💡 Reflexión Final</h3>
+                        <p>Los OUTER JOINs representan un <strong>equilibrio perfecto entre inclusividad y rendimiento</strong>. LEFT OUTER JOIN nos da lo mejor de ambos mundos: preservamos información completa mientras mantenemos eficiencia óptima. Es una lección valiosa sobre cómo las decisiones técnicas aparentemente pequeñas pueden tener impactos significativos en el rendimiento.</p>
+                    </example-box>
+
+                    <div class="concept-card">
+                        <h3">🎓 Logros Desbloqueados</h3>
+                        <ul>
+                            <li>✅ Dominas LEFT OUTER JOIN y su eficiencia superior</li>
+                            <li>✅ Entiendes RIGHT OUTER JOIN y sus limitaciones</li>
+                            <li>✅ Puedes convertir RIGHT a LEFT OUTER optimizando rendimiento</li>
+                            <li>✅ Manejas valores NULL en resultados de JOINs</li>
+                            <li>✅ Comprendes el impacto de rendimiento en diferentes JOINs</li>
+                            <li>✅ Sabes elegir el JOIN correcto según el caso de uso</li>
+                            <li>✅ Estás preparado para JOINs más avanzados</li>
+                        </ul>
+                    </concept-card>
+                </section>
+            </main>
+        </div>
+    </div>
+
+    <script>
+        function showSection(sectionId) {
+            // Ocultar todas las secciones
+            const sections = document.querySelectorAll('.section');
+            sections.forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            // Mostrar la sección seleccionada
+            document.getElementById(sectionId).classList.add('active');
+            
+            // Actualizar navegación
+            const navItems = document.querySelectorAll('.nav-item');
+            navItems.forEach(item => {
+                item.classList.remove('active');
+            });
+            
+            // Marcar el elemento activo
+            event.target.classList.add('active');
+            
+            // Scroll al inicio del contenido
+            document.querySelector('.content').scrollTop = 0;
+
+            // En móviles, ocultar el menú después de seleccionar
+            if (window.innerWidth <= 768) {
+                const sidebar = document.getElementById('sidebar');
+                sidebar.classList.add('mobile-hidden');
+                
+                const toggleButton = document.querySelector('.mobile-menu-toggle');
+                toggleButton.textContent = '📋 Menú de Contenidos';
+            }
+        }
+
+        function toggleMobileMenu() {
+            const sidebar = document.getElementById('sidebar');
+            const toggleButton = document.querySelector('.mobile-menu-toggle');
+            
+            if (sidebar.classList.contains('mobile-hidden')) {
+                sidebar.classList.remove('mobile-hidden');
+                toggleButton.textContent = '❌ Cerrar Menú';
+            } else {
+                sidebar.classList.add('mobile-hidden');
+                toggleButton.textContent = '📋 Menú de Contenidos';
+            }
+        }
+
+        // Inicializar en móviles
+        document.addEventListener('DOMContentLoaded', function() {
+            if (window.innerWidth <= 768) {
+                const sidebar = document.getElementById('sidebar');
+                sidebar.classList.add('mobile-hidden');
+            }
+
+            // Animación de entrada
+            const cards = document.querySelectorAll('.concept-card, .definition-box, .example-box');
+            cards.forEach((card, index) => {
+                setTimeout(() => {
+                    card.style.opacity = '0';
+                    card.style.transform = 'translateY(20px)';
+                    card.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+                    
+                    setTimeout(() => {
+                        card.style.opacity = '1';
+                        card.style.transform = 'translateY(0)';
+                    }, 100);
+                }, index * 100);
+            });
+        });
+
+        // Manejar cambios de tamaño de ventana
+        window.addEventListener('resize', function() {
+            const sidebar = document.getElementById('sidebar');
+            const toggleButton = document.querySelector('.mobile-menu-toggle');
+            
+            if (window.innerWidth > 768) {
+                sidebar.classList.remove('mobile-hidden');
+                toggleButton.textContent = '📋 Menú de Contenidos';
+            } else if (window.innerWidth <= 768 && !sidebar.classList.contains('mobile-hidden')) {
+                sidebar.classList.add('mobile-hidden');
+            }
+        });
+    </script>
+</body>
+</html>

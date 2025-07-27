@@ -1,0 +1,1402 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Curso SAP HANA - FULL OUTER JOIN</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .header h1 {
+            color: #2c3e50;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header p {
+            color: #666;
+            font-size: 1.2em;
+        }
+
+        .dashboard {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .sidebar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            height: fit-content;
+            position: sticky;
+            top: 20px;
+        }
+
+        .sidebar h3 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #667eea;
+        }
+
+        .nav-item {
+            padding: 12px 20px;
+            margin: 5px 0;
+            background: linear-gradient(45deg, #f8f9fa, #e9ecef);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-left: 4px solid transparent;
+            font-size: 0.9em;
+        }
+
+        .nav-item:hover {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            transform: translateX(10px);
+            border-left-color: #fff;
+        }
+
+        .nav-item.active {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border-left-color: #fff;
+        }
+
+        .mobile-menu-toggle {
+            display: none;
+            background: rgba(255, 255, 255, 0.95);
+            border: none;
+            padding: 15px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            font-size: 1.2em;
+            cursor: pointer;
+            width: 100%;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .content {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .section {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .section h2 {
+            color: #2c3e50;
+            font-size: 2em;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #667eea;
+        }
+
+        .concept-card {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-radius: 15px;
+            padding: 25px;
+            margin: 20px 0;
+            border-left: 5px solid #9b59b6;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease;
+        }
+
+        .concept-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .concept-card h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 1.4em;
+        }
+
+        .concept-card p {
+            line-height: 1.8;
+            color: #555;
+            margin-bottom: 15px;
+        }
+
+        .concept-card ul {
+            margin-left: 20px;
+            margin-top: 10px;
+        }
+
+        .concept-card li {
+            margin: 8px 0;
+            color: #555;
+        }
+
+        .definition-box {
+            background: linear-gradient(135deg, #fff3cd, #ffeaa7);
+            border-radius: 15px;
+            padding: 25px;
+            margin: 20px 0;
+            border-left: 5px solid #f39c12;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        .definition-box h3 {
+            color: #856404;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        .definition-box p {
+            color: #856404;
+            line-height: 1.8;
+            margin-bottom: 10px;
+        }
+
+        .example-box {
+            background: linear-gradient(135deg, #e8f5e8, #d4edda);
+            border-radius: 15px;
+            padding: 25px;
+            margin: 20px 0;
+            border-left: 5px solid #27ae60;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        .example-box h3 {
+            color: #155724;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        .example-box p {
+            color: #155724;
+            line-height: 1.8;
+            margin-bottom: 10px;
+        }
+
+        .example-box ul {
+            margin-left: 20px;
+            margin-top: 10px;
+        }
+
+        .example-box li {
+            margin: 8px 0;
+            color: #155724;
+        }
+
+        .full-outer-card {
+            background: linear-gradient(135deg, #9b59b6, #8e44ad);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+            transition: transform 0.3s ease;
+            margin: 20px 0;
+        }
+
+        .full-outer-card:hover {
+            transform: scale(1.05);
+        }
+
+        .full-outer-icon {
+            font-size: 3em;
+            margin-bottom: 15px;
+        }
+
+        .full-outer-title {
+            font-size: 1.4em;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .full-outer-description {
+            font-size: 0.9em;
+            opacity: 0.9;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .feature-card {
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            border-radius: 15px;
+            padding: 25px;
+            text-align: center;
+            border-left: 5px solid #9b59b6;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        .feature-card h4 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        .feature-card .feature-icon {
+            font-size: 2em;
+            margin-bottom: 10px;
+            color: #9b59b6;
+        }
+
+        .table-example {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .table-example h4 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            text-align: center;
+            font-size: 1.2em;
+        }
+
+        .table-display {
+            font-family: 'Courier New', monospace;
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #dee2e6;
+            overflow-x: auto;
+        }
+
+        .null-highlight {
+            background: #ffebee;
+            color: #c62828;
+            padding: 2px 4px;
+            border-radius: 3px;
+            font-weight: bold;
+        }
+
+        .progress-bar {
+            background: #e9ecef;
+            border-radius: 10px;
+            padding: 3px;
+            margin: 20px 0;
+        }
+
+        .progress {
+            background: linear-gradient(45deg, #9b59b6, #8e44ad);
+            height: 20px;
+            border-radius: 8px;
+            transition: width 0.5s ease;
+        }
+
+        .syntax-box {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 20px;
+            border-radius: 10px;
+            font-family: 'Courier New', monospace;
+            margin: 20px 0;
+            overflow-x: auto;
+            border-left: 5px solid #9b59b6;
+        }
+
+        .syntax-box .keyword {
+            color: #63b3ed;
+            font-weight: bold;
+        }
+
+        .syntax-box .table {
+            color: #68d391;
+        }
+
+        .syntax-box .condition {
+            color: #fbb6ce;
+        }
+
+        .syntax-box .alias {
+            color: #f6ad55;
+        }
+
+        .combination-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .combination-card {
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            border-radius: 15px;
+            padding: 25px;
+            text-align: center;
+            border-left: 5px solid #9b59b6;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        .combination-card h4 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        .combination-card .combination-icon {
+            font-size: 2em;
+            margin-bottom: 10px;
+            color: #9b59b6;
+        }
+
+        .performance-warning {
+            background: linear-gradient(135deg, #ffebee, #ffcdd2);
+            border-radius: 15px;
+            padding: 25px;
+            margin: 20px 0;
+            border-left: 5px solid #e74c3c;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        .performance-warning h3 {
+            color: #c62828;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        .performance-warning p {
+            color: #c62828;
+            line-height: 1.8;
+            margin-bottom: 10px;
+        }
+
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .comparison-card {
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            border-radius: 15px;
+            padding: 25px;
+            border-left: 5px solid #667eea;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+            text-align: center;
+        }
+
+        .comparison-card.left {
+            border-left-color: #3498db;
+            background: linear-gradient(135deg, #e3f2fd, #bbdefb);
+        }
+
+        .comparison-card.right {
+            border-left-color: #e74c3c;
+            background: linear-gradient(135deg, #ffebee, #ffcdd2);
+        }
+
+        .comparison-card.full {
+            border-left-color: #9b59b6;
+            background: linear-gradient(135deg, #f3e5f5, #e1bee7);
+        }
+
+        .comparison-card h4 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        .final-summary {
+            background: linear-gradient(135deg, #e8f5e8, #d4edda);
+            border-radius: 15px;
+            padding: 25px;
+            margin: 20px 0;
+            border-left: 5px solid #27ae60;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        .final-summary h3 {
+            color: #155724;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        .final-summary p {
+            color: #155724;
+            line-height: 1.8;
+            margin-bottom: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+
+            .header {
+                padding: 20px;
+                margin-bottom: 20px;
+            }
+
+            .header h1 {
+                font-size: 1.8em;
+            }
+
+            .dashboard {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .sidebar {
+                position: static;
+                padding: 20px;
+                order: 2;
+            }
+
+            .mobile-menu-toggle {
+                display: block;
+                order: 1;
+            }
+
+            .sidebar.mobile-hidden {
+                display: none;
+            }
+
+            .content {
+                padding: 20px;
+                order: 3;
+            }
+
+            .section h2 {
+                font-size: 1.5em;
+            }
+
+            .concept-card, .definition-box, .example-box {
+                padding: 20px;
+                margin: 15px 0;
+            }
+
+            .feature-grid, .combination-grid {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+
+            .comparison-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .nav-item {
+                padding: 15px 20px;
+                font-size: 1em;
+                text-align: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .header h1 {
+                font-size: 1.5em;
+            }
+
+            .content {
+                padding: 15px;
+            }
+
+            .concept-card, .definition-box, .example-box {
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <img src="https://gessof.cl/wp-content/uploads/2025/05/Logo-minimalista-con-simbolismo-global.png" alt="Gessof Logo" style="height: 80px; margin-bottom: 20px; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.1));">
+            <h1>Curso SAP HANA</h1>
+            <h2 style="color: #9b59b6; font-size: 1.5em; margin: 10px 0; font-weight: 600;">Clase 032</h2>
+            <p>FULL OUTER JOIN - El JOIN Más Inclusivo</p>
+            <div class="progress-bar">
+                <div class="progress" style="width: 100%"></div>
+            </div>
+        </header>
+
+        <div class="dashboard">
+            <button class="mobile-menu-toggle" onclick="toggleMobileMenu()">
+                📋 Menú de Contenidos
+            </button>
+
+            <nav class="sidebar" id="sidebar">
+                <h3>Contenidos del Módulo</h3>
+                <div class="nav-item active" onclick="showSection('overview')">📋 Resumen General</div>
+                <div class="nav-item" onclick="showSection('introduction')">🚀 Introducción</div>
+                <div class="nav-item" onclick="showSection('concept')">🔄 Concepto FULL OUTER</div>
+                <div class="nav-item" onclick="showSection('syntax')">📝 Sintaxis y Ejemplo</div>
+                <div class="nav-item" onclick="showSection('comparison')">🆚 Comparación con Otros JOINs</div>
+                <div class="nav-item" onclick="showSection('performance')">⚡ Rendimiento</div>
+                <div class="nav-item" onclick="showSection('use-cases')">🎯 Casos de Uso</div>
+                <div class="nav-item" onclick="showSection('conclusions')">🎯 Conclusiones</div>
+            </nav>
+
+            <main class="content">
+                <section id="overview" class="section active">
+                    <h2>📋 Resumen General del Módulo</h2>
+                    
+                    <div class="full-outer-card">
+                        <div class="full-outer-icon">🔄</div>
+                        <div class="full-outer-title">FULL OUTER JOIN</div>
+                        <div class="full-outer-description">Combina LEFT OUTER + RIGHT OUTER = Todos los registros de ambas tablas</div>
+                    </div>
+
+                    <div class="feature-grid">
+                        <div class="feature-card">
+                            <div class="feature-icon">🌟</div>
+                            <h4>El Más Inclusivo</h4>
+                            <p>Muestra todos los registros de ambas tablas, sin excepción</p>
+                        </div>
+                        <div class="feature-card">
+                            <div class="feature-icon">🔗</div>
+                            <h4>Unión Completa</h4>
+                            <p>Combina los efectos de LEFT OUTER JOIN y RIGHT OUTER JOIN</p>
+                        </div>
+                        <div class="feature-card">
+                            <div class="feature-icon">🎯</div>
+                            <h4>Último del SQL Estándar</h4>
+                            <p>Completa el conjunto de JOINs del SQL estándar</p>
+                        </div>
+                        <div class="feature-card">
+                            <div class="feature-icon">⚡</div>
+                            <h4>Rendimiento Pesado</h4>
+                            <p>Siempre hace JOIN y suma todas las posibilidades</p>
+                        </div>
+                    </div>
+
+                    <div class="concept-card">
+                        <h3>🎯 Objetivos del Módulo</h3>
+                        <p>En esta clase completaremos nuestro estudio de los <strong>JOINs del SQL estándar</strong> con el FULL OUTER JOIN. Este es el más inclusivo de todos, ya que garantiza que aparezcan todos los registros de ambas tablas.</p>
+                    </div>
+
+                    <div class="concept-card">
+                        <h3>📚 Contenido del Módulo</h3>
+                        <ul>
+                            <li><strong>Concepto FULL OUTER JOIN:</strong> Unión de LEFT OUTER + RIGHT OUTER</li>
+                            <li><strong>Sintaxis estándar:</strong> FULL OUTER JOIN con ejemplos prácticos</li>
+                            <li><strong>Resultado completo:</strong> Todos los clientes + todos los estados</li>
+                            <li><strong>Valores NULL:</strong> Completar donde no hay correspondencia</li>
+                            <li><strong>Comparación visual:</strong> Diferencias con otros tipos de JOIN</li>
+                            <li><strong>Implicaciones de rendimiento:</strong> Procesamiento exhaustivo</li>
+                            <li><strong>Casos de uso:</strong> Cuándo usar este JOIN inclusivo</li>
+                        </ul>
+                    </concept-card>
+
+                    <div class="definition-box">
+                        <h3>💡 Definición Clave</h3>
+                        <p><strong>FULL OUTER JOIN</strong> actúa como si uniéramos los efectos del LEFT OUTER JOIN y del RIGHT OUTER JOIN. Muestra todos los registros de ambas tablas, independientemente de que tengan o no correspondencia.</p>
+                    </definition-box>
+
+                    <div class="final-summary">
+                        <h3>🏁 Completando los JOINs del SQL Estándar</h3>
+                        <p>Con FULL OUTER JOIN terminamos de ver todos los JOINs que podemos utilizar en <strong>SQL estándar</strong>. Los demás JOINs que hemos mencionado (REFERENTIAL, TEXT, TEMPORAL, SPATIAL) pertenecen específicamente a las vistas de información de SAP HANA.</p>
+                    </final-summary>
+                </section>
+
+                <section id="introduction" class="section">
+                    <h2>🚀 Introducción al FULL OUTER JOIN</h2>
+                    
+                    <div class="concept-card">
+                        <h3>🎯 El Último del SQL Estándar</h3>
+                        <p>Llegamos al <strong>último tipo de JOIN del SQL estándar</strong> que estudiaremos. El FULL OUTER JOIN representa la opción más inclusiva posible, ya que garantiza que no se pierda ningún registro de ninguna de las dos tablas.</p>
+                    </div>
+
+                    <div class="concept-card">
+                        <h3">🔄 ¿Qué es el FULL OUTER JOIN?</h3>
+                        <p>El FULL OUTER JOIN <strong>actúa como si uniéramos los efectos del LEFT OUTER JOIN y del RIGHT OUTER JOIN</strong>. Esto significa que:</p>
+                        <ul>
+                            <li><strong>Todos los registros de la tabla izquierda</strong> aparecen en el resultado</li>
+                            <li><strong>Todos los registros de la tabla derecha</strong> aparecen en el resultado</li>
+                            <li><strong>Donde no hay correspondencia</strong> se completa con valores NULL</li>
+                            <li><strong>Máxima inclusividad:</strong> Ningún dato se pierde</li>
+                        </ul>
+                    </concept-card>
+
+                    <div class="combination-grid">
+                        <div class="combination-card">
+                            <div class="combination-icon">⬅️</div>
+                            <h4>LEFT OUTER JOIN</h4>
+                            <p>Preserva todos los registros de la tabla izquierda</p>
+                        </div>
+
+                        <div class="combination-card">
+                            <div class="combination-icon">➡️</div>
+                            <h4>RIGHT OUTER JOIN</h4>
+                            <p>Preserva todos los registros de la tabla derecha</p>
+                        </div>
+
+                        <div class="combination-card">
+                            <div class="combination-icon">🔄</div>
+                            <h4>FULL OUTER JOIN</h4>
+                            <p>Preserva todos los registros de AMBAS tablas</p>
+                        </div>
+                    </combination-grid>
+
+                    <div class="concept-card">
+                        <h3">📊 Recordatorio de Nuestros Datos</h3>
+                        <p>Continuamos usando las mismas tablas de las clases anteriores:</p>
+                        <ul>
+                            <li><strong>join_customer:</strong> Werner (MI), Mark (MI), Tom (TX), Bob (TX)</li>
+                            <li><strong>join_state:</strong> MI (Michigan), AL (Alabama)</li>
+                            <li><strong>Problemas conocidos:</strong> TX no existe en estados, Alabama no tiene clientes</li>
+                        </ul>
+                    </concept-card>
+
+                    <div class="example-box">
+                        <h3">🔍 ¿Qué Esperamos del FULL OUTER JOIN?</h3>
+                        <p>Con FULL OUTER JOIN deberíamos ver:</p>
+                        <ul>
+                            <li><strong>Werner y Mark:</strong> Con datos completos (MI válido)</li>
+                            <li><strong>Tom y Bob:</strong> Con NULL en campos de estado (TX no existe)</li>
+                            <li><strong>Alabama:</strong> Con NULL en campos de cliente (sin clientes)</li>
+                            <li><strong>Total:</strong> 5 registros (4 clientes + 1 estado sin clientes)</li>
+                        </ul>
+                    </example-box>
+
+                    <div class="definition-box">
+                        <h3">💡 Filosofía del FULL OUTER JOIN</h3>
+                        <p><strong>Inclusividad total:</strong> "Muéstrame todo lo que tengo, esté relacionado o no".</p>
+                        <p><strong>Sin pérdidas:</strong> Ni un solo registro de ninguna tabla queda excluido.</p>
+                        <p><strong>Completitud:</strong> Visión 360° de todos los datos disponibles.</p>
+                    </definition-box>
+                </section>
+
+                <section id="concept" class="section">
+                    <h2">🔄 Concepto del FULL OUTER JOIN</h2>
+                    
+                    <div class="concept-card">
+                        <h3">🌟 La Unión de Dos Mundos</h3>
+                        <p>El FULL OUTER JOIN es esencialmente la <strong>combinación de LEFT OUTER JOIN y RIGHT OUTER JOIN</strong> en una sola operación. Obtiene lo mejor (o todo) de ambos enfoques.</p>
+                    </div>
+
+                    <div class="concept-card">
+                        <h3">📊 Comportamiento Detallado</h3>
+                        <ul>
+                            <li><strong>Como LEFT OUTER:</strong> Incluye todos los registros de la tabla izquierda</li>
+                            <li><strong>Como RIGHT OUTER:</strong> Incluye todos los registros de la tabla derecha</li>
+                            <li><strong>Diferencia clave:</strong> No hace dos operaciones separadas, es una sola operación que logra ambos efectos</li>
+                            <li><strong>Resultado:</strong> La unión completa de ambos conjuntos de datos</li>
+                        </ul>
+                    </concept-card>
+
+                    <div class="comparison-grid">
+                        <div class="comparison-card left">
+                            <h4">⬅️ LEFT OUTER JOIN</h4>
+                            <p><strong>Resultado:</strong> 4 registros</p>
+                            <ul>
+                                <li>Werner (con Michigan)</li>
+                                <li>Mark (con Michigan)</li>
+                                <li>Tom (con NULL)</li>
+                                <li>Bob (con NULL)</li>
+                            </ul>
+                            <p><em>Alabama no aparece</em></p>
+                        </div>
+
+                        <div class="comparison-card right">
+                            <h4">➡️ RIGHT OUTER JOIN</h4>
+                            <p><strong>Resultado:</strong> 3 registros</p>
+                            <ul>
+                                <li>Werner (con Michigan)</li>
+                                <li>Mark (con Michigan)</li>
+                                <li>NULL (con Alabama)</li>
+                            </ul>
+                            <p><em>Tom y Bob no aparecen</em></p>
+                        </div>
+
+                        <div class="comparison-card full">
+                            <h4">🔄 FULL OUTER JOIN</h4>
+                            <p><strong>Resultado:</strong> 5 registros</p>
+                            <ul>
+                                <li>Werner (con Michigan)</li>
+                                <li>Mark (con Michigan)</li>
+                                <li>Tom (con NULL)</li>
+                                <li>Bob (con NULL)</li>
+                                <li>NULL (con Alabama)</li>
+                            </ul>
+                            <p><em>¡Todos aparecen!</em></p>
+                        </div>
+                    </comparison-grid>
+
+                    <div class="concept-card">
+                        <h3">🔍 Visualización del Concepto</h3>
+                        <p>Imagina el FULL OUTER JOIN como dos círculos que se superponen:</p>
+                        <ul>
+                            <li><strong>Círculo izquierdo:</strong> Todos los clientes</li>
+                            <li><strong>Círculo derecho:</strong> Todos los estados</li>
+                            <li><strong>Intersección:</strong> Clientes con estados válidos</li>
+                            <li><strong>Solo izquierdo:</strong> Clientes sin estado válido (NULL en estado)</li>
+                            <li><strong>Solo derecho:</strong> Estados sin clientes (NULL en cliente)</li>
+                            <li><strong>FULL OUTER:</strong> Muestra TODO el diagrama completo</li>
+                        </ul>
+                    </concept-card>
+
+                    <div class="example-box">
+                        <h3">🎯 Ventajas del FULL OUTER JOIN</h3>
+                        <ul>
+                            <li><strong>Visión completa:</strong> No se pierde ninguna información</li>
+                            <li><strong>Análisis exhaustivo:</strong> Detecta problemas de datos en ambas direcciones</li>
+                            <li><strong>Auditoría total:</strong> Ve registros huérfanos en cualquier tabla</li>
+                            <li><strong>Flexibilidad analítica:</strong> Una sola consulta para múltiples perspectivas</li>
+                        </ul>
+                    </example-box>
+
+                    <div class="definition-box">
+                        <h3">💡 ¿Cuándo es Útil?</h3>
+                        <p><strong>Auditorías de integridad:</strong> Detectar datos inconsistentes en ambas direcciones.</p>
+                        <p><strong>Análisis de cobertura:</strong> Ver qué elementos no tienen correspondencia.</p>
+                        <p><strong>Migración de datos:</strong> Comparar dos fuentes de datos completamente.</p>
+                        <p><strong>Reportes ejecutivos:</strong> Vista completa sin perder ningún detalle.</p>
+                    </definition-box>
+                </section>
+
+                <section id="syntax" class="section">
+                    <h2">📝 Sintaxis y Ejemplo Práctico</h2>
+                    
+                    <div class="concept-card">
+                        <h3">🔧 Sintaxis del FULL OUTER JOIN</h3>
+                        <p>La sintaxis es idéntica a otros JOINs, simplemente cambiamos el tipo:</p>
+                    </div>
+
+                    <div class="syntax-box">
+<span class="keyword">SELECT</span> *
+<span class="keyword">FROM</span> <span class="table">join_customer</span> <span class="keyword">AS</span> <span class="alias">c</span>
+<span class="keyword">FULL OUTER JOIN</span> <span class="table">join_state</span> <span class="keyword">AS</span> <span class="alias">s</span>
+<span class="keyword">ON</span> <span class="condition">c.state = s.state</span>
+                    </syntax-box>
+
+                    <div class="concept-card">
+                        <h3">🔍 Componentes de la Sintaxis</h3>
+                        <ul>
+                            <li><strong>SELECT *:</strong> Selecciona todos los campos de ambas tablas</li>
+                            <li><strong>FROM join_customer AS c:</strong> Tabla principal (izquierda)</li>
+                            <li><strong>FULL OUTER JOIN join_state AS s:</strong> Tabla a unir (derecha)</li>
+                            <li><strong>ON c.state = s.state:</strong> Condición de relación</li>
+                        </ul>
+                    </concept-card>
+
+                    <div class="table-example">
+                        <h4">✅ Resultado del FULL OUTER JOIN</h4>
+                        <div class="table-display">
+customer_id | customer_name | state | age | state | state_name
+     1      |    Werner     |  MI   | 10  |  MI   |  Michigan
+     2      |     Mark      |  MI   | 11  |  MI   |  Michigan
+     3      |     Tom       |  TX   | 12  |<span class="null-highlight">NULL</span>  |  <span class="null-highlight">NULL</span>
+     4      |     Bob       |  TX   | 13  |<span class="null-highlight">NULL</span>  |  <span class="null-highlight">NULL</span>
+   <span class="null-highlight">NULL</span>   |    <span class="null-highlight">NULL</span>      |<span class="null-highlight">NULL</span> |<span class="null-highlight">NULL</span>|  AL   |  Alabama
+                        </div>
+                    </div>
+
+                    <div class="concept-card">
+                        <h3">🔍 Análisis Detallado del Resultado</h3>
+                        <ul>
+                            <li><strong>Filas 1-2 (Werner, Mark):</strong> Datos completos, tienen correspondencia</li>
+                            <li><strong>Filas 3-4 (Tom, Bob):</strong> Clientes preservados, estado NULL (TX no existe)</li>
+                            <li><strong>Fila 5 (Alabama):</strong> Estado preservado, cliente NULL (no tiene clientes)</li>
+                            <li><strong>Total 5 registros:</strong> Todos los clientes + todos los estados</li>
+                        </ul>
+                    </concept-card>
+
+                    <div class="concept-card">
+                        <h3">📊 Explicación de los NULL</h3>
+                        <p>Los valores NULL aparecen en dos situaciones diferentes:</p>
+                        <ul>
+                            <li><strong>NULL en campos de estado:</strong> Cuando un cliente tiene un estado que no existe en la tabla de estados</li>
+                            <li><strong>NULL en campos de cliente:</strong> Cuando un estado no tiene ningún cliente asociado</li>
+                            <li><strong>Identificación visual:</strong> Los NULL nos ayudan a detectar problemas de integridad</li>
+                        </ul>
+                    </concept-card>
+
+                    <div class="example-box">
+                        <h3">✅ Validación del Resultado</h3>
+                        <p>Podemos verificar que el resultado es correcto:</p>
+                        <ul>
+                            <li><strong>¿Están todos los clientes?</strong> ✅ Werner, Mark, Tom, Bob</li>
+                            <li><strong>¿Están todos los estados?</strong> ✅ Michigan, Alabama</li>
+                            <li><strong>¿Las correspondencias son correctas?</strong> ✅ Solo MI tiene clientes</li>
+                            <li><strong>¿Los NULL están bien ubicados?</strong> ✅ TX no existe, Alabama sin clientes</li>
+                        </ul>
+                    </example-box>
+
+                    <div class="definition-box">
+                        <h3">💡 Diferencias con SELECT * en Múltiples Tablas</h3>
+                        <p><strong>FULL OUTER JOIN:</strong> Respeta las relaciones y maneja los casos sin correspondencia.</p>
+                        <p><strong>SELECT * FROM tabla1, tabla2:</strong> Haría producto cartesiano sin considerar relaciones.</p>
+                        <p><strong>Resultado controlado:</strong> FULL OUTER JOIN produce exactamente los registros necesarios.</p>
+                    </definition-box>
+                </section>
+
+                <section id="comparison" class="section">
+                    <h2">🆚 Comparación con Otros JOINs</h2>
+                    
+                    <div class="concept-card">
+                        <h3">📊 Comparación Completa de Resultados</h3>
+                        <p>Veamos cómo cada tipo de JOIN maneja nuestros datos de ejemplo:</p>
+                    </div>
+
+                    <div class="table-example">
+                        <h4">🎯 INNER JOIN (Solo Coincidencias)</h4>
+                        <div class="table-display">
+customer_name | state | state_name | Registros: 2
+   Werner     |  MI   |  Michigan  |
+    Mark      |  MI   |  Michigan  |
+                        </div>
+                        <p><em>Solo Werner y Mark (tienen estado válido)</em></p>
+                    </div>
+
+                    <div class="table-example">
+                        <h4">⬅️ LEFT OUTER JOIN (Todos los Clientes)</h4>
+                        <div class="table-display">
+customer_name | state | state_name | Registros: 4
+   Werner     |  MI   |  Michigan  |
+    Mark      |  MI   |  Michigan  |
+    Tom       |  TX   |    NULL    |
+    Bob       |  TX   |    NULL    |
+                        </div>
+                        <p><em>Todos los clientes, Alabama no aparece</em></p>
+                    </div>
+
+                    <div class="table-example">
+                        <h4">➡️ RIGHT OUTER JOIN (Todos los Estados)</h4>
+                        <div class="table-display">
+customer_name | state | state_name | Registros: 3
+   Werner     |  MI   |  Michigan  |
+    Mark      |  MI   |  Michigan  |
+    NULL      |  AL   |  Alabama   |
+                        </div>
+                        <p><em>Todos los estados, Tom y Bob no aparecen</em></p>
+                    </div>
+
+                    <div class="table-example">
+                        <h4">🔄 FULL OUTER JOIN (Todo)</h4>
+                        <div class="table-display">
+customer_name | state | state_name | Registros: 5
+   Werner     |  MI   |  Michigan  |
+    Mark      |  MI   |  Michigan  |
+    Tom       |  TX   |    NULL    |
+    Bob       |  TX   |    NULL    |
+    NULL      |  AL   |  Alabama   |
+                        </div>
+                        <p><em>Todos los clientes + todos los estados</em></p>
+                    </div>
+
+                    <div class="feature-grid">
+                        <div class="feature-card">
+                            <div class="feature-icon">🎯</div>
+                            <h4>INNER JOIN</h4>
+                            <p><strong>2 registros</strong><br>Solo datos relacionados<br>Sin NULL<br>Más restrictivo</p>
+                        </div>
+
+                        <div class="feature-card">
+                            <div class="feature-icon">⬅️</div>
+                            <h4>LEFT OUTER</h4>
+                            <p><strong>4 registros</strong><br>Todos los clientes<br>NULL en estados faltantes<br>Perspectiva de clientes</p>
+                        </div>
+
+                        <div class="feature-card">
+                            <div class="feature-icon">➡️</div>
+                            <h4>RIGHT OUTER</h4>
+                            <p><strong>3 registros</strong><br>Todos los estados<br>NULL en clientes faltantes<br>Perspectiva de estados</p>
+                        </div>
+
+                        <div class="feature-card">
+                            <div class="feature-icon">🔄</div>
+                            <h4>FULL OUTER</h4>
+                            <p><strong>5 registros</strong><br>Todos los datos<br>NULL donde no hay relación<br>Visión completa</p>
+                        </div>
+                    </div>
+
+                    <div class="concept-card">
+                        <h3">📈 Progresión de Inclusividad</h3>
+                        <ul>
+                            <li><strong>INNER JOIN:</strong> Más restrictivo → Solo intersección</li>
+                            <li><strong>LEFT/RIGHT OUTER:</strong> Moderadamente inclusivo → Una tabla completa</li>
+                            <li><strong>FULL OUTER JOIN:</strong> Máximamente inclusivo → Ambas tablas completas</li>
+                        </ul>
+                    </concept-card>
+
+                    <div class="example-box">
+                        <h3">🎯 ¿Cuál Elegir?</h3>
+                        <ul>
+                            <li><strong>INNER JOIN:</strong> "Solo mostrar ventas con cliente válido"</li>
+                            <li><strong>LEFT OUTER:</strong> "Mostrar todos los clientes, vendan o no"</li>
+                            <li><strong>RIGHT OUTER:</strong> "Mostrar todos los productos, se vendan o no"</li>
+                            <li><strong>FULL OUTER:</strong> "Mostrar todo: todos los clientes y todos los productos"</li>
+                        </ul>
+                    </example-box>
+
+                    <div class="definition-box">
+                        <h3">💡 Inclusividad vs Utilidad</h3>
+                        <p><strong>Más inclusivo no siempre es mejor:</strong> FULL OUTER puede generar demasiado "ruido".</p>
+                        <p><strong>Contexto importa:</strong> La elección depende del objetivo del análisis.</p>
+                        <p><strong>Rendimiento vs completitud:</strong> Más datos = más procesamiento.</p>
+                    </definition-box>
+                </section>
+
+                <section id="performance" class="section">
+                    <h2">⚡ Rendimiento del FULL OUTER JOIN</h2>
+                    
+                    <div class="concept-card">
+                        <h3">🔍 Funcionamiento Interno</h3>
+                        <p>El FULL OUTER JOIN tiene un comportamiento de rendimiento similar al RIGHT OUTER JOIN: <strong>hace siempre el JOIN</strong>, suma todas las posibilidades y luego presenta todas las combinaciones válidas más los registros sin correspondencia.</p>
+                    </div>
+
+                    <div class="performance-warning">
+                        <h3">⚠️ Características de Rendimiento</h3>
+                        <p><strong>Procesamiento exhaustivo:</strong> Evalúa todas las combinaciones posibles entre ambas tablas.</p>
+                        <p><strong>Sin optimización temprana:</strong> No puede descartar registros sin procesarlos primero.</p>
+                        <p><strong>Trabajo adicional:</strong> Debe identificar y agregar registros sin correspondencia de ambos lados.</p>
+                    </performance-warning>
+
+                    <div class="concept-card">
+                        <h3">🔢 Proceso Paso a Paso</h3>
+                        <p>Con nuestros datos (4 clientes × 2 estados = 8 combinaciones):</p>
+                        <ul>
+                            <li><strong>Paso 1:</strong> Genera las 8 combinaciones del producto cartesiano</li>
+                            <li><strong>Paso 2:</strong> Evalúa cada combinación contra la condición ON</li>
+                            <li><strong>Paso 3:</strong> Mantiene las combinaciones válidas (Werner-MI, Mark-MI)</li>
+                            <li><strong>Paso 4:</strong> Identifica clientes sin correspondencia (Tom, Bob)</li>
+                            <li><strong>Paso 5:</strong> Identifica estados sin correspondencia (Alabama)</li>
+                            <li><strong>Paso 6:</strong> Combina todos los resultados en la salida final</li>
+                        </ul>
+                    </concept-card>
+
+                    <div class="comparison-grid">
+                        <div class="comparison-card left">
+                            <h4">✅ LEFT OUTER (Eficiente)</h4>
+                            <p><strong>4 operaciones directas</strong></p>
+                            <ul>
+                                <li>Procesa cada cliente individualmente</li>
+                                <li>Busca correspondencia directamente</li>
+                                <li>NULL inmediato si no encuentra</li>
+                            </ul>
+                        </div>
+
+                        <div class="comparison-card right">
+                            <h4">❌ RIGHT OUTER (Pesado)</h4>
+                            <p><strong>8 evaluaciones + procesamiento</strong></p>
+                            <ul>
+                                <li>Producto cartesiano completo</li>
+                                <li>Evalúa todas las combinaciones</li>
+                                <li>Agrega registros faltantes después</li>
+                            </ul>
+                        </div>
+
+                        <div class="comparison-card full">
+                            <h4">⚠️ FULL OUTER (Más Pesado)</h4>
+                            <p><strong>8 evaluaciones + doble procesamiento</strong></p>
+                            <ul>
+                                <li>Producto cartesiano completo</li>
+                                <li>Identifica faltantes en ambos lados</li>
+                                <li>Más trabajo que RIGHT OUTER</li>
+                            </ul>
+                        </div>
+                    </comparison-grid>
+
+                    <div class="concept-card">
+                        <h3">📊 Impacto en Escalabilidad</h3>
+                        <p>El rendimiento del FULL OUTER JOIN se degrada significativamente con tablas grandes:</p>
+                        <ul>
+                            <li><strong>1,000 × 100 registros:</strong> 100,000 evaluaciones obligatorias</li>
+                            <li><strong>10,000 × 1,000 registros:</strong> 10,000,000 evaluaciones</li>
+                            <li><strong>Comparación:</strong> LEFT OUTER haría solo 1,000 y 10,000 búsquedas respectivamente</li>
+                            <li><strong>Factor de diferencia:</strong> 100x a 1,000x más lento</li>
+                        </ul>
+                    </concept-card>
+
+                    <div class="concept-card">
+                        <h3">🎯 Estrategias de Optimización</h3>
+                        <ul>
+                            <li><strong>Índices obligatorios:</strong> En los campos de la condición ON</li>
+                            <li><strong>Filtros WHERE:</strong> Reducir el conjunto de datos antes del JOIN</li>
+                            <li><strong>Consideración de alternativas:</strong> ¿Realmente necesitas FULL OUTER?</li>
+                            <li><strong>División de consultas:</strong> En casos extremos, LEFT + RIGHT por separado</li>
+                        </ul>
+                    </concept-card>
+
+                    <div class="example-box">
+                        <h3">💡 Recomendación Práctica</h3>
+                        <p>Usa FULL OUTER JOIN <strong>solo cuando realmente necesites una visión completa</strong> de ambas tablas. En muchos casos, LEFT OUTER JOIN es suficiente y mucho más eficiente.</p>
+                    </example-box>
+
+                    <div class="definition-box">
+                        <h3">⚡ Regla de Oro de Rendimiento</h3>
+                        <p><strong>Primera opción:</strong> LEFT OUTER JOIN (más eficiente)</p>
+                        <p><strong>Segunda opción:</strong> INNER JOIN (si no necesitas preservar registros)</p>
+                        <p><strong>Última opción:</strong> FULL OUTER JOIN (solo si necesitas absolutamente todo)</p>
+                        <p><strong>Nunca usar:</strong> RIGHT OUTER JOIN (convertir siempre a LEFT OUTER)</p>
+                    </definition-box>
+                </section>
+
+                <section id="use-cases" class="section">
+                    <h2">🎯 Casos de Uso del FULL OUTER JOIN</h2>
+                    
+                    <div class="concept-card">
+                        <h3">🌟 ¿Cuándo Usar FULL OUTER JOIN?</h3>
+                        <p>Aunque el FULL OUTER JOIN es menos eficiente, hay situaciones específicas donde su <strong>inclusividad total</strong> es exactamente lo que necesitamos.</p>
+                    </concept-card>
+
+                    <div class="feature-grid">
+                        <div class="feature-card">
+                            <div class="feature-icon">🔍</div>
+                            <h4>Auditorías de Integridad</h4>
+                            <p>Detectar inconsistencias en ambas direcciones: datos huérfanos en cualquier tabla</p>
+                        </div>
+
+                        <div class="feature-card">
+                            <div class="feature-icon">📊</div>
+                            <h4>Análisis de Cobertura</h4>
+                            <p>Ver qué elementos no tienen correspondencia en ninguna dirección</p>
+                        </div>
+
+                        <div class="feature-card">
+                            <div class="feature-icon">🔄</div>
+                            <h4>Migración de Datos</h4>
+                            <p>Comparar dos fuentes de datos para encontrar diferencias completas</p>
+                        </div>
+
+                        <div class="feature-card">
+                            <div class="feature-icon">📈</div>
+                            <h4>Reportes Ejecutivos</h4>
+                            <p>Vista 360° sin perder ningún detalle importante</p>
+                        </div>
+                    </div>
+
+                    <div class="example-box">
+                        <h3">🛒 Ejemplo: Sistema de E-commerce</h3>
+                        <p><strong>Situación:</strong> Análisis completo de productos vs ventas</p>
+                        <div class="syntax-box">
+<span class="keyword">SELECT</span> 
+    p.product_name,
+    p.category,
+    s.sales_amount,
+    s.sales_date
+<span class="keyword">FROM</span> <span class="table">products</span> <span class="keyword">AS</span> <span class="alias">p</span>
+<span class="keyword">FULL OUTER JOIN</span> <span class="table">sales</span> <span class="keyword">AS</span> <span class="alias">s</span>
+<span class="keyword">ON</span> <span class="condition">p.product_id = s.product_id</span>
+                        </div>
+                        <p><strong>Resultado:</strong></p>
+                        <ul>
+                            <li>Productos vendidos con sus ventas</li>
+                            <li>Productos sin ventas (problema de inventario)</li>
+                            <li>Ventas de productos eliminados del catálogo (problema de datos)</li>
+                        </ul>
+                    </example-box>
+
+                    <div class="example-box">
+                        <h3">🏢 Ejemplo: Sistema de RRHH</h3>
+                        <p><strong>Situación:</strong> Empleados vs departamentos</p>
+                        <div class="syntax-box">
+<span class="keyword">SELECT</span> 
+    e.employee_name,
+    e.position,
+    d.department_name,
+    d.budget
+<span class="keyword">FROM</span> <span class="table">employees</span> <span class="keyword">AS</span> <span class="alias">e</span>
+<span class="keyword">FULL OUTER JOIN</span> <span class="table">departments</span> <span class="keyword">AS</span> <span class="alias">d</span>
+<span class="keyword">ON</span> <span class="condition">e.department_id = d.department_id</span>
+                        </div>
+                        <p><strong>Identifica:</strong></p>
+                        <ul>
+                            <li>Empleados sin departamento asignado</li>
+                            <li>Departamentos sin empleados</li>
+                            <li>Relaciones correctas empleado-departamento</li>
+                        </ul>
+                    </example-box>
+
+                    <div class="concept-card">
+                        <h3">🔍 Casos Donde NO Usar FULL OUTER</h3>
+                        <ul>
+                            <li><strong>Reportes normales:</strong> LEFT OUTER suele ser suficiente</li>
+                            <li><strong>Consultas frecuentes:</strong> El impacto de rendimiento es acumulativo</li>
+                            <li><strong>Datos grandes:</strong> Puede ser prohibitivamente lento</li>
+                            <li><strong>Análisis dirigido:</strong> Cuando sabes que solo necesitas una perspectiva</li>
+                        </ul>
+                    </concept-card>
+
+                    <div class="concept-card">
+                        <h3">🎯 Alternativas más Eficientes</h3>
+                        <p>En lugar de FULL OUTER JOIN, considera:</p>
+                        <ul>
+                            <li><strong>LEFT OUTER + consulta separada:</strong> Para casos específicos</li>
+                            <li><strong>UNION de LEFT y RIGHT OUTER:</strong> Puede ser más eficiente</li>
+                            <li><strong>Análisis por etapas:</strong> Primero LEFT, luego revisar casos específicos</li>
+                            <li><strong>Herramientas de BI:</strong> Para análisis complejos recurrentes</li>
+                        </ul>
+                    </concept-card>
+
+                    <div class="example-box">
+                        <h3">📊 Alternativa con UNION</h3>
+                        <div class="syntax-box">
+<span class="keyword">-- Puede ser más eficiente que FULL OUTER JOIN</span>
+<span class="keyword">SELECT</span> * <span class="keyword">FROM</span> tabla1 <span class="keyword">LEFT OUTER JOIN</span> tabla2 <span class="keyword">ON</span> condición
+<span class="keyword">UNION</span>
+<span class="keyword">SELECT</span> * <span class="keyword">FROM</span> tabla1 <span class="keyword">RIGHT OUTER JOIN</span> tabla2 <span class="keyword">ON</span> condición
+<span class="keyword">WHERE</span> tabla1.campo <span class="keyword">IS NULL</span>
+                        </div>
+                    </example-box>
+
+                    <div class="definition-box">
+                        <h3">💡 Guía de Decisión</h3>
+                        <p><strong>Usa FULL OUTER JOIN cuando:</strong> Necesitas detectar problemas en ambas direcciones.</p>
+                        <p><strong>Evita FULL OUTER JOIN cuando:</strong> Solo te interesa una perspectiva principal.</p>
+                        <p><strong>Considera alternativas cuando:</strong> El rendimiento es crítico.</p>
+                        <p><strong>Siempre pregúntate:</strong> "¿Realmente necesito ver TODO?"</p>
+                    </definition-box>
+                </section>
+
+                <section id="conclusions" class="section">
+                    <h2">🎯 Conclusiones</h2>
+                    
+                    <div class="concept-card">
+                        <h3">📋 Resumen del FULL OUTER JOIN</h3>
+                        <p>Hemos completado nuestro estudio de los <strong>JOINs del SQL estándar</strong> con el FULL OUTER JOIN. Este representa la máxima inclusividad posible, combinando los efectos de LEFT y RIGHT OUTER JOIN en una sola operación.</p>
+                    </div>
+
+                    <div class="full-outer-card">
+                        <div class="full-outer-icon">🏁</div>
+                        <div class="full-outer-title">SQL ESTÁNDAR COMPLETADO</div>
+                        <div class="full-outer-description">INNER + LEFT OUTER + RIGHT OUTER + FULL OUTER = Arsenal completo</div>
+                    </div>
+
+                    <div class="feature-grid">
+                        <div class="feature-card">
+                            <div class="feature-icon">✅</div>
+                            <h4">CONCEPTO DOMINADO</h4>
+                            <p>LEFT OUTER + RIGHT OUTER = FULL OUTER JOIN</p>
+                        </div>
+
+                        <div class="feature-card">
+                            <div class="feature-icon">🔄</div>
+                            <h4>MÁXIMA INCLUSIVIDAD</h4>
+                            <p>Todos los registros de ambas tablas</p>
+                        </div>
+
+                        <div class="feature-card">
+                            <div class="feature-icon">⚡</div>
+                            <h4>RENDIMIENTO PESADO</h4>
+                            <p>Siempre hace JOIN completo</p>
+                        </div>
+
+                        <div class="feature-card">
+                            <div class="feature-icon">🎯</div>
+                            <h4">USO ESPECÍFICO</h4>
+                            <p>Solo cuando necesitas vista 360°</p>
+                        </div>
+                    </feature-grid>
+
+                    <div class="concept-card">
+                        <h3">🔑 Conceptos Clave Dominados</h3>
+                        <ul>
+                            <li><strong>Definición clara:</strong> Combina efectos de LEFT OUTER y RIGHT OUTER JOIN</li>
+                            <li><strong>Máxima inclusividad:</strong> Todos los registros de ambas tablas aparecen</li>
+                            <li><strong>Sintaxis estándar:</strong> FULL OUTER JOIN con condición ON</li>
+                            <li><strong>Gestión de NULL:</strong> Completa donde no hay correspondencia</li>
+                            <li><strong>Implicaciones de rendimiento:</strong> Procesamiento exhaustivo y pesado</li>
+                            <li><strong>Casos de uso específicos:</strong> Auditorías y análisis completos</li>
+                        </ul>
+                    </concept-card>
+
+                    <div class="comparison-grid">
+                        <div class="comparison-card left">
+                            <h4">🎯 Arsenal Completo de JOINs</h4>
+                            <ul>
+                                <li><strong>INNER JOIN:</strong> Solo coincidencias</li>
+                                <li><strong>LEFT OUTER:</strong> Tabla izquierda completa</li>
+                                <li><strong>RIGHT OUTER:</strong> Tabla derecha completa</li>
+                                <li><strong>FULL OUTER:</strong> Ambas tablas completas</li>
+                            </ul>
+                        </div>
+
+                        <div class="comparison-card right">
+                            <h4">⚡ Orden de Eficiencia</h4>
+                            <ul>
+                                <li><strong>1º LEFT OUTER:</strong> Más eficiente</li>
+                                <li><strong>2º INNER JOIN:</strong> Eficiente pero selectivo</li>
+                                <li><strong>3º FULL OUTER:</strong> Pesado pero completo</li>
+                                <li><strong>❌ RIGHT OUTER:</strong> Convertir a LEFT</li>
+                            </ul>
+                        </div>
+
+                        <div class="comparison-card full">
+                            <h4">🎯 Guía de Selección</h4>
+                            <ul>
+                                <li><strong>Análisis normal:</strong> LEFT OUTER JOIN</li>
+                                <li><strong>Datos limpios:</strong> INNER JOIN</li>
+                                <li><strong>Auditoría total:</strong> FULL OUTER JOIN</li>
+                                <li><strong>Optimización:</strong> Evitar RIGHT OUTER</li>
+                            </ul>
+                        </div>
+                    </comparison-grid>
+
+                    <div class="final-summary">
+                        <h3">🏁 Completando los JOINs del SQL Estándar</h3>
+                        <p>Con FULL OUTER JOIN hemos visto <strong>todos los JOINs que podemos utilizar en SQL estándar</strong>. Los otros JOINs mencionados (REFERENTIAL, TEXT, TEMPORAL, SPATIAL) pertenecen específicamente a las vistas de información de SAP HANA y los veremos en la parte final del curso.</p>
+                    </final-summary>
+
+                    <div class="concept-card">
+                        <h3">🚀 Preparación para el Siguiente Nivel</h3>
+                        <p>Con todos los JOINs básicos dominados, estamos preparados para:</p>
+                        <ul>
+                            <li><strong>Resumen general de JOINs:</strong> Próxima clase unificando todo</li>
+                            <li><strong>JOINs múltiples:</strong> Combinaciones de tres o más tablas</li>
+                            <li><strong>JOINs complejos:</strong> Condiciones avanzadas y subconsultas</li>
+                            <li><strong>Vistas de información:</strong> JOINs especiales de SAP HANA</li>
+                            <li><strong>Optimización avanzada:</strong> Estrategias de rendimiento empresarial</li>
+                        </ul>
+                    </concept-card>
+
+                    <div class="definition-box">
+                        <h3">💡 Lección Principal</h3>
+                        <p><strong>FULL OUTER JOIN = Máxima inclusividad</strong> pero con costo de rendimiento.</p>
+                        <p><strong>Usar con propósito:</strong> Solo cuando realmente necesites ver todo.</p>
+                        <p><strong>LEFT OUTER sigue siendo rey:</strong> La mejor opción para la mayoría de casos.</p>
+                        <p><strong>SQL estándar completo:</strong> Ahora tienes todas las herramientas básicas.</p>
+                    </definition-box>
+
+                    <div class="concept-card">
+                        <h3">🎓 Logros Desbloqueados</h3>
+                        <ul>
+                            <li>✅ Dominas FULL OUTER JOIN y su máxima inclusividad</li>
+                            <li>✅ Completas el conjunto de JOINs del SQL estándar</li>
+                            <li>✅ Entiendes las implicaciones de rendimiento</li>
+                            <li>✅ Sabes cuándo usar cada tipo de JOIN</li>
+                            <li>✅ Puedes identificar casos de uso específicos</li>
+                            <li>✅ Estás preparado para JOINs avanzados</li>
+                            <li>✅ Tienes base sólida para vistas de información</li>
+                        </ul>
+                    </concept-card>
+                </section>
+            </main>
+        </div>
+    </div>
+
+    <script>
+        function showSection(sectionId) {
+            // Ocultar todas las secciones
+            const sections = document.querySelectorAll('.section');
+            sections.forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            // Mostrar la sección seleccionada
+            document.getElementById(sectionId).classList.add('active');
+            
+            // Actualizar navegación
+            const navItems = document.querySelectorAll('.nav-item');
+            navItems.forEach(item => {
+                item.classList.remove('active');
+            });
+            
+            // Marcar el elemento activo
+            event.target.classList.add('active');
+            
+            // Scroll al inicio del contenido
+            document.querySelector('.content').scrollTop = 0;
+
+            // En móviles, ocultar el menú después de seleccionar
+            if (window.innerWidth <= 768) {
+                const sidebar = document.getElementById('sidebar');
+                sidebar.classList.add('mobile-hidden');
+                
+                const toggleButton = document.querySelector('.mobile-menu-toggle');
+                toggleButton.textContent = '📋 Menú de Contenidos';
+            }
+        }
+
+        function toggleMobileMenu() {
+            const sidebar = document.getElementById('sidebar');
+            const toggleButton = document.querySelector('.mobile-menu-toggle');
+            
+            if (sidebar.classList.contains('mobile-hidden')) {
+                sidebar.classList.remove('mobile-hidden');
+                toggleButton.textContent = '❌ Cerrar Menú';
+            } else {
+                sidebar.classList.add('mobile-hidden');
+                toggleButton.textContent = '📋 Menú de Contenidos';
+            }
+        }
+
+        // Inicializar en móviles
+        document.addEventListener('DOMContentLoaded', function() {
+            if (window.innerWidth <= 768) {
+                const sidebar = document.getElementById('sidebar');
+                sidebar.classList.add('mobile-hidden');
+            }
+
+            // Animación de entrada
+            const cards = document.querySelectorAll('.concept-card, .definition-box, .example-box');
+            cards.forEach((card, index) => {
+                setTimeout(() => {
+                    card.style.opacity = '0';
+                    card.style.transform = 'translateY(20px)';
+                    card.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+                    
+                    setTimeout(() => {
+                        card.style.opacity = '1';
+                        card.style.transform = 'translateY(0)';
+                    }, 100);
+                }, index * 100);
+            });
+        });
+
+        // Manejar cambios de tamaño de ventana
+        window.addEventListener('resize', function() {
+            const sidebar = document.getElementById('sidebar');
+            const toggleButton = document.querySelector('.mobile-menu-toggle');
+            
+            if (window.innerWidth > 768) {
+                sidebar.classList.remove('mobile-hidden');
+                toggleButton.textContent = '📋 Menú de Contenidos';
+            } else if (window.innerWidth <= 768 && !sidebar.classList.contains('mobile-hidden')) {
+                sidebar.classList.add('mobile-hidden');
+            }
+        });
+    </script>
+</body>
+</html>

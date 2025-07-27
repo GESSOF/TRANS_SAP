@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clase 040 - Predicados Avanzados SAP HANA</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .header h1 {
+            color: #2c3e50;
+            font-size: 2.2em;
+            margin-bottom: 8px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .header h2 {
+            color: #667eea;
+            font-size: 1.3em;
+            margin: 8px 0;
+        }
+
+        .content {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        h3 {
+            color: #2c3e50;
+            font-size: 1.4em;
+            margin: 20px 0 12px 0;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #667eea;
+        }
+
+        .concept-card {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-radius: 10px;
+            padding: 18px;
+            margin: 15px 0;
+            border-left: 4px solid #667eea;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .concept-card h4 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+
+        .concept-card p, .concept-card li {
+            color: #555;
+            line-height: 1.5;
+            margin-bottom: 8px;
+        }
+
+        .definition-box {
+            background: linear-gradient(135deg, #fff3cd, #ffeaa7);
+            border-radius: 10px;
+            padding: 18px;
+            margin: 15px 0;
+            border-left: 4px solid #f39c12;
+        }
+
+        .definition-box h4 {
+            color: #856404;
+            margin-bottom: 10px;
+        }
+
+        .definition-box p {
+            color: #856404;
+            line-height: 1.5;
+        }
+
+        .example-box {
+            background: linear-gradient(135deg, #e8f5e8, #d4edda);
+            border-radius: 10px;
+            padding: 18px;
+            margin: 15px 0;
+            border-left: 4px solid #27ae60;
+        }
+
+        .example-box h4 {
+            color: #155724;
+            margin-bottom: 10px;
+        }
+
+        .example-box p {
+            color: #155724;
+            line-height: 1.5;
+        }
+
+        .warning-box {
+            background: linear-gradient(135deg, #ffebee, #ffcdd2);
+            border-radius: 10px;
+            padding: 18px;
+            margin: 15px 0;
+            border-left: 4px solid #d32f2f;
+        }
+
+        .warning-box h4 {
+            color: #b71c1c;
+            margin-bottom: 10px;
+        }
+
+        .warning-box p {
+            color: #b71c1c;
+            line-height: 1.5;
+        }
+
+        .code-example {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            margin: 15px 0;
+            overflow-x: auto;
+            font-size: 0.9em;
+        }
+
+        .code-example .keyword {
+            color: #63b3ed;
+            font-weight: bold;
+        }
+
+        .code-example .comment {
+            color: #68d391;
+        }
+
+        .code-example .string {
+            color: #fbb6ce;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin: 15px 0;
+        }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 15px;
+            margin: 15px 0;
+        }
+
+        .syntax-box {
+            background: linear-gradient(135deg, #e3f2fd, #bbdefb);
+            border-radius: 10px;
+            padding: 18px;
+            margin: 15px 0;
+            border-left: 4px solid #2196f3;
+            font-family: 'Courier New', monospace;
+        }
+
+        .syntax-box h4 {
+            color: #0d47a1;
+            margin-bottom: 10px;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        .syntax-box p {
+            color: #1565c0;
+            line-height: 1.5;
+        }
+
+        .result-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .result-table th {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 12px;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .result-table td {
+            padding: 10px 12px;
+            border-bottom: 1px solid #eee;
+            text-align: center;
+        }
+
+        .result-table tr:hover {
+            background-color: #f8f9fa;
+        }
+
+        .true {
+            color: #27ae60;
+            font-weight: bold;
+        }
+
+        .false {
+            color: #e74c3c;
+            font-weight: bold;
+        }
+
+        .predicado-card {
+            background: linear-gradient(135deg, #f1f3f4, #e8eaed);
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+            border-left: 5px solid #667eea;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        .predicado-card h4 {
+            color: #2c3e50;
+            font-size: 1.3em;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        ul {
+            margin-left: 20px;
+            margin-top: 8px;
+        }
+
+        li {
+            margin: 5px 0;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+            
+            .header {
+                padding: 20px;
+            }
+            
+            .header h1 {
+                font-size: 1.8em;
+            }
+            
+            .content {
+                padding: 20px;
+            }
+            
+            .grid-2, .grid-3 {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>Curso SAP HANA</h1>
+            <h2>Clase 040 - Predicados Avanzados</h2>
+            <p>BETWEEN, IN y EXISTS - Herramientas esenciales para filtrado</p>
+        </header>
+
+        <div class="content">
+            <h3>🎯 Predicados Avanzados</h3>
+            
+            <div class="definition-box">
+                <h4>📋 En Esta Clase</h4>
+                <p>Veremos tres predicados fundamentales: <strong>BETWEEN</strong> (rangos), <strong>IN</strong> (listas/subconsultas) y <strong>EXISTS</strong> (existencia de registros).</p>
+            </div>
+
+            <div class="predicado-card">
+                <h4>📏 BETWEEN - Rangos de Valores</h4>
+                
+                <div class="definition-box">
+                    <h4>💡 Definición</h4>
+                    <p>Verifica si un valor se encuentra entre un rango de valores especificado. En inglés significa "entre". Define un valor mínimo y máximo.</p>
+                </div>
+
+                <div class="syntax-box">
+                    <h4>📝 Sintaxis</h4>
+                    <p>expresión [NOT] BETWEEN valor_mínimo AND valor_máximo</p>
+                </div>
+
+                <div class="grid-2">
+                    <div class="concept-card">
+                        <h4>✅ BETWEEN</h4>
+                        <p>Devuelve TRUE si el valor está dentro del rango (inclusive)</p>
+                    </div>
+                    <div class="concept-card">
+                        <h4>❌ NOT BETWEEN</h4>
+                        <p>Devuelve TRUE si el valor está fuera del rango</p>
+                    </div>
+                </div>
+
+                <div class="code-example">
+<span class="comment">-- Ejemplo numérico: 3 está entre 1 y 5</span>
+<span class="keyword">SELECT</span> * <span class="keyword">FROM</span> DUMMY 
+<span class="keyword">WHERE</span> 3 <span class="keyword">BETWEEN</span> 1 <span class="keyword">AND</span> 5;
+<span class="comment">-- Resultado: TRUE</span>
+
+<span class="comment">-- Con negación: 3 NO está fuera del rango 1-5</span>
+<span class="keyword">SELECT</span> * <span class="keyword">FROM</span> DUMMY 
+<span class="keyword">WHERE</span> 3 <span class="keyword">NOT BETWEEN</span> 1 <span class="keyword">AND</span> 5;
+<span class="comment">-- Resultado: FALSE</span>
+                </div>
+
+                <div class="example-box">
+                    <h4>📝 Ejemplo con Texto (Orden Alfabético)</h4>
+                    <p>También funciona con cadenas de texto usando orden alfabético:</p>
+                </div>
+
+                <div class="code-example">
+<span class="comment">-- "Daniel" está entre "Abedul" y "Zarza" alfabéticamente</span>
+<span class="keyword">SELECT</span> * <span class="keyword">FROM</span> DUMMY 
+<span class="keyword">WHERE</span> <span class="string">'Daniel'</span> <span class="keyword">BETWEEN</span> <span class="string">'Abedul'</span> <span class="keyword">AND</span> <span class="string">'Zarza'</span>;
+<span class="comment">-- Resultado: TRUE</span>
+
+<span class="comment">-- "Daniel" NO está entre "Fiesta" y "Zarza"</span>
+<span class="keyword">SELECT</span> * <span class="keyword">FROM</span> DUMMY 
+<span class="keyword">WHERE</span> <span class="string">'Daniel'</span> <span class="keyword">BETWEEN</span> <span class="string">'Fiesta'</span> <span class="keyword">AND</span> <span class="string">'Zarza'</span>;
+<span class="comment">-- Resultado: FALSE</span>
+                </code>
+            </div>
+
+            <div class="predicado-card">
+                <h4>📋 IN - Pertenencia a Lista</h4>
+                
+                <div class="definition-box">
+                    <h4>💡 Definición</h4>
+                    <p>Comprueba que la expresión a analizar se encuentra dentro de una lista de valores o del resultado de una subconsulta. Es lo más básico y útil que existe.</p>
+                </div>
+
+                <div class="syntax-box">
+                    <h4>📝 Sintaxis</h4>
+                    <p>expresión [NOT] IN (lista_valores | subconsulta)</p>
+                </div>
+
+                <div class="concept-card">
+                    <h4>🔄 Funciona Como SOME/ANY</h4>
+                    <p>Similar a los operadores que vimos anteriormente, pero con sintaxis más simple y directa.</p>
+                </div>
+
+                <div class="code-example">
+<span class="comment">-- Ejemplo con lista de valores</span>
+<span class="keyword">SELECT</span> * <span class="keyword">FROM</span> DUMMY 
+<span class="keyword">WHERE</span> 5 <span class="keyword">IN</span> (3, 4, 5);
+<span class="comment">-- Resultado: TRUE (5 está en la lista)</span>
+
+<span class="comment">-- Con negación</span>
+<span class="keyword">SELECT</span> * <span class="keyword">FROM</span> DUMMY 
+<span class="keyword">WHERE</span> 5 <span class="keyword">NOT IN</span> (1, 2, 3, 4, 5);
+<span class="comment">-- Resultado: FALSE (5 SÍ está en la lista)</span>
+                </code>
+
+                <div class="example-box">
+                    <h4>📝 Uso con Subconsultas</h4>
+                    <p>Muy utilizado con subconsultas para verificar existencia en resultados dinámicos:</p>
+                </div>
+
+                <div class="code-example">
+<span class="comment">-- Con subconsulta que devuelve un valor</span>
+<span class="keyword">SELECT</span> * <span class="keyword">FROM</span> DUMMY 
+<span class="keyword">WHERE</span> 1 <span class="keyword">IN</span> (<span class="keyword">SELECT</span> 1 <span class="keyword">FROM</span> DUMMY);
+<span class="comment">-- Resultado: TRUE</span>
+
+<span class="comment">-- Con negación de subconsulta</span>
+<span class="keyword">SELECT</span> * <span class="keyword">FROM</span> DUMMY 
+<span class="keyword">WHERE</span> 1 <span class="keyword">NOT IN</span> (<span class="keyword">SELECT</span> 3 <span class="keyword">FROM</span> DUMMY);
+<span class="comment">-- Resultado: TRUE (1 no está en el resultado)</span>
+                </code>
+
+                <div class="warning-box">
+                    <h4>💡 Caso de Uso Real</h4>
+                    <p>IN se utiliza muchísimo con subconsultas cuando obtienes múltiples resultados y necesitas verificar si un valor específico está entre ellos.</p>
+                </div>
+            </div>
+
+            <div class="predicado-card">
+                <h4>🔍 EXISTS - Existencia de Registros</h4>
+                
+                <div class="definition-box">
+                    <h4>💡 Definición</h4>
+                    <p>Comprueba que la subconsulta devuelva al menos un valor. Si devuelve mínimo un registro, retorna TRUE. Si no devuelve ningún valor, retorna FALSE.</p>
+                </div>
+
+                <div class="syntax-box">
+                    <h4>📝 Sintaxis</h4>
+                    <p>[NOT] EXISTS (subconsulta)</p>
+                </div>
+
+                <div class="concept-card">
+                    <h4>🎯 Propósito</h4>
+                    <p>Simplemente comprueba si la subconsulta "está funcionando" y devuelve resultados. Útil para control de flujo: "Si devuelve valores, haz esto; si no, haz otra cosa".</p>
+                </div>
+
+                <div class="code-example">
+<span class="comment">-- EXISTS con subconsulta que devuelve resultados</span>
+<span class="keyword">SELECT</span> * <span class="keyword">FROM</span> DUMMY 
+<span class="keyword">WHERE</span> <span class="keyword">EXISTS</span> (<span class="keyword">SELECT</span> CURRENT_DATE <span class="keyword">FROM</span> DUMMY);
+<span class="comment">-- Resultado: TRUE (la función devuelve un valor)</span>
+
+<span class="comment">-- EXISTS con subconsulta que NO devuelve resultados</span>
+<span class="keyword">SELECT</span> * <span class="keyword">FROM</span> DUMMY 
+<span class="keyword">WHERE</span> <span class="keyword">EXISTS</span> (
+    <span class="keyword">SELECT</span> * <span class="keyword">FROM</span> DUMMY <span class="keyword">WHERE</span> 1 <span class="keyword">NOT IN</span> (1)
+);
+<span class="comment">-- Resultado: FALSE (la subconsulta no devuelve registros)</span>
+                </code>
+
+                <div class="example-box">
+                    <h4>📝 Control de Flujo</h4>
+                    <p>EXISTS es especialmente útil para lógica condicional y verificación de datos:</p>
+                </div>
+
+                <div class="code-example">
+<span class="comment">-- Verificar si existen pedidos para un cliente</span>
+<span class="keyword">SELECT</span> <span class="string">'Cliente tiene pedidos'</span> <span class="keyword">AS</span> estado
+<span class="keyword">FROM</span> DUMMY 
+<span class="keyword">WHERE</span> <span class="keyword">EXISTS</span> (
+    <span class="keyword">SELECT</span> 1 <span class="keyword">FROM</span> pedidos 
+    <span class="keyword">WHERE</span> id_cliente = <span class="string">'ALFKI'</span>
+);
+
+<span class="comment">-- Con NOT EXISTS para verificar ausencia</span>
+<span class="keyword">SELECT</span> <span class="string">'Cliente sin pedidos'</span> <span class="keyword">AS</span> estado
+<span class="keyword">FROM</span> DUMMY 
+<span class="keyword">WHERE</span> <span class="keyword">NOT EXISTS</span> (
+    <span class="keyword">SELECT</span> 1 <span class="keyword">FROM</span> pedidos 
+    <span class="keyword">WHERE</span> id_cliente = <span class="string">'XXXXX'</span>
+);
+                </code>
+            </div>
+
+            <h3>📊 Tabla Comparativa</h3>
+
+            <table class="result-table">
+                <thead>
+                    <tr>
+                        <th>Predicado</th>
+                        <th>Propósito</th>
+                        <th>Sintaxis Básica</th>
+                        <th>Caso de Uso</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>BETWEEN</strong></td>
+                        <td>Verificar rangos</td>
+                        <td>valor BETWEEN min AND max</td>
+                        <td>Fechas, números, orden alfabético</td>
+                    </tr>
+                    <tr>
+                        <td><strong>IN</strong></td>
+                        <td>Pertenencia a lista</td>
+                        <td>valor IN (lista)</td>
+                        <td>Múltiples opciones, subconsultas</td>
+                    </tr>
+                    <tr>
+                        <td><strong>EXISTS</strong></td>
+                        <td>Existencia de datos</td>
+                        <td>EXISTS (subconsulta)</td>
+                        <td>Control de flujo, validaciones</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>💡 Ejemplos Prácticos Reales</h3>
+
+            <div class="grid-2">
+                <div class="example-box">
+                    <h4>📅 BETWEEN con Fechas</h4>
+                    <div class="code-example">
+<span class="keyword">SELECT</span> * <span class="keyword">FROM</span> pedidos
+<span class="keyword">WHERE</span> fecha_pedido 
+<span class="keyword">BETWEEN</span> <span class="string">'2023-01-01'</span> 
+<span class="keyword">AND</span> <span class="string">'2023-12-31'</span>;
+                    </div>
+                </div>
+                <div class="example-box">
+                    <h4>📋 IN con Múltiples IDs</h4>
+                    <div class="code-example">
+<span class="keyword">SELECT</span> * <span class="keyword">FROM</span> empleados
+<span class="keyword">WHERE</span> departamento_id 
+<span class="keyword">IN</span> (1, 3, 5, 7);
+                    </div>
+                </div>
+            </div>
+
+            <h3>✅ Puntos Clave</h3>
+
+            <div class="grid-3">
+                <div class="concept-card">
+                    <h4>📏 BETWEEN</h4>
+                    <ul>
+                        <li>Incluye los límites (inclusive)</li>
+                        <li>Funciona con números y texto</li>
+                        <li>NOT BETWEEN para exclusión</li>
+                        <li>Perfecto para rangos de fechas</li>
+                    </ul>
+                </div>
+                <div class="concept-card">
+                    <h4>📋 IN</h4>
+                    <ul>
+                        <li>Muy utilizado con subconsultas</li>
+                        <li>Más simple que ANY/SOME</li>
+                        <li>Ideal para múltiples opciones</li>
+                        <li>NOT IN para exclusión</li>
+                    </ul>
+                </div>
+                <div class="concept-card">
+                    <h4>🔍 EXISTS</h4>
+                    <ul>
+                        <li>Solo funciona con subconsultas</li>
+                        <li>Verifica existencia, no valores</li>
+                        <li>Excelente para control de flujo</li>
+                        <li>NOT EXISTS para ausencia</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="definition-box">
+                <h4>🎯 Resumen</h4>
+                <p>Estos tres predicados son herramientas esenciales: <strong>BETWEEN</strong> para rangos, <strong>IN</strong> para listas y verificación de pertenencia, y <strong>EXISTS</strong> para control de flujo basado en existencia de datos. Su dominio es fundamental para consultas SQL efectivas.</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

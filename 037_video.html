@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clase 037 - Subconsultas SAP HANA</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .header h1 {
+            color: #2c3e50;
+            font-size: 2.2em;
+            margin-bottom: 8px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .header h2 {
+            color: #667eea;
+            font-size: 1.3em;
+            margin: 8px 0;
+        }
+
+        .content {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        h3 {
+            color: #2c3e50;
+            font-size: 1.4em;
+            margin: 20px 0 12px 0;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #667eea;
+        }
+
+        .concept-card {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-radius: 10px;
+            padding: 18px;
+            margin: 15px 0;
+            border-left: 4px solid #667eea;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .concept-card h4 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+
+        .concept-card p, .concept-card li {
+            color: #555;
+            line-height: 1.5;
+            margin-bottom: 8px;
+        }
+
+        .definition-box {
+            background: linear-gradient(135deg, #fff3cd, #ffeaa7);
+            border-radius: 10px;
+            padding: 18px;
+            margin: 15px 0;
+            border-left: 4px solid #f39c12;
+        }
+
+        .definition-box h4 {
+            color: #856404;
+            margin-bottom: 10px;
+        }
+
+        .definition-box p {
+            color: #856404;
+            line-height: 1.5;
+        }
+
+        .example-box {
+            background: linear-gradient(135deg, #e8f5e8, #d4edda);
+            border-radius: 10px;
+            padding: 18px;
+            margin: 15px 0;
+            border-left: 4px solid #27ae60;
+        }
+
+        .example-box h4 {
+            color: #155724;
+            margin-bottom: 10px;
+        }
+
+        .example-box p {
+            color: #155724;
+            line-height: 1.5;
+        }
+
+        .warning-box {
+            background: linear-gradient(135deg, #ffebee, #ffcdd2);
+            border-radius: 10px;
+            padding: 18px;
+            margin: 15px 0;
+            border-left: 4px solid #d32f2f;
+        }
+
+        .warning-box h4 {
+            color: #b71c1c;
+            margin-bottom: 10px;
+        }
+
+        .warning-box p {
+            color: #b71c1c;
+            line-height: 1.5;
+        }
+
+        .code-example {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            margin: 15px 0;
+            overflow-x: auto;
+            font-size: 0.9em;
+        }
+
+        .code-example .keyword {
+            color: #63b3ed;
+            font-weight: bold;
+        }
+
+        .code-example .comment {
+            color: #68d391;
+        }
+
+        .code-example .string {
+            color: #fbb6ce;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin: 15px 0;
+        }
+
+        ul {
+            margin-left: 20px;
+            margin-top: 8px;
+        }
+
+        li {
+            margin: 5px 0;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+            
+            .header {
+                padding: 20px;
+            }
+            
+            .header h1 {
+                font-size: 1.8em;
+            }
+            
+            .content {
+                padding: 20px;
+            }
+            
+            .grid-2 {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>Curso SAP HANA</h1>
+            <h2>Clase 037 - Subconsultas</h2>
+            <p>Consultas dentro de consultas para lógica avanzada</p>
+        </header>
+
+        <div class="content">
+            <h3>📋 ¿Qué son las Subconsultas?</h3>
+            
+            <div class="definition-box">
+                <h4>💡 Definición</h4>
+                <p>Consultas HANA SQL escritas entre paréntesis que se utilizan como entrada de datos para otra consulta. Crean una "tabla virtual" temporal.</p>
+            </div>
+
+            <div class="code-example">
+<span class="comment">-- Sintaxis básica</span>
+<span class="keyword">SELECT</span> * <span class="keyword">FROM</span> (
+    <span class="keyword">SELECT</span> campo1, campo2 <span class="keyword">FROM</span> tabla
+);
+            </div>
+
+            <h3>🎯 Usos Principales</h3>
+            
+            <div class="grid-2">
+                <div class="concept-card">
+                    <h4>📊 Como Origen de Datos</h4>
+                    <p>Usar en FROM como si fuera una tabla normal</p>
+                </div>
+                <div class="concept-card">
+                    <h4>🔍 Con WHERE e IN</h4>
+                    <p>Filtrar registros con conjuntos dinámicos</p>
+                </div>
+            </div>
+
+            <h3>⭐ Ejemplo 1: Como Tabla Virtual</h3>
+            
+            <div class="example-box">
+                <h4>📝 Filtrar columnas de una consulta</h4>
+                <p>Obtener solo ID de pedidos de una consulta más compleja:</p>
+            </div>
+
+            <div class="code-example">
+<span class="comment">-- Consulta completa</span>
+<span class="keyword">SELECT</span> id_pedido, id_cliente <span class="keyword">FROM</span> pedidos;
+
+<span class="comment">-- Usar como subconsulta para obtener solo IDs</span>
+<span class="keyword">SELECT</span> id_pedido 
+<span class="keyword">FROM</span> (
+    <span class="keyword">SELECT</span> id_pedido, id_cliente <span class="keyword">FROM</span> pedidos
+);
+            </code>
+
+            <h3>🔍 Ejemplo 2: Con WHERE e IN</h3>
+            
+            <div class="example-box">
+                <h4>📝 Filtrar pedidos de clientes específicos</h4>
+                <p>Obtener pedidos de clientes cuyo ID empiece con "W":</p>
+            </div>
+
+            <div class="code-example">
+<span class="comment">-- Encontrar clientes que empiecen con "W"</span>
+<span class="keyword">SELECT</span> id_cliente <span class="keyword">FROM</span> clientes 
+<span class="keyword">WHERE</span> id_cliente <span class="keyword">LIKE</span> <span class="string">'W%'</span>;
+
+<span class="comment">-- Usar esos IDs para filtrar pedidos</span>
+<span class="keyword">SELECT</span> * <span class="keyword">FROM</span> pedidos 
+<span class="keyword">WHERE</span> id_cliente <span class="keyword">IN</span> (
+    <span class="keyword">SELECT</span> id_cliente <span class="keyword">FROM</span> clientes 
+    <span class="keyword">WHERE</span> id_cliente <span class="keyword">LIKE</span> <span class="string">'W%'</span>
+);
+            </code>
+
+            <h3>🎯 Ejemplo Avanzado: Problema Real</h3>
+            
+            <div class="concept-card">
+                <h4>📋 Problema</h4>
+                <p><strong>Enunciado:</strong> Mostrar pedidos repartidos por compañías que <em>nunca</em> hayan servido a la empresa "Queen".</p>
+            </div>
+
+            <div class="warning-box">
+                <h4>❌ Solución Errónea Común</h4>
+                <p>Filtrar pedidos != 'Queen' NO elimina las compañías que sí le han servido</p>
+            </div>
+
+            <div class="example-box">
+                <h4>✅ Solución Correcta con Subconsultas</h4>
+                <p>Dividir en 2 pasos: encontrar compañías que SÍ sirvieron a Queen, luego excluirlas</p>
+            </div>
+
+            <div class="code-example">
+<span class="comment">-- PASO 1: Encontrar compañías que SÍ sirvieron a Queen</span>
+<span class="keyword">SELECT DISTINCT</span> id_compania_envios
+<span class="keyword">FROM</span> companias_envio e
+<span class="keyword">JOIN</span> pedidos p <span class="keyword">ON</span> p.forma_envio = e.id_compania_envios
+<span class="keyword">WHERE</span> id_cliente = <span class="string">'Queen'</span>;
+
+<span class="comment">-- PASO 2: Mostrar compañías que NO están en esa lista</span>
+<span class="keyword">SELECT</span> nombre_compania
+<span class="keyword">FROM</span> companias_envio
+<span class="keyword">WHERE</span> id_compania_envios <span class="keyword">NOT IN</span> (
+    <span class="keyword">SELECT DISTINCT</span> id_compania_envios
+    <span class="keyword">FROM</span> companias_envio e
+    <span class="keyword">JOIN</span> pedidos p <span class="keyword">ON</span> p.forma_envio = e.id_compania_envios
+    <span class="keyword">WHERE</span> id_cliente = <span class="string">'Queen'</span>
+);
+            </code>
+
+            <h3>✅ Puntos Clave</h3>
+            
+            <div class="grid-2">
+                <div class="concept-card">
+                    <h4>🔧 Sintaxis</h4>
+                    <ul>
+                        <li>Paréntesis obligatorios</li>
+                        <li>Punto y coma solo al final</li>
+                        <li>Se pueden anidar</li>
+                    </ul>
+                </div>
+                <div class="concept-card">
+                    <h4>💡 Ventajas</h4>
+                    <ul>
+                        <li>Lógica dividida en pasos</li>
+                        <li>Problemas complejos simples</li>
+                        <li>Más legible y mantenible</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="definition-box">
+                <h4>🎯 Cuándo Usar Subconsultas</h4>
+                <p>Cuando necesites resolver un problema en múltiples pasos lógicos o cuando un JOIN simple no sea suficiente para la lógica requerida.</p>
+            </definition-box>
+        </div>
+    </div>
+</body>
+</html>

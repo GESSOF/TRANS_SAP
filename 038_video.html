@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clase 038 - Operadores SQL SAP HANA</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .header h1 {
+            color: #2c3e50;
+            font-size: 2.2em;
+            margin-bottom: 8px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .header h2 {
+            color: #667eea;
+            font-size: 1.3em;
+            margin: 8px 0;
+        }
+
+        .content {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        h3 {
+            color: #2c3e50;
+            font-size: 1.4em;
+            margin: 20px 0 12px 0;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #667eea;
+        }
+
+        .concept-card {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-radius: 10px;
+            padding: 18px;
+            margin: 15px 0;
+            border-left: 4px solid #667eea;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .concept-card h4 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+
+        .concept-card p, .concept-card li {
+            color: #555;
+            line-height: 1.5;
+            margin-bottom: 8px;
+        }
+
+        .definition-box {
+            background: linear-gradient(135deg, #fff3cd, #ffeaa7);
+            border-radius: 10px;
+            padding: 18px;
+            margin: 15px 0;
+            border-left: 4px solid #f39c12;
+        }
+
+        .definition-box h4 {
+            color: #856404;
+            margin-bottom: 10px;
+        }
+
+        .definition-box p {
+            color: #856404;
+            line-height: 1.5;
+        }
+
+        .example-box {
+            background: linear-gradient(135deg, #e8f5e8, #d4edda);
+            border-radius: 10px;
+            padding: 18px;
+            margin: 15px 0;
+            border-left: 4px solid #27ae60;
+        }
+
+        .example-box h4 {
+            color: #155724;
+            margin-bottom: 10px;
+        }
+
+        .example-box p {
+            color: #155724;
+            line-height: 1.5;
+        }
+
+        .warning-box {
+            background: linear-gradient(135deg, #ffebee, #ffcdd2);
+            border-radius: 10px;
+            padding: 18px;
+            margin: 15px 0;
+            border-left: 4px solid #d32f2f;
+        }
+
+        .warning-box h4 {
+            color: #b71c1c;
+            margin-bottom: 10px;
+        }
+
+        .warning-box p {
+            color: #b71c1c;
+            line-height: 1.5;
+        }
+
+        .code-example {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            margin: 15px 0;
+            overflow-x: auto;
+            font-size: 0.9em;
+        }
+
+        .code-example .keyword {
+            color: #63b3ed;
+            font-weight: bold;
+        }
+
+        .code-example .comment {
+            color: #68d391;
+        }
+
+        .code-example .string {
+            color: #fbb6ce;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin: 15px 0;
+        }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 15px;
+            margin: 15px 0;
+        }
+
+        .operator-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .operator-table th {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 12px;
+            text-align: left;
+            font-weight: bold;
+        }
+
+        .operator-table td {
+            padding: 10px 12px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .operator-table tr:hover {
+            background-color: #f8f9fa;
+        }
+
+        ul {
+            margin-left: 20px;
+            margin-top: 8px;
+        }
+
+        li {
+            margin: 5px 0;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+            
+            .header {
+                padding: 20px;
+            }
+            
+            .header h1 {
+                font-size: 1.8em;
+            }
+            
+            .content {
+                padding: 20px;
+            }
+            
+            .grid-2, .grid-3 {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>Curso SAP HANA</h1>
+            <h2>Clase 038 - Operadores SQL</h2>
+            <p>Símbolos matemáticos para operaciones, comparaciones y asignaciones</p>
+        </header>
+
+        <div class="content">
+            <h3>📋 ¿Qué son los Operadores?</h3>
+            
+            <div class="definition-box">
+                <h4>💡 Definición</h4>
+                <p>Símbolos (mayormente matemáticos) que se utilizan para realizar operaciones en expresiones SQL. Permiten cálculos, comparaciones y asignaciones de valores.</p>
+            </div>
+
+            <h3>🔧 Operadores Unarios</h3>
+            
+            <div class="concept-card">
+                <h4>📝 Sintaxis: operador + operando</h4>
+                <p>Operadores que actúan sobre un solo valor</p>
+            </div>
+
+            <table class="operator-table">
+                <thead>
+                    <tr>
+                        <th>Símbolo</th>
+                        <th>Tipo</th>
+                        <th>Significado</th>
+                        <th>Ejemplo</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>+</strong></td>
+                        <td>Aritmético</td>
+                        <td>Valor positivo</td>
+                        <td>+5</td>
+                    </tr>
+                    <tr>
+                        <td><strong>-</strong></td>
+                        <td>Aritmético</td>
+                        <td>Valor negativo</td>
+                        <td>-5</td>
+                    </tr>
+                    <tr>
+                        <td><strong>NOT</strong></td>
+                        <td>Lógico</td>
+                        <td>Negación</td>
+                        <td>NOT NULL</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="example-box">
+                <h4>📝 Ejemplo con NOT</h4>
+                <p>Obtener registros que NO tengan valor nulo:</p>
+            </div>
+
+            <div class="code-example">
+<span class="comment">-- Registros con valor nulo</span>
+<span class="keyword">SELECT</span> * <span class="keyword">FROM</span> pedidos 
+<span class="keyword">WHERE</span> region_destinatario <span class="keyword">IS NULL</span>;
+
+<span class="comment">-- Registros SIN valor nulo (negación)</span>
+<span class="keyword">SELECT</span> * <span class="keyword">FROM</span> pedidos 
+<span class="keyword">WHERE</span> region_destinatario <span class="keyword">IS NOT NULL</span>;
+            </div>
+
+            <h3>⚙️ Operadores Binarios</h3>
+            
+            <div class="concept-card">
+                <h4>🔄 Operadores Aritméticos</h4>
+                <p>Para realizar cálculos matemáticos básicos</p>
+            </div>
+
+            <table class="operator-table">
+                <thead>
+                    <tr>
+                        <th>Símbolo</th>
+                        <th>Operación</th>
+                        <th>Ejemplo SQL</th>
+                        <th>Resultado</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>+</strong></td>
+                        <td>Suma</td>
+                        <td>SELECT 1 + 1 FROM DUMMY</td>
+                        <td>2</td>
+                    </tr>
+                    <tr>
+                        <td><strong>-</strong></td>
+                        <td>Resta</td>
+                        <td>SELECT 3 - 2 FROM DUMMY</td>
+                        <td>1</td>
+                    </tr>
+                    <tr>
+                        <td><strong>*</strong></td>
+                        <td>Multiplicación</td>
+                        <td>SELECT 3 * 2 FROM DUMMY</td>
+                        <td>6</td>
+                    </tr>
+                    <tr>
+                        <td><strong>/</strong></td>
+                        <td>División</td>
+                        <td>SELECT 6 / 2 FROM DUMMY</td>
+                        <td>3</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>🔍 Operadores de Comparación</h3>
+            
+            <div class="concept-card">
+                <h4>📊 Devuelven Valores Booleanos</h4>
+                <p>Resultado: TRUE (cierto) o FALSE (falso)</p>
+            </div>
+
+            <table class="operator-table">
+                <thead>
+                    <tr>
+                        <th>Símbolo</th>
+                        <th>Significado</th>
+                        <th>Ejemplo Verdadero</th>
+                        <th>Ejemplo Falso</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>=</strong></td>
+                        <td>Igual</td>
+                        <td>1 = 1</td>
+                        <td>1 = 2</td>
+                    </tr>
+                    <tr>
+                        <td><strong>!= ó <></strong></td>
+                        <td>Desigual</td>
+                        <td>1 != 2</td>
+                        <td>1 != 1</td>
+                    </tr>
+                    <tr>
+                        <td><strong><</strong></td>
+                        <td>Menor que</td>
+                        <td>1 < 2</td>
+                        <td>2 < 2</td>
+                    </tr>
+                    <tr>
+                        <td><strong>></strong></td>
+                        <td>Mayor que</td>
+                        <td>2 > 1</td>
+                        <td>2 > 2</td>
+                    </tr>
+                    <tr>
+                        <td><strong><=</strong></td>
+                        <td>Menor o igual</td>
+                        <td>2 <= 2</td>
+                        <td>3 <= 2</td>
+                    </tr>
+                    <tr>
+                        <td><strong>>=</strong></td>
+                        <td>Mayor o igual</td>
+                        <td>2 >= 2</td>
+                        <td>0 >= 1</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>🧠 Operadores Lógicos</h3>
+            
+            <div class="warning-box">
+                <h4>⚠️ Conceptos Importantes</h4>
+                <p>AND requiere que AMBAS condiciones sean verdaderas. OR requiere que AL MENOS UNA condición sea verdadera.</p>
+            </div>
+
+            <div class="grid-2">
+                <div class="concept-card">
+                    <h4>🔗 Operador AND</h4>
+                    <p><strong>Solo TRUE cuando ambas expresiones son TRUE</strong></p>
+                    <ul>
+                        <li>TRUE AND TRUE = TRUE</li>
+                        <li>TRUE AND FALSE = FALSE</li>
+                        <li>FALSE AND TRUE = FALSE</li>
+                        <li>FALSE AND FALSE = FALSE</li>
+                    </ul>
+                </div>
+                <div class="concept-card">
+                    <h4>🔀 Operador OR</h4>
+                    <p><strong>TRUE cuando al menos una expresión es TRUE</strong></p>
+                    <ul>
+                        <li>TRUE OR TRUE = TRUE</li>
+                        <li>TRUE OR FALSE = TRUE</li>
+                        <li>FALSE OR TRUE = TRUE</li>
+                        <li>FALSE OR FALSE = FALSE</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="code-example">
+<span class="comment">-- Ejemplo AND: ambas condiciones deben cumplirse</span>
+<span class="keyword">SELECT</span> * <span class="keyword">FROM</span> DUMMY 
+<span class="keyword">WHERE</span> 1 = 1 <span class="keyword">AND</span> 2 = 2; <span class="comment">-- TRUE</span>
+
+<span class="keyword">SELECT</span> * <span class="keyword">FROM</span> DUMMY 
+<span class="keyword">WHERE</span> 1 = 1 <span class="keyword">AND</span> 2 = 3; <span class="comment">-- FALSE</span>
+
+<span class="comment">-- Ejemplo OR: al menos una condición debe cumplirse</span>
+<span class="keyword">SELECT</span> * <span class="keyword">FROM</span> DUMMY 
+<span class="keyword">WHERE</span> 1 = 1 <span class="keyword">OR</span> 2 = 3; <span class="comment">-- TRUE</span>
+
+<span class="keyword">SELECT</span> * <span class="keyword">FROM</span> DUMMY 
+<span class="keyword">WHERE</span> 1 = 3 <span class="keyword">OR</span> 2 = 3; <span class="comment">-- FALSE</span>
+            </div>
+
+            <h3>🔗 Operador de Concatenación</h3>
+            
+            <div class="example-box">
+                <h4>📝 Unir Cadenas de Texto</h4>
+                <p>Símbolo || para concatenar cadenas de caracteres</p>
+            </div>
+
+            <div class="code-example">
+<span class="comment">-- Campos separados</span>
+<span class="keyword">SELECT</span> <span class="string">'Daniel'</span>, <span class="string">'Rico'</span>, <span class="string">'Álvarez'</span> <span class="keyword">FROM</span> DUMMY;
+
+<span class="comment">-- Campos concatenados</span>
+<span class="keyword">SELECT</span> <span class="string">'Daniel'</span> || <span class="string">' '</span> || <span class="string">'Rico'</span> || <span class="string">' '</span> || <span class="string">'Álvarez'</span> 
+<span class="keyword">AS</span> nombre_completo <span class="keyword">FROM</span> DUMMY;
+<span class="comment">-- Resultado: "Daniel Rico Álvarez"</span>
+            </div>
+
+            <h3>🔄 Operadores de Conjuntos</h3>
+            
+            <div class="concept-card">
+                <h4>📊 Para Combinar Resultados de Múltiples Consultas</h4>
+                <p>Requieren que las tablas tengan la misma estructura</p>
+            </div>
+
+            <table class="operator-table">
+                <thead>
+                    <tr>
+                        <th>Operador</th>
+                        <th>Función</th>
+                        <th>Duplicados</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>UNION</strong></td>
+                        <td>Une dos conjuntos</td>
+                        <td>Sin duplicados</td>
+                    </tr>
+                    <tr>
+                        <td><strong>UNION ALL</strong></td>
+                        <td>Une dos conjuntos</td>
+                        <td>Con duplicados</td>
+                    </tr>
+                    <tr>
+                        <td><strong>INTERSECT</strong></td>
+                        <td>Solo elementos comunes</td>
+                        <td>Sin duplicados</td>
+                    </tr>
+                    <tr>
+                        <td><strong>EXCEPT</strong></td>
+                        <td>Elementos de tabla1 que NO están en tabla2</td>
+                        <td>Sin duplicados</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="code-example">
+<span class="comment">-- Crear tablas de prueba</span>
+<span class="keyword">CREATE ROW TABLE</span> prueba1 (id <span class="keyword">INTEGER</span>, nombre <span class="keyword">VARCHAR</span>(50));
+<span class="keyword">CREATE ROW TABLE</span> prueba2 (id <span class="keyword">INTEGER</span>, nombre <span class="keyword">VARCHAR</span>(50));
+
+<span class="comment">-- Insertar datos</span>
+<span class="keyword">INSERT INTO</span> prueba1 <span class="keyword">VALUES</span> (1, <span class="string">'Daniel'</span>), (2, <span class="string">'Paco'</span>), (3, <span class="string">'Anacleto'</span>);
+<span class="keyword">INSERT INTO</span> prueba2 <span class="keyword">VALUES</span> (1, <span class="string">'María'</span>), (2, <span class="string">'Lucía'</span>), (3, <span class="string">'Anacleto'</span>);
+
+<span class="comment">-- UNION: combina sin duplicar "Anacleto"</span>
+<span class="keyword">SELECT</span> * <span class="keyword">FROM</span> prueba1 
+<span class="keyword">UNION</span> 
+<span class="keyword">SELECT</span> * <span class="keyword">FROM</span> prueba2;
+
+<span class="comment">-- INTERSECT: solo "Anacleto" (común a ambas)</span>
+<span class="keyword">SELECT</span> * <span class="keyword">FROM</span> prueba1 
+<span class="keyword">INTERSECT</span> 
+<span class="keyword">SELECT</span> * <span class="keyword">FROM</span> prueba2;
+            </code>
+
+            <h3>💡 Consejos Prácticos</h3>
+            
+            <div class="grid-2">
+                <div class="concept-card">
+                    <h4>🎯 Para Operadores Lógicos</h4>
+                    <ul>
+                        <li>Mentalízalo en palabras: "Si esto Y esto"</li>
+                        <li>AND = todas las condiciones</li>
+                        <li>OR = al menos una condición</li>
+                    </ul>
+                </div>
+                <div class="concept-card">
+                    <h4>⚡ Optimización</h4>
+                    <ul>
+                        <li>Usa paréntesis para claridad</li>
+                        <li>Los flags (TRUE/FALSE) son fundamentales</li>
+                        <li>Practica con ejemplos simples primero</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="definition-box">
+                <h4>🎯 Recuerda</h4>
+                <p>Los operadores son la base para construir consultas complejas. Dominar AND, OR y los operadores de comparación te permitirá crear filtros precisos y lógica avanzada en tus consultas SQL.</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
