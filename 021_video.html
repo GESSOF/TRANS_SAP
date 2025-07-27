@@ -1,0 +1,1433 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Curso SAP HANA - Comando DELETE</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .header h1 {
+            color: #2c3e50;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header p {
+            color: #666;
+            font-size: 1.2em;
+        }
+
+        .dashboard {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .sidebar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            height: fit-content;
+            position: sticky;
+            top: 20px;
+        }
+
+        .sidebar h3 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #667eea;
+        }
+
+        .nav-item {
+            padding: 12px 20px;
+            margin: 5px 0;
+            background: linear-gradient(45deg, #f8f9fa, #e9ecef);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-left: 4px solid transparent;
+            font-size: 0.9em;
+        }
+
+        .nav-item:hover {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            transform: translateX(10px);
+            border-left-color: #fff;
+        }
+
+        .nav-item.active {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border-left-color: #fff;
+        }
+
+        .mobile-menu-toggle {
+            display: none;
+            background: rgba(255, 255, 255, 0.95);
+            border: none;
+            padding: 15px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            font-size: 1.2em;
+            cursor: pointer;
+            width: 100%;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .content {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .section {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .section h2 {
+            color: #2c3e50;
+            font-size: 2em;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #667eea;
+        }
+
+        .concept-card {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-radius: 15px;
+            padding: 25px;
+            margin: 20px 0;
+            border-left: 5px solid #667eea;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease;
+        }
+
+        .concept-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .concept-card h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 1.4em;
+        }
+
+        .concept-card p {
+            line-height: 1.8;
+            color: #555;
+            margin-bottom: 15px;
+        }
+
+        .concept-card ul {
+            margin-left: 20px;
+            margin-top: 10px;
+        }
+
+        .concept-card li {
+            margin: 8px 0;
+            color: #555;
+        }
+
+        .definition-box {
+            background: linear-gradient(135deg, #fff3cd, #ffeaa7);
+            border-radius: 15px;
+            padding: 25px;
+            margin: 20px 0;
+            border-left: 5px solid #f39c12;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        .definition-box h3 {
+            color: #856404;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        .definition-box p {
+            color: #856404;
+            line-height: 1.8;
+            margin-bottom: 10px;
+        }
+
+        .example-box {
+            background: linear-gradient(135deg, #e8f5e8, #d4edda);
+            border-radius: 15px;
+            padding: 25px;
+            margin: 20px 0;
+            border-left: 5px solid #27ae60;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        .example-box h3 {
+            color: #155724;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        .example-box p {
+            color: #155724;
+            line-height: 1.8;
+            margin-bottom: 10px;
+        }
+
+        .example-box ul {
+            margin-left: 20px;
+            margin-top: 10px;
+        }
+
+        .example-box li {
+            margin: 8px 0;
+            color: #155724;
+        }
+
+        .critical-danger-box {
+            background: linear-gradient(135deg, #ffebee, #ffcdd2);
+            border-radius: 15px;
+            padding: 25px;
+            margin: 20px 0;
+            border-left: 5px solid #d32f2f;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+            border: 3px solid #d32f2f;
+            position: relative;
+        }
+
+        .critical-danger-box::before {
+            content: "⚠️";
+            font-size: 2em;
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            background: #d32f2f;
+            color: white;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .critical-danger-box strong {
+            color: #b71c1c;
+            font-size: 1.2em;
+        }
+
+        .critical-danger-box p {
+            color: #b71c1c;
+            line-height: 1.8;
+            margin-top: 10px;
+            font-weight: 600;
+        }
+
+        .critical-danger-box h3 {
+            color: #b71c1c;
+            margin-bottom: 15px;
+            font-size: 1.5em;
+            text-transform: uppercase;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: scale(1.05);
+        }
+
+        .stat-card.danger {
+            background: linear-gradient(135deg, #d32f2f, #b71c1c);
+        }
+
+        .stat-number {
+            font-size: 2.5em;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .progress-bar {
+            background: #e9ecef;
+            border-radius: 10px;
+            padding: 3px;
+            margin: 20px 0;
+        }
+
+        .progress {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            height: 20px;
+            border-radius: 8px;
+            transition: width 0.5s ease;
+        }
+
+        .syntax-box {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 20px;
+            border-radius: 10px;
+            font-family: 'Courier New', monospace;
+            margin: 20px 0;
+            overflow-x: auto;
+            border-left: 5px solid #667eea;
+        }
+
+        .syntax-box .keyword {
+            color: #63b3ed;
+            font-weight: bold;
+        }
+
+        .syntax-box .optional {
+            color: #fbb6ce;
+        }
+
+        .syntax-box .placeholder {
+            color: #68d391;
+            font-style: italic;
+        }
+
+        .code-example {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 20px;
+            border-radius: 10px;
+            font-family: 'Courier New', monospace;
+            margin: 20px 0;
+            overflow-x: auto;
+        }
+
+        .code-example .keyword {
+            color: #63b3ed;
+        }
+
+        .code-example .comment {
+            color: #68d391;
+        }
+
+        .code-example .string {
+            color: #fbb6ce;
+        }
+
+        .code-example .danger {
+            color: #f56565;
+            background: rgba(245, 101, 101, 0.3);
+            padding: 2px 4px;
+            border-radius: 3px;
+            font-weight: bold;
+        }
+
+        .delete-steps {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .step-card {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+
+        .step-card:hover {
+            transform: scale(1.05);
+        }
+
+        .step-card.critical {
+            background: linear-gradient(135deg, #d32f2f, #b71c1c);
+        }
+
+        .step-number {
+            font-size: 2em;
+            font-weight: bold;
+            margin-bottom: 10px;
+            background: rgba(255, 255, 255, 0.2);
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 15px;
+        }
+
+        .before-after {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .before-after-card {
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            border-radius: 15px;
+            padding: 20px;
+            border-left: 5px solid #667eea;
+            text-align: center;
+        }
+
+        .before-after-card.empty {
+            border-left-color: #d32f2f;
+            background: linear-gradient(135deg, #ffebee, #ffcdd2);
+        }
+
+        .before-after-card h4 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        .before-after-card.empty h4 {
+            color: #b71c1c;
+        }
+
+        .table-display {
+            background: white;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 10px 0;
+            font-family: 'Courier New', monospace;
+            border: 1px solid #ddd;
+        }
+
+        .table-display.empty {
+            background: #ffebee;
+            border-color: #d32f2f;
+            color: #b71c1c;
+            text-align: center;
+            font-style: italic;
+        }
+
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .comparison-card {
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            border-radius: 15px;
+            padding: 25px;
+            border-left: 5px solid #667eea;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        .comparison-card.delete {
+            border-left-color: #d32f2f;
+            background: linear-gradient(135deg, #ffebee, #ffcdd2);
+        }
+
+        .comparison-card h4 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        .comparison-card.delete h4 {
+            color: #b71c1c;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+
+            .header {
+                padding: 20px;
+                margin-bottom: 20px;
+            }
+
+            .header h1 {
+                font-size: 1.8em;
+            }
+
+            .dashboard {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .sidebar {
+                position: static;
+                padding: 20px;
+                order: 2;
+            }
+
+            .mobile-menu-toggle {
+                display: block;
+                order: 1;
+            }
+
+            .sidebar.mobile-hidden {
+                display: none;
+            }
+
+            .content {
+                padding: 20px;
+                order: 3;
+            }
+
+            .section h2 {
+                font-size: 1.5em;
+            }
+
+            .concept-card, .definition-box, .example-box {
+                padding: 20px;
+                margin: 15px 0;
+            }
+
+            .stats-grid, .delete-steps {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+
+            .before-after, .comparison-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .nav-item {
+                padding: 15px 20px;
+                font-size: 1em;
+                text-align: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .header h1 {
+                font-size: 1.5em;
+            }
+
+            .content {
+                padding: 15px;
+            }
+
+            .concept-card, .definition-box, .example-box {
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <img src="https://gessof.cl/wp-content/uploads/2025/05/Logo-minimalista-con-simbolismo-global.png" alt="Gessof Logo" style="height: 80px; margin-bottom: 20px; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.1));">
+            <h1>Curso SAP HANA</h1>
+            <h2 style="color: #667eea; font-size: 1.5em; margin: 10px 0; font-weight: 600;">VIDEO 021</h2>
+            <p>Comando DELETE - Eliminación de Datos</p>
+            <div class="progress-bar">
+                <div class="progress" style="width: 100%"></div>
+            </div>
+        </header>
+
+        <div class="dashboard">
+            <button class="mobile-menu-toggle" onclick="toggleMobileMenu()">
+                📋 Menú de Contenidos
+            </button>
+
+            <nav class="sidebar" id="sidebar">
+                <h3>Contenidos del Módulo</h3>
+                <div class="nav-item active" onclick="showSection('overview')">📋 Resumen General</div>
+                <div class="nav-item" onclick="showSection('introduction')">🚀 Introducción</div>
+                <div class="nav-item" onclick="showSection('syntax')">📝 Sintaxis DELETE</div>
+                <div class="nav-item" onclick="showSection('basic-usage')">⭐ Uso Básico</div>
+                <div class="nav-item" onclick="showSection('advanced-filters')">🔍 Filtros Avanzados</div>
+                <div class="nav-item" onclick="showSection('without-where')">💀 Sin WHERE</div>
+                <div class="nav-item" onclick="showSection('safety-protocol')">🛡️ Protocolo de Seguridad</div>
+                <div class="nav-item" onclick="showSection('conclusions')">🎯 Conclusiones</div>
+            </nav>
+
+            <main class="content">
+                <section id="overview" class="section active">
+                    <h2>📋 Resumen General del Módulo</h2>
+                    
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-number">1</div>
+                            <div>Comando DML</div>
+                        </div>
+                        <div class="stat-card danger">
+                            <div class="stat-number">💀</div>
+                            <div>EL MÁS PELIGROSO</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number">2</div>
+                            <div>Palabras Clave</div>
+                        </div>
+                    </div>
+
+                    <div class="critical-danger-box">
+                        <h3>🚨 MÁXIMA ALERTA</h3>
+                        <p><strong>DELETE es el comando más peligroso de SQL.</strong> Sin WHERE elimina TODA la tabla. Es posiblemente el más sencillo y por extensión CASI EL MÁS PELIGROSO de todos los comandos que hemos visto.</p>
+                    </div>
+
+                    <div class="concept-card">
+                        <h3>🎯 Objetivos del Módulo</h3>
+                        <p>En esta clase aprenderemos el <strong>comando DELETE</strong>, que elimina filas completas de las tablas. Su sintaxis es extremadamente simple, pero sus consecuencias pueden ser devastadoras si no se usa correctamente.</p>
+                    </div>
+
+                    <div class="delete-steps">
+                        <div class="step-card">
+                            <div class="step-number">1</div>
+                            <h4>DELETE FROM</h4>
+                            <p>Especifica la tabla objetivo</p>
+                        </div>
+                        <div class="step-card critical">
+                            <div class="step-number">⚠️</div>
+                            <h4>WHERE condición</h4>
+                            <p>CRÍTICO: Filtra qué eliminar</p>
+                        </div>
+                        <div class="step-card">
+                            <div class="step-number">3</div>
+                            <h4>Verificación</h4>
+                            <p>Confirmar eliminación exitosa</p>
+                        </div>
+                    </div>
+
+                    <div class="concept-card">
+                        <h3>📚 Contenido del Módulo</h3>
+                        <ul>
+                            <li><strong>Sintaxis DELETE:</strong> DELETE FROM tabla WHERE condición</li>
+                            <li><strong>Eliminación específica:</strong> Registros individuales con filtros precisos</li>
+                            <li><strong>Filtros múltiples:</strong> Diferentes campos y condiciones</li>
+                            <li><strong>PELIGRO EXTREMO:</strong> DELETE sin WHERE elimina TODO</li>
+                            <li><strong>Protocolo de seguridad:</strong> Verificación obligatoria antes de ejecutar</li>
+                        </ul>
+                    </div>
+
+                    <div class="definition-box">
+                        <h3>💡 Diferencia Crítica con UPDATE</h3>
+                        <p><strong>UPDATE modifica valores existentes.</strong> <strong>DELETE elimina registros completos.</strong> No hay vuelta atrás: los registros desaparecen permanentemente de la tabla.</p>
+                    </div>
+                </section>
+
+                <section id="introduction" class="section">
+                    <h2>🚀 Introducción</h2>
+                    
+                    <div class="concept-card">
+                        <h3>🎯 Propósito del DELETE</h3>
+                        <p>El comando <strong>DELETE</strong> elimina todas las filas de la tabla que cumplan una cierta condición. A diferencia de UPDATE que modifica valores, DELETE <strong>elimina registros completos</strong> de la tabla.</p>
+                    </div>
+
+                    <div class="critical-danger-box">
+                        <h3>💀 EL COMANDO MÁS PELIGROSO</h3>
+                        <p>Si UPDATE sin WHERE era peligroso, <strong>DELETE sin WHERE es catastrófico</strong>. No estamos actualizando registros, los estamos <strong>borrando permanentemente</strong>. Un error puede vaciar completamente una tabla de producción.</p>
+                    </div>
+
+                    <div class="comparison-grid">
+                        <div class="comparison-card">
+                            <h4>🔄 UPDATE</h4>
+                            <ul>
+                                <li>Modifica valores existentes</li>
+                                <li>Los registros permanecen</li>
+                                <li>Se pueden corregir errores</li>
+                                <li>Datos recuperables</li>
+                            </ul>
+                        </div>
+                        <div class="comparison-card delete">
+                            <h4>💀 DELETE</h4>
+                            <ul>
+                                <li>Elimina registros completos</li>
+                                <li>Los registros desaparecen</li>
+                                <li>Errores irreversibles</li>
+                                <li>Solo recuperable desde backup</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="concept-card">
+                        <h3>🛠️ Preparación de Datos de Prueba</h3>
+                        <p>Crearemos una tabla de prueba para demostrar DELETE de forma segura:</p>
+                    </div>
+
+                    <div class="code-example">
+<span class="comment">-- Crear tabla de prueba</span>
+<span class="keyword">CREATE COLUMN TABLE</span> prueba_delete (
+    campo1 <span class="keyword">INTEGER</span>,
+    campo2 <span class="keyword">VARCHAR</span>(50)
+);
+
+<span class="comment">-- Insertar datos de prueba</span>
+<span class="keyword">INSERT INTO</span> prueba_delete <span class="keyword">VALUES</span> (1, <span class="string">'valor 1'</span>);
+<span class="keyword">INSERT INTO</span> prueba_delete <span class="keyword">VALUES</span> (2, <span class="string">'valor 2'</span>);
+<span class="keyword">INSERT INTO</span> prueba_delete <span class="keyword">VALUES</span> (3, <span class="string">'valor 3'</span>);
+
+<span class="comment">-- Verificar datos insertados</span>
+<span class="keyword">SELECT</span> * <span class="keyword">FROM</span> prueba_delete;
+                    </code>
+
+                    <div class="example-box">
+                        <h3>📊 Datos Iniciales</h3>
+                        <div class="table-display">
+campo1 | campo2
+   1   | valor 1
+   2   | valor 2  
+   3   | valor 3
+                        </div>
+                    </div>
+
+                    <div class="definition-box">
+                        <h3">⚠️ Naturaleza Irreversible</h3>
+                        <p><strong>DELETE es permanente.</strong> Una vez ejecutado, los registros se eliminan de la tabla. Solo pueden recuperarse desde copias de seguridad, perdiendo cualquier cambio posterior al backup.</p>
+                    </div>
+                </section>
+
+                <section id="syntax" class="section">
+                    <h2>📝 Sintaxis del DELETE</h2>
+                    
+                    <div class="concept-card">
+                        <h3>🔧 Sintaxis Extremadamente Simple</h3>
+                        <p>La sintaxis de DELETE es la más simple de todos los comandos DML, lo que la hace engañosamente peligrosa:</p>
+                    </div>
+
+                    <div class="syntax-box">
+<span class="keyword">DELETE FROM</span> <span class="placeholder">nombre_tabla</span>
+<span class="optional">[WHERE</span> <span class="placeholder">condición</span><span class="optional">]</span>;
+                    </div>
+
+                    <div class="concept-card">
+                        <h3">📋 Componentes Críticos</h3>
+                        <ul>
+                            <li><strong>DELETE FROM:</strong> Palabras clave que indican eliminación</li>
+                            <li><strong>nombre_tabla:</strong> Tabla de la cual eliminar registros</li>
+                            <li><strong>WHERE condición:</strong> <em>TÉCNICAMENTE opcional, PRÁCTICAMENTE OBLIGATORIO</em></li>
+                        </ul>
+                    </div>
+
+                    <div class="critical-danger-box">
+                        <h3">🚨 REGLA DE SUPERVIVENCIA</h3>
+                        <p><strong>Con WHERE:</strong> Solo se eliminan registros que cumplen la condición.</p>
+                        <p><strong>Sin WHERE:</strong> Se eliminan TODOS los registros de la tabla.</p>
+                        <p><strong>NO HAY TÉRMINO MEDIO.</strong></p>
+                    </div>
+
+                    <div class="concept-card">
+                        <h3">🔍 Simplicidad Engañosa</h3>
+                        <p>DELETE parece inofensivo por su simplicidad:</p>
+                        <ul>
+                            <li><strong>Solo 2 palabras clave:</strong> DELETE FROM</li>
+                            <li><strong>Sin SET como UPDATE:</strong> No especificas qué cambiar</li>
+                            <li><strong>Sin columnas como SELECT:</strong> No eliges campos</li>
+                            <li><strong>WHERE es la única protección:</strong> Tu única línea de defensa</li>
+                        </ul>
+                    </div>
+
+                    <div class="example-box">
+                        <h3">✅ Ejemplos de Sintaxis</h3>
+                    </div>
+
+                    <div class="code-example">
+<span class="comment">-- ✅ SEGURO: DELETE con WHERE específico</span>
+<span class="keyword">DELETE FROM</span> prueba_delete 
+<span class="keyword">WHERE</span> campo1 = 1;
+
+<span class="comment">-- ✅ SEGURO: DELETE con múltiples condiciones</span>
+<span class="keyword">DELETE FROM</span> prueba_delete 
+<span class="keyword">WHERE</span> campo2 = <span class="string">'valor 2'</span>;
+
+<span class="comment">-- 💀 CATASTRÓFICO: DELETE sin WHERE</span>
+<span class="keyword">DELETE FROM</span> prueba_delete; <span class="danger">-- ¡ELIMINA TODA LA TABLA!</span>
+                    </code>
+
+                    <div class="definition-box">
+                        <h3">🔑 Comparación con Otros Comandos</h3>
+                        <p><strong>SELECT:</strong> Complejo pero seguro (solo consulta). <strong>INSERT:</strong> Simple y seguro (solo agrega). <strong>UPDATE:</strong> Medio y peligroso (modifica). <strong>DELETE:</strong> Simple pero EXTREMADAMENTE peligroso (elimina).</p>
+                    </div>
+                </section>
+
+                <section id="basic-usage" class="section">
+                    <h2">⭐ Uso Básico del DELETE</h2>
+                    
+                    <div class="concept-card">
+                        <h3">🎯 Eliminación Específica y Controlada</h3>
+                        <p>La forma más segura de usar DELETE es <strong>eliminar un registro específico</strong> con una condición muy precisa que identifique únicamente el registro deseado:</p>
+                    </div>
+
+                    <div class="example-box">
+                        <h3">📝 Ejemplo 1: Eliminar Registro Específico</h3>
+                        <p>Eliminaremos el registro donde campo1 = 1:</p>
+                    </div>
+
+                    <div class="code-example">
+<span class="comment">-- PASO 1: Verificar qué vamos a eliminar</span>
+<span class="keyword">SELECT</span> * <span class="keyword">FROM</span> prueba_delete <span class="keyword">WHERE</span> campo1 = 1;
+
+<span class="comment">-- PASO 2: Eliminar solo ese registro</span>
+<span class="keyword">DELETE FROM</span> prueba_delete 
+<span class="keyword">WHERE</span> campo1 = 1;
+
+<span class="comment">-- PASO 3: Verificar el resultado</span>
+<span class="keyword">SELECT</span> * <span class="keyword">FROM</span> prueba_delete;
+                    </code>
+
+                    <div class="before-after">
+                        <div class="before-after-card">
+                            <h4">🔍 ANTES</h4>
+                            <div class="table-display">
+campo1 | campo2
+   1   | valor 1  ← Se eliminará
+   2   | valor 2
+   3   | valor 3
+                            </div>
+                        </div>
+                        <div class="before-after-card">
+                            <h4">✅ DESPUÉS</h4>
+                            <div class="table-display">
+campo1 | campo2
+   2   | valor 2
+   3   | valor 3
+
+(1 registro eliminado)
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="concept-card">
+                        <h3">📊 Confirmación del Sistema</h3>
+                        <p>Cuando ejecutas DELETE, el sistema confirma la operación:</p>
+                        <ul>
+                            <li><strong>"Operación completada exitosamente"</strong></li>
+                            <li><strong>"1 registro afectado"</strong> (o el número correspondiente)</li>
+                            <li><strong>Sin errores:</strong> La condición encontró registros válidos</li>
+                        </ul>
+                    </div>
+
+                    <div class="example-box">
+                        <h3">📝 Ejemplo 2: Filtrar por Diferente Campo</h3>
+                        <p>El filtro WHERE no tiene que ser siempre el campo1. Podemos filtrar por cualquier campo:</p>
+                    </div>
+
+                    <div class="code-example">
+<span class="comment">-- Eliminar por el campo2</span>
+<span class="keyword">SELECT</span> * <span class="keyword">FROM</span> prueba_delete <span class="keyword">WHERE</span> campo2 = <span class="string">'valor 2'</span>;
+
+<span class="keyword">DELETE FROM</span> prueba_delete 
+<span class="keyword">WHERE</span> campo2 = <span class="string">'valor 2'</span>;
+
+<span class="comment">-- Verificar resultado</span>
+<span class="keyword">SELECT</span> * <span class="keyword">FROM</span> prueba_delete;
+                    </code>
+
+                    <div class="concept-card">
+                        <h3">✅ Protocolo de Seguridad Básico</h3>
+                        <ol>
+                            <li><strong>SELECT primero:</strong> Usa exactamente el mismo WHERE</li>
+                            <li><strong>Verificar conteo:</strong> ¿Cuántos registros se eliminarán?</li>
+                            <li><strong>Confirmar intención:</strong> ¿Son realmente los que quieres eliminar?</li>
+                            <li><strong>DELETE con confianza:</strong> Usar el mismo WHERE verificado</li>
+                            <li><strong>Verificar resultado:</strong> SELECT inmediato para confirmar</li>
+                        </ol>
+                    </div>
+
+                    <div class="definition-box">
+                        <h3">💡 Ventajas del Enfoque Específico</h3>
+                        <p><strong>Control total:</strong> Sabes exactamente qué desaparece. <strong>Menor riesgo:</strong> Error afecta pocos registros. <strong>Fácil verificación:</strong> Resultados predecibles y verificables.</p>
+                    </definition-box>
+                </section>
+
+                <section id="advanced-filters" class="section">
+                    <h2">🔍 Filtros Avanzados</h2>
+                    
+                    <div class="concept-card">
+                        <h3">🚀 WHERE Tan Poderoso Como en SELECT</h3>
+                        <p>En la cláusula WHERE de DELETE puedes usar <strong>toda la funcionalidad que has aprendido en SELECT</strong>: operadores de comparación, patrones, rangos, subconsultas, etc.</p>
+                    </div>
+
+                    <div class="concept-card">
+                        <h3">🔧 Preparando Datos de Prueba Adicionales</h3>
+                        <p>Vamos a reinsertar registros para demostrar filtros más complejos:</p>
+                    </div>
+
+                    <div class="code-example">
+<span class="comment">-- Reinsertar los registros eliminados</span>
+<span class="keyword">INSERT INTO</span> prueba_delete <span class="keyword">VALUES</span> (1, <span class="string">'valor 1'</span>);
+<span class="keyword">INSERT INTO</span> prueba_delete <span class="keyword">VALUES</span> (2, <span class="string">'valor 2'</span>);
+
+<span class="comment">-- Verificar que tenemos los 3 registros originales</span>
+<span class="keyword">SELECT</span> * <span class="keyword">FROM</span> prueba_delete;
+                    </code>
+
+                    <div class="example-box">
+                        <h3">📊 Estado Actual de la Tabla</h3>
+                        <div class="table-display">
+campo1 | campo2
+   3   | valor 3
+   1   | valor 1
+   2   | valor 2
+                        </div>
+                    </div>
+
+                    <div class="concept-card">
+                        <h3">🔍 Tipos de Filtros Avanzados</h3>
+                        <p>Ejemplos de condiciones más complejas que puedes usar:</p>
+                    </div>
+
+                    <div class="code-example">
+<span class="comment">-- Filtros de rango</span>
+<span class="keyword">DELETE FROM</span> prueba_delete 
+<span class="keyword">WHERE</span> campo1 <span class="keyword">BETWEEN</span> 1 <span class="keyword">AND</span> 2;
+
+<span class="comment">-- Filtros con patrones (cuando vamos más adelante)</span>
+<span class="keyword">DELETE FROM</span> prueba_delete 
+<span class="keyword">WHERE</span> campo2 <span class="keyword">LIKE</span> <span class="string">'valor%'</span>;
+
+<span class="comment">-- Filtros múltiples</span>
+<span class="keyword">DELETE FROM</span> prueba_delete 
+<span class="keyword">WHERE</span> campo1 > 1 <span class="keyword">AND</span> campo2 <span class="keyword">LIKE</span> <span class="string">'%2'</span>;
+
+<span class="comment">-- Filtros con subconsultas (tema avanzado)</span>
+<span class="keyword">DELETE FROM</span> prueba_delete 
+<span class="keyword">WHERE</span> campo1 <span class="keyword">IN</span> (<span class="keyword">SELECT</span> campo1 <span class="keyword">FROM</span> otra_tabla);
+                    </code>
+
+                    <div class="concept-card">
+                        <h3">🎯 Flexibilidad Total del WHERE</h3>
+                        <p>Las reglas son las mismas que en SELECT:</p>
+                        <ul>
+                            <li><strong>Operadores de comparación:</strong> =, !=, <, >, <=, >=</li>
+                            <li><strong>Operadores lógicos:</strong> AND, OR, NOT</li>
+                            <li><strong>Patrones:</strong> LIKE, con % y _</li>
+                            <li><strong>Rangos:</strong> BETWEEN, IN</li>
+                            <li><strong>Valores nulos:</strong> IS NULL, IS NOT NULL</li>
+                            <li><strong>Subconsultas:</strong> EXISTS, IN, ANY, ALL</li>
+                        </ul>
+                    </div>
+
+                    <div class="example-box">
+                        <h3">✅ Ejemplo Práctico Complejo</h3>
+                        <p>Supongamos que queremos eliminar registros con condiciones específicas:</p>
+                    </div>
+
+                    <div class="code-example">
+<span class="comment">-- Verificar registros que cumplen condición compleja</span>
+<span class="keyword">SELECT</span> * <span class="keyword">FROM</span> prueba_delete 
+<span class="keyword">WHERE</span> campo1 > 1 <span class="keyword">AND</span> campo2 <span class="keyword">NOT LIKE</span> <span class="string">'%3'</span>;
+
+<span class="comment">-- Si el resultado es el esperado, proceder con DELETE</span>
+<span class="keyword">DELETE FROM</span> prueba_delete 
+<span class="keyword">WHERE</span> campo1 > 1 <span class="keyword">AND</span> campo2 <span class="keyword">NOT LIKE</span> <span class="string">'%3'</span>;
+                    </code>
+
+                    <div class="definition-box">
+                        <h3">🔑 Principio Fundamental</h3>
+                        <p><strong>Si puedes escribir una condición WHERE en SELECT, puedes usarla en DELETE.</strong> La diferencia es que SELECT muestra los registros, DELETE los elimina.</p>
+                    </definition-box>
+
+                    <div class="critical-danger-box">
+                        <h3">⚠️ Con Gran Poder, Gran Responsabilidad</h3>
+                        <p>Mientras más complejo sea tu WHERE, <strong>más crucial es verificarlo con SELECT primero</strong>. Un error en una condición compleja puede eliminar registros no deseados.</p>
+                    </div>
+                </section>
+
+                <section id="without-where" class="section">
+                    <h2">💀 DELETE Sin WHERE - La Aniquilación Total</h2>
+                    
+                    <div class="critical-danger-box">
+                        <h3">☠️ LA OPERACIÓN MÁS DESTRUCTIVA DE SQL</h3>
+                        <p><strong>DELETE FROM tabla;</strong> (sin WHERE) elimina TODOS los registros de la tabla. Es más destructivo que UPDATE sin WHERE porque los datos desaparecen completamente.</p>
+                    </div>
+
+                    <div class="concept-card">
+                        <h3">📖 Demostración del Apocalipsis</h3>
+                        <p>Para entender la magnitud del desastre, realizaremos una demostración <strong>controlada</strong> con nuestra tabla de prueba:</p>
+                    </div>
+
+                    <div class="code-example">
+<span class="comment">-- Estado actual (después de eliminaciones anteriores)</span>
+<span class="keyword">SELECT</span> * <span class="keyword">FROM</span> prueba_delete;
+
+<span class="comment">-- 💀 DEMOSTRACIÓN DESTRUCTIVA - Solo en tabla de prueba</span>
+<span class="keyword">DELETE FROM</span> prueba_delete; <span class="danger">-- SIN WHERE = ELIMINA TODO</span>
+
+<span class="comment">-- Ver el vacío total</span>
+<span class="keyword">SELECT</span> * <span class="keyword">FROM</span> prueba_delete;
+                    </code>
+
+                    <div class="before-after">
+                        <div class="before-after-card">
+                            <h4">🔍 ANTES (Datos Existentes)</h4>
+                            <div class="table-display">
+campo1 | campo2
+   3   | valor 3
+
+(Registro restante después 
+de eliminaciones anteriores)
+                            </div>
+                        </div>
+                        <div class="before-after-card empty">
+                            <h4">💀 DESPUÉS (Vacío Total)</h4>
+                            <div class="table-display empty">
+No hay datos disponibles
+
+LA TABLA ESTÁ VACÍA
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="concept-card">
+                        <h3">🏢 Escenarios de Pesadilla Real</h3>
+                        <p>Imagina estas situaciones en un entorno de producción:</p>
+                    </div>
+
+                    <div class="comparison-grid">
+                        <div class="comparison-card delete">
+                            <h4">👥 Tabla de Clientes</h4>
+                            <p><strong>DELETE FROM clientes;</strong></p>
+                            <ul>
+                                <li>Todos los clientes eliminados</li>
+                                <li>Historial de compras perdido</li>
+                                <li>Relaciones comerciales destruidas</li>
+                                <li>Empresa paralizada</li>
+                            </ul>
+                        </div>
+                        <div class="comparison-card delete">
+                            <h4">💰 Tabla de Facturas</h4>
+                            <p><strong>DELETE FROM facturas;</strong></p>
+                            <ul>
+                                <li>Todo el historial fiscal perdido</li>
+                                <li>Problemas legales con Hacienda</li>
+                                <li>Contabilidad destruida</li>
+                                <li>Auditorías imposibles</li>
+                            </ul>
+                        </div>
+                        <div class="comparison-card delete">
+                            <h4">📦 Tabla de Productos</h4>
+                            <p><strong>DELETE FROM productos;</strong></p>
+                            <ul>
+                                <li>Catálogo completo eliminado</li>
+                                <li>Ventas imposibles</li>
+                                <li>Stock descontrolado</li>
+                                <li>Operaciones detenidas</li>
+                            </ul>
+                        </div>
+                        <div class="comparison-card delete">
+                            <h4">👨‍💼 Tabla de Empleados</h4>
+                            <p><strong>DELETE FROM empleados;</strong></p>
+                            <ul>
+                                <li>Nóminas imposibles</li>
+                                <li>RRHH en crisis</li>
+                                <li>Datos laborales perdidos</li>
+                                <li>Caos administrativo</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="critical-danger-box">
+                        <h3">💼 Consecuencias Profesionales</h3>
+                        <p><strong>Despido inmediato garantizado.</strong> DELETE FROM tabla_importante es motivo de despido fulminante en el 99% de las empresas. No hay excusas ni segundas oportunidades.</p>
+                    </div>
+
+                    <div class="concept-card">
+                        <h3">🤔 ¿Existe Algún Caso Válido?</h3>
+                        <p>Casos extremadamente raros donde DELETE sin WHERE podría ser válido:</p>
+                        <ul>
+                            <li><strong>Limpieza de tabla temporal:</strong> Tablas de cache o procesamiento</li>
+                            <li><strong>Reset de sistema:</strong> Volver a estado inicial en desarrollo</li>
+                            <li><strong>Migración de datos:</strong> Vaciar antes de nueva carga</li>
+                        </ul>
+                    </div>
+
+                    <div class="example-box">
+                        <h3">✅ Incluso Entonces, Usa Verificación</h3>
+                    </div>
+
+                    <div class="code-example">
+<span class="comment">-- En lugar de: DELETE FROM tabla_temporal;</span>
+<span class="comment">-- Usa verificación explícita:</span>
+
+<span class="keyword">SELECT COUNT</span>(*) <span class="keyword">FROM</span> tabla_temporal; <span class="comment">-- ¿Cuántos registros vas a eliminar?</span>
+
+<span class="keyword">SELECT</span> * <span class="keyword">FROM</span> tabla_temporal <span class="keyword">LIMIT</span> 5; <span class="comment">-- ¿Qué tipo de datos contiene?</span>
+
+<span class="comment">-- Solo después de confirmar:</span>
+<span class="keyword">DELETE FROM</span> tabla_temporal 
+<span class="keyword">WHERE</span> 1=1; <span class="comment">-- WHERE que siempre es verdadero, pero confirma intención</span>
+                    </code>
+
+                    <div class="definition-box">
+                        <h3">🎯 Regla de Oro</h3>
+                        <p><strong>Nunca, JAMÁS, uses DELETE sin WHERE en producción.</strong> Si crees que lo necesitas, consulta con un supervisor, DBA o arquitecto senior antes de proceder.</p>
+                    </div>
+                </section>
+
+                <section id="safety-protocol" class="section">
+                    <h2">🛡️ Protocolo de Seguridad Obligatorio</h2>
+                    
+                    <div class="concept-card">
+                        <h3">🔒 Medidas de Protección Vital</h3>
+                        <p>DELETE requiere el <strong>protocolo de seguridad más estricto</strong> de todos los comandos SQL. Tu trabajo y la integridad de los datos dependen de seguirlo religiosamente.</p>
+                    </div>
+
+                    <div class="delete-steps">
+                        <div class="step-card">
+                            <div class="step-number">1</div>
+                            <h4>SELECT Primero</h4>
+                            <p>SIEMPRE verificar con el mismo WHERE</p>
+                        </div>
+                        <div class="step-card">
+                            <div class="step-number">2</div>
+                            <h4">Contar Registros</h4>
+                            <p>¿Cuántos se van a eliminar?</p>
+                        </div>
+                        <div class="step-card critical">
+                            <div class="step-number">3</div>
+                            <h4">Confirmar Intención</h4>
+                            <p>¿Son REALMENTE los que quieres eliminar?</p>
+                        </div>
+                        <div class="step-card">
+                            <div class="step-number">4</div>
+                            <h4">Backup (Crítico)</h4>
+                            <p>En datos importantes, hacer copia de seguridad</p>
+                        </div>
+                        <div class="step-card">
+                            <div class="step-number">5</div>
+                            <h4">DELETE Confiado</h4>
+                            <p>Ejecutar con el WHERE verificado</p>
+                        </div>
+                        <div class="step-card">
+                            <div class="step-number">6</div>
+                            <h4">Verificar Resultado</h4>
+                            <p>Confirmar eliminación exitosa</p>
+                        </div>
+                    </div>
+
+                    <div class="concept-card">
+                        <h3">📋 Protocolo Detallado Paso a Paso</h3>
+                    </div>
+
+                    <div class="code-example">
+<span class="comment">-- PASO 1: Verificación con SELECT</span>
+<span class="keyword">SELECT</span> * <span class="keyword">FROM</span> tabla_importante 
+<span class="keyword">WHERE</span> condicion_especifica;
+
+<span class="comment">-- PASO 2: Contar registros afectados</span>
+<span class="keyword">SELECT COUNT</span>(*) <span class="keyword">FROM</span> tabla_importante 
+<span class="keyword">WHERE</span> condicion_especifica;
+
+<span class="comment">-- PASO 3: Revisar algunos registros en detalle</span>
+<span class="keyword">SELECT</span> * <span class="keyword">FROM</span> tabla_importante 
+<span class="keyword">WHERE</span> condicion_especifica 
+<span class="keyword">LIMIT</span> 10;
+
+<span class="comment">-- PASO 4: En entornos críticos, backup de seguridad</span>
+<span class="keyword">CREATE TABLE</span> backup_tabla_importante <span class="keyword">AS</span>
+<span class="keyword">SELECT</span> * <span class="keyword">FROM</span> tabla_importante 
+<span class="keyword">WHERE</span> condicion_especifica;
+
+<span class="comment">-- PASO 5: DELETE con total confianza</span>
+<span class="keyword">DELETE FROM</span> tabla_importante 
+<span class="keyword">WHERE</span> condicion_especifica; <span class="comment">-- El mismo WHERE verificado</span>
+
+<span class="comment">-- PASO 6: Verificar eliminación</span>
+<span class="keyword">SELECT COUNT</span>(*) <span class="keyword">FROM</span> tabla_importante 
+<span class="keyword">WHERE</span> condicion_especifica; <span class="comment">-- Debe devolver 0</span>
+                    </code>
+
+                    <div class="concept-card">
+                        <h3">🔄 Transacciones y Rollback</h3>
+                        <p>En sistemas que soportan transacciones manuales:</p>
+                    </div>
+
+                    <div class="code-example">
+<span class="comment">-- En sistemas con control de transacciones</span>
+<span class="keyword">BEGIN TRANSACTION</span>;
+
+<span class="comment">-- Realizar DELETE</span>
+<span class="keyword">DELETE FROM</span> tabla_importante 
+<span class="keyword">WHERE</span> condicion_verificada;
+
+<span class="comment">-- Verificar resultado inmediatamente</span>
+<span class="keyword">SELECT COUNT</span>(*) <span class="keyword">FROM</span> tabla_importante;
+
+<span class="comment">-- Si todo está bien:</span>
+<span class="keyword">COMMIT</span>; <span class="comment">-- Confirmar cambios</span>
+
+<span class="comment">-- Si algo salió mal:</span>
+<span class="keyword">ROLLBACK</span>; <span class="comment">-- Deshacer todo</span>
+                    </code>
+
+                    <div class="critical-danger-box">
+                        <h3">🚨 Configuraciones Peligrosas</h3>
+                        <p><strong>AUTOCOMMIT activado:</strong> Cambios inmediatos sin posibilidad de rollback.</p>
+                        <p><strong>Sin backups recientes:</strong> Recuperación imposible o con pérdida masiva de datos.</p>
+                        <p><strong>Trabajo directo en producción:</strong> Sin entorno de pruebas para verificar.</p>
+                    </critical-danger-box>
+
+                    <div class="concept-card">
+                        <h3">🎯 Entornos de Trabajo Escalonados</h3>
+                        <ul>
+                            <li><strong>Desarrollo:</strong> Practica DELETE sin riesgo</li>
+                            <li><strong>Testing:</strong> Verifica comportamiento con datos similares</li>
+                            <li><strong>Staging:</strong> Prueba final en entorno casi idéntico</li>
+                            <li><strong>Producción:</strong> Solo con máximo protocolo de seguridad</li>
+                        </ul>
+                    </div>
+
+                    <div class="example-box">
+                        <h3">💡 Checklist Pre-DELETE</h3>
+                        <ul>
+                            <li>☑️ ¿He verificado con SELECT el mismo WHERE?</li>
+                            <li>☑️ ¿El número de registros es el esperado?</li>
+                            <li>☑️ ¿Tengo backup reciente de los datos?</li>
+                            <li>☑️ ¿Estoy en el entorno correcto (no producción)?</li>
+                            <li>☑️ ¿Tengo autorización para esta eliminación?</li>
+                            <li>☑️ ¿Entiendo las consecuencias de esta acción?</li>
+                        </ul>
+                    </example-box>
+                </section>
+
+                <section id="conclusions" class="section">
+                    <h2">🎯 Conclusiones</h2>
+                    
+                    <div class="concept-card">
+                        <h3">📋 Resumen del Comando DELETE</h3>
+                        <p>Hemos explorado el <strong>comando más peligroso de SQL</strong>. DELETE es engañosamente simple en sintaxis pero devastadoramente poderoso en sus consecuencias. Su dominio requiere máximo respeto y precaución.</p>
+                    </div>
+
+                    <div class="delete-steps">
+                        <div class="step-card">
+                            <div class="step-number">💀</div>
+                            <h4">EL MÁS PELIGROSO</h4>
+                            <p>Sin WHERE elimina toda la tabla</p>
+                        </div>
+                        <div class="step-card">
+                            <div class="step-number">🔍</div>
+                            <h4">SELECT PRIMERO</h4>
+                            <p>Verificación obligatoria siempre</p>
+                        </div>
+                        <div class="step-card">
+                            <div class="step-number">🛡️</div>
+                            <h4">PROTOCOLO ESTRICTO</h4>
+                            <p>6 pasos de seguridad mínimos</p>
+                        </div>
+                    </delete-steps>
+
+                    <div class="concept-card">
+                        <h3">🔑 Conceptos Clave Dominados</h3>
+                        <ul>
+                            <li><strong>Sintaxis simple:</strong> DELETE FROM tabla WHERE condición</li>
+                            <li><strong>Eliminación total:</strong> Registros desaparecen completamente</li>
+                            <li><strong>WHERE flexible:</strong> Toda la potencia de SELECT disponible</li>
+                            <li><strong>Peligro extremo:</strong> Sin WHERE = eliminación total de tabla</li>
+                            <li><strong>Protocolo obligatorio:</strong> SELECT previo no es opcional</li>
+                            <li><strong>Irreversibilidad:</strong> Solo recuperable desde backups</li>
+                        </ul>
+                    </div>
+
+                    <div class="critical-danger-box">
+                        <h3">⚠️ MANTRA DE SUPERVIVENCIA</h3>
+                        <p><strong>"SELECT primero, DELETE después, verificar siempre"</strong></p>
+                        <p>Esta frase puede salvarte el trabajo y la integridad de los datos.</p>
+                    </critical-danger-box>
+
+                    <div class="comparison-grid">
+                        <div class="comparison-card">
+                            <h4">🔄 UPDATE vs DELETE</h4>
+                            <ul>
+                                <li><strong>UPDATE:</strong> Modifica, datos recuperables</li>
+                                <li><strong>DELETE:</strong> Elimina, solo backup salva</li>
+                                <li><strong>Ambos:</strong> Peligrosos sin WHERE</li>
+                                <li><strong>DELETE:</strong> Más destructivo</li>
+                            </ul>
+                        </div>
+                        <div class="comparison-card delete">
+                            <h4">📊 Complejidad vs Peligro</h4>
+                            <ul>
+                                <li><strong>SELECT:</strong> Complejo, seguro</li>
+                                <li><strong>INSERT:</strong> Simple, seguro</li>
+                                <li><strong>UPDATE:</strong> Medio, peligroso</li>
+                                <li><strong>DELETE:</strong> Simple, EXTREMO</li>
+                            </ul>
+                        </div>
+                    </comparison-grid>
+
+                    <div class="concept-card">
+                        <h3">🚀 Completando el DML</h3>
+                        <p>Con DELETE hemos completado los <strong>4 comandos fundamentales del DML</strong>:</p>
+                        <ul>
+                            <li><strong>SELECT:</strong> Consultar datos (más complejo, aprendizaje continuo)</li>
+                            <li><strong>INSERT:</strong> Agregar datos (simple y seguro)</li>
+                            <li><strong>UPDATE:</strong> Modificar datos (precaución con WHERE)</li>
+                            <li><strong>DELETE:</strong> Eliminar datos (máxima precaución)</li>
+                        </ul>
+                    </concept-card>
+
+                    <div class="example-box">
+                        <h3">🎓 Preparación para Temas Avanzados</h3>
+                        <p>Con el dominio de los comandos DML básicos, estás preparado para:</p>
+                        <ul>
+                            <li><strong>WHERE avanzado:</strong> Patrones, rangos, subconsultas</li>
+                            <li><strong>JOINs:</strong> Combinación de múltiples tablas</li>
+                            <li><strong>Funciones:</strong> Manipulación avanzada de datos</li>
+                            <li><strong>DDL:</strong> Creación y modificación de estructuras</li>
+                            <li><strong>Procedimientos:</strong> Lógica compleja reutilizable</li>
+                        </ul>
+                    </example-box>
+
+                    <div class="definition-box">
+                        <h3">💡 Lección de Vida Profesional</h3>
+                        <p><strong>El poder requiere responsabilidad.</strong> DELETE te da el poder de eliminar datos instantáneamente. Úsalo con la responsabilidad que merece la confianza que depositan en ti.</p>
+                    </definition-box>
+
+                    <div class="concept-card">
+                        <h3">📚 Recuerda SIEMPRE</h3>
+                        <ul>
+                            <li>DELETE elimina registros completos, no valores</li>
+                            <li>Sin WHERE = aniquilación total de la tabla</li>
+                            <li>SELECT con el mismo WHERE es OBLIGATORIO</li>
+                            <li>En producción, un error puede terminar tu carrera</li>
+                            <li>Los backups existen, pero la prevención es vital</li>
+                            <li>WHERE en DELETE acepta toda la complejidad de SELECT</li>
+                            <li>Protocolo de 6 pasos no es sugerencia, es supervivencia</li>
+                        </ul>
+                    </div>
+                </section>
+            </main>
+        </div>
+    </div>
+
+    <script>
+        function showSection(sectionId) {
+            // Ocultar todas las secciones
+            const sections = document.querySelectorAll('.section');
+            sections.forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            // Mostrar la sección seleccionada
+            document.getElementById(sectionId).classList.add('active');
+            
+            // Actualizar navegación
+            const navItems = document.querySelectorAll('.nav-item');
+            navItems.forEach(item => {
+                item.classList.remove('active');
+            });
+            
+            // Marcar el elemento activo
+            event.target.classList.add('active');
+            
+            // Scroll al inicio del contenido
+            document.querySelector('.content').scrollTop = 0;
+
+            // En móviles, ocultar el menú después de seleccionar
+            if (window.innerWidth <= 768) {
+                const sidebar = document.getElementById('sidebar');
+                sidebar.classList.add('mobile-hidden');
+                
+                const toggleButton = document.querySelector('.mobile-menu-toggle');
+                toggleButton.textContent = '📋 Menú de Contenidos';
+            }
+        }
+
+        function toggleMobileMenu() {
+            const sidebar = document.getElementById('sidebar');
+            const toggleButton = document.querySelector('.mobile-menu-toggle');
+            
+            if (sidebar.classList.contains('mobile-hidden')) {
+                sidebar.classList.remove('mobile-hidden');
+                toggleButton.textContent = '❌ Cerrar Menú';
+            } else {
+                sidebar.classList.add('mobile-hidden');
+                toggleButton.textContent = '📋 Menú de Contenidos';
+            }
+        }
+
+        // Inicializar en móviles
+        document.addEventListener('DOMContentLoaded', function() {
+            if (window.innerWidth <= 768) {
+                const sidebar = document.getElementById('sidebar');
+                sidebar.classList.add('mobile-hidden');
+            }
+
+            // Animación de entrada
+            const cards = document.querySelectorAll('.concept-card, .definition-box, .example-box');
+            cards.forEach((card, index) => {
+                setTimeout(() => {
+                    card.style.opacity = '0';
+                    card.style.transform = 'translateY(20px)';
+                    card.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+                    
+                    setTimeout(() => {
+                        card.style.opacity = '1';
+                        card.style.transform = 'translateY(0)';
+                    }, 100);
+                }, index * 100);
+            });
+        });
+
+        // Manejar cambios de tamaño de ventana
+        window.addEventListener('resize', function() {
+            const sidebar = document.getElementById('sidebar');
+            const toggleButton = document.querySelector('.mobile-menu-toggle');
+            
+            if (window.innerWidth > 768) {
+                sidebar.classList.remove('mobile-hidden');
+                toggleButton.textContent = '📋 Menú de Contenidos';
+            } else if (window.innerWidth <= 768 && !sidebar.classList.contains('mobile-hidden')) {
+                sidebar.classList.add('mobile-hidden');
+            }
+        });
+    </script>
+</body>
+</html>

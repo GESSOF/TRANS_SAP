@@ -1,0 +1,1180 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Curso SAP HANA - Comando SELECT - Fundamentos</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .header h1 {
+            color: #2c3e50;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header p {
+            color: #666;
+            font-size: 1.2em;
+        }
+
+        .dashboard {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .sidebar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            height: fit-content;
+            position: sticky;
+            top: 20px;
+        }
+
+        .sidebar h3 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #667eea;
+        }
+
+        .nav-item {
+            padding: 12px 20px;
+            margin: 5px 0;
+            background: linear-gradient(45deg, #f8f9fa, #e9ecef);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-left: 4px solid transparent;
+            font-size: 0.9em;
+        }
+
+        .nav-item:hover {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            transform: translateX(10px);
+            border-left-color: #fff;
+        }
+
+        .nav-item.active {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border-left-color: #fff;
+        }
+
+        .mobile-menu-toggle {
+            display: none;
+            background: rgba(255, 255, 255, 0.95);
+            border: none;
+            padding: 15px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            font-size: 1.2em;
+            cursor: pointer;
+            width: 100%;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .content {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .section {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .section h2 {
+            color: #2c3e50;
+            font-size: 2em;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #667eea;
+        }
+
+        .concept-card {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-radius: 15px;
+            padding: 25px;
+            margin: 20px 0;
+            border-left: 5px solid #667eea;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease;
+        }
+
+        .concept-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .concept-card h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 1.4em;
+        }
+
+        .concept-card p {
+            line-height: 1.8;
+            color: #555;
+            margin-bottom: 15px;
+        }
+
+        .concept-card ul {
+            margin-left: 20px;
+            margin-top: 10px;
+        }
+
+        .concept-card li {
+            margin: 8px 0;
+            color: #555;
+        }
+
+        .definition-box {
+            background: linear-gradient(135deg, #fff3cd, #ffeaa7);
+            border-radius: 15px;
+            padding: 25px;
+            margin: 20px 0;
+            border-left: 5px solid #f39c12;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        .definition-box h3 {
+            color: #856404;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        .definition-box p {
+            color: #856404;
+            line-height: 1.8;
+            margin-bottom: 10px;
+        }
+
+        .example-box {
+            background: linear-gradient(135deg, #e8f5e8, #d4edda);
+            border-radius: 15px;
+            padding: 25px;
+            margin: 20px 0;
+            border-left: 5px solid #27ae60;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        .example-box h3 {
+            color: #155724;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        .example-box p {
+            color: #155724;
+            line-height: 1.8;
+            margin-bottom: 10px;
+        }
+
+        .example-box ul {
+            margin-left: 20px;
+            margin-top: 10px;
+        }
+
+        .example-box li {
+            margin: 8px 0;
+            color: #155724;
+        }
+
+        .warning-box {
+            background: linear-gradient(135deg, #ffebee, #ffcdd2);
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+            border-left: 5px solid #e74c3c;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        .warning-box strong {
+            color: #c62828;
+        }
+
+        .warning-box p {
+            color: #c62828;
+            line-height: 1.8;
+            margin-top: 10px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: scale(1.05);
+        }
+
+        .stat-number {
+            font-size: 2.5em;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .progress-bar {
+            background: #e9ecef;
+            border-radius: 10px;
+            padding: 3px;
+            margin: 20px 0;
+        }
+
+        .progress {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            height: 20px;
+            border-radius: 8px;
+            transition: width 0.5s ease;
+        }
+
+        .syntax-box {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 20px;
+            border-radius: 10px;
+            font-family: 'Courier New', monospace;
+            margin: 20px 0;
+            overflow-x: auto;
+            border-left: 5px solid #667eea;
+        }
+
+        .syntax-box .keyword {
+            color: #63b3ed;
+            font-weight: bold;
+        }
+
+        .syntax-box .optional {
+            color: #fbb6ce;
+        }
+
+        .syntax-box .placeholder {
+            color: #68d391;
+            font-style: italic;
+        }
+
+        .code-example {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 20px;
+            border-radius: 10px;
+            font-family: 'Courier New', monospace;
+            margin: 20px 0;
+            overflow-x: auto;
+        }
+
+        .code-example .keyword {
+            color: #63b3ed;
+        }
+
+        .code-example .comment {
+            color: #68d391;
+        }
+
+        .code-example .string {
+            color: #fbb6ce;
+        }
+
+        .methodology-steps {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .step-card {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+
+        .step-card:hover {
+            transform: scale(1.05);
+        }
+
+        .step-number {
+            font-size: 2em;
+            font-weight: bold;
+            margin-bottom: 10px;
+            background: rgba(255, 255, 255, 0.2);
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 15px;
+        }
+
+        .functions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .function-card {
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            border-left: 4px solid #667eea;
+            transition: transform 0.3s ease;
+        }
+
+        .function-card:hover {
+            transform: translateY(-3px);
+        }
+
+        .function-card h4 {
+            color: #2c3e50;
+            font-size: 1.2em;
+            margin-bottom: 10px;
+        }
+
+        .function-card .function-name {
+            font-family: 'Courier New', monospace;
+            background: #667eea;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 5px;
+            display: inline-block;
+            margin-bottom: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+
+            .header {
+                padding: 20px;
+                margin-bottom: 20px;
+            }
+
+            .header h1 {
+                font-size: 1.8em;
+            }
+
+            .dashboard {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .sidebar {
+                position: static;
+                padding: 20px;
+                order: 2;
+            }
+
+            .mobile-menu-toggle {
+                display: block;
+                order: 1;
+            }
+
+            .sidebar.mobile-hidden {
+                display: none;
+            }
+
+            .content {
+                padding: 20px;
+                order: 3;
+            }
+
+            .section h2 {
+                font-size: 1.5em;
+            }
+
+            .concept-card, .definition-box, .example-box {
+                padding: 20px;
+                margin: 15px 0;
+            }
+
+            .stats-grid, .methodology-steps, .functions-grid {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+
+            .nav-item {
+                padding: 15px 20px;
+                font-size: 1em;
+                text-align: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .header h1 {
+                font-size: 1.5em;
+            }
+
+            .content {
+                padding: 15px;
+            }
+
+            .concept-card, .definition-box, .example-box {
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <img src="https://gessof.cl/wp-content/uploads/2025/05/Logo-minimalista-con-simbolismo-global.png" alt="Gessof Logo" style="height: 80px; margin-bottom: 20px; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.1));">
+            <h1>Curso SAP HANA</h1>
+            <h2 style="color: #667eea; font-size: 1.5em; margin: 10px 0; font-weight: 600;">VIDEO 018</h2>
+            <p>Comando SELECT - Fundamentos y Sintaxis</p>
+            <div class="progress-bar">
+                <div class="progress" style="width: 100%"></div>
+            </div>
+        </header>
+
+        <div class="dashboard">
+            <button class="mobile-menu-toggle" onclick="toggleMobileMenu()">
+                📋 Menú de Contenidos
+            </button>
+
+            <nav class="sidebar" id="sidebar">
+                <h3>Contenidos del Módulo</h3>
+                <div class="nav-item active" onclick="showSection('overview')">📋 Resumen General</div>
+                <div class="nav-item" onclick="showSection('introduction')">🚀 Introducción</div>
+                <div class="nav-item" onclick="showSection('syntax')">📝 Sintaxis SELECT</div>
+                <div class="nav-item" onclick="showSection('basic-usage')">⭐ Uso Básico</div>
+                <div class="nav-item" onclick="showSection('filtering')">🔍 Filtrado</div>
+                <div class="nav-item" onclick="showSection('aggregation')">📊 Agregación</div>
+                <div class="nav-item" onclick="showSection('sorting')">🔄 Ordenación</div>
+                <div class="nav-item" onclick="showSection('conclusions')">🎯 Conclusiones</div>
+            </nav>
+
+            <main class="content">
+                <section id="overview" class="section active">
+                    <h2>📋 Resumen General del Módulo</h2>
+                    
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-number">1</div>
+                            <div>Comando Principal</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number">8</div>
+                            <div>Cláusulas Principales</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number">5</div>
+                            <div>Funciones de Agregación</div>
+                        </div>
+                    </div>
+
+                    <div class="concept-card">
+                        <h3>🎯 Objetivos del Módulo</h3>
+                        <p>En esta clase comenzamos la parte práctica del curso trabajando directamente contra la base de datos. Nos enfocaremos en el <strong>comando SELECT</strong>, la única sentencia que nos permite recuperar información de la base de datos.</p>
+                    </div>
+
+                    <div class="definition-box">
+                        <h3>🔑 Concepto Fundamental</h3>
+                        <p><strong>SELECT:</strong> Es la única instrucción dentro del SQL que nos permite obtener datos de la base de datos. Su sintaxis es compleja porque permite hacer muchísimas cosas, pero dominaremos el 95% de situaciones con los comandos más comunes.</p>
+                    </div>
+
+                    <div class="methodology-steps">
+                        <div class="step-card">
+                            <div class="step-number">1</div>
+                            <h4>¿Qué datos necesito?</h4>
+                            <p>Identificar qué información se requiere</p>
+                        </div>
+                        <div class="step-card">
+                            <div class="step-number">2</div>
+                            <h4>¿Dónde están?</h4>
+                            <p>Localizar las tablas que contienen los datos</p>
+                        </div>
+                        <div class="step-card">
+                            <div class="step-number">3</div>
+                            <h4>¿Qué requisitos?</h4>
+                            <p>Definir las condiciones que deben cumplir</p>
+                        </div>
+                    </div>
+
+                    <div class="concept-card">
+                        <h3>📚 Contenido del Módulo</h3>
+                        <ul>
+                            <li><strong>Sintaxis completa:</strong> Todas las cláusulas del SELECT</li>
+                            <li><strong>Uso básico:</strong> SELECT, FROM y WHERE</li>
+                            <li><strong>Filtrado avanzado:</strong> TOP, DISTINCT, alias</li>
+                            <li><strong>Agrupación:</strong> GROUP BY y funciones de agregación</li>
+                            <li><strong>Ordenación:</strong> ORDER BY y subconsultas</li>
+                        </ul>
+                    </div>
+                </section>
+
+                <section id="introduction" class="section">
+                    <h2>🚀 Introducción</h2>
+                    
+                    <div class="concept-card">
+                        <h3>🎯 El Comando Más Importante</h3>
+                        <p>El <strong>comando SELECT</strong> es la herramienta fundamental para recuperar información de la base de datos. Aunque su sintaxis puede parecer compleja, nos permite una gran flexibilidad para decidir exactamente qué queremos recuperar.</p>
+                    </div>
+
+                    <div class="definition-box">
+                        <h3>💡 Flexibilidad del SELECT</h3>
+                        <p>No te dejes engañar por su aparente simplicidad. SELECT nos permite una <strong>gran flexibilidad</strong> para construir consultas desde las más básicas hasta las más complejas, abarcando el 95% de situaciones que encontrarás en el trabajo real.</p>
+                    </div>
+
+                    <div class="example-box">
+                        <h3>📖 Notaciones de Sintaxis</h3>
+                        <p>Para interpretar correctamente la sintaxis:</p>
+                        <ul>
+                            <li><strong>[texto]:</strong> Entre corchetes = <em>opcional</em></li>
+                            <li><strong>opción1 | opción2:</strong> Separado por | = <em>elegir una opción</em></li>
+                            <li><strong>MAYÚSCULAS:</strong> Palabras clave del SQL</li>
+                            <li><strong>minúsculas:</strong> Nombres de tablas, campos, etc.</li>
+                        </ul>
+                    </div>
+
+                    <div class="concept-card">
+                        <h3>🔄 Metodología de Consultas</h3>
+                        <p>Para construir cualquier consulta, siempre debemos respondernos <strong>tres preguntas fundamentales</strong> que nos guiarán hacia la solución correcta. Esta metodología es especialmente importante para principiantes.</p>
+                    </div>
+
+                    <div class="warning-box">
+                        <strong>📌 Enfoque Práctico:</strong>
+                        <p>Vamos paso a paso, tratando de no complicar las cosas. Veremos los comandos más comunes con ejemplos prácticos que podrás ejecutar y modificar para experimentar.</p>
+                    </div>
+                </section>
+
+                <section id="syntax" class="section">
+                    <h2>📝 Sintaxis Completa del SELECT</h2>
+                    
+                    <div class="concept-card">
+                        <h3>🔧 Sintaxis Completa</h3>
+                        <p>Esta es la sintaxis completa del comando SELECT. No te preocupes si parece abrumadora; iremos viendo cada parte paso a paso:</p>
+                    </div>
+
+                    <div class="syntax-box">
+<span class="optional">[WITH subconsulta AS (</span><span class="keyword">SELECT</span> ...<span class="optional">)]</span>
+<span class="keyword">SELECT</span> <span class="optional">[TOP</span> <span class="placeholder">número</span><span class="optional">]</span> <span class="optional">[ALL | DISTINCT]</span>
+    <span class="placeholder">columna1</span> <span class="optional">[AS alias1]</span>,
+    <span class="placeholder">columna2</span> <span class="optional">[AS alias2]</span>
+<span class="keyword">FROM</span> <span class="placeholder">tabla</span> <span class="optional">[AS alias]</span>
+    <span class="optional">[INNER | LEFT | RIGHT | FULL] JOIN tabla2 ON condición</span>
+<span class="optional">[WHERE</span> <span class="placeholder">condición</span><span class="optional">]</span>
+<span class="optional">[GROUP BY</span> <span class="placeholder">expresión</span><span class="optional">]</span>
+<span class="optional">[HAVING</span> <span class="placeholder">condición_agrupación</span><span class="optional">]</span>
+<span class="optional">[ORDER BY</span> <span class="placeholder">campo</span> <span class="optional">[ASC | DESC]</span><span class="optional">]</span>
+                    </div>
+
+                    <div class="concept-card">
+                        <h3>📋 Orden de Ejecución</h3>
+                        <p>Es importante comprender el <strong>orden lógico</strong> en que SQL procesa las cláusulas:</p>
+                        <ol>
+                            <li><strong>FROM:</strong> Identifica las tablas fuente</li>
+                            <li><strong>WHERE:</strong> Filtra registros individuales</li>
+                            <li><strong>GROUP BY:</strong> Agrupa los datos</li>
+                            <li><strong>HAVING:</strong> Filtra grupos</li>
+                            <li><strong>SELECT:</strong> Selecciona las columnas</li>
+                            <li><strong>ORDER BY:</strong> Ordena el resultado final</li>
+                        </ol>
+                    </div>
+
+                    <div class="example-box">
+                        <h3>✅ Forma Más Básica</h3>
+                        <p>La estructura más simple del SELECT:</p>
+                    </div>
+
+                    <div class="code-example">
+<span class="keyword">SELECT</span> * <span class="keyword">FROM</span> tabla;
+                    </div>
+
+                    <div class="concept-card">
+                        <h3>🔍 Desglose de la Sintaxis Básica</h3>
+                        <ul>
+                            <li><strong>SELECT:</strong> Indica que queremos recuperar información</li>
+                            <li><strong>* (asterisco):</strong> Comodín para "todos los campos"</li>
+                            <li><strong>FROM:</strong> Indica el origen de datos</li>
+                            <li><strong>tabla:</strong> Nombre del objeto de base de datos</li>
+                        </ul>
+                    </div>
+
+                    <div class="warning-box">
+                        <strong>⚠️ Importante:</strong>
+                        <p>El <strong>orden de las cláusulas es obligatorio</strong>. Si no respetas el orden, obtendrás errores de sintaxis. Siempre FROM antes que WHERE, GROUP BY después de WHERE, etc.</p>
+                    </div>
+                </section>
+
+                <section id="basic-usage" class="section">
+                    <h2>⭐ Uso Básico del SELECT</h2>
+                    
+                    <div class="concept-card">
+                        <h3>🔍 Exploración de Tablas</h3>
+                        <p>Cuando no conocemos una tabla, es útil hacer una consulta completa para ver su estructura y datos. Esto nos ayuda a entender qué información contiene y cómo está organizada.</p>
+                    </div>
+
+                    <div class="code-example">
+<span class="comment">-- Ver toda la información de la tabla empleados</span>
+<span class="keyword">SELECT</span> * <span class="keyword">FROM</span> empleados;
+                    </div>
+
+                    <div class="concept-card">
+                        <h3">📊 Filtrado de Columnas</h3>
+                        <p>En lugar del asterisco (*), podemos especificar exactamente qué columnas queremos ver. Esto es más <strong>eficiente y claro</strong>:</p>
+                    </div>
+
+                    <div class="code-example">
+<span class="comment">-- Mostrar solo campos específicos</span>
+<span class="keyword">SELECT</span> id_empleado, tratamiento, nombre, apellidos
+<span class="keyword">FROM</span> empleados;
+                    </div>
+
+                    <div class="example-box">
+                        <h3>💡 Literales en SELECT</h3>
+                        <p>También podemos incluir texto literal en nuestras consultas para hacer los resultados más legibles:</p>
+                    </div>
+
+                    <div class="code-example">
+<span class="comment">-- Añadir etiquetas literales</span>
+<span class="keyword">SELECT</span> 
+    <span class="string">'Identificador:'</span>, id_empleado,
+    <span class="string">'Nombre:'</span>, nombre,
+    <span class="string">'Apellidos:'</span>, apellidos
+<span class="keyword">FROM</span> empleados;
+                    </div>
+
+                    <div class="concept-card">
+                        <h3>🏷️ Alias con AS</h3>
+                        <p>Los <strong>alias</strong> nos permiten renombrar columnas o tablas para mayor claridad:</p>
+                    </div>
+
+                    <div class="code-example">
+<span class="comment">-- Usar alias para claridad</span>
+<span class="keyword">SELECT</span> 
+    id_empleado <span class="keyword">AS</span> <span class="string">"Identificador"</span>,
+    nombre <span class="keyword">AS</span> <span class="string">"Nombre del Empleado"</span>,
+    apellidos <span class="keyword">AS</span> <span class="string">"Apellidos"</span>
+<span class="keyword">FROM</span> empleados;
+                    </div>
+
+                    <div class="warning-box">
+                        <strong>💡 Consejo Práctico:</strong>
+                        <p>Usar SELECT * está bien para exploración inicial, pero cuando necesites resultados específicos, <strong>delimita siempre la salida</strong> especificando las columnas exactas que necesitas.</p>
+                    </div>
+
+                    <div class="concept-card">
+                        <h3>🎯 Cuándo Usar Cada Enfoque</h3>
+                        <ul>
+                            <li><strong>SELECT *:</strong> Para explorar tablas desconocidas</li>
+                            <li><strong>Columnas específicas:</strong> Para consultas de producción</li>
+                            <li><strong>Literales:</strong> Para reportes con etiquetas</li>
+                            <li><strong>Alias:</strong> Para mayor claridad en los resultados</li>
+                        </ul>
+                    </div>
+                </section>
+
+                <section id="filtering" class="section">
+                    <h2>🔍 Filtrado de Datos</h2>
+                    
+                    <div class="concept-card">
+                        <h3>🎯 Cláusula WHERE</h3>
+                        <p>La cláusula <strong>WHERE</strong> es fundamental para filtrar registros. Nos permite especificar condiciones que deben cumplir los datos que queremos recuperar.</p>
+                    </div>
+
+                    <div class="code-example">
+<span class="comment">-- Filtrar empleados por tratamiento</span>
+<span class="keyword">SELECT</span> id_empleado, tratamiento, nombre, apellidos
+<span class="keyword">FROM</span> empleados
+<span class="keyword">WHERE</span> tratamiento = <span class="string">'Srta.'</span>;
+                    </div>
+
+                    <div class="concept-card">
+                        <h3">🔢 Limitación con TOP</h3>
+                        <p>La cláusula <strong>TOP</strong> limita el número de registros devueltos. Es útil para pruebas o cuando solo necesitas una muestra:</p>
+                    </div>
+
+                    <div class="code-example">
+<span class="comment">-- Mostrar solo los primeros 5 empleados</span>
+<span class="keyword">SELECT TOP</span> 5 *
+<span class="keyword">FROM</span> empleados;
+
+<span class="comment">-- Si hay menos registros, muestra todos los disponibles</span>
+<span class="keyword">SELECT TOP</span> 15 *
+<span class="keyword">FROM</span> empleados; <span class="comment">-- Solo hay 9, muestra los 9</span>
+                    </div>
+
+                    <div class="concept-card">
+                        <h3">🎭 ALL vs DISTINCT</h3>
+                        <p>Controlan cómo se manejan los valores duplicados en los resultados:</p>
+                        <ul>
+                            <li><strong>ALL:</strong> Opción por defecto, muestra todos los registros</li>
+                            <li><strong>DISTINCT:</strong> Elimina registros duplicados</li>
+                        </ul>
+                    </div>
+
+                    <div class="code-example">
+<span class="comment">-- Mostrar todos los clientes (con duplicados)</span>
+<span class="keyword">SELECT ALL</span> id_cliente <span class="keyword">FROM</span> pedidos; <span class="comment">-- 772 registros</span>
+
+<span class="comment">-- Mostrar solo clientes únicos (sin duplicados)</span>
+<span class="keyword">SELECT DISTINCT</span> id_cliente <span class="keyword">FROM</span> pedidos; <span class="comment">-- 89 registros únicos</span>
+                    </div>
+
+                    <div class="example-box">
+                        <h3">🔍 Filtros Avanzados</h3>
+                        <p>WHERE puede usar operadores más complejos:</p>
+                    </div>
+
+                    <div class="code-example">
+<span class="comment">-- Clientes cuyo ID comience con 'A'</span>
+<span class="keyword">SELECT</span> * <span class="keyword">FROM</span> pedidos
+<span class="keyword">WHERE</span> id_cliente <span class="keyword">LIKE</span> <span class="string">'A%'</span>;
+
+<span class="comment">-- Pedidos con cargo mayor a 35</span>
+<span class="keyword">SELECT</span> * <span class="keyword">FROM</span> pedidos
+<span class="keyword">WHERE</span> cargo > 35;
+                    </div>
+
+                    <div class="definition-box">
+                        <h3">🔑 Diferencia Importante</h3>
+                        <p><strong>TOP es limitación, no filtro:</strong> TOP simplemente toma los primeros N registros que encuentra, no calcula cuáles son los "mejores". Para filtros inteligentes usa WHERE.</p>
+                    </div>
+
+                    <div class="warning-box">
+                        <strong>⚠️ Atención con Literales:</strong>
+                        <p>Cuando uses literales de texto en WHERE, <strong>las mayúsculas y minúsculas sí importan</strong>. 'Srta.' es diferente de 'srta.' o 'SRTA.'</p>
+                    </div>
+                </section>
+
+                <section id="aggregation" class="section">
+                    <h2>📊 Agrupación y Funciones</h2>
+                    
+                    <div class="concept-card">
+                        <h3>📈 Funciones de Agregación</h3>
+                        <p>Las <strong>funciones de agregación</strong> realizan operaciones matemáticas sobre conjuntos de datos, permitiendo obtener resúmenes estadísticos.</p>
+                    </div>
+
+                    <div class="functions-grid">
+                        <div class="function-card">
+                            <div class="function-name">COUNT()</div>
+                            <h4>Conteo</h4>
+                            <p>Cuenta el número de registros</p>
+                        </div>
+                        <div class="function-card">
+                            <div class="function-name">SUM()</div>
+                            <h4>Suma</h4>
+                            <p>Suma valores numéricos</p>
+                        </div>
+                        <div class="function-card">
+                            <div class="function-name">AVG()</div>
+                            <h4>Promedio</h4>
+                            <p>Calcula la media aritmética</p>
+                        </div>
+                        <div class="function-card">
+                            <div class="function-name">MAX()</div>
+                            <h4>Máximo</h4>
+                            <p>Encuentra el valor más alto</p>
+                        </div>
+                        <div class="function-card">
+                            <div class="function-name">MIN()</div>
+                            <h4>Mínimo</h4>
+                            <p>Encuentra el valor más bajo</p>
+                        </div>
+                    </div>
+
+                    <div class="example-box">
+                        <h3">📊 Ejemplo Básico de Agregación</h3>
+                        <p>Operaciones sobre toda la tabla:</p>
+                    </div>
+
+                    <div class="code-example">
+<span class="comment">-- Estadísticas generales de pedidos</span>
+<span class="keyword">SELECT</span> 
+    <span class="keyword">COUNT</span>(id_pedido) <span class="keyword">AS</span> <span class="string">"Total Pedidos"</span>,
+    <span class="keyword">SUM</span>(cargo) <span class="keyword">AS</span> <span class="string">"Total Cargo"</span>
+<span class="keyword">FROM</span> pedidos;
+                    </div>
+
+                    <div class="concept-card">
+                        <h3">🏗️ GROUP BY - Agrupación</h3>
+                        <p>GROUP BY permite agrupar datos por criterios específicos y aplicar funciones de agregación a cada grupo:</p>
+                    </div>
+
+                    <div class="code-example">
+<span class="comment">-- Estadísticas por cliente</span>
+<span class="keyword">SELECT</span> 
+    id_cliente,
+    <span class="keyword">COUNT</span>(id_pedido) <span class="keyword">AS</span> <span class="string">"Número de Pedidos"</span>,
+    <span class="keyword">SUM</span>(cargo) <span class="keyword">AS</span> <span class="string">"Total Gastado"</span>
+<span class="keyword">FROM</span> pedidos
+<span class="keyword">GROUP BY</span> id_cliente;
+                    </div>
+
+                    <div class="definition-box">
+                        <h3">🔑 Regla Fundamental de GROUP BY</h3>
+                        <p><strong>Todos los campos del SELECT que NO sean funciones de agregación deben aparecer en GROUP BY.</strong> Si tienes SELECT id_cliente, nombre, COUNT(*), entonces GROUP BY debe incluir id_cliente, nombre.</p>
+                    </div>
+
+                    <div class="concept-card">
+                        <h3">🎯 HAVING - Filtrado de Grupos</h3>
+                        <p>HAVING es como WHERE, pero filtra <strong>después de la agrupación</strong>. Permite filtrar grupos basándose en los resultados de las funciones de agregación:</p>
+                    </div>
+
+                    <div class="code-example">
+<span class="comment">-- Solo clientes con más de 10 pedidos</span>
+<span class="keyword">SELECT</span> 
+    id_cliente,
+    <span class="keyword">COUNT</span>(id_pedido) <span class="keyword">AS</span> <span class="string">"Número de Pedidos"</span>
+<span class="keyword">FROM</span> pedidos
+<span class="keyword">GROUP BY</span> id_cliente
+<span class="keyword">HAVING</span> <span class="keyword">COUNT</span>(id_pedido) > 10;
+                    </div>
+
+                    <div class="example-box">
+                        <h3">🔄 WHERE vs HAVING</h3>
+                        <p>Diferencias clave en el procesamiento:</p>
+                        <ul>
+                            <li><strong>WHERE:</strong> Filtra registros individuales <em>antes</em> de agrupar</li>
+                            <li><strong>HAVING:</strong> Filtra grupos <em>después</em> de agrupar y agregar</li>
+                        </ul>
+                    </div>
+
+                    <div class="code-example">
+<span class="comment">-- Combinando WHERE y HAVING</span>
+<span class="keyword">SELECT</span> 
+    id_cliente,
+    <span class="keyword">COUNT</span>(id_pedido) <span class="keyword">AS</span> <span class="string">"Pedidos"</span>,
+    <span class="keyword">SUM</span>(cargo) <span class="keyword">AS</span> <span class="string">"Total"</span>
+<span class="keyword">FROM</span> pedidos
+<span class="keyword">WHERE</span> cargo > 35           <span class="comment">-- Primero: solo pedidos > 35</span>
+<span class="keyword">GROUP BY</span> id_cliente
+<span class="keyword">HAVING</span> <span class="keyword">SUM</span>(cargo) < 250;   <span class="comment">-- Después: solo totales < 250</span>
+                    </div>
+
+                    <div class="warning-box">
+                        <strong>⚠️ Orden Importante:</strong>
+                        <p>Las cláusulas deben ir en orden específico: FROM → WHERE → GROUP BY → HAVING → ORDER BY. Cambiar este orden resultará en errores de sintaxis.</p>
+                    </div>
+                </section>
+
+                <section id="sorting" class="section">
+                    <h2>🔄 Ordenación y Subconsultas</h2>
+                    
+                    <div class="concept-card">
+                        <h3>📋 ORDER BY - Ordenación</h3>
+                        <p>La cláusula <strong>ORDER BY</strong> nos permite ordenar los resultados según uno o varios campos, en orden ascendente o descendente.</p>
+                    </div>
+
+                    <div class="code-example">
+<span class="comment">-- Ordenación simple</span>
+<span class="keyword">SELECT</span> id_cliente, fecha_pedido
+<span class="keyword">FROM</span> pedidos
+<span class="keyword">ORDER BY</span> id_cliente;               <span class="comment">-- Por defecto: ascendente</span>
+
+<span class="comment">-- Ordenación descendente</span>
+<span class="keyword">SELECT</span> id_cliente, fecha_pedido
+<span class="keyword">FROM</span> pedidos
+<span class="keyword">ORDER BY</span> id_cliente <span class="keyword">DESC</span>;       <span class="comment">-- Explícitamente descendente</span>
+                    </div>
+
+                    <div class="concept-card">
+                        <h3">🔄 Ordenación Múltiple</h3>
+                        <p>Puedes ordenar por <strong>varios campos a la vez</strong>. SQL ordena por el primer campo, luego por el segundo dentro de cada grupo del primero, y así sucesivamente:</p>
+                    </div>
+
+                    <div class="code-example">
+<span class="comment">-- Ordenación por múltiples campos</span>
+<span class="keyword">SELECT</span> id_cliente, fecha_pedido
+<span class="keyword">FROM</span> pedidos
+<span class="keyword">ORDER BY</span> 
+    id_cliente <span class="keyword">DESC</span>,           <span class="comment">-- Primero por cliente (Z→A)</span>
+    fecha_pedido <span class="keyword">ASC</span>;          <span class="comment">-- Luego por fecha (antigua→nueva)</span>
+                    </div>
+
+                    <div class="example-box">
+                        <h3">🎯 Lógica de Ordenación Múltiple</h3>
+                        <p>Con múltiples campos, SQL:</p>
+                        <ol>
+                            <li>Ordena todos los registros por el primer campo</li>
+                            <li>Dentro de cada valor del primer campo, ordena por el segundo</li>
+                            <li>Dentro de cada combinación, ordena por el tercero, etc.</li>
+                        </ol>
+                    </div>
+
+                    <div class="concept-card">
+                        <h3">📝 WITH - Subconsultas Nombradas</h3>
+                        <p>La cláusula <strong>WITH</strong> permite crear subconsultas con nombre que pueden reutilizarse en la consulta principal:</p>
+                    </div>
+
+                    <div class="code-example">
+<span class="comment">-- Subconsulta con WITH</span>
+<span class="keyword">WITH</span> subconsulta <span class="keyword">AS</span> (
+    <span class="keyword">SELECT</span> * <span class="keyword">FROM</span> productos
+    <span class="keyword">WHERE</span> precio > 20
+)
+<span class="keyword">SELECT</span> nombre, precio 
+<span class="keyword">FROM</span> subconsulta
+<span class="keyword">WHERE</span> categoria = <span class="string">'Bebidas'</span>;
+                    </div>
+
+                    <div class="definition-box">
+                        <h3">💡 Cuándo Usar WITH</h3>
+                        <p><strong>WITH es útil cuando:</strong> Tienes consultas complejas que necesitas reutilizar múltiples veces, o cuando quieres hacer más legible una consulta dividiendo la lógica en pasos.</p>
+                    </div>
+
+                    <div class="concept-card">
+                        <h3">🔍 Exploración de Estructura</h3>
+                        <p>Además de SELECT *, puedes explorar la estructura de tablas haciendo doble clic en el explorador de base de datos para ver:</p>
+                        <ul>
+                            <li><strong>Definición:</strong> Tipos de datos, claves primarias, valores por defecto</li>
+                            <li><strong>Índices:</strong> Optimizaciones de rendimiento aplicadas</li>
+                            <li><strong>Datos:</strong> Muestra del contenido actual</li>
+                        </ul>
+                    </div>
+
+                    <div class="example-box">
+                        <h3">🎨 Trucos de Formato</h3>
+                        <p>Para consultas complejas:</p>
+                        <ul>
+                            <li>Divide las líneas para mayor legibilidad</li>
+                            <li>Usa indentación consistente</li>
+                            <li>Agrupa cláusulas relacionadas</li>
+                            <li>Comenta secciones complejas</li>
+                        </ul>
+                    </div>
+
+                    <div class="warning-box">
+                        <strong>💡 Buenas Prácticas:</strong>
+                        <p>ORDER BY siempre debe ser la <strong>última cláusula</strong> en tu SELECT. Úsalo cuando necesites un orden específico, pero recuerda que ordenar grandes conjuntos de datos puede afectar el rendimiento.</p>
+                    </div>
+                </section>
+
+                <section id="conclusions" class="section">
+                    <h2>🎯 Conclusiones</h2>
+                    
+                    <div class="concept-card">
+                        <h3">📋 Resumen del Comando SELECT</h3>
+                        <p>Hemos cubierto los <strong>fundamentos esenciales del comando SELECT</strong>, la herramienta más importante para trabajar con datos en SQL. Este conocimiento te permitirá resolver el 95% de situaciones que encontrarás.</p>
+                    </div>
+
+                    <div class="methodology-steps">
+                        <div class="step-card">
+                            <div class="step-number">1</div>
+                            <h4>¿Qué datos necesito?</h4>
+                            <p>Define las columnas específicas o usa * para explorar</p>
+                        </div>
+                        <div class="step-card">
+                            <div class="step-number">2</div>
+                            <h4>¿Dónde están?</h4>
+                            <p>Identifica las tablas con FROM y posibles JOINs</p>
+                        </div>
+                        <div class="step-card">
+                            <div class="step-number">3</div>
+                            <h4>¿Qué condiciones?</h4>
+                            <p>Aplica filtros con WHERE y HAVING según corresponda</p>
+                        </div>
+                    </div>
+
+                    <div class="concept-card">
+                        <h3">🔑 Conceptos Clave Dominados</h3>
+                        <ul>
+                            <li><strong>Sintaxis básica:</strong> SELECT, FROM, WHERE como base fundamental</li>
+                            <li><strong>Filtrado:</strong> TOP para limitar, DISTINCT para únicos, WHERE para condiciones</li>
+                            <li><strong>Agrupación:</strong> GROUP BY con funciones de agregación para análisis</li>
+                            <li><strong>Refinamiento:</strong> HAVING para filtrar grupos, ORDER BY para ordenar</li>
+                            <li><strong>Alias:</strong> AS para renombrar y clarificar resultados</li>
+                        </ul>
+                    </div>
+
+                    <div class="definition-box">
+                        <h3">🎯 Metodología de Trabajo</h3>
+                        <p>Recuerda siempre las <strong>tres preguntas fundamentales</strong> antes de escribir cualquier consulta. Esta metodología te ayudará a estructurar tu pensamiento y evitar errores comunes.</p>
+                    </div>
+
+                    <div class="concept-card">
+                        <h3">📊 Orden de Procesamiento</h3>
+                        <p>Comprende que SQL procesa en este orden lógico:</p>
+                        <ol>
+                            <li><strong>FROM:</strong> Identifica las fuentes de datos</li>
+                            <li><strong>WHERE:</strong> Filtra registros individuales</li>
+                            <li><strong>GROUP BY:</strong> Agrupa los datos filtrados</li>
+                            <li><strong>HAVING:</strong> Filtra los grupos creados</li>
+                            <li><strong>SELECT:</strong> Selecciona las columnas finales</li>
+                            <li><strong>ORDER BY:</strong> Ordena el resultado final</li>
+                        </ol>
+                    </div>
+
+                    <div class="example-box">
+                        <h3">🚀 Próximos Pasos</h3>
+                        <p>Con estos fundamentos sólidos, estás preparado para:</p>
+                        <ul>
+                            <li><strong>JOINs:</strong> Combinar datos de múltiples tablas</li>
+                            <li><strong>Subconsultas avanzadas:</strong> Consultas más complejas</li>
+                            <li><strong>Funciones específicas:</strong> Manipulación de fechas, textos, etc.</li>
+                            <li><strong>Optimización:</strong> Mejorar el rendimiento de consultas</li>
+                        </ul>
+                    </div>
+
+                    <div class="warning-box">
+                        <strong>💡 Consejo Final:</strong>
+                        <p>Lo que hemos visto es solo la "punta del iceberg" del poder del SELECT. Practica estos fundamentos hasta dominarlos completamente, ya que son la base sobre la que construirás conocimientos más avanzados. <strong>¡La práctica hace al maestro!</strong></p>
+                    </div>
+
+                    <div class="concept-card">
+                        <h3">📚 Para Recordar</h3>
+                        <ul>
+                            <li>Respeta siempre el orden de las cláusulas</li>
+                            <li>WHERE filtra registros, HAVING filtra grupos</li>
+                            <li>TOP limita, no filtra inteligentemente</li>
+                            <li>DISTINCT elimina duplicados completos</li>
+                            <li>Las mayúsculas importan en literales de texto</li>
+                            <li>GROUP BY requiere todas las columnas no agregadas</li>
+                        </ul>
+                    </div>
+                </section>
+            </main>
+        </div>
+    </div>
+
+    <script>
+        function showSection(sectionId) {
+            // Ocultar todas las secciones
+            const sections = document.querySelectorAll('.section');
+            sections.forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            // Mostrar la sección seleccionada
+            document.getElementById(sectionId).classList.add('active');
+            
+            // Actualizar navegación
+            const navItems = document.querySelectorAll('.nav-item');
+            navItems.forEach(item => {
+                item.classList.remove('active');
+            });
+            
+            // Marcar el elemento activo
+            event.target.classList.add('active');
+            
+            // Scroll al inicio del contenido
+            document.querySelector('.content').scrollTop = 0;
+
+            // En móviles, ocultar el menú después de seleccionar
+            if (window.innerWidth <= 768) {
+                const sidebar = document.getElementById('sidebar');
+                sidebar.classList.add('mobile-hidden');
+                
+                const toggleButton = document.querySelector('.mobile-menu-toggle');
+                toggleButton.textContent = '📋 Menú de Contenidos';
+            }
+        }
+
+        function toggleMobileMenu() {
+            const sidebar = document.getElementById('sidebar');
+            const toggleButton = document.querySelector('.mobile-menu-toggle');
+            
+            if (sidebar.classList.contains('mobile-hidden')) {
+                sidebar.classList.remove('mobile-hidden');
+                toggleButton.textContent = '❌ Cerrar Menú';
+            } else {
+                sidebar.classList.add('mobile-hidden');
+                toggleButton.textContent = '📋 Menú de Contenidos';
+            }
+        }
+
+        // Inicializar en móviles
+        document.addEventListener('DOMContentLoaded', function() {
+            if (window.innerWidth <= 768) {
+                const sidebar = document.getElementById('sidebar');
+                sidebar.classList.add('mobile-hidden');
+            }
+
+            // Animación de entrada
+            const cards = document.querySelectorAll('.concept-card, .definition-box, .example-box');
+            cards.forEach((card, index) => {
+                setTimeout(() => {
+                    card.style.opacity = '0';
+                    card.style.transform = 'translateY(20px)';
+                    card.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+                    
+                    setTimeout(() => {
+                        card.style.opacity = '1';
+                        card.style.transform = 'translateY(0)';
+                    }, 100);
+                }, index * 100);
+            });
+        });
+
+        // Manejar cambios de tamaño de ventana
+        window.addEventListener('resize', function() {
+            const sidebar = document.getElementById('sidebar');
+            const toggleButton = document.querySelector('.mobile-menu-toggle');
+            
+            if (window.innerWidth > 768) {
+                sidebar.classList.remove('mobile-hidden');
+                toggleButton.textContent = '📋 Menú de Contenidos';
+            } else if (window.innerWidth <= 768 && !sidebar.classList.contains('mobile-hidden')) {
+                sidebar.classList.add('mobile-hidden');
+            }
+        });
+    </script>
+</body>
+</html>
