@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clase 044 - Ejercicio Práctico SQL</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            backdrop-filter: blur(20px);
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #2c3e50, #3498db);
+            color: white;
+            padding: 30px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: repeating-linear-gradient(
+                45deg,
+                transparent,
+                transparent 10px,
+                rgba(255, 255, 255, 0.1) 10px,
+                rgba(255, 255, 255, 0.1) 20px
+            );
+            animation: headerPattern 20s linear infinite;
+        }
+        
+        @keyframes headerPattern {
+            0% { transform: translateX(-50px) translateY(-50px); }
+            100% { transform: translateX(50px) translateY(50px); }
+        }
+        
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            position: relative;
+            z-index: 1;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .content {
+            padding: 40px;
+        }
+        
+        .section {
+            margin-bottom: 40px;
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border-left: 5px solid #3498db;
+        }
+        
+        .section:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+        }
+        
+        .section h2 {
+            color: #2c3e50;
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .section h3 {
+            color: #34495e;
+            font-size: 1.4rem;
+            margin-bottom: 15px;
+            margin-top: 25px;
+        }
+        
+        .icon {
+            font-size: 1.5rem;
+            color: #3498db;
+        }
+        
+        .code-block {
+            background: #2c3e50;
+            color: #ecf0f1;
+            padding: 20px;
+            border-radius: 10px;
+            font-family: 'Courier New', monospace;
+            margin: 15px 0;
+            position: relative;
+            overflow-x: auto;
+        }
+        
+        .code-block::before {
+            content: 'SQL';
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            background: #3498db;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+        }
+        
+        .highlight {
+            background: linear-gradient(120deg, #a8edea 0%, #fed6e3 100%);
+            padding: 15px;
+            border-radius: 10px;
+            margin: 15px 0;
+            border-left: 4px solid #e74c3c;
+        }
+        
+        .tip-box {
+            background: linear-gradient(120deg, #d4fc79 0%, #96e6a1 100%);
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 4px solid #27ae60;
+        }
+        
+        .warning-box {
+            background: linear-gradient(120deg, #ffeaa7 0%, #fab1a0 100%);
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 4px solid #e17055;
+        }
+        
+        ul, ol {
+            margin-left: 20px;
+            margin-bottom: 15px;
+        }
+        
+        li {
+            margin-bottom: 8px;
+        }
+        
+        .function-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .function-item {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 3px solid #3498db;
+        }
+        
+        .function-name {
+            font-weight: bold;
+            color: #2c3e50;
+            font-family: 'Courier New', monospace;
+        }
+        
+        .best-practices {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            margin: 30px 0;
+        }
+        
+        .best-practices h3 {
+            color: white;
+            margin-bottom: 15px;
+        }
+        
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .content {
+                padding: 20px;
+            }
+            
+            .section {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📊 Clase 044 - Ejercicio Práctico SQL</h1>
+            <p>Modelado en Sabana - Consultas Avanzadas con DML</p>
+        </div>
+        
+        <div class="content">
+            <div class="section">
+                <h2><span class="icon">🎯</span>Objetivos de la Clase</h2>
+                <p>En esta clase práctica aplicamos los conceptos de <strong>DML (Data Manipulation Language)</strong> vistos en unidades anteriores, creando consultas complejas que combinan múltiples tablas y funciones para obtener información coherente y útil.</p>
+            </div>
+            
+            <div class="section">
+                <h2><span class="icon">🔍</span>Consultas Básicas con Filtrado</h2>
+                
+                <h3>Selección de Campos Específicos</h3>
+                <div class="code-block">
+SELECT id_cliente, nombre_compania, nombre_contacto, 
+       cargo_contacto, telefono
+FROM tabla_clientes;
+                </div>
+                
+                <h3>Búsqueda con Patrones (LIKE)</h3>
+                <div class="warning-box">
+                    <strong>⚠️ Importante:</strong> SQL distingue entre mayúsculas y minúsculas en las búsquedas con LIKE.
+                </div>
+                
+                <div class="code-block">
+-- Búsqueda que considera mayúsculas y minúsculas
+SELECT nombre_compania, nombre_contacto 
+FROM tabla_clientes 
+WHERE nombre_compania LIKE 'W%' 
+   OR nombre_compania LIKE 'w%';
+                </div>
+            </div>
+            
+            <div class="section">
+                <h2><span class="icon">🔧</span>Funciones de Cadenas</h2>
+                
+                <div class="function-list">
+                    <div class="function-item">
+                        <div class="function-name">UPPER()</div>
+                        <p>Convierte texto a mayúsculas</p>
+                    </div>
+                    <div class="function-item">
+                        <div class="function-name">LOWER()</div>
+                        <p>Convierte texto a minúsculas</p>
+                    </div>
+                    <div class="function-item">
+                        <div class="function-name">CONCAT()</div>
+                        <p>Concatena cadenas de texto</p>
+                    </div>
+                </div>
+                
+                <h3>Ejemplo con UPPER para búsquedas</h3>
+                <div class="code-block">
+SELECT nombre_compania, nombre_contacto 
+FROM tabla_clientes 
+WHERE UPPER(nombre_compania) LIKE 'W%';
+                </div>
+                
+                <div class="tip-box">
+                    <strong>💡 Tip:</strong> Las funciones aplicadas en la cláusula WHERE no afectan la salida de datos en el SELECT.
+                </div>
+            </div>
+            
+            <div class="section">
+                <h2><span class="icon">🔗</span>JOINS - Combinando Tablas</h2>
+                
+                <h3>INNER JOIN vs LEFT JOIN</h3>
+                <div class="highlight">
+                    <strong>INNER JOIN:</strong> Solo muestra registros que tienen coincidencias en ambas tablas.<br>
+                    <strong>LEFT JOIN:</strong> Muestra todos los registros de la tabla izquierda, incluso sin coincidencias.
+                </div>
+                
+                <div class="code-block">
+SELECT c.nombre_compania, c.nombre_contacto, 
+       p.fecha_pedido, p.fecha_entrega
+FROM tabla_clientes AS c
+INNER JOIN tabla_pedidos AS p 
+    ON c.id_cliente = p.id_cliente
+ORDER BY c.nombre_compania;
+                </div>
+                
+                <div class="warning-box">
+                    <strong>⚠️ Consideración Importante:</strong> Para reportes completos, usar LEFT JOIN permite incluir clientes que no han realizado pedidos, información valiosa para detectar oportunidades comerciales.
+                </div>
+            </div>
+            
+            <div class="section">
+                <h2><span class="icon">📊</span>Consultas de Agregación</h2>
+                
+                <h3>GROUP BY con Funciones de Agregación</h3>
+                <div class="code-block">
+SELECT c.nombre_compania,
+       COUNT(p.id_pedido) as total_pedidos,
+       SUM(p.cargo) as total_pagado
+FROM tabla_clientes AS c
+INNER JOIN tabla_pedidos AS p 
+    ON c.id_cliente = p.id_cliente
+GROUP BY c.nombre_compania
+ORDER BY c.nombre_compania;
+                </div>
+                
+                <h3>JOIN con Tres Tablas</h3>
+                <div class="code-block">
+SELECT c.nombre_compania,
+       CONCAT(e.nombre, ' ', e.apellidos) as empleado,
+       COUNT(p.id_pedido) as pedidos_realizados,
+       SUM(p.cargo) as monto_total
+FROM tabla_clientes AS c
+INNER JOIN tabla_pedidos AS p ON c.id_cliente = p.id_cliente
+INNER JOIN tabla_empleados AS e ON p.id_empleado = e.id_empleado
+GROUP BY c.nombre_compania, CONCAT(e.nombre, ' ', e.apellidos)
+ORDER BY c.nombre_compania;
+                </div>
+            </div>
+            
+            <div class="best-practices">
+                <h3>🏆 Mejores Prácticas</h3>
+                <ul>
+                    <li><strong>Usar Alias:</strong> Siempre asignar alias a las tablas para mejor legibilidad</li>
+                    <li><strong>Especificar Tablas:</strong> Prefija todos los campos con el nombre de la tabla</li>
+                    <li><strong>Formato Legible:</strong> Usar saltos de línea y indentación en consultas complejas</li>
+                    <li><strong>GROUP BY Completo:</strong> Incluir todos los campos no agregados en GROUP BY</li>
+                    <li><strong>LEFT JOIN para Reportes:</strong> Considerar usar LEFT JOIN para no omitir registros importantes</li>
+                    <li><strong>Funciones en WHERE:</strong> Usar funciones como UPPER() para búsquedas case-insensitive</li>
+                </ul>
+            </div>
+            
+            <div class="section">
+                <h2><span class="icon">🎓</span>Conclusiones y Próximos Pasos</h2>
+                <p>Esta clase práctica consolida los conocimientos de DML combinando:</p>
+                <ul>
+                    <li>Consultas básicas con filtrado avanzado</li>
+                    <li>Uso de funciones de cadenas de texto</li>
+                    <li>JOINS para relacionar múltiples tablas</li>
+                    <li>Agregaciones y agrupaciones de datos</li>
+                    <li>Formateo y presentación de resultados</li>
+                </ul>
+                
+                <div class="tip-box">
+                    <strong>📝 Tarea:</strong> Practicar con el conjunto de datos proporcionado, combinando todos los elementos vistos y experimentando con diferentes variaciones de las consultas.
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

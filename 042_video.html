@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clase 042 - LIKE y CONTAINS</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            backdrop-filter: blur(20px);
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #9b59b6, #8e44ad);
+            color: white;
+            padding: 30px;
+            text-align: center;
+            position: relative;
+        }
+        
+        .header h1 {
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+        
+        .content {
+            padding: 30px;
+        }
+        
+        .section {
+            margin-bottom: 30px;
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+        
+        .section:hover {
+            transform: translateY(-3px);
+        }
+        
+        .section h2 {
+            color: #2c3e50;
+            font-size: 1.6rem;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .icon {
+            font-size: 1.4rem;
+            color: #9b59b6;
+        }
+        
+        .operators {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+        
+        .operator-card {
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            transition: transform 0.3s ease;
+            color: white;
+        }
+        
+        .operator-card:hover {
+            transform: scale(1.05);
+        }
+        
+        .like-card {
+            background: linear-gradient(135deg, #74b9ff, #0984e3);
+        }
+        
+        .contains-card {
+            background: linear-gradient(135deg, #fd79a8, #e84393);
+        }
+        
+        .operator-card h3 {
+            margin-bottom: 10px;
+            font-size: 1.3rem;
+        }
+        
+        .code-example {
+            background: #2c3e50;
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            margin: 15px 0;
+            overflow-x: auto;
+        }
+        
+        .code-example .keyword {
+            color: #3498db;
+            font-weight: bold;
+        }
+        
+        .code-example .string {
+            color: #e74c3c;
+        }
+        
+        .code-example .operator {
+            color: #f39c12;
+        }
+        
+        .wildcards {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin: 20px 0;
+        }
+        
+        .wildcard {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #3498db;
+        }
+        
+        .wildcard h4 {
+            color: #2c3e50;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .wildcard-char {
+            background: #3498db;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 1.1rem;
+        }
+        
+        .examples-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .example {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #27ae60;
+        }
+        
+        .example h4 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-size: 1rem;
+        }
+        
+        .result {
+            background: rgba(39, 174, 96, 0.1);
+            padding: 8px;
+            border-radius: 4px;
+            margin-top: 8px;
+            font-size: 0.9rem;
+        }
+        
+        .syntax-box {
+            background: linear-gradient(120deg, #d4fc79 0%, #96e6a1 100%);
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 4px solid #27ae60;
+        }
+        
+        .warning-box {
+            background: linear-gradient(120ff7675 0%, #fd79a8 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 4px solid #d63031;
+        }
+        
+        .tip-box {
+            background: linear-gradient(120deg, #ffeaa7 0%, #fab1a0 100%);
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 4px solid #e17055;
+        }
+        
+        .escape-example {
+            background: #ecf0f1;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            border-left: 4px solid #95a5a6;
+        }
+        
+        .comparison-table {
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            margin: 20px 0;
+        }
+        
+        .comparison-table table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .comparison-table th {
+            background: #9b59b6;
+            color: white;
+            padding: 12px;
+            text-align: left;
+        }
+        
+        .comparison-table td {
+            padding: 10px 12px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .comparison-table tr:hover {
+            background: #f8f9fa;
+        }
+        
+        @media (max-width: 768px) {
+            .operators {
+                grid-template-columns: 1fr;
+            }
+            
+            .wildcards {
+                grid-template-columns: 1fr;
+            }
+            
+            .examples-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔍 Clase 042 - LIKE y CONTAINS</h1>
+            <p>Búsquedas por Patrones en SAP HANA SQL</p>
+        </div>
+        
+        <div class="content">
+            <div class="section">
+                <h2><span class="icon">🎯</span>Operadores de Búsqueda</h2>
+                <div class="operators">
+                    <div class="operator-card like-card">
+                        <h3>LIKE</h3>
+                        <p>Búsquedas por patrones usando comodines</p>
+                        <small>Similar a "cómo"</small>
+                    </div>
+                    <div class="operator-card contains-card">
+                        <h3>CONTAINS</h3>
+                        <p>Búsquedas avanzadas de texto</p>
+                        <small>Similar a "contiene"</small>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="section">
+                <h2><span class="icon">🔤</span>Operador LIKE</h2>
+                <div class="syntax-box">
+                    <strong>📝 Sintaxis:</strong><br>
+                    <code>expresion1 LIKE expresion2 [ESCAPE expresion3]</code><br><br>
+                    <strong>Función:</strong> Busca en expresion1 el patrón expresion2
+                </div>
+                
+                <div class="wildcards">
+                    <div class="wildcard">
+                        <h4><span class="wildcard-char">%</span> Porcentaje</h4>
+                        <p>Representa <strong>cero o más caracteres</strong> de cualquier tipo</p>
+                    </div>
+                    <div class="wildcard">
+                        <h4><span class="wildcard-char">_</span> Guión Bajo</h4>
+                        <p>Representa <strong>exactamente un carácter</strong> de cualquier tipo</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="section">
+                <h2><span class="icon">💡</span>Ejemplos Prácticos con LIKE</h2>
+                <div class="examples-grid">
+                    <div class="example">
+                        <h4>🔤 Empezar por letra</h4>
+                        <div class="code-example">
+<span class="keyword">SELECT</span> * <span class="keyword">FROM</span> clientes 
+<span class="keyword">WHERE</span> nombre_compania <span class="operator">LIKE</span> <span class="string">'D%'</span>
+                        </div>
+                        <div class="result">Empresas que empiecen por "D"</div>
+                    </div>
+                    
+                    <div class="example">
+                        <h4>🎯 Contener letra</h4>
+                        <div class="code-example">
+<span class="keyword">SELECT</span> * <span class="keyword">FROM</span> clientes 
+<span class="keyword">WHERE</span> nombre_compania <span class="operator">LIKE</span> <span class="string">'%A%'</span>
+                        </div>
+                        <div class="result">Empresas que contengan "A" en cualquier posición</div>
+                    </div>
+                    
+                    <div class="example">
+                        <h4>🎪 Patrón específico</h4>
+                        <div class="code-example">
+<span class="keyword">SELECT</span> * <span class="keyword">FROM</span> dummy 
+<span class="keyword">WHERE</span> <span class="string">'mi gato es blanco'</span> <span class="operator">LIKE</span> <span class="string">'mi gat_ es blanc_'</span>
+                        </div>
+                        <div class="result">Acepta "gato/gata" y "blanco/blanca"</div>
+                    </div>
+                    
+                    <div class="example">
+                        <h4>🚫 Excluir patrones</h4>
+                        <div class="code-example">
+<span class="keyword">WHERE</span> campo <span class="operator">LIKE</span> <span class="string">'%A%'</span> 
+<span class="keyword">AND</span> campo <span class="operator">NOT LIKE</span> <span class="string">'A%'</span> 
+<span class="keyword">AND</span> campo <span class="operator">NOT LIKE</span> <span class="string">'%A'</span>
+                        </div>
+                        <div class="result">Contiene "A" pero no empieza ni termina con "A"</div>
+                    </div>
+                </div>
+                
+                <div class="tip-box">
+                    <strong>⚠️ Sensibilidad a Mayúsculas:</strong><br>
+                    LIKE distingue entre mayúsculas y minúsculas. 'A%' es diferente de 'a%'
+                </div>
+            </div>
+            
+            <div class="section">
+                <h2><span class="icon">🔓</span>Carácter ESCAPE</h2>
+                <p>Para buscar los caracteres especiales % y _ como literales:</p>
+                
+                <div class="escape-example">
+                    <div class="code-example">
+<span class="keyword">SELECT</span> * <span class="keyword">FROM</span> dummy 
+<span class="keyword">WHERE</span> <span class="string">'principal.html'</span> <span class="operator">LIKE</span> <span class="string">'%#%principal.html'</span> 
+<span class="keyword">ESCAPE</span> <span class="string">'#'</span>
+                    </div>
+                    <p><strong>Explicación:</strong> Usa '#' como escape para buscar el carácter '%' literal</p>
+                </div>
+                
+                <div class="warning-box">
+                    <strong>🔧 Consejo:</strong><br>
+                    Usa caracteres especiales como escape (#, @, \) para evitar conflictos con el texto normal
+                </div>
+            </div>
+            
+            <div class="section">
+                <h2><span class="icon">🚀</span>Operador CONTAINS</h2>
+                <div class="syntax-box">
+                    <strong>📝 Sintaxis:</strong><br>
+                    <code>CONTAINS(columna, 'patron_busqueda', [nivel_fusion])</code><br><br>
+                    <strong>Función:</strong> Búsquedas avanzadas con múltiples capacidades
+                </div>
+                
+                <div class="comparison-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Capacidad</th>
+                                <th>LIKE</th>
+                                <th>CONTAINS</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Búsqueda exacta</td>
+                                <td>✅</td>
+                                <td>✅</td>
+                            </tr>
+                            <tr>
+                                <td>Búsqueda aproximada</td>
+                                <td>❌</td>
+                                <td>✅</td>
+                            </tr>
+                            <tr>
+                                <td>Búsqueda en múltiples columnas</td>
+                                <td>❌</td>
+                                <td>✅</td>
+                            </tr>
+                            <tr>
+                                <td>Búsqueda por fragmentos</td>
+                                <td>Limitada</td>
+                                <td>✅</td>
+                            </tr>
+                            <tr>
+                                <td>Operadores lógicos</td>
+                                <td>Manual</td>
+                                <td>Automático</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <div class="section">
+                <h2><span class="icon">🧪</span>Ejemplos con CONTAINS</h2>
+                <p>Creamos una tabla de prueba:</p>
+                <div class="code-example">
+<span class="keyword">CREATE COLUMN TABLE</span> frase (
+    frase <span class="string">VARCHAR(50)</span>
+);
+
+<span class="keyword">INSERT INTO</span> frase <span class="keyword">VALUES</span>
+(<span class="string">'El perro ladra'</span>),
+(<span class="string">'El gato maulla'</span>),
+(<span class="string">'El perro ladra otra vez'</span>),
+(<span class="string">'El perro Tommy y el gato Jerry son amigos'</span>),
+(<span class="string">'El gato es blanco'</span>),
+(<span class="string">'Perro, gato, perro y gato'</span>);
+                </div>
+                
+                <div class="examples-grid">
+                    <div class="example">
+                        <h4>🔍 Búsqueda Literal</h4>
+                        <div class="code-example">
+<span class="keyword">SELECT</span> * <span class="keyword">FROM</span> frase 
+<span class="keyword">WHERE</span> <span class="operator">CONTAINS</span>(frase, <span class="string">'perro gato'</span>)
+                        </div>
+                        <div class="result">Busca la frase exacta "perro gato"</div>
+                    </div>
+                    
+                    <div class="example">
+                        <h4>🔄 OR Lógico</h4>
+                        <div class="code-example">
+<span class="keyword">SELECT</span> * <span class="keyword">FROM</span> frase 
+<span class="keyword">WHERE</span> <span class="operator">CONTAINS</span>(frase, <span class="string">'PERRO GATO'</span>)
+                        </div>
+                        <div class="result">Busca registros que contengan "PERRO" O "GATO"</div>
+                    </div>
+                </div>
+                
+                <div class="tip-box">
+                    <strong>🔍 Diferencia Clave:</strong><br>
+                    • Minúsculas: búsqueda literal de la frase completa<br>
+                    • Mayúsculas: búsqueda con OR lógico de cada palabra
+                </div>
+            </div>
+            
+            <div class="section">
+                <h2><span class="icon">📊</span>Cuándo Usar Cada Operador</h2>
+                <div class="comparison-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Escenario</th>
+                                <th>Recomendación</th>
+                                <th>Ejemplo</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Patrones simples</td>
+                                <td><strong>LIKE</strong></td>
+                                <td>Nombres que empiecen por "A"</td>
+                            </tr>
+                            <tr>
+                                <td>Búsquedas exactas básicas</td>
+                                <td><strong>LIKE</strong></td>
+                                <td>Códigos con formato específico</td>
+                            </tr>
+                            <tr>
+                                <td>Búsquedas de texto avanzadas</td>
+                                <td><strong>CONTAINS</strong></td>
+                                <td>Búsquedas en descripciones</td>
+                            </tr>
+                            <tr>
+                                <td>Múltiples términos</td>
+                                <td><strong>CONTAINS</strong></td>
+                                <td>Artículos con varias palabras clave</td>
+                            </tr>
+                            <tr>
+                                <td>Búsquedas aproximadas</td>
+                                <td><strong>CONTAINS</strong></td>
+                                <td>Tolerancia a errores de escritura</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <div class="section">
+                <h2><span class="icon">🎓</span>Resumen</strong>
+                <div class="tip-box">
+                    <strong>📋 Puntos Clave:</strong><br>
+                    • <strong>LIKE:</strong> Ideal para patrones simples con comodines % y _<br>
+                    • <strong>CONTAINS:</strong> Potente para búsquedas de texto avanzadas<br>
+                    • Ambos son sensibles a mayúsculas y minúsculas<br>
+                    • ESCAPE permite buscar caracteres especiales como literales<br>
+                    • CONTAINS se verá en profundidad en análisis de texto avanzado
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

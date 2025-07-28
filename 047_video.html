@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clase 047 - Tipos de Datos: Fecha y Hora</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            backdrop-filter: blur(20px);
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            color: white;
+            padding: 30px;
+            text-align: center;
+            position: relative;
+        }
+        
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="20" cy="20" r="2" fill="rgba(255,255,255,0.1)"/><circle cx="80" cy="80" r="2" fill="rgba(255,255,255,0.1)"/><circle cx="80" cy="20" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="20" cy="80" r="1" fill="rgba(255,255,255,0.1)"/></svg>');
+        }
+        
+        .header h1 {
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .content {
+            padding: 30px;
+        }
+        
+        .section {
+            margin-bottom: 30px;
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+            border-left: 4px solid #e74c3c;
+        }
+        
+        .section:hover {
+            transform: translateY(-3px);
+        }
+        
+        .section h2 {
+            color: #2c3e50;
+            font-size: 1.6rem;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .icon {
+            font-size: 1.4rem;
+            color: #e74c3c;
+        }
+        
+        .data-types {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .data-type {
+            background: #2c3e50;
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            transition: background 0.3s ease;
+        }
+        
+        .data-type:hover {
+            background: #34495e;
+        }
+        
+        .data-type-name {
+            font-size: 1.2rem;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #3498db;
+        }
+        
+        .syntax-box {
+            background: #2c3e50;
+            color: #ecf0f1;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+            border-left: 4px solid #e74c3c;
+        }
+        
+        .syntax-highlight {
+            color: #3498db;
+            font-weight: bold;
+        }
+        
+        .example-box {
+            background: linear-gradient(120deg, #74b9ff 0%, #0984e3 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 4px solid #6c5ce7;
+        }
+        
+        .format-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .format-item {
+            background: #ecf0f1;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #e74c3c;
+        }
+        
+        .format-item strong {
+            color: #2c3e50;
+        }
+        
+        .functions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .function-card {
+            background: linear-gradient(135deg, #00b894, #00cec9);
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+        
+        .function-card:hover {
+            transform: scale(1.05);
+        }
+        
+        .function-name {
+            font-size: 1.1rem;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+        
+        .tip-box {
+            background: linear-gradient(120df, #fdcb6e 0%, #e17055 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 4px solid #d63031;
+        }
+        
+        @media (max-width: 768px) {
+            .data-types {
+                grid-template-columns: 1fr 1fr;
+            }
+            
+            .format-list {
+                grid-template-columns: 1fr;
+            }
+            
+            .functions-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📅 Clase 047 - Tipos de Datos: Fecha y Hora</h1>
+            <p>DATE, TIME, SECONDDATE y TIMESTAMP</p>
+        </div>
+        
+        <div class="content">
+            <div class="section">
+                <h2><span class="icon">🎯</span>Función de los Tipos de Datos</h2>
+                <p>Los tipos de datos indican al sistema <strong>qué tipo de información</strong> va a contener cada campo. Además de definir el contenido, crean <strong>reservas de espacio</strong> en memoria y establecen <strong>restricciones</strong> para evitar errores de conversión.</p>
+            </div>
+            
+            <div class="section">
+                <h2><span class="icon">📊</span>Tipos de Datos de Fecha y Hora</h2>
+                <div class="data-types">
+                    <div class="data-type">
+                        <div class="data-type-name">DATE</div>
+                        <p>Año, mes y día</p>
+                        <small>YYYY-MM-DD</small>
+                    </div>
+                    <div class="data-type">
+                        <div class="data-type-name">TIME</div>
+                        <p>Horas, minutos y segundos</p>
+                        <small>HH24:MI:SS</small>
+                    </div>
+                    <div class="data-type">
+                        <div class="data-type-name">SECONDDATE</div>
+                        <p>Fecha + hora completa</p>
+                        <small>YYYY-MM-DD HH24:MI:SS</small>
+                    </div>
+                    <div class="data-type">
+                        <div class="data-type-name">TIMESTAMP</div>
+                        <p>Fecha + hora + fracciones</p>
+                        <small>YYYY-MM-DD HH24:MI:SS.FFFFFFF</small>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="section">
+                <h2><span class="icon">📝</span>Formatos de Inserción - DATE</h2>
+                <p>Para insertar fechas, podemos usar varios formatos directamente:</p>
+                
+                <div class="format-list">
+                    <div class="format-item">
+                        <strong>Estándar:</strong><br>
+                        '2024-12-29'
+                    </div>
+                    <div class="format-item">
+                        <strong>Con barras:</strong><br>
+                        '2024/12/29'
+                    </div>
+                    <div class="format-item">
+                        <strong>Mixto:</strong><br>
+                        '2024-12/29'
+                    </div>
+                    <div class="format-item">
+                        <strong>SAP (8 dígitos):</strong><br>
+                        '20241229'
+                    </div>
+                </div>
+                
+                <div class="example-box">
+                    <strong>Ejemplo:</strong><br>
+                    INSERT INTO tabla VALUES ('2024-12-29')<br>
+                    INSERT INTO tabla VALUES ('20241229')
+                </div>
+            </div>
+            
+            <div class="section">
+                <h2><span class="icon">🔄</span>Función TO_DATE</h2>
+                <p>Para formatos personalizados, utilizamos la función de conversión:</p>
+                
+                <div class="syntax-box">
+                    <span class="syntax-highlight">TO_DATE</span>('fecha_string', 'máscara')
+                </div>
+                
+                <div class="format-list">
+                    <div class="format-item">
+                        <strong>YYYY:</strong> 4 cifras del año<br>
+                        <strong>MM:</strong> 2 cifras del mes<br>
+                        <strong>DD:</strong> 2 cifras del día
+                    </div>
+                    <div class="format-item">
+                        <strong>MONTH:</strong> Nombre completo del mes<br>
+                        <strong>MON:</strong> 3 primeras letras del mes<br>
+                        <strong>RM:</strong> Mes en números romanos
+                    </div>
+                    <div class="format-item">
+                        <strong>DDD:</strong> Día del año (1-365)<br>
+                        <strong>Q:</strong> Trimestre del año<br>
+                        <strong>WW:</strong> Semana del año
+                    </div>
+                </div>
+                
+                <div class="example-box">
+                    <strong>Ejemplos:</strong><br>
+                    TO_DATE('1950-Jun-05', 'YYYY-MON-DD')<br>
+                    TO_DATE('1949-VI-05', 'YYYY-RM-DD')<br>
+                    TO_DATE('1947-205', 'YYYY-DDD')
+                </div>
+            </div>
+            
+            <div class="section">
+                <h2><span class="icon">⏰</span>Tipo TIME y función TO_TIME</h2>
+                <p>Para datos de hora, disponemos de varios formatos:</p>
+                
+                <div class="format-list">
+                    <div class="format-item">
+                        <strong>HH24:</strong> Formato 24 horas<br>
+                        <strong>HH12:</strong> Formato 12 horas<br>
+                        <strong>HH:</strong> Ambos formatos
+                    </div>
+                    <div class="format-item">
+                        <strong>MI:</strong> Minutos<br>
+                        <strong>SS:</strong> Segundos<br>
+                        <strong>AM/PM:</strong> Indicador horario
+                    </div>
+                </div>
+                
+                <div class="syntax-box">
+                    <span class="syntax-highlight">TO_TIME</span>('09:05:07 AM', 'HH12:MI:SS AM')
+                </div>
+            </div>
+            
+            <div class="section">
+                <h2><span class="icon">🕐</span>Funciones del Sistema</h2>
+                <div class="functions-grid">
+                    <div class="function-card">
+                        <div class="function-name">CURRENT_DATE</div>
+                        <p>Fecha actual</p>
+                    </div>
+                    <div class="function-card">
+                        <div class="function-name">CURRENT_TIME</div>
+                        <p>Hora actual</p>
+                    </div>
+                    <div class="function-card">
+                        <div class="function-name">CURRENT_TIMESTAMP</div>
+                        <p>Fecha y hora actual</p>
+                    </div>
+                </div>
+                
+                <div class="example-box">
+                    <strong>Uso:</strong><br>
+                    SELECT CURRENT_DATE FROM DUMMY<br>
+                    SELECT CURRENT_TIMESTAMP FROM DUMMY
+                </div>
+            </div>
+            
+            <div class="section">
+                <h2><span class="icon">🎨</span>Formateo de Salida - TO_CHAR</h2>
+                <p>Para mostrar fechas con formato personalizado:</p>
+                
+                <div class="syntax-box">
+                    SELECT <span class="syntax-highlight">TO_CHAR</span>(CURRENT_TIMESTAMP, 'máscara') FROM DUMMY
+                </div>
+                
+                <div class="format-list">
+                    <div class="format-item">
+                        <strong>'D':</strong> Número del día de la semana<br>
+                        <strong>'DAY':</strong> Nombre completo del día<br>
+                        <strong>'DY':</strong> 3 primeras letras del día
+                    </div>
+                    <div class="format-item">
+                        <strong>'Q':</strong> Trimestre (1-4)<br>
+                        <strong>'W':</strong> Semana del mes<br>
+                        <strong>'WW':</strong> Semana del año
+                    </div>
+                </div>
+            </div>
+            
+            <div class="section">
+                <h2><span class="icon">📋</span>Rangos de Datos</h2>
+                <div class="tip-box">
+                    <strong>Rangos disponibles:</strong><br>
+                    • <strong>DATE/TIME:</strong> Año 1 al 9999<br>
+                    • <strong>SECONDDATE:</strong> Precisión hasta segundos<br>
+                    • <strong>TIMESTAMP:</strong> Hasta 7 dígitos de fracción (FFN)
+                </div>
+                
+                <p>El tipo <strong>TIMESTAMP</strong> permite definir la precisión de fracciones de segundo con FFN, donde N es el número de dígitos decimales deseados.</p>
+            </div>
+            
+            <div class="section">
+                <h2><span class="icon">📚</span>Próximos Temas</h2>
+                <p>En las siguientes clases continuaremos con:</p>
+                <ul style="margin: 15px 0; padding-left: 20px;">
+                    <li><strong>Tipos numéricos</strong> (INTEGER, DECIMAL, FLOAT)</li>
+                    <li><strong>Tipos de texto</strong> (VARCHAR, NVARCHAR, CLOB)</li>
+                    <li><strong>Tipos especiales</strong> y otros tipos de datos</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
