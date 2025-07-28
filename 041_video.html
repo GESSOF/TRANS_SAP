@@ -1,0 +1,1534 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Curso SAP HANA - Valores NULL</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .header h1 {
+            color: #2c3e50;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header p {
+            color: #666;
+            font-size: 1.2em;
+        }
+
+        .dashboard {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .sidebar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            height: fit-content;
+            position: sticky;
+            top: 20px;
+        }
+
+        .sidebar h3 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #667eea;
+        }
+
+        .nav-item {
+            padding: 12px 20px;
+            margin: 5px 0;
+            background: linear-gradient(45deg, #f8f9fa, #e9ecef);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-left: 4px solid transparent;
+            font-size: 0.9em;
+        }
+
+        .nav-item:hover {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            transform: translateX(10px);
+            border-left-color: #fff;
+        }
+
+        .nav-item.active {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border-left-color: #fff;
+        }
+
+        .mobile-menu-toggle {
+            display: none;
+            background: rgba(255, 255, 255, 0.95);
+            border: none;
+            padding: 15px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            font-size: 1.2em;
+            cursor: pointer;
+            width: 100%;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .content {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .section {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .section h2 {
+            color: #2c3e50;
+            font-size: 2em;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #667eea;
+        }
+
+        .concept-card {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-radius: 15px;
+            padding: 25px;
+            margin: 20px 0;
+            border-left: 5px solid #667eea;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease;
+        }
+
+        .concept-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .concept-card h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 1.4em;
+        }
+
+        .concept-card p {
+            line-height: 1.8;
+            color: #555;
+            margin-bottom: 15px;
+        }
+
+        .concept-card ul {
+            margin-left: 20px;
+            margin-top: 10px;
+        }
+
+        .concept-card li {
+            margin: 8px 0;
+            color: #555;
+        }
+
+        .definition-box {
+            background: linear-gradient(135deg, #fff3cd, #ffeaa7);
+            border-radius: 15px;
+            padding: 25px;
+            margin: 20px 0;
+            border-left: 5px solid #f39c12;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        .definition-box h3 {
+            color: #856404;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        .definition-box p {
+            color: #856404;
+            line-height: 1.8;
+            margin-bottom: 10px;
+        }
+
+        .example-box {
+            background: linear-gradient(135deg, #e8f5e8, #d4edda);
+            border-radius: 15px;
+            padding: 25px;
+            margin: 20px 0;
+            border-left: 5px solid #27ae60;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        .example-box h3 {
+            color: #155724;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        .example-box p {
+            color: #155724;
+            line-height: 1.8;
+            margin-bottom: 10px;
+        }
+
+        .example-box ul {
+            margin-left: 20px;
+            margin-top: 10px;
+        }
+
+        .example-box li {
+            margin: 8px 0;
+            color: #155724;
+        }
+
+        .warning-box {
+            background: linear-gradient(135deg, #ffebee, #ffcdd2);
+            border-radius: 15px;
+            padding: 25px;
+            margin: 20px 0;
+            border-left: 5px solid #d32f2f;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        .warning-box h3 {
+            color: #b71c1c;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        .warning-box p {
+            color: #b71c1c;
+            line-height: 1.8;
+            margin-bottom: 10px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: scale(1.05);
+        }
+
+        .stat-card.null {
+            background: linear-gradient(135deg, #95a5a6, #7f8c8d);
+        }
+
+        .stat-number {
+            font-size: 2.5em;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .progress-bar {
+            background: #e9ecef;
+            border-radius: 10px;
+            padding: 3px;
+            margin: 20px 0;
+        }
+
+        .progress {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            height: 20px;
+            border-radius: 8px;
+            transition: width 0.5s ease;
+        }
+
+        .code-example {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 20px;
+            border-radius: 10px;
+            font-family: 'Courier New', monospace;
+            margin: 20px 0;
+            overflow-x: auto;
+        }
+
+        .code-example .keyword {
+            color: #63b3ed;
+        }
+
+        .code-example .comment {
+            color: #68d391;
+        }
+
+        .code-example .string {
+            color: #fbb6ce;
+        }
+
+        .code-example .null-value {
+            color: #9f7aea;
+            background: rgba(159, 122, 234, 0.3);
+            padding: 2px 4px;
+            border-radius: 3px;
+            font-weight: bold;
+        }
+
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .comparison-card {
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            border-radius: 15px;
+            padding: 25px;
+            border-left: 5px solid #667eea;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        .comparison-card.null {
+            border-left-color: #95a5a6;
+            background: linear-gradient(135deg, #ecf0f1, #bdc3c7);
+        }
+
+        .comparison-card h4 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        .comparison-card.null h4 {
+            color: #2c3e50;
+        }
+
+        .table-display {
+            background: white;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 10px 0;
+            font-family: 'Courier New', monospace;
+            border: 1px solid #ddd;
+        }
+
+        .null-steps {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .step-card {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+
+        .step-card:hover {
+            transform: scale(1.05);
+        }
+
+        .step-card.null {
+            background: linear-gradient(135deg, #95a5a6, #7f8c8d);
+        }
+
+        .step-number {
+            font-size: 2em;
+            font-weight: bold;
+            margin-bottom: 10px;
+            background: rgba(255, 255, 255, 0.2);
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 15px;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+
+            .header {
+                padding: 20px;
+                margin-bottom: 20px;
+            }
+
+            .header h1 {
+                font-size: 1.8em;
+            }
+
+            .dashboard {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .sidebar {
+                position: static;
+                padding: 20px;
+                order: 2;
+            }
+
+            .mobile-menu-toggle {
+                display: block;
+                order: 1;
+            }
+
+            .sidebar.mobile-hidden {
+                display: none;
+            }
+
+            .content {
+                padding: 20px;
+                order: 3;
+            }
+
+            .section h2 {
+                font-size: 1.5em;
+            }
+
+            .concept-card, .definition-box, .example-box {
+                padding: 20px;
+                margin: 15px 0;
+            }
+
+            .stats-grid, .null-steps {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+
+            .comparison-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .nav-item {
+                padding: 15px 20px;
+                font-size: 1em;
+                text-align: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .header h1 {
+                font-size: 1.5em;
+            }
+
+            .content {
+                padding: 15px;
+            }
+
+            .concept-card, .definition-box, .example-box {
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <img src="https://gessof.cl/wp-content/uploads/2025/05/Logo-minimalista-con-simbolismo-global.png" alt="Gessof Logo" style="height: 80px; margin-bottom: 20px; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.1));">
+            <h1>Curso SAP HANA</h1>
+            <h2 style="color: #667eea; font-size: 1.5em; margin: 10px 0; font-weight: 600;">Clase 041</h2>
+            <p>Valores NULL - Ausencia de Datos</p>
+            <div class="progress-bar">
+                <div class="progress" style="width: 100%"></div>
+            </div>
+        </header>
+
+        <div class="dashboard">
+            <button class="mobile-menu-toggle" onclick="toggleMobileMenu()">
+                📋 Menú de Contenidos
+            </button>
+
+            <nav class="sidebar" id="sidebar">
+                <h3>Contenidos del Módulo</h3>
+                <div class="nav-item active" onclick="showSection('overview')">📋 Resumen General</div>
+                <div class="nav-item" onclick="showSection('introduction')">🚀 Introducción</div>
+                <div class="nav-item" onclick="showSection('definition')">📖 ¿Qué es NULL?</div>
+                <div class="nav-item" onclick="showSection('vs-empty')">🆚 NULL vs Cadena Vacía</div>
+                <div class="nav-item" onclick="showSection('inserting')">➕ Insertar Valores NULL</div>
+                <div class="nav-item" onclick="showSection('querying')">🔍 Consultar Valores NULL</div>
+                <div class="nav-item" onclick="showSection('common-errors')">⚠️ Errores Comunes</div>
+                <div class="nav-item" onclick="showSection('best-practices')">✅ Buenas Prácticas</div>
+                <div class="nav-item" onclick="showSection('conclusions')">🎯 Conclusiones</div>
+            </nav>
+
+            <main class="content">
+                <section id="overview" class="section active">
+                    <h2>📋 Resumen General del Módulo</h2>
+                    
+                    <div class="stats-grid">
+                        <div class="stat-card null">
+                            <div class="stat-number">∅</div>
+                            <div>Ausencia de Valor</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number">≠</div>
+                            <div>No es Cadena Vacía</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number">2</div>
+                            <div>Operadores Especiales</div>
+                        </div>
+                    </div>
+
+                    <div class="definition-box">
+                        <h3>💡 Concepto Fundamental</h3>
+                        <p><strong>NULL representa la ausencia de valor en un campo de base de datos.</strong> No es un valor en sí mismo, sino un estado que indica que no hay información disponible para ese campo específico.</p>
+                    </div>
+
+                    <div class="concept-card">
+                        <h3>🎯 Objetivos del Módulo</h3>
+                        <p>En esta clase aprenderemos sobre los <strong>valores NULL</strong>, uno de los conceptos más importantes y a menudo confusos en bases de datos. Entenderemos su naturaleza, cómo trabajar con ellos y evitar los errores más comunes.</p>
+                    </div>
+
+                    <div class="null-steps">
+                        <div class="step-card null">
+                            <div class="step-number">∅</div>
+                            <h4>Estado NULL</h4>
+                            <p>Ausencia total de valor</p>
+                        </div>
+                        <div class="step-card">
+                            <div class="step-number">''</div>
+                            <h4>Cadena Vacía</h4>
+                            <p>Valor existente pero vacío</p>
+                        </div>
+                        <div class="step-card">
+                            <div class="step-number">?</div>
+                            <h4>IS NULL</h4>
+                            <p>Operador de consulta</p>
+                        </div>
+                    </div>
+
+                    <div class="concept-card">
+                        <h3>📚 Contenido del Módulo</h3>
+                        <ul>
+                            <li><strong>Definición de NULL:</strong> Estado vs valor, ausencia de información</li>
+                            <li><strong>Diferencia crítica:</strong> NULL vs cadena vacía ('')</li>
+                            <li><strong>Inserción de NULL:</strong> Palabra clave NULL sin comillas</li>
+                            <li><strong>Consultas con NULL:</strong> IS NULL e IS NOT NULL</li>
+                            <li><strong>Errores comunes:</strong> Confundir NULL con cadenas de texto</li>
+                            <li><strong>Visualización:</strong> Cómo aparece NULL en los resultados</li>
+                        </ul>
+                    </div>
+
+                    <div class="warning-box">
+                        <h3>⚠️ Confusión Común</h3>
+                        <p>Muchas personas confunden NULL con una cadena vacía ('') porque ambos pueden aparecer en blanco en los resultados. Sin embargo, son conceptualmente muy diferentes y se comportan de manera distinta en las consultas.</p>
+                    </div>
+                </section>
+
+                <section id="introduction" class="section">
+                    <h2>🚀 Introducción</h2>
+                    
+                    <div class="concept-card">
+                        <h3>🎯 Importancia de NULL en Bases de Datos</h3>
+                        <p>Los valores NULL son fundamentales en el mundo real de las bases de datos. Representan situaciones donde <strong>no tenemos información</strong> sobre un campo específico, lo cual es muy común en aplicaciones reales.</p>
+                    </div>
+
+                    <div class="concept-card">
+                        <h3>🌍 Escenarios Reales donde NULL es Necesario</h3>
+                        <ul>
+                            <li><strong>Información opcional:</strong> Segundo apellido, teléfono móvil</li>
+                            <li><strong>Datos pendientes:</strong> Fecha de baja de un empleado activo</li>
+                            <li><strong>Información desconocida:</strong> Fecha de nacimiento no proporcionada</li>
+                            <li><strong>Campos calculados:</strong> Promedio de notas sin exámenes todavía</li>
+                            <li><strong>Estados futuros:</strong> Fecha de entrega de un pedido en proceso</li>
+                        </ul>
+                    </div>
+
+                    <div class="example-box">
+                        <h3>📊 Ejemplo de Tabla con NULLs</h3>
+                        <p>Imagina una tabla de empleados donde algunos campos pueden estar vacíos:</p>
+                        <div class="table-display">
+id | nombre    | apellido2 | telefono_movil | fecha_baja
+1  | Juan      | García    | 666123456      | NULL
+2  | María     | NULL      | NULL           | NULL  
+3  | Pedro     | López     | 677654321      | 2024-01-15
+                        </div>
+                    </example-box>
+
+                    <div class="definition-box">
+                        <h3>🔑 Diferencia Filosófica</h3>
+                        <p><strong>NULL = "No lo sé"</strong> vs <strong>Cadena vacía = "Sé que está vacío"</strong>. Esta diferencia conceptual es crucial para el diseño correcto de bases de datos.</p>
+                    </div>
+
+                    <div class="concept-card">
+                        <h3>🛠️ Preparación para los Ejemplos</h3>
+                        <p>Vamos a crear una tabla de prueba para demostrar el comportamiento de NULL de manera práctica:</p>
+                    </div>
+
+                    <div class="code-example">
+<span class="comment">-- Crear tabla para probar valores NULL</span>
+<span class="keyword">CREATE COLUMN TABLE</span> valores_nulos (
+    valor1 <span class="keyword">VARCHAR</span>(20),
+    valor2 <span class="keyword">VARCHAR</span>(20)
+);
+                    </div>
+
+                    <div class="concept-card">
+                        <h3>🔍 Lo que Veremos</h3>
+                        <p>A través de ejemplos prácticos, exploraremos:</p>
+                        <ul>
+                            <li>Cómo insertar diferentes tipos de "valores vacíos"</li>
+                            <li>Por qué NULL y cadena vacía se comportan diferente</li>
+                            <li>Los operadores especiales para trabajar con NULL</li>
+                            <li>Errores típicos que cometen los principiantes</li>
+                        </ul>
+                    </div>
+                </section>
+
+                <section id="definition" class="section">
+                    <h2>📖 ¿Qué es NULL?</h2>
+                    
+                    <div class="definition-box">
+                        <h3>💭 Definición Conceptual</h3>
+                        <p><strong>NULL representa un estado en la columna que identifica una ausencia de valor en dicho campo.</strong> Más que un valor, podríamos estar hablando de un estado del campo en concreto.</p>
+                    </definition-box>
+
+                    <div class="concept-card">
+                        <h3>🧠 NULL: Estado vs Valor</h3>
+                        <p>La clave para entender NULL es comprender que <strong>no es realmente un valor</strong>, sino la representación de una ausencia de valor. Es un concepto abstracto que indica "aquí no hay información".</p>
+                    </div>
+
+                    <div class="comparison-grid">
+                        <div class="comparison-card">
+                            <h4>✅ Es un Valor</h4>
+                            <ul>
+                                <li><strong>Número 0:</strong> Valor numérico definido</li>
+                                <li><strong>Cadena '':</strong> Cadena de texto vacía</li>
+                                <li><strong>Espacio ' ':</strong> Carácter de espacio</li>
+                                <li><strong>Fecha 1900-01-01:</strong> Fecha por defecto</li>
+                            </ul>
+                        </div>
+                        <div class="comparison-card null">
+                            <h4>∅ NULL - No es un Valor</h4>
+                            <ul>
+                                <li><strong>Ausencia:</strong> No hay ningún dato</li>
+                                <li><strong>Desconocido:</strong> Información no disponible</li>
+                                <li><strong>No aplicable:</strong> El campo no tiene sentido</li>
+                                <li><strong>Pendiente:</strong> Valor a determinar después</li>
+                            </ul>
+                        </div>
+                    </comparison-grid>
+
+                    <div class="concept-card">
+                        <h3>🎭 La Naturaleza Abstracta de NULL</h3>
+                        <p>NULL es como un concepto filosófico en bases de datos:</p>
+                        <ul>
+                            <li><strong>No ocupa espacio real:</strong> (técnicamente se optimiza)</li>
+                            <li><strong>No tiene tipo de datos:</strong> Puede estar en cualquier columna</li>
+                            <li><strong>No es comparable:</strong> NULL no es igual a NULL</li>
+                            <li><strong>Se propaga:</strong> Cualquier operación con NULL resulta en NULL</li>
+                        </ul>
+                    </concept-card>
+
+                    <div class="example-box">
+                        <h3>🌟 Ejemplos de Situaciones NULL</h3>
+                        <ul>
+                            <li><strong>Segundo apellido:</strong> Persona que solo tiene un apellido</li>
+                            <li><strong>Fecha de divorcio:</strong> Persona que nunca se ha divorciado</li>
+                            <li><strong>Número de hijos:</strong> Información personal no proporcionada</li>
+                            <li><strong>Salario:</strong> Empleado que prefiere mantenerlo confidencial</li>
+                            <li><strong>Comentarios:</strong> Campo opcional no completado</li>
+                        </ul>
+                    </example-box>
+
+                    <div class="concept-card">
+                        <h3>⚡ Comportamiento Único de NULL</h3>
+                        <p>NULL tiene propiedades matemáticas y lógicas especiales:</p>
+                    </div>
+
+                    <div class="code-example">
+<span class="comment">-- Todas estas expresiones resultan en NULL</span>
+<span class="keyword">SELECT</span> 
+    <span class="null-value">NULL</span> + 5,           <span class="comment">-- NULL</span>
+    <span class="null-value">NULL</span> * 100,         <span class="comment">-- NULL</span>
+    <span class="null-value">NULL</span> = <span class="null-value">NULL</span>,        <span class="comment">-- NULL (no TRUE!)</span>
+    <span class="null-value">NULL</span> != <span class="null-value">NULL</span>,       <span class="comment">-- NULL (no FALSE!)</span>
+    CONCAT('Hola', <span class="null-value">NULL</span>)  <span class="comment">-- NULL</span>
+<span class="keyword">FROM</span> DUMMY;
+                    </code>
+
+                    <div class="warning-box">
+                        <h3>🚨 Regla de Propagación</h3>
+                        <p><strong>Cualquier operación aritmética, de comparación o de concatenación con NULL resulta en NULL.</strong> Esta es una regla fundamental que debe recordarse siempre.</p>
+                    </warning-box>
+
+                    <div class="definition-box">
+                        <h3>💡 Resumen del Concepto</h3>
+                        <p>NULL es la forma que tiene la base de datos de decir <strong>"Este campo no tiene información disponible"</strong>. Es diferente de cualquier valor que podamos asignar manualmente.</p>
+                    </definition-box>
+                </section>
+
+                <section id="vs-empty" class="section">
+                    <h2>🆚 NULL vs Cadena Vacía</h2>
+                    
+                    <div class="concept-card">
+                        <h3>🔍 La Confusión Visual</h3>
+                        <p>Esta es la fuente de confusión más común: <strong>tanto NULL como una cadena vacía pueden aparecer en blanco</strong> en los resultados de una consulta, pero son conceptualmente muy diferentes.</p>
+                    </div>
+
+                    <div class="example-box">
+                        <h3>🧪 Demostración Práctica</h3>
+                        <p>Vamos a insertar ambos tipos de "valores vacíos" para ver la diferencia:</p>
+                    </div>
+
+                    <div class="code-example">
+<span class="comment">-- Insertar un registro con cadena vacía</span>
+<span class="keyword">INSERT INTO</span> valores_nulos <span class="keyword">VALUES</span> (<span class="string">'1'</span>, <span class="string">''</span>);
+
+<span class="comment">-- Ver el resultado</span>
+<span class="keyword">SELECT</span> * <span class="keyword">FROM</span> valores_nulos;
+                    </code>
+
+                    <div class="concept-card">
+                        <h3>👁️ Lo que Vemos</h3>
+                        <div class="table-display">
+valor1 | valor2
+   1   |        ← Parece vacío, pero NO es NULL
+                        </div>
+                        <p>El campo valor2 aparece en blanco, lo que podría hacer pensar que es NULL, ¡pero no lo es!</p>
+                    </div>
+
+                    <div class="example-box">
+                        <h3>🔬 Prueba de la Diferencia</h3>
+                        <p>Ahora vamos a demostrar que ese campo "vacío" NO es NULL:</p>
+                    </div>
+
+                    <div class="code-example">
+<span class="comment">-- Intentar encontrar campos NULL</span>
+<span class="keyword">SELECT</span> * <span class="keyword">FROM</span> valores_nulos 
+<span class="keyword">WHERE</span> valor2 <span class="keyword">IS NULL</span>;
+
+<span class="comment">-- Resultado: No devuelve ningún registro</span>
+<span class="comment">-- ¡Porque valor2 NO es NULL!</span>
+                    </code>
+
+                    <div class="code-example">
+<span class="comment">-- Buscar cadena vacía específicamente</span>
+<span class="keyword">SELECT</span> * <span class="keyword">FROM</span> valores_nulos 
+<span class="keyword">WHERE</span> valor2 = <span class="string">''</span>;
+
+<span class="comment">-- Ahora SÍ devuelve el registro</span>
+<span class="comment">-- Porque valor2 ES una cadena vacía</span>
+                    </code>
+
+                    <div class="comparison-grid">
+                        <div class="comparison-card">
+                            <h4>📝 Cadena Vacía ('')</h4>
+                            <ul>
+                                <li><strong>Es un valor:</strong> Cadena de longitud cero</li>
+                                <li><strong>Ocupa espacio:</strong> Mínimo para el tipo</li>
+                                <li><strong>Se puede comparar:</strong> '' = '' es TRUE</li>
+                                <li><strong>Definido explícitamente:</strong> Alguien lo puso así</li>
+                                <li><strong>Significado:</strong> "Está vacío a propósito"</li>
+                            </ul>
+                        </div>
+                        <div class="comparison-card null">
+                            <h4>∅ NULL</h4>
+                            <ul>
+                                <li><strong>No es un valor:</strong> Ausencia de información</li>
+                                <li><strong>Optimizado:</strong> No ocupa espacio real</li>
+                                <li><strong>No comparable:</strong> NULL = NULL es NULL</li>
+                                <li><strong>Por defecto o explícito:</strong> Campo sin asignar</li>
+                                <li><strong>Significado:</strong> "No hay información"</li>
+                            </ul>
+                        </div>
+                    </comparison-grid>
+
+                    <div class="concept-card">
+                        <h3>🧠 Interpretación de la Base de Datos</h3>
+                        <p>La base de datos interpreta una cadena vacía ('') <strong>como un valor válido</strong>, no como la ausencia de valor. Es importante entender esta distinción:</p>
+                    </concept-card>
+
+                    <div class="example-box">
+                        <h3>🌟 Casos de Uso Reales</h3>
+                    </div>
+
+                    <div class="comparison-grid">
+                        <div class="comparison-card">
+                            <h4>📝 Usar Cadena Vacía Cuando:</h4>
+                            <ul>
+                                <li>El usuario borró el contenido intencionalmente</li>
+                                <li>El campo debe estar "limpio" pero no NULL</li>
+                                <li>Compatibilidad con sistemas que no manejan NULL</li>
+                                <li>Formularios donde "vacío" es una opción válida</li>
+                            </ul>
+                        </div>
+                        <div class="comparison-card null">
+                            <h4>∅ Usar NULL Cuando:</h4>
+                            <ul>
+                                <li>La información no está disponible</li>
+                                <li>El campo es opcional y no se proporcionó</li>
+                                <li>El valor se determinará más adelante</li>
+                                <li>El concepto no aplica para este registro</li>
+                            </ul>
+                        </div>
+                    </comparison-grid>
+
+                    <div class="warning-box">
+                        <h3>⚠️ Error Común</h3>
+                        <p>No asumas que un campo que "se ve vacío" es NULL. Siempre verifica con <strong>IS NULL</strong> vs comparación con cadena vacía para estar seguro del tipo de "vacío" que tienes.</p>
+                    </warning-box>
+                </section>
+
+                <section id="inserting" class="section">
+                    <h2>➕ Insertar Valores NULL</h2>
+                    
+                    <div class="concept-card">
+                        <h3>🎯 Métodos para Insertar NULL</h3>
+                        <p>Existen varias formas de insertar valores NULL en una tabla. La más explícita y clara es usar la <strong>palabra clave NULL</strong> sin comillas.</p>
+                    </div>
+
+                    <div class="example-box">
+                        <h3>✅ Método Explícito - Palabra Clave NULL</h3>
+                        <p>La forma más clara y recomendada:</p>
+                    </div>
+
+                    <div class="code-example">
+<span class="comment">-- Insertar NULL explícitamente</span>
+<span class="keyword">INSERT INTO</span> valores_nulos <span class="keyword">VALUES</span> (<span class="string">'2'</span>, <span class="null-value">NULL</span>);
+
+<span class="comment">-- Insertar múltiples registros con NULL</span>
+<span class="keyword">INSERT INTO</span> valores_nulos <span class="keyword">VALUES</span> (<span class="string">'3'</span>, <span class="null-value">NULL</span>);
+                    </code>
+
+                    <div class="example-box">
+                        <h3>✅ Método Implícito - Omitir Columnas</h3>
+                        <p>Si omites una columna en el INSERT, automáticamente se asigna NULL (si la columna lo permite):</p>
+                    </div>
+
+                    <div class="code-example">
+<span class="comment">-- Solo especificar las columnas que queremos llenar</span>
+<span class="keyword">INSERT INTO</span> valores_nulos (valor1) <span class="keyword">VALUES</span> (<span class="string">'4'</span>);
+
+<span class="comment">-- valor2 automáticamente será NULL</span>
+                    </code>
+
+                    <div class="concept-card">
+                        <h3>🔍 Verificar los Resultados</h3>
+                        <p>Ahora veamos todos los registros que hemos insertado:</p>
+                    </div>
+
+                    <div class="code-example">
+<span class="comment">-- Ver todos los registros</span>
+<span class="keyword">SELECT</span> * <span class="keyword">FROM</span> valores_nulos;
+                    </code>
+
+                    <div class="concept-card">
+                        <h3>📊 Estado Actual de la Tabla</h3>
+                        <div class="table-display">
+valor1 | valor2
+   1   |        ← Cadena vacía
+   2   | NULL   ← NULL real
+   3   | NULL   ← NULL real  
+   4   | NULL   ← NULL por omisión
+                        </div>
+                    </concept-card>
+
+                    <div class="example-box">
+                        <h3>🧪 Verificar la Diferencia</h3>
+                        <p>Ahora podemos ver claramente la diferencia usando filtros:</p>
+                    </div>
+
+                    <div class="code-example">
+<span class="comment">-- Buscar registros con NULL</span>
+<span class="keyword">SELECT</span> * <span class="keyword">FROM</span> valores_nulos 
+<span class="keyword">WHERE</span> valor2 <span class="keyword">IS NULL</span>;
+
+<span class="comment">-- Resultado: registros 2, 3 y 4</span>
+                    </code>
+
+                    <div class="code-example">
+<span class="comment">-- Buscar registros con cadena vacía</span>
+<span class="keyword">SELECT</span> * <span class="keyword">FROM</span> valores_nulos 
+<span class="keyword">WHERE</span> valor2 = <span class="string">''</span>;
+
+<span class="comment">-- Resultado: solo el registro 1</span>
+                    </code>
+
+                    <div class="warning-box">
+                        <h3>🚨 ERROR CRÍTICO: NULL Entre Comillas</h3>
+                        <p><strong>NUNCA pongas NULL entre comillas.</strong> Si escribes 'NULL' estás insertando la palabra "NULL" como una cadena de texto, no el valor NULL.</p>
+                    </div>
+
+                    <div class="example-box">
+                        <h3>❌ Demostración del Error</h3>
+                        <p>Veamos qué pasa si ponemos NULL entre comillas:</p>
+                    </div>
+
+                    <div class="code-example">
+<span class="comment">-- ERROR: NULL como cadena de texto</span>
+<span class="keyword">INSERT INTO</span> valores_nulos <span class="keyword">VALUES</span> (<span class="string">'5'</span>, <span class="string">'NULL'</span>);
+
+<span class="comment">-- Ver el resultado</span>
+<span class="keyword">SELECT</span> * <span class="keyword">FROM</span> valores_nulos;
+                    </code>
+
+                    <div class="concept-card">
+                        <h3>😱 Resultado del Error</h3>
+                        <div class="table-display">
+valor1 | valor2
+   1   |        ← Cadena vacía
+   2   | NULL   ← NULL real
+   3   | NULL   ← NULL real  
+   4   | NULL   ← NULL por omisión
+   5   | NULL   ← ¡La palabra "NULL" como texto!
+                        </div>
+                        <p>Visualmente pueden parecer iguales, pero el registro 5 contiene la palabra "NULL" como texto.</p>
+                    </concept-card>
+
+                    <div class="code-example">
+<span class="comment">-- Demostrar que el registro 5 NO es NULL real</span>
+<span class="keyword">SELECT</span> * <span class="keyword">FROM</span> valores_nulos 
+<span class="keyword">WHERE</span> valor2 <span class="keyword">IS NULL</span>;
+
+<span class="comment">-- No incluye el registro 5</span>
+
+<span class="comment">-- Buscar la cadena 'NULL'</span>
+<span class="keyword">SELECT</span> * <span class="keyword">FROM</span> valores_nulos 
+<span class="keyword">WHERE</span> valor2 = <span class="string">'NULL'</span>;
+
+<span class="comment">-- Ahora SÍ devuelve el registro 5</span>
+                    </code>
+
+                    <div class="definition-box">
+                        <h3>📝 Reglas para Insertar NULL</h3>
+                        <p><strong>Regla de Oro:</strong> Para insertar NULL, escribe la palabra <strong>NULL</strong> sin comillas ni delimitadores. Cualquier otra forma creará valores de texto, no NULL real.</p>
+                    </definition-box>
+                </section>
+
+                <section id="querying" class="section">
+                    <h2>🔍 Consultar Valores NULL</h2>
+                    
+                    <div class="concept-card">
+                        <h3>🎯 Operadores Especiales para NULL</h3>
+                        <p>Los valores NULL requieren <strong>operadores especiales</strong> para ser consultados. Los operadores de comparación normales (=, !=, <, >) no funcionan con NULL.</p>
+                    </div>
+
+                    <div class="null-steps">
+                        <div class="step-card">
+                            <div class="step-number">?</div>
+                            <h4>IS NULL</h4>
+                            <p>Encuentra campos que son NULL</p>
+                        </div>
+                        <div class="step-card">
+                            <div class="step-number">!</div>
+                            <h4>IS NOT NULL</h4>
+                            <p>Encuentra campos que NO son NULL</p>
+                        </div>
+                    </null-steps>
+
+                    <div class="example-box">
+                        <h3>✅ Operador IS NULL</h3>
+                        <p>Para encontrar registros donde un campo es NULL:</p>
+                    </div>
+
+                    <div class="code-example">
+<span class="comment">-- Buscar todos los registros con valor2 NULL</span>
+<span class="keyword">SELECT</span> * <span class="keyword">FROM</span> valores_nulos 
+<span class="keyword">WHERE</span> valor2 <span class="keyword">IS NULL</span>;
+
+<span class="comment">-- Devuelve los registros 2, 3 y 4</span>
+                    </code>
+
+                    <div class="example-box">
+                        <h3>✅ Operador IS NOT NULL</h3>
+                        <p>Para encontrar registros donde un campo NO es NULL:</p>
+                    </div>
+
+                    <div class="code-example">
+<span class="comment">-- Buscar todos los registros con valor2 que NO sea NULL</span>
+<span class="keyword">SELECT</span> * <span class="keyword">FROM</span> valores_nulos 
+<span class="keyword">WHERE</span> valor2 <span class="keyword">IS NOT NULL</span>;
+
+<span class="comment">-- Devuelve los registros 1 y 5 (cadena vacía y 'NULL')</span>
+                    </code>
+
+                    <div class="warning-box">
+                        <h3>❌ Por Qué los Operadores Normales NO Funcionan</h3>
+                        <p>Estos intentos de consulta <strong>NO funcionarán</strong> como esperarías:</p>
+                    </warning-box>
+
+                    <div class="code-example">
+<span class="comment">-- ❌ INCORRECTO: Nunca encuentra NULL</span>
+<span class="keyword">SELECT</span> * <span class="keyword">FROM</span> valores_nulos 
+<span class="keyword">WHERE</span> valor2 = <span class="null-value">NULL</span>;
+
+<span class="comment">-- ❌ INCORRECTO: Tampoco funciona</span>
+<span class="keyword">SELECT</span> * <span class="keyword">FROM</span> valores_nulos 
+<span class="keyword">WHERE</span> valor2 != <span class="null-value">NULL</span>;
+
+<span class="comment">-- Ambas consultas devuelven 0 registros</span>
+<span class="comment">-- Porque NULL no es igual a nada, ni siquiera a sí mismo</span>
+                    </code>
+
+                    <div class="concept-card">
+                        <h3>🧠 ¿Por Qué NULL = NULL No Funciona?</h3>
+                        <p>En lógica de bases de datos, <strong>NULL representa "desconocido"</strong>. Si tienes dos valores desconocidos, no puedes afirmar que son iguales, porque no sabes qué contienen. Por eso:</p>
+                        <ul>
+                            <li><strong>NULL = NULL</strong> resulta en NULL (no TRUE)</li>
+                            <li><strong>NULL != NULL</strong> resulta en NULL (no FALSE)</li>
+                            <li><strong>Cualquier comparación con NULL</strong> resulta en NULL</li>
+                        </ul>
+                    </concept-card>
+
+                    <div class="example-box">
+                        <h3>🔍 Consultas Combinadas</h3>
+                        <p>Puedes combinar operadores NULL con otras condiciones:</p>
+                    </div>
+
+                    <div class="code-example">
+<span class="comment">-- Buscar registros específicos que sean NULL</span>
+<span class="keyword">SELECT</span> * <span class="keyword">FROM</span> valores_nulos 
+<span class="keyword">WHERE</span> valor1 = <span class="string">'2'</span> <span class="keyword">AND</span> valor2 <span class="keyword">IS NULL</span>;
+
+<span class="comment">-- Contar cuántos registros tienen NULL</span>
+<span class="keyword">SELECT COUNT</span>(*) <span class="keyword">FROM</span> valores_nulos 
+<span class="keyword">WHERE</span> valor2 <span class="keyword">IS NULL</span>;
+
+<span class="comment">-- Obtener registros que NO son NULL ni cadena vacía</span>
+<span class="keyword">SELECT</span> * <span class="keyword">FROM</span> valores_nulos 
+<span class="keyword">WHERE</span> valor2 <span class="keyword">IS NOT NULL</span> <span class="keyword">AND</span> valor2 != <span class="string">''</span>;
+                    </code>
+
+                    <div class="concept-card">
+                        <h3>📊 Resumen de Resultados</h3>
+                        <p>Con nuestra tabla de ejemplo:</p>
+                        <div class="table-display">
+Consulta                           | Registros Devueltos
+valor2 IS NULL                     | 2, 3, 4
+valor2 IS NOT NULL                 | 1, 5  
+valor2 = ''                        | 1
+valor2 = 'NULL'                    | 5
+valor2 = NULL                      | Ninguno (0 registros)
+                        </div>
+                    </concept-card>
+
+                    <div class="definition-box">
+                        <h3>🎯 Regla de Consulta NULL</h3>
+                        <p><strong>Para consultar NULL, SIEMPRE usa IS NULL o IS NOT NULL.</strong> Los operadores de comparación normales no funcionan con NULL y pueden dar resultados inesperados.</p>
+                    </definition-box>
+                </section>
+
+                <section id="common-errors" class="section">
+                    <h2>⚠️ Errores Comunes</h2>
+                    
+                    <div class="warning-box">
+                        <h3>🚨 Los 5 Errores Más Frecuentes con NULL</h3>
+                        <p>Estos errores son extremadamente comunes, especialmente entre desarrolladores que están aprendiendo a trabajar con bases de datos.</p>
+                    </warning-box>
+
+                    <div class="concept-card">
+                        <h3>❌ Error #1: Usar = NULL en lugar de IS NULL</h3>
+                        <p>El error más común de todos:</p>
+                    </concept-card>
+
+                    <div class="code-example">
+<span class="comment">-- ❌ INCORRECTO</span>
+<span class="keyword">SELECT</span> * <span class="keyword">FROM</span> tabla <span class="keyword">WHERE</span> campo = <span class="null-value">NULL</span>;
+
+<span class="comment">-- ✅ CORRECTO</span>
+<span class="keyword">SELECT</span> * <span class="keyword">FROM</span> tabla <span class="keyword">WHERE</span> campo <span class="keyword">IS NULL</span>;
+                    </code>
+
+                    <div class="concept-card">
+                        <h3>❌ Error #2: Poner NULL Entre Comillas</h3>
+                        <p>Insertar 'NULL' como texto en lugar de NULL real:</p>
+                    </concept-card>
+
+                    <div class="code-example">
+<span class="comment">-- ❌ INCORRECTO: Inserta la palabra "NULL"</span>
+<span class="keyword">INSERT INTO</span> tabla <span class="keyword">VALUES</span> (<span class="string">'NULL'</span>);
+
+<span class="comment">-- ✅ CORRECTO: Inserta NULL real</span>
+<span class="keyword">INSERT INTO</span> tabla <span class="keyword">VALUES</span> (<span class="null-value">NULL</span>);
+                    </code>
+
+                    <div class="concept-card">
+                        <h3>❌ Error #3: Confundir NULL con Cadena Vacía</h3>
+                        <p>Asumir que un campo que "se ve vacío" es NULL:</p>
+                    </concept-card>
+
+                    <div class="code-example">
+<span class="comment">-- Este campo podría ser '' o NULL</span>
+<span class="keyword">SELECT</span> * <span class="keyword">FROM</span> tabla <span class="keyword">WHERE</span> campo_vacio;
+
+<span class="comment">-- ✅ CORRECTO: Verificar específicamente</span>
+<span class="keyword">SELECT</span> * <span class="keyword">FROM</span> tabla <span class="keyword">WHERE</span> campo <span class="keyword">IS NULL</span>;
+<span class="keyword">SELECT</span> * <span class="keyword">FROM</span> tabla <span class="keyword">WHERE</span> campo = <span class="string">''</span>;
+                    </code>
+
+                    <div class="concept-card">
+                        <h3>❌ Error #4: No Considerar NULL en Operaciones</h3>
+                        <p>Olvidar que NULL se propaga en operaciones:</p>
+                    </concept-card>
+
+                    <div class="code-example">
+<span class="comment">-- Si 'precio' es NULL, el resultado será NULL</span>
+<span class="keyword">SELECT</span> precio * 1.21 <span class="keyword">AS</span> precio_con_iva <span class="keyword">FROM</span> productos;
+
+<span class="comment">-- ✅ MEJOR: Manejar NULL explícitamente</span>
+<span class="keyword">SELECT</span> 
+    <span class="keyword">CASE</span> 
+        <span class="keyword">WHEN</span> precio <span class="keyword">IS NULL THEN</span> 0 
+        <span class="keyword">ELSE</span> precio * 1.21 
+    <span class="keyword">END AS</span> precio_con_iva 
+<span class="keyword">FROM</span> productos;
+                    </code>
+
+                    <div class="concept-card">
+                        <h3>❌ Error #5: Usar != en lugar de IS NOT NULL</h3>
+                        <p>Intentar excluir NULL con operadores de desigualdad:</p>
+                    </concept-card>
+
+                    <div class="code-example">
+<span class="comment">-- ❌ INCORRECTO: No excluye NULL</span>
+<span class="keyword">SELECT</span> * <span class="keyword">FROM</span> tabla <span class="keyword">WHERE</span> campo != <span class="string">'valor'</span>;
+
+<span class="comment">-- Si campo es NULL, no aparecerá en el resultado</span>
+<span class="comment">-- porque NULL != 'valor' es NULL, no TRUE</span>
+
+<span class="comment">-- ✅ CORRECTO: Excluir NULL explícitamente si es necesario</span>
+<span class="keyword">SELECT</span> * <span class="keyword">FROM</span> tabla 
+<span class="keyword">WHERE</span> campo != <span class="string">'valor'</span> <span class="keyword">AND</span> campo <span class="keyword">IS NOT NULL</span>;
+                    </code>
+
+                    <div class="example-box">
+                        <h3>🔧 Herramientas de Depuración</h3>
+                        <p>Para identificar problemas con NULL:</p>
+                    </example-box>
+
+                    <div class="code-example">
+<span class="comment">-- Verificar tipos de "vacío" en una tabla</span>
+<span class="keyword">SELECT</span> 
+    <span class="keyword">COUNT</span>(*) <span class="keyword">AS</span> total_registros,
+    <span class="keyword">COUNT</span>(campo) <span class="keyword">AS</span> no_nulos,
+    <span class="keyword">SUM</span>(<span class="keyword">CASE WHEN</span> campo = <span class="string">'' THEN</span> 1 <span class="keyword">ELSE</span> 0 <span class="keyword">END</span>) <span class="keyword">AS</span> cadenas_vacias,
+    <span class="keyword">SUM</span>(<span class="keyword">CASE WHEN</span> campo <span class="keyword">IS NULL THEN</span> 1 <span class="keyword">ELSE</span> 0 <span class="keyword">END</span>) <span class="keyword">AS</span> nulos
+<span class="keyword">FROM</span> tabla;
+                    </code>
+
+                    <div class="warning-box">
+                        <h3>💡 Consejo para Evitar Errores</h3>
+                        <p><strong>SIEMPRE verifica con SELECT antes de asumir el tipo de "vacío".</strong> Usa IS NULL para buscar NULL reales e = '' para buscar cadenas vacías. No confíes solo en la apariencia visual.</p>
+                    </warning-box>
+
+                    <div class="concept-card">
+                        <h3>🎯 Checklist Anti-Errores</h3>
+                        <ul>
+                            <li>☑️ ¿Uso IS NULL en lugar de = NULL?</li>
+                            <li>☑️ ¿Escribo NULL sin comillas?</li>
+                            <li>☑️ ¿Distingo entre NULL y cadena vacía?</li>
+                            <li>☑️ ¿Considero NULL en mis operaciones?</li>
+                            <li>☑️ ¿Uso IS NOT NULL cuando excluyo NULL?</li>
+                        </ul>
+                    </concept-card>
+                </section>
+
+                <section id="best-practices" class="section">
+                    <h2>✅ Buenas Prácticas</h2>
+                    
+                    <div class="concept-card">
+                        <h3>🎯 Principios para Trabajar con NULL</h3>
+                        <p>Estas prácticas te ayudarán a manejar NULL de manera consistente y evitar problemas comunes en el desarrollo de aplicaciones de base de datos.</p>
+                    </div>
+
+                    <div class="example-box">
+                        <h3>✅ Práctica #1: Verificación Explícita</h3>
+                        <p>Siempre verifica explícitamente el estado de NULL:</p>
+                    </example-box>
+
+                    <div class="code-example">
+<span class="comment">-- ✅ BUENA PRÁCTICA: Verificar antes de consultar</span>
+<span class="keyword">SELECT</span> * <span class="keyword">FROM</span> tabla <span class="keyword">WHERE</span> campo <span class="keyword">IS NULL</span>;
+<span class="keyword">SELECT COUNT</span>(*) <span class="keyword">FROM</span> tabla <span class="keyword">WHERE</span> campo <span class="keyword">IS NULL</span>;
+
+<span class="comment">-- Así sabes exactamente qué esperar</span>
+                    </code>
+
+                    <div class="example-box">
+                        <h3>✅ Práctica #2: Documentar Campos NULL</h3>
+                        <p>En el diseño de tablas, documenta claramente qué campos pueden ser NULL:</p>
+                    </example-box>
+
+                    <div class="code-example">
+<span class="comment">-- ✅ BUENA PRÁCTICA: Comentar la intención</span>
+<span class="keyword">CREATE COLUMN TABLE</span> empleados (
+    id <span class="keyword">INTEGER</span> <span class="keyword">NOT NULL</span>,          <span class="comment">-- Obligatorio</span>
+    nombre <span class="keyword">VARCHAR</span>(50) <span class="keyword">NOT NULL</span>,   <span class="comment">-- Obligatorio</span>
+    apellido2 <span class="keyword">VARCHAR</span>(50),          <span class="comment">-- Opcional: puede ser NULL</span>
+    telefono_movil <span class="keyword">VARCHAR</span>(15),     <span class="comment">-- Opcional: puede ser NULL</span>
+    fecha_baja <span class="keyword">DATE</span>                 <span class="comment">-- NULL si empleado activo</span>
+);
+                    </code>
+
+                    <div class="example-box">
+                        <h3>✅ Práctica #3: Manejo Defensivo de NULL</h3>
+                        <p>En operaciones, maneja NULL explícitamente:</p>
+                    </example-box>
+
+                    <div class="code-example">
+<span class="comment">-- ✅ BUENA PRÁCTICA: Usar COALESCE para valores por defecto</span>
+<span class="keyword">SELECT</span> 
+    nombre,
+    COALESCE(apellido2, <span class="string">'Sin segundo apellido'</span>) <span class="keyword">AS</span> apellido2,
+    COALESCE(telefono_movil, <span class="string">'No proporcionado'</span>) <span class="keyword">AS</span> telefono
+<span class="keyword">FROM</span> empleados;
+
+<span class="comment">-- ✅ BUENA PRÁCTICA: Usar CASE para lógica compleja</span>
+<span class="keyword">SELECT</span> 
+    nombre,
+    <span class="keyword">CASE</span> 
+        <span class="keyword">WHEN</span> fecha_baja <span class="keyword">IS NULL THEN</span> <span class="string">'Activo'</span>
+        <span class="keyword">ELSE</span> <span class="string">'Inactivo'</span>
+    <span class="keyword">END AS</span> estado
+<span class="keyword">FROM</span> empleados;
+                    </code>
+
+                    <div class="example-box">
+                        <h3>✅ Práctica #4: Consistencia en la Aplicación</h3>
+                        <p>Mantén una política consistente sobre cuándo usar NULL vs otros valores:</p>
+                    </example-box>
+
+                    <div class="concept-card">
+                        <h3>📋 Política de NULL Recomendada</h3>
+                        <ul>
+                            <li><strong>NULL:</strong> Para información no disponible o no aplicable</li>
+                            <li><strong>Cadena vacía (''):</strong> Cuando el usuario intencionalmente dejó el campo vacío</li>
+                            <li><strong>Valor por defecto:</strong> Para campos que siempre deben tener un valor</li>
+                            <li><strong>Cero (0):</strong> Para cantidades numéricas que realmente son cero</li>
+                        </ul>
+                    </concept-card>
+
+                    <div class="example-box">
+                        <h3>✅ Práctica #5: Validación en Aplicaciones</h3>
+                        <p>En el código de aplicación, valida NULL antes de usar los datos:</p>
+                    </example-box>
+
+                    <div class="code-example">
+<span class="comment">-- ✅ BUENA PRÁCTICA: Filtrar NULL en consultas críticas</span>
+<span class="keyword">SELECT</span> 
+    nombre,
+    apellido2
+<span class="keyword">FROM</span> empleados 
+<span class="keyword">WHERE</span> apellido2 <span class="keyword">IS NOT NULL</span>
+<span class="keyword">AND</span> apellido2 != <span class="string">''</span>;
+
+<span class="comment">-- Solo obtienes registros con segundo apellido real</span>
+                    </code>
+
+                    <div class="example-box">
+                        <h3>✅ Práctica #6: Reportes y Estadísticas</h3>
+                        <p>En reportes, incluye estadísticas sobre NULL:</p>
+                    </example-box>
+
+                    <div class="code-example">
+<span class="comment">-- ✅ BUENA PRÁCTICA: Estadísticas completas de datos</span>
+<span class="keyword">SELECT</span> 
+    <span class="string">'Total empleados'</span> <span class="keyword">AS</span> concepto,
+    <span class="keyword">COUNT</span>(*) <span class="keyword">AS</span> cantidad
+<span class="keyword">FROM</span> empleados
+
+<span class="keyword">UNION ALL</span>
+
+<span class="keyword">SELECT</span> 
+    <span class="string">'Con teléfono móvil'</span>,
+    <span class="keyword">COUNT</span>(*) 
+<span class="keyword">FROM</span> empleados 
+<span class="keyword">WHERE</span> telefono_movil <span class="keyword">IS NOT NULL</span>
+
+<span class="keyword">UNION ALL</span>
+
+<span class="keyword">SELECT</span> 
+    <span class="string">'Sin teléfono móvil'</span>,
+    <span class="keyword">COUNT</span>(*) 
+<span class="keyword">FROM</span> empleados 
+<span class="keyword">WHERE</span> telefono_movil <span class="keyword">IS NULL</span>;
+                    </code>
+
+                    <div class="concept-card">
+                        <h3>🔍 Testing y Calidad de Datos</h3>
+                        <p>Incluye pruebas específicas para NULL en tus validaciones:</p>
+                    </concept-card>
+
+                    <div class="code-example">
+<span class="comment">-- ✅ BUENA PRÁCTICA: Queries de calidad de datos</span>
+<span class="keyword">SELECT</span> 
+    tabla_name,
+    columna_name,
+    null_count,
+    total_count,
+    (null_count * 100.0 / total_count) <span class="keyword">AS</span> porcentaje_null
+<span class="keyword">FROM</span> (
+    <span class="keyword">SELECT</span> 
+        <span class="string">'empleados'</span> <span class="keyword">AS</span> tabla_name,
+        <span class="string">'telefono_movil'</span> <span class="keyword">AS</span> columna_name,
+        <span class="keyword">SUM</span>(<span class="keyword">CASE WHEN</span> telefono_movil <span class="keyword">IS NULL THEN</span> 1 <span class="keyword">ELSE</span> 0 <span class="keyword">END</span>) <span class="keyword">AS</span> null_count,
+        <span class="keyword">COUNT</span>(*) <span class="keyword">AS</span> total_count
+    <span class="keyword">FROM</span> empleados
+) <span class="keyword">AS</span> stats;
+                    </code>
+
+                    <div class="definition-box">
+                        <h3>🎯 Resumen de Buenas Prácticas</h3>
+                        <p><strong>Trata NULL como un ciudadano de primera clase en tu diseño de base de datos.</strong> Planifica explícitamente cómo manejarlo, documéntalo claramente y valida su comportamiento en todas las operaciones.</p>
+                    </definition-box>
+                </section>
+
+                <section id="conclusions" class="section">
+                    <h2>🎯 Conclusiones</h2>
+                    
+                    <div class="concept-card">
+                        <h3>📋 Resumen del Concepto NULL</h3>
+                        <p>Hemos explorado uno de los conceptos más fundamentales y a menudo malentendidos en bases de datos: <strong>los valores NULL</strong>. Su correcta comprensión es esencial para cualquier desarrollador que trabaje con datos.</p>
+                    </div>
+
+                    <div class="null-steps">
+                        <div class="step-card null">
+                            <div class="step-number">∅</div>
+                            <h4>AUSENCIA</h4>
+                            <p>NULL representa "no hay valor"</p>
+                        </div>
+                        <div class="step-card">
+                            <div class="step-number">≠</div>
+                            <h4>DIFERENCIA</h4>
+                            <p>NULL ≠ Cadena vacía ≠ Cero</p>
+                        </div>
+                        <div class="step-card">
+                            <div class="step-number">?</div>
+                            <h4>CONSULTA</h4>
+                            <p>Solo IS NULL funciona</p>
+                        </div>
+                    </null-steps>
+
+                    <div class="concept-card">
+                        <h3>🔑 Conceptos Clave Dominados</h3>
+                        <ul>
+                            <li><strong>Naturaleza de NULL:</strong> Estado de ausencia, no un valor</li>
+                            <li><strong>Diferenciación crítica:</strong> NULL vs cadena vacía vs otros valores</li>
+                            <li><strong>Inserción correcta:</strong> Palabra NULL sin comillas</li>
+                            <li><strong>Consulta especializada:</strong> IS NULL e IS NOT NULL únicamente</li>
+                            <li><strong>Propagación:</strong> NULL contamina todas las operaciones</li>
+                            <li><strong>Visualización engañosa:</strong> NULL puede parecer vacío</li>
+                        </ul>
+                    </concept-card>
+
+                    <div class="comparison-grid">
+                        <div class="comparison-card">
+                            <h4>✅ Lo que SÍ Sabemos</h4>
+                            <ul>
+                                <li><strong>NULL:</strong> Ausencia de información</li>
+                                <li><strong>Operadores:</strong> IS NULL, IS NOT NULL</li>
+                                <li><strong>Inserción:</strong> NULL sin comillas</li>
+                                <li><strong>Comportamiento:</strong> Se propaga en operaciones</li>
+                            </ul>
+                        </div>
+                        <div class="comparison-card null">
+                            <h4>❌ Errores que Evitamos</h4>
+                            <ul>
+                                <li><strong>= NULL:</strong> No funciona para consultar</li>
+                                <li><strong>'NULL':</strong> Crea texto, no NULL real</li>
+                                <li><strong>Confusión visual:</strong> NULL vs cadena vacía</li>
+                                <li><strong>Operaciones:</strong> Olvidar que NULL se propaga</li>
+                            </ul>
+                        </div>
+                    </comparison-grid>
+
+                    <div class="definition-box">
+                        <h3>💡 Filosofía de NULL</h3>
+                        <p><strong>NULL es la forma honesta de la base de datos de admitir ignorancia.</strong> En lugar de inventar valores por defecto o asumir datos, NULL dice claramente "no tengo esta información".</p>
+                    </definition-box>
+
+                    <div class="concept-card">
+                        <h3>🚀 Impacto en el Desarrollo</h3>
+                        <p>Entender NULL correctamente te permite:</p>
+                        <ul>
+                            <li><strong>Diseñar mejores esquemas:</strong> Decidir conscientemente qué puede ser NULL</li>
+                            <li><strong>Escribir consultas robustas:</strong> Manejar todos los casos de datos</li>
+                            <li><strong>Evitar bugs sutiles:</strong> NULL puede romper lógica aparentemente simple</li>
+                            <li><strong>Crear reportes precisos:</strong> Distinguir entre "vacío" y "desconocido"</li>
+                            <li><strong>Validar datos efectivamente:</strong> Identificar información faltante</li>
+                        </ul>
+                    </concept-card>
+
+                    <div class="example-box">
+                        <h3>🎓 Preparación para Conceptos Avanzados</h3>
+                        <p>Con el dominio de NULL, estás preparado para:</p>
+                        <ul>
+                            <li><strong>JOINs con NULL:</strong> Comportamiento en combinaciones de tablas</li>
+                            <li><strong>Funciones de agregación:</strong> Cómo COUNT, SUM ignoran NULL</li>
+                            <li><strong>CASE y COALESCE:</strong> Manejo avanzado de valores NULL</li>
+                            <li><strong>Constraints:</strong> NOT NULL, CHECK con consideraciones de NULL</li>
+                            <li><strong>Índices:</strong> Cómo NULL afecta la indexación</li>
+                        </ul>
+                    </example-box>
+
+                    <div class="warning-box">
+                        <h3>⚠️ Recordatorio Crítico</h3>
+                        <p><strong>NULL no es ausencia de problemas, es ausencia de valor.</strong> Manéjalo con respeto y precisión, porque ignorarlo puede causar errores sutiles pero devastadores en aplicaciones de producción.</p>
+                    </warning-box>
+
+                    <div class="concept-card">
+                        <h3>📚 Mantra del Desarrollador NULL-Consciente</h3>
+                        <ul>
+                            <li>"¿Puede este campo ser NULL? ¿Debería serlo?"</li>
+                            <li>"¿He considerado NULL en esta consulta?"</li>
+                            <li>"¿Estoy usando IS NULL o = NULL?"</li>
+                            <li>"¿Qué pasa si este campo es NULL?"</li>
+                            <li>"¿Mi aplicación maneja NULL graciosamente?"</li>
+                        </ul>
+                    </concept-card>
+
+                    <div class="definition-box">
+                        <h3>🏆 Logro Desbloqueado</h3>
+                        <p><strong>Has dominado uno de los conceptos más importantes en bases de datos.</strong> NULL ya no será una fuente de confusión, sino una herramienta que usarás conscientemente para representar la ausencia de información de manera precisa y professional.</p>
+                    </definition-box>
+                </section>
+            </main>
+        </div>
+    </div>
+
+    <script>
+        function showSection(sectionId) {
+            // Ocultar todas las secciones
+            const sections = document.querySelectorAll('.section');
+            sections.forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            // Mostrar la sección seleccionada
+            document.getElementById(sectionId).classList.add('active');
+            
+            // Actualizar navegación
+            const navItems = document.querySelectorAll('.nav-item');
+            navItems.forEach(item => {
+                item.classList.remove('active');
+            });
+            
+            // Marcar el elemento activo
+            event.target.classList.add('active');
+            
+            // Scroll al inicio del contenido
+            document.querySelector('.content').scrollTop = 0;
+
+            // En móviles, ocultar el menú después de seleccionar
+            if (window.innerWidth <= 768) {
+                const sidebar = document.getElementById('sidebar');
+                sidebar.classList.add('mobile-hidden');
+                
+                const toggleButton = document.querySelector('.mobile-menu-toggle');
+                toggleButton.textContent = '📋 Menú de Contenidos';
+            }
+        }
+
+        function toggleMobileMenu() {
+            const sidebar = document.getElementById('sidebar');
+            const toggleButton = document.querySelector('.mobile-menu-toggle');
+            
+            if (sidebar.classList.contains('mobile-hidden')) {
+                sidebar.classList.remove('mobile-hidden');
+                toggleButton.textContent = '❌ Cerrar Menú';
+            } else {
+                sidebar.classList.add('mobile-hidden');
+                toggleButton.textContent = '📋 Menú de Contenidos';
+            }
+        }
+
+        // Inicializar en móviles
+        document.addEventListener('DOMContentLoaded', function() {
+            if (window.innerWidth <= 768) {
+                const sidebar = document.getElementById('sidebar');
+                sidebar.classList.add('mobile-hidden');
+            }
+
+            // Animación de entrada
+            const cards = document.querySelectorAll('.concept-card, .definition-box, .example-box');
+            cards.forEach((card, index) => {
+                setTimeout(() => {
+                    card.style.opacity = '0';
+                    card.style.transform = 'translateY(20px)';
+                    card.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+                    
+                    setTimeout(() => {
+                        card.style.opacity = '1';
+                        card.style.transform = 'translateY(0)';
+                    }, 100);
+                }, index * 100);
+            });
+        });
+
+        // Manejar cambios de tamaño de ventana
+        window.addEventListener('resize', function() {
+            const sidebar = document.getElementById('sidebar');
+            const toggleButton = document.querySelector('.mobile-menu-toggle');
+            
+            if (window.innerWidth > 768) {
+                sidebar.classList.remove('mobile-hidden');
+                toggleButton.textContent = '📋 Menú de Contenidos';
+            } else if (window.innerWidth <= 768 && !sidebar.classList.contains('mobile-hidden')) {
+                sidebar.classList.add('mobile-hidden');
+            }
+        });
+    </script>
+</body>
+</html>
