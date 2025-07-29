@@ -3,108 +3,486 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>No Disponible - Portal Educativo</title>
+    <title>CLASE 002 - Introducción al Big Data y SAP HANA</title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-
+        
         body {
-            font-family: 'Arial', sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
             padding: 20px;
         }
-
+        
         .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            padding: 40px;
             text-align: center;
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
-            padding: 60px 40px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-            max-width: 600px;
-            width: 100%;
-            animation: fadeInUp 0.8s ease-out;
         }
-
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+        
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            font-weight: 700;
         }
-
-        .icon {
-            font-size: 80px;
-            margin-bottom: 30px;
-            animation: bounce 2s infinite;
+        
+        .header .subtitle {
+            font-size: 1.3em;
+            opacity: 0.9;
+            font-weight: 300;
         }
-
-        @keyframes bounce {
-            0%, 20%, 50%, 80%, 100% {
-                transform: translateY(0);
-            }
-            40% {
-                transform: translateY(-10px);
-            }
-            60% {
-                transform: translateY(-5px);
-            }
+        
+        .instructor-info {
+            background: #f8f9fa;
+            padding: 20px 40px;
+            border-left: 4px solid #007bff;
+            margin: 0;
         }
-
-        .main-title {
-            font-size: 3.5rem;
-            font-weight: bold;
-            color: #2d3748;
+        
+        .instructor-info h3 {
+            color: #007bff;
+            margin-bottom: 10px;
+        }
+        
+        .content {
+            padding: 40px;
+        }
+        
+        .section {
+            margin-bottom: 40px;
+            padding: 30px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            border-left: 5px solid #007bff;
+        }
+        
+        .section h2 {
+            color: #1e3c72;
+            font-size: 1.8em;
             margin-bottom: 20px;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
-            letter-spacing: -1px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #e9ecef;
         }
-
-        .subtitle {
-            font-size: 1.3rem;
-            color: #4a5568;
-            margin-bottom: 30px;
-            line-height: 1.6;
+        
+        .section h3 {
+            color: #2a5298;
+            font-size: 1.4em;
+            margin: 25px 0 15px 0;
         }
-
-
-
+        
+        .section h4 {
+            color: #495057;
+            font-size: 1.2em;
+            margin: 20px 0 10px 0;
+            font-weight: 600;
+        }
+        
+        .highlight {
+            background: linear-gradient(120deg, #a8edea 0%, #fed6e3 100%);
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid #17a2b8;
+        }
+        
+        .problem-solution {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin: 30px 0;
+        }
+        
+        .problem {
+            background: #ffe6e6;
+            padding: 25px;
+            border-radius: 10px;
+            border-left: 4px solid #dc3545;
+        }
+        
+        .solution {
+            background: #e6ffe6;
+            padding: 25px;
+            border-radius: 10px;
+            border-left: 4px solid #28a745;
+        }
+        
+        .stats-box {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            margin: 20px 0;
+            text-align: center;
+        }
+        
+        .stats-number {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #007bff;
+            display: block;
+        }
+        
+        .example-box {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            padding: 25px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+        
+        .example-box h4 {
+            color: #856404;
+            margin-bottom: 15px;
+        }
+        
+        .comparison-table {
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            margin: 20px 0;
+        }
+        
+        .comparison-table table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .comparison-table th {
+            background: #007bff;
+            color: white;
+            padding: 15px;
+            text-align: left;
+        }
+        
+        .comparison-table td {
+            padding: 15px;
+            border-bottom: 1px solid #e9ecef;
+        }
+        
+        .comparison-table tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+        
+        .key-points {
+            background: #e3f2fd;
+            padding: 25px;
+            border-radius: 10px;
+            border-left: 4px solid #2196f3;
+            margin: 20px 0;
+        }
+        
+        .key-points ul {
+            list-style-type: none;
+            padding-left: 0;
+        }
+        
+        .key-points li {
+            padding: 8px 0;
+            padding-left: 25px;
+            position: relative;
+        }
+        
+        .key-points li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #2196f3;
+            font-weight: bold;
+        }
+        
+        .footer {
+            background: #343a40;
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
         @media (max-width: 768px) {
-            .container {
-                padding: 40px 20px;
+            body {
+                padding: 10px;
             }
             
-            .main-title {
-                font-size: 2.5rem;
+            .header {
+                padding: 30px 20px;
             }
             
-            .subtitle {
-                font-size: 1.1rem;
+            .content {
+                padding: 20px;
+            }
+            
+            .section {
+                padding: 20px;
+            }
+            
+            .header h1 {
+                font-size: 2em;
+            }
+            
+            .problem-solution {
+                grid-template-columns: 1fr;
             }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="icon">📚</div>
+        <header class="header">
+            <h1>CLASE 002</h1>
+            <div class="subtitle">Introducción al Big Data y la Revolución de SAP HANA</div>
+        </header>
         
-        <h1 class="main-title">CLASE 002</h1>
-		<h1 class="main-title">NO DISPONIBLE</h1>
+        <div class="instructor-info">
+            <h3>📚 Temario: Introducción a SAP HANA - Big Data y Sistemas Tradicionales</h3>
+            <p><strong>Enfoque:</strong> Curso desde cero - Puede servir de repaso para estudiantes con conocimientos previos</p>
+        </div>
         
-        <p class="subtitle">Contenido temporalmente inaccesible</p>
+        <main class="content">
+            <section class="section">
+                <h2>🌐 El Desafío del Big Data</h2>
+                
+                <div class="highlight">
+                    <h3>🚀 Crecimiento Exponencial de los Datos</h3>
+                    <p>La información disponible en internet crece de manera exponencial, planteando enormes desafíos para el procesamiento y análisis en tiempo real.</p>
+                </div>
+                
+                <div class="stats-box">
+                    <span class="stats-number">487 billones</span>
+                    <p>de gigabytes estimados en la web en 2009</p>
+                    <small>Esta cantidad se duplicaba cada 18 meses</small>
+                </div>
+                
+                <h3>📈 Puntos Clave del Crecimiento de Datos:</h3>
+                <div class="key-points">
+                    <ul>
+                        <li>Redes sociales generan millones de datos diariamente</li>
+                        <li>Plataformas como Facebook, Twitter, YouTube producen información constante</li>
+                        <li>Internet de las Cosas (IoT) multiplica exponencialmente los sensores</li>
+                        <li>Cada dispositivo conectado es una fuente de datos</li>
+                    </ul>
+                </div>
+            </section>
+            
+            <section class="section">
+                <h2>⚠️ Problemas de los Sistemas Tradicionales</h2>
+                
+                <div class="problem-solution">
+                    <div class="problem">
+                        <h4>🚫 Problemas Actuales</h4>
+                        <ul>
+                            <li><strong>Lenta evolución:</strong> Los sistemas de BD van por detrás de las necesidades</li>
+                            <li><strong>Capacidad limitada:</strong> Incapaces de procesar grandes volúmenes</li>
+                            <li><strong>Tiempos de espera:</strong> Consultas que tardan horas o días</li>
+                            <li><strong>Múltiples servidores:</strong> Sistemas fragmentados y complejos</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="solution">
+                        <h4>✅ Solución SAP HANA</h4>
+                        <ul>
+                            <li><strong>Tecnología In-Memory:</strong> Datos en memoria RAM</li>
+                            <li><strong>Base de datos única:</strong> Elimina la fragmentación</li>
+                            <li><strong>Procesamiento en tiempo real:</strong> Resultados en segundos</li>
+                            <li><strong>Arquitectura integrada:</strong> Menos servidores, más eficiencia</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+            
+            <section class="section">
+                <h2>⏰ La Exigencia de Inmediatez</h2>
+                
+                <h3>🎯 Expectativas del Consumidor Moderno</h3>
+                <p>Los clientes actuales exigen respuestas inmediatas. Si no se obtiene la información a tiempo, se pierde la oportunidad de negocio.</p>
+                
+                <div class="example-box">
+                    <h4>📱 Ejemplo Práctico: Aplicaciones Móviles</h4>
+                    <p><strong>Caso Burger King:</strong> A través de su app, pueden analizar:</p>
+                    <ul>
+                        <li>Qué hamburguesas tienen más éxito por región</li>
+                        <li>Perfiles demográficos de consumidores</li>
+                        <li>Efectividad de ofertas y promociones</li>
+                        <li>Patrones de consumo por edad y género</li>
+                    </ul>
+                    <p><strong>Resultado:</strong> Campañas dirigidas y personalizadas en tiempo real</p>
+                </div>
+                
+                <h3>⚡ Tolerancia a la Latencia</h3>
+                <div class="key-points">
+                    <ul>
+                        <li>Los usuarios se impacientan en menos de 10 segundos</li>
+                        <li>En empresas, los retrasos se multiplican por 10,000 en importancia</li>
+                        <li>La diferencia entre éxito y fracaso puede ser una consulta rápida</li>
+                        <li>Perder un cliente significa perder oportunidades futuras</li>
+                    </ul>
+                </div>
+            </section>
+            
+            <section class="section">
+                <h2>🏗️ Arquitectura: Antes vs Después</h2>
+                
+                <h3>📊 Sistemas Tradicionales</h3>
+                <div class="problem">
+                    <p><strong>Arquitectura Compleja:</strong></p>
+                    <ul>
+                        <li>Múltiples servidores con sistemas operativos diferentes</li>
+                        <li>Bases de datos heterogéneas (Oracle, SQL Server, PostgreSQL)</li>
+                        <li>Herramientas ETL para comunicación entre sistemas</li>
+                        <li>Servidores dedicados para desarrollo, calidad, producción, BI</li>
+                    </ul>
+                </div>
+                
+                <h3>🚀 Propuesta SAP HANA</h3>
+                <div class="solution">
+                    <p><strong>Arquitectura Simplificada:</strong></p>
+                    <ul>
+                        <li>Una base de datos única para todas las aplicaciones</li>
+                        <li>Eliminación de servidores Business Warehouse</li>
+                        <li>Reducción de herramientas ETL</li>
+                        <li>De 5 servidores a 3 servidores (ejemplo básico)</li>
+                    </ul>
+                </div>
+            </section>
+            
+            <section class="section">
+                <h2>🏢 Casos de Uso Reales</h2>
+                
+                <div class="example-box">
+                    <h4>⚡ Caso 1: Empresa Energética</h4>
+                    <p><strong>Sistema Tradicional:</strong></p>
+                    <ul>
+                        <li>Lectura manual mensual: 16 millones de lecturas/2 meses</li>
+                        <li>Un técnico visitaba cada hogar</li>
+                    </ul>
+                    
+                    <p><strong>Sistema Inteligente:</strong></p>
+                    <ul>
+                        <li>Contadores inteligentes: 24 lecturas/día por usuario</li>
+                        <li>11,520 millones de lecturas/2 meses</li>
+                        <li>Diferencia: 720x más información</li>
+                    </ul>
+                </div>
+                
+                <div class="example-box">
+                    <h4>🏈 Caso 2: Análisis Deportivo (NFL)</h4>
+                    <p><strong>Internet de las Cosas en Deportes:</strong></p>
+                    <ul>
+                        <li>Sensores en jugadores y pelota</li>
+                        <li>Seguimiento GPS en tiempo real</li>
+                        <li>Análisis de jugadas instantáneo</li>
+                        <li>22 jugadores + pelota = 124,200 registros/partido</li>
+                    </ul>
+                    
+                    <p><strong>Beneficio para Entrenadores:</strong></p>
+                    <ul>
+                        <li>Corrección de errores durante el partido</li>
+                        <li>Análisis táctico en tiempo real</li>
+                        <li>Adaptación estratégica inmediata</li>
+                    </ul>
+                </div>
+            </section>
+            
+            <section class="section">
+                <h2>📊 Comparativa de Rendimiento</h2>
+                
+                <div class="comparison-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Aspecto</th>
+                                <th>Sistema Tradicional</th>
+                                <th>SAP HANA</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Tiempo de Procesamiento</strong></td>
+                                <td>4-12 horas o más</td>
+                                <td>Segundos</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Número de Servidores</strong></td>
+                                <td>5+ servidores típicos</td>
+                                <td>3 servidores básicos</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Acceso a Datos</strong></td>
+                                <td>Trasvase por lotes (ETL)</td>
+                                <td>Tiempo real</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Complejidad</strong></td>
+                                <td>Alta - sistemas heterogéneos</td>
+                                <td>Baja - plataforma única</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Costos de Mantenimiento</strong></td>
+                                <td>Altos</td>
+                                <td>Reducidos</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+            
+            <section class="section">
+                <h2>🎯 Empresas que Usan SAP HANA</h2>
+                
+                <div class="highlight">
+                    <h3>🏆 Casos de Éxito Conocidos</h3>
+                    <div class="key-points">
+                        <ul>
+                            <li><strong>Vodafone:</strong> Facturación de clientes</li>
+                            <li><strong>Puleva:</strong> Análisis de producción</li>
+                            <li><strong>NFL:</strong> Análisis deportivo</li>
+                            <li><strong>Banco Santander:</strong> Análisis financiero</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <p><strong>Nota:</strong> Aunque HANA es independiente, está optimizada para trabajar con aplicaciones SAP, ya que la mayoría de multinacionales europeas usan SAP como ERP.</p>
+            </section>
+            
+            <section class="section">
+                <h2>🔑 Conceptos Clave para Recordar</h2>
+                
+                <div class="key-points">
+                    <ul>
+                        <li><strong>Big Data:</strong> Volúmenes masivos de información que requieren procesamiento especializado</li>
+                        <li><strong>In-Memory:</strong> Tecnología que mantiene datos en memoria RAM para acceso ultra-rápido</li>
+                        <li><strong>ETL:</strong> Extract, Transform, Load - herramientas para mover datos entre sistemas</li>
+                        <li><strong>Tiempo Real:</strong> Capacidad de procesar y responder inmediatamente</li>
+                        <li><strong>IoT:</strong> Internet de las Cosas - sensores que generan datos continuamente</li>
+                    </ul>
+                </div>
+                
+                <div class="highlight">
+                    <h3>💡 Reflexión Final</h3>
+                    <p>La diferencia entre un informe que tarda 8 horas y uno que tarda segundos puede determinar el éxito o fracaso de una oportunidad de negocio. SAP HANA busca eliminar esa barrera temporal.</p>
+                </div>
+            </section>
+        </main>
         
-
+        <footer class="footer">
+            <p>&copy; 2024 - Curso de Modelado en SAP HANA - Clase 002</p>
+            <p>Instructor: Daniel Rico | Introducción al Big Data y SAP HANA</p>
+        </footer>
     </div>
 </body>
 </html>
