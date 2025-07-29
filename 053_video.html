@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CLASE 053 - Ejercicio Práctico: Sistema de Inventario Completo</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+        
+        .header .subtitle {
+            font-size: 1.3em;
+            opacity: 0.9;
+            font-weight: 300;
+        }
+        
+        .instructor-info {
+            background: #f8f9fa;
+            padding: 20px 40px;
+            border-left: 4px solid #007bff;
+            margin: 0;
+        }
+        
+        .instructor-info h3 {
+            color: #007bff;
+            margin-bottom: 10px;
+        }
+        
+        .content {
+            padding: 40px;
+        }
+        
+        .section {
+            margin-bottom: 40px;
+            padding: 30px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            border-left: 5px solid #007bff;
+        }
+        
+        .section h2 {
+            color: #1e3c72;
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #e9ecef;
+        }
+        
+        .section h3 {
+            color: #2a5298;
+            font-size: 1.4em;
+            margin: 25px 0 15px 0;
+        }
+        
+        .section h4 {
+            color: #495057;
+            font-size: 1.2em;
+            margin: 20px 0 10px 0;
+            font-weight: 600;
+        }
+        
+        .code-block {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+            overflow-x: auto;
+        }
+        
+        .code-block .keyword {
+            color: #63b3ed;
+            font-weight: bold;
+        }
+        
+        .code-block .string {
+            color: #68d391;
+        }
+        
+        .code-block .comment {
+            color: #a0aec0;
+            font-style: italic;
+        }
+        
+        .tables-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+        
+        .table-card {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            border-top: 4px solid #28a745;
+        }
+        
+        .table-card h4 {
+            color: #28a745;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        
+        .field-list {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .field-list li {
+            background: #f8f9fa;
+            padding: 8px 12px;
+            margin: 5px 0;
+            border-radius: 4px;
+            border-left: 3px solid #007bff;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+        }
+        
+        .primary-key {
+            border-left-color: #dc3545 !important;
+            background: #ffe6e6 !important;
+        }
+        
+        .foreign-key {
+            border-left-color: #fd7e14 !important;
+            background: #fff3e0 !important;
+        }
+        
+        .unique-field {
+            border-left-color: #6f42c1 !important;
+            background: #f3e5f5 !important;
+        }
+        
+        .example-flow {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            padding: 25px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+        
+        .example-flow h4 {
+            color: #856404;
+            margin-bottom: 15px;
+        }
+        
+        .design-decisions {
+            background: #e3f2fd;
+            padding: 25px;
+            border-radius: 10px;
+            border-left: 4px solid #2196f3;
+            margin: 20px 0;
+        }
+        
+        .design-decisions h4 {
+            color: #1976d2;
+            margin-bottom: 15px;
+        }
+        
+        .warning-box {
+            background: #ffe6e6;
+            border: 1px solid #ffcccc;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid #dc3545;
+        }
+        
+        .warning-box h4 {
+            color: #dc3545;
+            margin-bottom: 10px;
+        }
+        
+        .success-box {
+            background: #e6ffe6;
+            border: 1px solid #ccffcc;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid #28a745;
+        }
+        
+        .success-box h4 {
+            color: #28a745;
+            margin-bottom: 10px;
+        }
+        
+        .relationship-diagram {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            margin: 20px 0;
+            text-align: center;
+        }
+        
+        .relationship-flow {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        
+        .entity-box {
+            background: #007bff;
+            color: white;
+            padding: 15px 25px;
+            border-radius: 8px;
+            font-weight: bold;
+            min-width: 120px;
+        }
+        
+        .arrow {
+            font-size: 2em;
+            color: #007bff;
+            font-weight: bold;
+        }
+        
+        .steps-list {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin: 20px 0;
+        }
+        
+        .steps-list ol {
+            counter-reset: step-counter;
+            list-style: none;
+            padding-left: 0;
+        }
+        
+        .steps-list ol li {
+            counter-increment: step-counter;
+            padding: 15px;
+            margin: 10px 0;
+            background: #f8f9fa;
+            border-radius: 5px;
+            border-left: 4px solid #007bff;
+            position: relative;
+            padding-left: 50px;
+        }
+        
+        .steps-list ol li:before {
+            content: counter(step-counter);
+            position: absolute;
+            left: 15px;
+            top: 15px;
+            background: #007bff;
+            color: white;
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 12px;
+        }
+        
+        .key-concepts {
+            background: #e3f2fd;
+            padding: 25px;
+            border-radius: 10px;
+            border-left: 4px solid #2196f3;
+            margin: 20px 0;
+        }
+        
+        .key-concepts ul {
+            list-style-type: none;
+            padding-left: 0;
+        }
+        
+        .key-concepts li {
+            padding: 8px 0;
+            padding-left: 25px;
+            position: relative;
+        }
+        
+        .key-concepts li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #2196f3;
+            font-weight: bold;
+        }
+        
+        .data-samples {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border: 1px solid #dee2e6;
+        }
+        
+        .data-samples table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        
+        .data-samples th,
+        .data-samples td {
+            padding: 8px 12px;
+            border: 1px solid #dee2e6;
+            text-align: left;
+        }
+        
+        .data-samples th {
+            background: #007bff;
+            color: white;
+        }
+        
+        .footer {
+            background: #343a40;
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+            
+            .header {
+                padding: 30px 20px;
+            }
+            
+            .content {
+                padding: 20px;
+            }
+            
+            .section {
+                padding: 20px;
+            }
+            
+            .header h1 {
+                font-size: 2em;
+            }
+            
+            .tables-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .relationship-flow {
+                flex-direction: column;
+            }
+            
+            .arrow {
+                transform: rotate(90deg);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>CLASE 053</h1>
+            <div class="subtitle">Ejercicio Práctico: Sistema de Inventario Completo con Ficheros</div>
+        </header>
+        
+        <div class="instructor-info">
+            <h3>🎯 Clase Práctica Integral</h3>
+            <p><strong>Objetivo:</strong> Aplicar todos los conceptos de CREATE TABLE utilizando el sistema de ficheros de SAP HANA</p>
+        </div>
+        
+        <main class="content">
+            <section class="section">
+                <h2>🏗️ Arquitectura del Sistema</h2>
+                
+                <div class="example-flow">
+                    <h4>📋 Caso de Uso: Sistema de Inventario</h4>
+                    <p>Creación de un sistema completo para gestionar productos, proveedores y países con todas las relaciones e integridad referencial.</p>
+                </div>
+                
+                <div class="relationship-diagram">
+                    <h3>🔗 Modelo de Relaciones</h3>
+                    <div class="relationship-flow">
+                        <div class="entity-box">PAÍSES</div>
+                        <div class="arrow">→</div>
+                        <div class="entity-box">PROVEEDORES</div>
+                        <div class="arrow">→</div>
+                        <div class="entity-box">PRODUCTOS</div>
+                    </div>
+                    <p style="margin-top: 15px; color: #666;">
+                        <strong>Relaciones:</strong> País (1) → Proveedores (N) → Productos (N)
+                    </p>
+                </div>
+                
+                <div class="design-decisions">
+                    <h4>💡 Decisiones de Diseño</h4>
+                    <ul>
+                        <li><strong>Almacenamiento en columnas:</strong> Optimizado para análisis de inventario</li>
+                        <li><strong>Identificadores INTEGER:</strong> Estándar robusto para la mayoría de casos</li>
+                        <li><strong>Campos Unicode (NCHAR):</strong> Soporte internacional para nombres</li>
+                        <li><strong>Normalización:</strong> Tabla separada para países evita duplicación</li>
+                        <li><strong>Integridad referencial:</strong> Garantiza consistencia de datos</li>
+                    </ul>
+                </div>
+            </section>
+            
+            <section class="section">
+                <h2>📁 Implementación con Ficheros</h2>
+                
+                <div class="steps-list">
+                    <h3>🔧 Proceso de Creación</h3>
+                    <ol>
+                        <li><strong>Crear carpeta "ejercicios_sql"</strong> para organizar el proyecto</li>
+                        <li><strong>Crear archivos .hdbtable</strong> para cada tabla (productos, proveedores, países)</li>
+                        <li><strong>Crear archivos .hdbconstraint</strong> para relaciones entre tablas</li>
+                        <li><strong>Construir en orden correcto</strong> (dependencias primero)</li>
+                        <li><strong>Insertar datos de prueba</strong> respetando integridad referencial</li>
+                    </ol>
+                </div>
+                
+                <div class="warning-box">
+                    <h4>⚠️ Diferencias con SQL Directo</h4>
+                    <ul>
+                        <li>No usar la palabra <code>CREATE</code> en ficheros .hdbtable</li>
+                        <li>Las claves foráneas requieren ficheros .hdbconstraint separados</li>
+                        <li>Respetar namespace completo con comillas dobles</li>
+                        <li>El sistema maneja automáticamente el orden de construcción</li>
+                    </ul>
+                </div>
+            </section>
+            
+            <section class="section">
+                <h2>🗂️ Estructura de las Tablas</h2>
+                
+                <div class="tables-grid">
+                    <div class="table-card">
+                        <h4>🏢 PAÍSES</h4>
+                        <ul class="field-list">
+                            <li class="primary-key">id_pais INTEGER PRIMARY KEY</li>
+                            <li class="unique-field">nombre NCHAR(30) NOT NULL UNIQUE</li>
+                        </ul>
+                        <p><strong>Propósito:</strong> Catálogo de países para normalizar datos</p>
+                    </div>
+                    
+                    <div class="table-card">
+                        <h4>🏭 PROVEEDORES</h4>
+                        <ul class="field-list">
+                            <li class="primary-key">id_proveedor INTEGER PRIMARY KEY</li>
+                            <li class="unique-field">nombre NCHAR(50) NOT NULL UNIQUE</li>
+                            <li class="foreign-key">id_pais INTEGER FOREIGN KEY</li>
+                        </ul>
+                        <p><strong>Relación:</strong> N proveedores por país</p>
+                    </div>
+                    
+                    <div class="table-card">
+                        <h4>📦 PRODUCTOS</h4>
+                        <ul class="field-list">
+                            <li class="primary-key">id_producto INTEGER PRIMARY KEY</li>
+                            <li class="unique-field">nombre NCHAR(50) NOT NULL UNIQUE</li>
+                            <li>cantidad INTEGER</li>
+                            <li>precio_compra DECIMAL(6,2) DEFAULT 0.0</li>
+                            <li class="foreign-key">id_proveedor INTEGER FOREIGN KEY</li>
+                        </ul>
+                        <p><strong>Características:</strong> Control de stock y precios</p>
+                    </div>
+                </div>
+                
+                <h3>💾 Ejemplo de Fichero .hdbtable</h3>
+                <div class="code-block">
+<span class="keyword">COLUMN TABLE</span> <span class="string">"BBDD_MODELADO"."DB"."EJERCICIOS_SQL"::"EJE_PRODUCTOS"</span> (
+    id_producto <span class="keyword">INTEGER PRIMARY KEY</span>,
+    nombre <span class="keyword">NCHAR</span>(50) <span class="keyword">NOT NULL UNIQUE</span>,
+    cantidad <span class="keyword">INTEGER</span>,
+    precio_compra <span class="keyword">DECIMAL</span>(6,2) <span class="keyword">DEFAULT</span> 0.0,
+    id_proveedor <span class="keyword">INTEGER</span>
+);
+                </div>
+                
+                <h3>🔗 Ejemplo de Fichero .hdbconstraint</h3>
+                <div class="code-block">
+<span class="keyword">CONSTRAINT</span> <span class="string">"BBDD_MODELADO"."DB"."EJERCICIOS_SQL"::"FK_PROVEEDORES"</span>
+<span class="keyword">ON</span> <span class="string">"BBDD_MODELADO"."DB"."EJERCICIOS_SQL"::"EJE_PRODUCTOS"</span>
+(id_proveedor)
+<span class="keyword">REFERENCES</span> <span class="string">"BBDD_MODELADO"."DB"."EJERCICIOS_SQL"::"EJE_PROVEEDORES"</span>
+(id_proveedor)
+<span class="keyword">ON DELETE CASCADE</span>;
+                </div>
+            </section>
+            
+            <section class="section">
+                <h2>🔧 Características Implementadas</h2>
+                
+                <div class="key-concepts">
+                    <h3>✅ Restricciones Aplicadas</h3>
+                    <ul>
+                        <li><strong>PRIMARY KEY:</strong> Identificadores únicos en todas las tablas</li>
+                        <li><strong>FOREIGN KEY:</strong> Relaciones entre países→proveedores→productos</li>
+                        <li><strong>NOT NULL:</strong> Campos obligatorios como nombres</li>
+                        <li><strong>UNIQUE:</strong> Evita duplicación de nombres de productos y proveedores</li>
+                        <li><strong>DEFAULT:</strong> Valor por defecto 0.0 para precios sin especificar</li>
+                    </ul>
+                </div>
+                
+                <div class="success-box">
+                    <h4>🎯 Acciones Referenciales Configuradas</h4>
+                    <ul>
+                        <li><strong>Países → Proveedores:</strong> ON DELETE SET NULL</li>
+                        <li><strong>Proveedores → Productos:</strong> ON DELETE CASCADE</li>
+                    </ul>
+                    <p><strong>Lógica:</strong> Si se elimina un país, los proveedores quedan sin país asignado. Si se elimina un proveedor, todos sus productos se eliminan automáticamente.</p>
+                </div>
+            </section>
+            
+            <section class="section">
+                <h2>📊 Datos de Prueba</h2>
+                
+                <div class="data-samples">
+                    <h4>🌍 Países</h4>
+                    <table>
+                        <thead>
+                            <tr><th>ID</th><th>Nombre</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>1</td><td>España</td></tr>
+                            <tr><td>2</td><td>Rusia</td></tr>
+                            <tr><td>3</td><td>Alemania</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="data-samples">
+                    <h4>🏭 Proveedores</h4>
+                    <table>
+                        <thead>
+                            <tr><th>ID</th><th>Nombre</th><th>País</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>1</td><td>Proveedor 1</td><td>1 (España)</td></tr>
+                            <tr><td>2</td><td>Proveedor 2</td><td>2 (Rusia)</td></tr>
+                            <tr><td>3</td><td>Proveedor 3</td><td>3 (Alemania)</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="data-samples">
+                    <h4>📦 Productos (Muestra)</h4>
+                    <table>
+                        <thead>
+                            <tr><th>ID</th><th>Nombre</th><th>Cantidad</th><th>Precio</th><th>Proveedor</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>1</td><td>Llave inglesa</td><td>100</td><td>50.56</td><td>1</td></tr>
+                            <tr><td>2</td><td>Destornillador</td><td>205</td><td>3.50</td><td>1</td></tr>
+                            <tr><td>3</td><td>Tubería de cobre</td><td>50</td><td>3.75</td><td>2</td></tr>
+                            <tr><td>4</td><td>Codos de cobre</td><td>75</td><td>4.75</td><td>2</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+            
+            <section class="section">
+                <h2>🔍 Validación del Sistema</h2>
+                
+                <div class="example-flow">
+                    <h4>🔍 Verificación en Database Explorer</h4>
+                    <ul>
+                        <li><strong>Orientación de columnas:</strong> Línea vertical azul indica COLUMN TABLE</li>
+                        <li><strong>Campos y tipos:</strong> Verificar estructura completa de cada tabla</li>
+                        <li><strong>Índices automáticos:</strong> PRIMARY KEY y UNIQUE generan índices</li>
+                        <li><strong>Propiedades:</strong> Tamaño en disco y número de registros</li>
+                    </ul>
+                </div>
+                
+                <div class="warning-box">
+                    <h4>⚡ Orden de Inserción Crítico</h4>
+                    <p><strong>Secuencia obligatoria:</strong></p>
+                    <ol>
+                        <li>Insertar países (tabla padre)</li>
+                        <li>Insertar proveedores (referencia a países)</li>
+                        <li>Insertar productos (referencia a proveedores)</li>
+                    </ol>
+                    <p>Violar este orden causa errores de integridad referencial.</p>
+                </div>
+            </section>
+            
+            <section class="section">
+                <h2>🎯 Mejores Prácticas Aplicadas</h2>
+                
+                <div class="key-concepts">
+                    <ul>
+                        <li><strong>Naming Convention:</strong> Mismo nombre para fichero y objeto de BD</li>
+                        <li><strong>Namespaces Consistentes:</strong> Estructura organizativa clara</li>
+                        <li><strong>Tipos de Datos Apropiados:</strong> INTEGER para IDs, NCHAR para textos internacionales</li>
+                        <li><strong>Restricciones de Integridad:</strong> Garantizan calidad de los datos</li>
+                        <li><strong>Valores por Defecto:</strong> Evitan campos NULL en operaciones matemáticas</li>
+                        <li><strong>Normalización:</strong> Tabla separada para países evita redundancia</li>
+                        <li><strong>Limpieza Regular:</strong> Borrar objetos de prueba para mantener orden</li>
+                    </ul>
+                </div>
+                
+                <div class="success-box">
+                    <h4>🏆 Logros del Ejercicio</h4>
+                    <p>Este ejercicio demuestra un dominio completo de:</p>
+                    <ul>
+                        <li>Diseño de base de datos normalizada</li>
+                        <li>Implementación con ficheros SAP HANA</li>
+                        <li>Restricciones de integridad referencial</li>
+                        <li>Acciones referenciales apropiadas</li>
+                        <li>Inserción de datos respetando dependencias</li>
+                    </ul>
+                </div>
+            </section>
+        </main>
+        
+        <footer class="footer">
+            <p>&copy; 2024 - Curso de Modelado en SAP HANA - Clase 053</p>
+            <p>Instructor: Daniel Rico | Ejercicio Práctico: Sistema de Inventario Completo</p>
+        </footer>
+    </div>
+</body>
+</html>

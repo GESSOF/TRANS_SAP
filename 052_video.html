@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CLASE 052 - Ejercicio Práctico con Ficheros SAP HANA</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+        
+        .header .subtitle {
+            font-size: 1.3em;
+            opacity: 0.9;
+            font-weight: 300;
+        }
+        
+        .instructor-info {
+            background: #f8f9fa;
+            padding: 20px 40px;
+            border-left: 4px solid #007bff;
+            margin: 0;
+        }
+        
+        .instructor-info h3 {
+            color: #007bff;
+            margin-bottom: 10px;
+        }
+        
+        .content {
+            padding: 40px;
+        }
+        
+        .section {
+            margin-bottom: 40px;
+            padding: 30px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            border-left: 5px solid #007bff;
+        }
+        
+        .section h2 {
+            color: #1e3c72;
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #e9ecef;
+        }
+        
+        .section h3 {
+            color: #2a5298;
+            font-size: 1.4em;
+            margin: 25px 0 15px 0;
+        }
+        
+        .section h4 {
+            color: #495057;
+            font-size: 1.2em;
+            margin: 20px 0 10px 0;
+            font-weight: 600;
+        }
+        
+        .workflow-container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            margin: 20px 0;
+        }
+        
+        .workflow-step {
+            display: flex;
+            align-items: center;
+            margin: 20px 0;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 4px solid #007bff;
+        }
+        
+        .step-number {
+            background: #007bff;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 15px;
+            flex-shrink: 0;
+        }
+        
+        .code-block {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+            overflow-x: auto;
+        }
+        
+        .code-block .keyword {
+            color: #63b3ed;
+            font-weight: bold;
+        }
+        
+        .code-block .string {
+            color: #68d391;
+        }
+        
+        .code-block .comment {
+            color: #a0aec0;
+            font-style: italic;
+        }
+        
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin: 30px 0;
+        }
+        
+        .sql-method {
+            background: #ffe6e6;
+            padding: 25px;
+            border-radius: 10px;
+            border-left: 4px solid #dc3545;
+        }
+        
+        .file-method {
+            background: #e6ffe6;
+            padding: 25px;
+            border-radius: 10px;
+            border-left: 4px solid #28a745;
+        }
+        
+        .table-design {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+        
+        .table-header {
+            background: #007bff;
+            color: white;
+            padding: 15px;
+            border-radius: 8px 8px 0 0;
+            text-align: center;
+            font-weight: bold;
+        }
+        
+        .field-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 15px;
+            border-bottom: 1px solid #e9ecef;
+            font-family: 'Courier New', monospace;
+        }
+        
+        .field-row:last-child {
+            border-bottom: none;
+        }
+        
+        .field-name {
+            font-weight: bold;
+            color: #007bff;
+        }
+        
+        .field-type {
+            color: #6c757d;
+        }
+        
+        .field-constraint {
+            background: #28a745;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 0.8em;
+        }
+        
+        .warning-box {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid #ffc107;
+        }
+        
+        .warning-box h4 {
+            color: #856404;
+            margin-bottom: 10px;
+        }
+        
+        .success-box {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid #28a745;
+        }
+        
+        .success-box h4 {
+            color: #155724;
+            margin-bottom: 10px;
+        }
+        
+        .decision-matrix {
+            background: #e3f2fd;
+            padding: 25px;
+            border-radius: 10px;
+            border-left: 4px solid #2196f3;
+            margin: 20px 0;
+        }
+        
+        .decision-matrix h4 {
+            color: #1976d2;
+            margin-bottom: 15px;
+        }
+        
+        .navigation-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin: 30px 0;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .nav-button {
+            background: #007bff;
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: background 0.3s;
+        }
+        
+        .nav-button:hover {
+            background: #0056b3;
+        }
+        
+        .file-structure {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid #dee2e6;
+            margin: 20px 0;
+            font-family: 'Courier New', monospace;
+        }
+        
+        .folder {
+            color: #fd7e14;
+            font-weight: bold;
+        }
+        
+        .file {
+            color: #007bff;
+            margin-left: 20px;
+        }
+        
+        .key-concepts {
+            background: #e3f2fd;
+            padding: 25px;
+            border-radius: 10px;
+            border-left: 4px solid #2196f3;
+            margin: 20px 0;
+        }
+        
+        .key-concepts ul {
+            list-style-type: none;
+            padding-left: 0;
+        }
+        
+        .key-concepts li {
+            padding: 8px 0;
+            padding-left: 25px;
+            position: relative;
+        }
+        
+        .key-concepts li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #2196f3;
+            font-weight: bold;
+        }
+        
+        .footer {
+            background: #343a40;
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+            
+            .header {
+                padding: 30px 20px;
+            }
+            
+            .content {
+                padding: 20px;
+            }
+            
+            .section {
+                padding: 20px;
+            }
+            
+            .header h1 {
+                font-size: 2em;
+            }
+            
+            .comparison-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .navigation-buttons {
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>CLASE 052</h1>
+            <div class="subtitle">Ejercicio Práctico: Transición de SQL Directo a Ficheros SAP HANA</div>
+        </header>
+        
+        <div class="instructor-info">
+            <h3>🎯 Transición Metodológica</h3>
+            <p><strong>Objetivo:</strong> Aplicar todos los conceptos de CREATE TABLE utilizando el sistema de ficheros de desarrollo de SAP HANA</p>
+        </div>
+        
+        <main class="content">
+            <section class="section">
+                <h2>🔄 Cambio de Paradigma: De SQL a Ficheros</h2>
+                
+                <div class="comparison-grid">
+                    <div class="sql-method">
+                        <h4>📝 Método SQL Directo (Anterior)</h4>
+                        <ul>
+                            <li>Comando CREATE TABLE explícito</li>
+                            <li>Definición inline de restricciones</li>
+                            <li>Ejecución inmediata</li>
+                            <li>Ideal para pruebas rápidas</li>
+                            <li>Menos organización del código</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="file-method">
+                        <h4>📁 Método con Ficheros (Nuevo)</h4>
+                        <ul>
+                            <li>Sin comando CREATE explícito</li>
+                            <li>Restricciones en ficheros separados</li>
+                            <li>Proceso de construcción</li>
+                            <li>Mejor para proyectos grandes</li>
+                            <li>Organización modular</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="warning-box">
+                    <h4>⚠️ Diferencias Clave a Recordar</h4>
+                    <ul>
+                        <li><strong>No usar CREATE:</strong> Los ficheros .hdbtable omiten esta palabra</li>
+                        <li><strong>Namespaces obligatorios:</strong> Ruta completa con comillas dobles</li>
+                        <li><strong>Claves foráneas separadas:</strong> Requieren ficheros .hdbconstraint</li>
+                        <li><strong>Construcción por dependencias:</strong> El sistema maneja el orden automáticamente</li>
+                    </ul>
+                </div>
+            </section>
+            
+            <section class="section">
+                <h2>🏗️ Flujo de Trabajo del Ejercicio</h2>
+                
+                <div class="workflow-container">
+                    <div class="workflow-step">
+                        <div class="step-number">1</div>
+                        <div>
+                            <strong>Crear carpeta "ejercicios_sql"</strong><br>
+                            Organización del proyecto en la zona de desarrollo
+                        </div>
+                    </div>
+                    
+                    <div class="workflow-step">
+                        <div class="step-number">2</div>
+                        <div>
+                            <strong>Analizar requisitos del negocio</strong><br>
+                            Sistema de productos, proveedores y países
+                        </div>
+                    </div>
+                    
+                    <div class="workflow-step">
+                        <div class="step-number">3</div>
+                        <div>
+                            <strong>Diseñar estructura de tablas</strong><br>
+                            Decidir tipos de datos y restricciones apropiadas
+                        </div>
+                    </div>
+                    
+                    <div class="workflow-step">
+                        <div class="step-number">4</div>
+                        <div>
+                            <strong>Crear ficheros .hdbtable</strong><br>
+                            Productos, proveedores y países
+                        </div>
+                    </div>
+                    
+                    <div class="workflow-step">
+                        <div class="step-number">5</div>
+                        <div>
+                            <strong>Establecer relaciones</strong><br>
+                            Ficheros .hdbconstraint para claves foráneas
+                        </div>
+                    </div>
+                    
+                    <div class="workflow-step">
+                        <div class="step-number">6</div>
+                        <div>
+                            <strong>Validar y construir</strong><br>
+                            Construcción automática respetando dependencias
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <section class="section">
+                <h2>💭 Proceso de Toma de Decisiones</h2>
+                
+                <div class="decision-matrix">
+                    <h4>🧠 Decisiones de Diseño Explicadas</h4>
+                    
+                    <h4>📊 Tipos de Datos</h4>
+                    <ul>
+                        <li><strong>INTEGER para IDs:</strong> Estándar robusto, rango amplio sin ser excesivo</li>
+                        <li><strong>NCHAR para textos:</strong> Soporte Unicode para empresas multinacionales</li>
+                        <li><strong>DECIMAL(6,2):</strong> Precios hasta 9999.99, suficiente para productos normales</li>
+                        <li><strong>Tamaños de cadena:</strong> 30-50 caracteres con margen de seguridad</li>
+                    </ul>
+                    
+                    <h4>🏢 Decisiones de Negocio</h4>
+                    <ul>
+                        <li><strong>Tabla de países separada:</strong> Normalización evita repetición</li>
+                        <li><strong>UNIQUE en nombres:</strong> Evita productos duplicados en inventario</li>
+                        <li><strong>NOT NULL obligatorio:</strong> Garantiza datos esenciales</li>
+                        <li><strong>DEFAULT 0.0:</strong> Evita NULL en cálculos matemáticos</li>
+                    </ul>
+                </div>
+                
+                <div class="success-box">
+                    <h4>💡 Filosofía "Curarse en Salud"</h4>
+                    <p><strong>Ejemplo del puente:</strong> Si calculas que soporta X peso, hazlo para 3X. Si el nombre más largo son 30 caracteres, pon límite de 35-40.</p>
+                </div>
+            </section>
+            
+            <section class="section">
+                <h2>🗃️ Diseño Final de Tablas</h2>
+                
+                <div class="table-design">
+                    <div class="table-header">🏢 EJE_PAÍSES</div>
+                    <div class="field-row">
+                        <span class="field-name">id_pais</span>
+                        <span class="field-type">INTEGER</span>
+                        <span class="field-constraint">PRIMARY KEY</span>
+                    </div>
+                    <div class="field-row">
+                        <span class="field-name">nombre</span>
+                        <span class="field-type">NCHAR(30)</span>
+                        <span class="field-constraint">NOT NULL UNIQUE</span>
+                    </div>
+                </div>
+                
+                <div class="table-design">
+                    <div class="table-header">🏭 EJE_PROVEEDORES</div>
+                    <div class="field-row">
+                        <span class="field-name">id_proveedor</span>
+                        <span class="field-type">INTEGER</span>
+                        <span class="field-constraint">PRIMARY KEY</span>
+                    </div>
+                    <div class="field-row">
+                        <span class="field-name">nombre</span>
+                        <span class="field-type">NCHAR(50)</span>
+                        <span class="field-constraint">NOT NULL UNIQUE</span>
+                    </div>
+                    <div class="field-row">
+                        <span class="field-name">id_pais</span>
+                        <span class="field-type">INTEGER</span>
+                        <span class="field-constraint">FOREIGN KEY</span>
+                    </div>
+                </div>
+                
+                <div class="table-design">
+                    <div class="table-header">📦 EJE_PRODUCTOS</div>
+                    <div class="field-row">
+                        <span class="field-name">id_producto</span>
+                        <span class="field-type">INTEGER</span>
+                        <span class="field-constraint">PRIMARY KEY</span>
+                    </div>
+                    <div class="field-row">
+                        <span class="field-name">nombre</span>
+                        <span class="field-type">NCHAR(50)</span>
+                        <span class="field-constraint">NOT NULL UNIQUE</span>
+                    </div>
+                    <div class="field-row">
+                        <span class="field-name">cantidad</span>
+                        <span class="field-type">INTEGER</span>
+                        <span class="field-constraint">-</span>
+                    </div>
+                    <div class="field-row">
+                        <span class="field-name">precio_compra</span>
+                        <span class="field-type">DECIMAL(6,2)</span>
+                        <span class="field-constraint">DEFAULT 0.0</span>
+                    </div>
+                    <div class="field-row">
+                        <span class="field-name">id_proveedor</span>
+                        <span class="field-type">INTEGER</span>
+                        <span class="field-constraint">FOREIGN KEY</span>
+                    </div>
+                </div>
+            </section>
+            
+            <section class="section">
+                <h2>📂 Estructura de Ficheros</h2>
+                
+                <div class="file-structure">
+<span class="folder">📁 ejercicios_sql/</span>
+├── <span class="file">eje_productos.hdbtable</span>
+├── <span class="file">eje_proveedores.hdbtable</span>
+├── <span class="file">eje_paises.hdbtable</span>
+├── <span class="file">fk_pais.hdbconstraint</span>
+└── <span class="file">fk_proveedor.hdbconstraint</span>
+                </div>
+                
+                <h3>💻 Ejemplo de Fichero .hdbtable</h3>
+                <div class="code-block">
+<span class="keyword">COLUMN TABLE</span> <span class="string">"BBDD_MODELADO"."DB"."EJERCICIOS_SQL"::"EJE_PRODUCTOS"</span> (
+    id_producto <span class="keyword">INTEGER PRIMARY KEY</span>,
+    nombre <span class="keyword">NCHAR</span>(50) <span class="keyword">NOT NULL UNIQUE</span>,
+    cantidad <span class="keyword">INTEGER</span>,
+    precio_compra <span class="keyword">DECIMAL</span>(6,2) <span class="keyword">DEFAULT</span> 0.0,
+    id_proveedor <span class="keyword">INTEGER</span>
+);
+                </div>
+                
+                <h3>🔗 Ejemplo de Fichero .hdbconstraint</h3>
+                <div class="code-block">
+<span class="keyword">CONSTRAINT</span> <span class="string">"BBDD_MODELADO"."DB"."EJERCICIOS_SQL"::"FK_PROVEEDOR"</span>
+<span class="keyword">ON</span> <span class="string">"BBDD_MODELADO"."DB"."EJERCICIOS_SQL"::"EJE_PRODUCTOS"</span>
+(id_proveedor)
+<span class="keyword">REFERENCES</span> <span class="string">"BBDD_MODELADO"."DB"."EJERCICIOS_SQL"::"EJE_PROVEEDORES"</span>
+(id_proveedor)
+<span class="keyword">ON DELETE CASCADE</span>;
+                </div>
+            </section>
+            
+            <section class="section">
+                <h2>🎯 Lecciones Clave del Ejercicio</h2>
+                
+                <div class="key-concepts">
+                    <h3>✅ Conceptos Aplicados Exitosamente</h3>
+                    <ul>
+                        <li><strong>Transición metodológica:</strong> De SQL directo a ficheros estructurados</li>
+                        <li><strong>Análisis de requisitos:</strong> Empresa multinacional con productos, proveedores y países</li>
+                        <li><strong>Normalización:</strong> Tabla separada para países evita redundancia</li>
+                        <li><strong>Tipos de datos apropiados:</strong> INTEGER, NCHAR, DECIMAL según necesidades</li>
+                        <li><strong>Restricciones de integridad:</strong> PRIMARY KEY, FOREIGN KEY, UNIQUE, NOT NULL</li>
+                        <li><strong>Valores por defecto:</strong> DEFAULT 0.0 para evitar problemas con NULL</li>
+                        <li><strong>Acciones referenciales:</strong> CASCADE y SET NULL según lógica de negocio</li>
+                        <li><strong>Organización modular:</strong> Ficheros separados para mejor mantenimiento</li>
+                    </ul>
+                </div>
+                
+                <div class="success-box">
+                    <h4>🏆 Resultado Final</h4>
+                    <p>Sistema completo de inventario con:</p>
+                    <ul>
+                        <li>✅ Tres tablas interrelacionadas</li>
+                        <li>✅ Integridad referencial garantizada</li>
+                        <li>✅ Datos de prueba insertados correctamente</li>
+                        <li>✅ Acciones referenciales configuradas</li>
+                        <li>✅ Validación en Database Explorer</li>
+                    </ul>
+                </div>
+                
+                <div class="warning-box">
+                    <h4>🧹 Buenas Prácticas Destacadas</h4>
+                    <ul>
+                        <li><strong>Limpieza regular:</strong> Borrar objetos de prueba para mantener orden</li>
+                        <li><strong>Naming conventions:</strong> Nombres descriptivos y consistentes</li>
+                        <li><strong>Orden de inserción:</strong> Respetar dependencias (países → proveedores → productos)</li>
+                        <li><strong>Validación continua:</strong> Construir frecuentemente para detectar errores</li>
+                    </ul>
+                </div>
+            </section>
+        </main>
+        
+        <footer class="footer">
+            <p>&copy; 2024 - Curso de Modelado en SAP HANA - Clase 052</p>
+            <p>Instructor: Daniel Rico | Ejercicio Práctico con Ficheros SAP HANA</p>
+        </footer>
+    </div>
+</body>
+</html>

@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CLASE 051 - Acciones Referenciales en SAP HANA</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+        
+        .header .subtitle {
+            font-size: 1.3em;
+            opacity: 0.9;
+            font-weight: 300;
+        }
+        
+        .instructor-info {
+            background: #f8f9fa;
+            padding: 20px 40px;
+            border-left: 4px solid #007bff;
+            margin: 0;
+        }
+        
+        .instructor-info h3 {
+            color: #007bff;
+            margin-bottom: 10px;
+        }
+        
+        .content {
+            padding: 40px;
+        }
+        
+        .section {
+            margin-bottom: 40px;
+            padding: 30px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            border-left: 5px solid #007bff;
+        }
+        
+        .section h2 {
+            color: #1e3c72;
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #e9ecef;
+        }
+        
+        .section h3 {
+            color: #2a5298;
+            font-size: 1.4em;
+            margin: 25px 0 15px 0;
+        }
+        
+        .section h4 {
+            color: #495057;
+            font-size: 1.2em;
+            margin: 20px 0 10px 0;
+            font-weight: 600;
+        }
+        
+        .code-block {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+            overflow-x: auto;
+        }
+        
+        .code-block .keyword {
+            color: #63b3ed;
+            font-weight: bold;
+        }
+        
+        .code-block .string {
+            color: #68d391;
+        }
+        
+        .code-block .comment {
+            color: #a0aec0;
+            font-style: italic;
+        }
+        
+        .actions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+        
+        .action-card {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            border-top: 4px solid #007bff;
+        }
+        
+        .action-card.restrict {
+            border-top-color: #dc3545;
+        }
+        
+        .action-card.cascade {
+            border-top-color: #fd7e14;
+        }
+        
+        .action-card.set-null {
+            border-top-color: #6f42c1;
+        }
+        
+        .action-card.set-default {
+            border-top-color: #28a745;
+        }
+        
+        .action-card h4 {
+            margin-bottom: 15px;
+        }
+        
+        .action-card.restrict h4 {
+            color: #dc3545;
+        }
+        
+        .action-card.cascade h4 {
+            color: #fd7e14;
+        }
+        
+        .action-card.set-null h4 {
+            color: #6f42c1;
+        }
+        
+        .action-card.set-default h4 {
+            color: #28a745;
+        }
+        
+        .example-flow {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            padding: 25px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+        
+        .example-flow h4 {
+            color: #856404;
+            margin-bottom: 15px;
+        }
+        
+        .warning-box {
+            background: #ffe6e6;
+            border: 1px solid #ffcccc;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid #dc3545;
+        }
+        
+        .warning-box h4 {
+            color: #dc3545;
+            margin-bottom: 10px;
+        }
+        
+        .success-box {
+            background: #e6ffe6;
+            border: 1px solid #ccffcc;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid #28a745;
+        }
+        
+        .success-box h4 {
+            color: #28a745;
+            margin-bottom: 10px;
+        }
+        
+        .comparison-table {
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            margin: 20px 0;
+        }
+        
+        .comparison-table table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .comparison-table th {
+            background: #007bff;
+            color: white;
+            padding: 15px;
+            text-align: left;
+        }
+        
+        .comparison-table td {
+            padding: 15px;
+            border-bottom: 1px solid #e9ecef;
+            vertical-align: top;
+        }
+        
+        .comparison-table tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+        
+        .syntax-box {
+            background: #e3f2fd;
+            border: 2px solid #2196f3;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        
+        .syntax-title {
+            font-size: 1.2em;
+            color: #1976d2;
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+        
+        .key-concepts {
+            background: #e3f2fd;
+            padding: 25px;
+            border-radius: 10px;
+            border-left: 4px solid #2196f3;
+            margin: 20px 0;
+        }
+        
+        .key-concepts ul {
+            list-style-type: none;
+            padding-left: 0;
+        }
+        
+        .key-concepts li {
+            padding: 8px 0;
+            padding-left: 25px;
+            position: relative;
+        }
+        
+        .key-concepts li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #2196f3;
+            font-weight: bold;
+        }
+        
+        .footer {
+            background: #343a40;
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+            
+            .header {
+                padding: 30px 20px;
+            }
+            
+            .content {
+                padding: 20px;
+            }
+            
+            .section {
+                padding: 20px;
+            }
+            
+            .header h1 {
+                font-size: 2em;
+            }
+            
+            .actions-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>CLASE 051</h1>
+            <div class="subtitle">Acciones Referenciales: ON UPDATE y ON DELETE en SAP HANA</div>
+        </header>
+        
+        <div class="instructor-info">
+            <h3>🎯 Clase Final del Comando CREATE TABLE</h3>
+            <p><strong>Objetivo:</strong> Dominar las acciones automáticas de la base de datos en relaciones entre tablas</p>
+        </div>
+        
+        <main class="content">
+            <section class="section">
+                <h2>🔄 ¿Qué son las Acciones Referenciales?</h2>
+                
+                <p>Las <strong>acciones referenciales</strong> son acciones automáticas que realiza la base de datos en función de lo que le indiquemos al crear la tabla. Estas acciones se ejecutan cuando se actualiza o elimina un registro que tiene relaciones con otras tablas.</p>
+                
+                <div class="example-flow">
+                    <h4>📊 Escenario: Relación 1:N entre Tablas</h4>
+                    <p><strong>Tabla Padre:</strong> Proveedores (Primary Key)</p>
+                    <p><strong>Tabla Hija:</strong> Productos (Foreign Key → Proveedores)</p>
+                    
+                    <p><strong>Pregunta clave:</strong> ¿Qué sucede cuando elimino o actualizo un proveedor que tiene productos asociados?</p>
+                </div>
+                
+                <div class="actions-grid">
+                    <div class="action-card restrict">
+                        <h4>🚫 RESTRICT</h4>
+                        <p>No permite la operación si existen registros relacionados.</p>
+                    </div>
+                    
+                    <div class="action-card cascade">
+                        <h4>🌊 CASCADE</h4>
+                        <p>Propaga automáticamente la operación a registros relacionados.</p>
+                    </div>
+                    
+                    <div class="action-card set-null">
+                        <h4>∅ SET NULL</h4>
+                        <p>Establece a NULL los campos de clave foránea relacionados.</p>
+                    </div>
+                    
+                    <div class="action-card set-default">
+                        <h4>⚙️ SET DEFAULT</h4>
+                        <p>Establece un valor por defecto en los campos relacionados.</p>
+                    </div>
+                </div>
+            </section>
+            
+            <section class="section">
+                <h2>📝 Reglas de Actualización (ON UPDATE)</h2>
+                
+                <div class="syntax-box">
+                    <div class="syntax-title">📚 Sintaxis</div>
+                    <div class="code-block">
+<span class="keyword">ON UPDATE</span> { <span class="keyword">RESTRICT</span> | <span class="keyword">CASCADE</span> | <span class="keyword">SET NULL</span> | <span class="keyword">SET DEFAULT</span> }
+                    </div>
+                </div>
+                
+                <div class="comparison-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Acción</th>
+                                <th>Comportamiento</th>
+                                <th>Cuándo Usar</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>RESTRICT</strong></td>
+                                <td>No permite actualizar si hay referencias</td>
+                                <td>Máxima seguridad de datos</td>
+                            </tr>
+                            <tr>
+                                <td><strong>CASCADE</strong></td>
+                                <td>Actualiza automáticamente las referencias</td>
+                                <td>Sincronización automática</td>
+                            </tr>
+                            <tr>
+                                <td><strong>SET NULL</strong></td>
+                                <td>Convierte referencias a NULL</td>
+                                <td>Relaciones opcionales</td>
+                            </tr>
+                            <tr>
+                                <td><strong>SET DEFAULT</strong></td>
+                                <td>Establece valor por defecto</td>
+                                <td>Fallback predefinido</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <h3>💼 Ejemplo Práctico: ON UPDATE RESTRICT</h3>
+                <div class="example-flow">
+                    <h4>🏗️ Creación de Tablas</h4>
+                    <div class="code-block">
+<span class="keyword">CREATE TABLE</span> tabla1 (
+    valor1 <span class="keyword">INTEGER PRIMARY KEY</span>,
+    valor2 <span class="keyword">INTEGER</span>
+);
+
+<span class="keyword">CREATE TABLE</span> tabla2 (
+    valor1 <span class="keyword">INTEGER PRIMARY KEY</span>,
+    valor2 <span class="keyword">INTEGER</span>,
+    <span class="keyword">FOREIGN KEY</span> (valor2) <span class="keyword">REFERENCES</span> tabla1(valor1)
+    <span class="keyword">ON UPDATE RESTRICT</span>
+);
+                    </div>
+                    
+                    <h4>📊 Datos de Prueba</h4>
+                    <div class="code-block">
+<span class="comment">-- Tabla1: (1,2), (2,3)</span>
+<span class="comment">-- Tabla2: (1,1), (2,1), (3,2), (4,2)</span>
+                    </div>
+                    
+                    <div class="warning-box">
+                        <h4>❌ Actualización Rechazada</h4>
+                        <div class="code-block">
+<span class="keyword">UPDATE</span> tabla1 <span class="keyword">SET</span> valor1 = 3 <span class="keyword">WHERE</span> valor1 = 1;
+<span class="comment">-- ERROR: Violación de clave foránea</span>
+                        </div>
+                        <p>No se puede actualizar porque existen registros en tabla2 que referencian valor1 = 1</p>
+                    </div>
+                    
+                    <div class="success-box">
+                        <h4>✅ Solución</h4>
+                        <p>1. Actualizar primero las referencias en tabla2</p>
+                        <p>2. Luego actualizar el registro en tabla1</p>
+                    </div>
+                </div>
+                
+                <h3>🌊 Ejemplo: ON UPDATE CASCADE</h3>
+                <div class="example-flow">
+                    <div class="code-block">
+<span class="keyword">CREATE TABLE</span> tabla2 (
+    valor1 <span class="keyword">INTEGER PRIMARY KEY</span>,
+    valor2 <span class="keyword">INTEGER</span>,
+    <span class="keyword">FOREIGN KEY</span> (valor2) <span class="keyword">REFERENCES</span> tabla1(valor1)
+    <span class="keyword">ON UPDATE CASCADE</span>
+);
+                    </div>
+                    
+                    <div class="success-box">
+                        <h4>✅ Actualización Automática</h4>
+                        <div class="code-block">
+<span class="keyword">UPDATE</span> tabla1 <span class="keyword">SET</span> valor1 = 3 <span class="keyword">WHERE</span> valor1 = 1;
+<span class="comment">-- Resultado: tabla1 (3,2), (2,3)</span>
+<span class="comment">-- Resultado: tabla2 (1,3), (2,3), (3,2), (4,2)</span>
+                        </div>
+                        <p>Los valores 1 en tabla2.valor2 se actualizaron automáticamente a 3</p>
+                    </div>
+                </div>
+            </section>
+            
+            <section class="section">
+                <h2>🗑️ Reglas de Borrado (ON DELETE)</h2>
+                
+                <div class="syntax-box">
+                    <div class="syntax-title">📚 Sintaxis</div>
+                    <div class="code-block">
+<span class="keyword">ON DELETE</span> { <span class="keyword">RESTRICT</span> | <span class="keyword">CASCADE</span> | <span class="keyword">SET NULL</span> | <span class="keyword">SET DEFAULT</span> }
+                    </div>
+                </div>
+                
+                <h3>🚫 ON DELETE RESTRICT</h3>
+                <div class="example-flow">
+                    <div class="warning-box">
+                        <h4>❌ Borrado Rechazado</h4>
+                        <div class="code-block">
+<span class="keyword">DELETE FROM</span> tabla1 <span class="keyword">WHERE</span> valor1 = 1;
+<span class="comment">-- ERROR: No se puede borrar, hay referencias</span>
+                        </div>
+                        <p>Primero hay que eliminar o actualizar los registros dependientes</p>
+                    </div>
+                </div>
+                
+                <h3>🌊 ON DELETE CASCADE</h3>
+                <div class="example-flow">
+                    <div class="warning-box">
+                        <h4>⚠️ CUIDADO: Borrado en Cascada</h4>
+                        <div class="code-block">
+<span class="keyword">DELETE FROM</span> tabla1 <span class="keyword">WHERE</span> valor1 = 1;
+<span class="comment">-- Resultado: Borra el registro de tabla1</span>
+<span class="comment">-- Resultado: Borra AUTOMÁTICAMENTE todos los registros relacionados en tabla2</span>
+                        </div>
+                        <p><strong>🚨 RIESGO:</strong> En sistemas Big Data, esto puede eliminar millones de registros relacionados</p>
+                    </div>
+                </div>
+                
+                <h3>∅ ON DELETE SET NULL</h3>
+                <div class="example-flow">
+                    <div class="code-block">
+<span class="keyword">DELETE FROM</span> tabla1 <span class="keyword">WHERE</span> valor1 = 1;
+<span class="comment">-- Resultado: tabla1 ya no tiene el registro (1,2)</span>
+<span class="comment">-- Resultado: tabla2 (1,NULL), (2,NULL), (3,2), (4,2)</span>
+                    </div>
+                    <p>Los campos valor2 que apuntaban a 1 ahora son NULL</p>
+                </div>
+                
+                <h3>⚙️ ON DELETE SET DEFAULT</h3>
+                <div class="example-flow">
+                    <h4>🛠️ Configuración Previa</h4>
+                    <div class="code-block">
+<span class="keyword">CREATE TABLE</span> tabla2 (
+    valor1 <span class="keyword">INTEGER PRIMARY KEY</span>,
+    valor2 <span class="keyword">INTEGER DEFAULT</span> 15,
+    <span class="keyword">FOREIGN KEY</span> (valor2) <span class="keyword">REFERENCES</span> tabla1(valor1)
+    <span class="keyword">ON DELETE SET DEFAULT</span>
+);
+
+<span class="comment">-- Importante: El valor por defecto (15) debe existir en tabla1</span>
+<span class="keyword">INSERT INTO</span> tabla1 <span class="keyword">VALUES</span> (15, 100);
+                    </div>
+                    
+                    <div class="success-box">
+                        <h4>✅ Borrado con Valor por Defecto</h4>
+                        <div class="code-block">
+<span class="keyword">DELETE FROM</span> tabla1 <span class="keyword">WHERE</span> valor1 = 1;
+<span class="comment">-- Resultado: Los registros apuntan ahora al valor por defecto 15</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <section class="section">
+                <h2>⚠️ Consideraciones de Seguridad</h2>
+                
+                <div class="warning-box">
+                    <h4>🚨 Peligros del CASCADE</h4>
+                    <ul>
+                        <li><strong>Eliminaciones masivas:</strong> Un solo DELETE puede borrar millones de registros</li>
+                        <li><strong>Pérdida de datos:</strong> La recuperación requiere backups</li>
+                        <li><strong>Impacto en rendimiento:</strong> Operaciones costosas en sistemas grandes</li>
+                        <li><strong>Efecto dominó:</strong> Las eliminaciones pueden propagarse por múltiples tablas</li>
+                    </ul>
+                </div>
+                
+                <div class="success-box">
+                    <h4>✅ Mejores Prácticas</h4>
+                    <ul>
+                        <li><strong>RESTRICT por defecto:</strong> Máximo control sobre los datos</li>
+                        <li><strong>CASCADE con cuidado:</strong> Solo en relaciones maestro-detalle obvias</li>
+                        <li><strong>Validar antes de aplicar:</strong> Entender el impacto de cada acción</li>
+                        <li><strong>Backups regulares:</strong> Siempre tener copias de seguridad</li>
+                        <li><strong>Pruebas en desarrollo:</strong> Validar comportamiento antes de producción</li>
+                    </ul>
+                </div>
+            </section>
+            
+            <section class="section">
+                <h2>📋 Resumen Ejecutivo</h2>
+                
+                <div class="comparison-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Acción</th>
+                                <th>UPDATE</th>
+                                <th>DELETE</th>
+                                <th>Nivel de Riesgo</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>RESTRICT</strong></td>
+                                <td>Impide actualización si hay referencias</td>
+                                <td>Impide borrado si hay referencias</td>
+                                <td><span style="color: #28a745;">BAJO</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>CASCADE</strong></td>
+                                <td>Actualiza automáticamente referencias</td>
+                                <td>Borra automáticamente registros relacionados</td>
+                                <td><span style="color: #dc3545;">ALTO</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>SET NULL</strong></td>
+                                <td>Convierte referencias a NULL</td>
+                                <td>Convierte referencias a NULL</td>
+                                <td><span style="color: #ffc107;">MEDIO</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>SET DEFAULT</strong></td>
+                                <td>Usa valor por defecto</td>
+                                <td>Usa valor por defecto</td>
+                                <td><span style="color: #ffc107;">MEDIO</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="key-concepts">
+                    <h3>🔑 Conceptos Clave para Recordar</h3>
+                    <ul>
+                        <li><strong>RESTRICT:</strong> Opción por defecto - máximo control manual</li>
+                        <li><strong>CASCADE:</strong> Potente pero peligroso - usar con extrema precaución</li>
+                        <li><strong>SET NULL:</strong> Útil para relaciones opcionales</li>
+                        <li><strong>SET DEFAULT:</strong> Requiere valor por defecto válido en tabla padre</li>
+                        <li><strong>Orden de operaciones:</strong> Siempre actualizar/borrar dependientes antes que padres con RESTRICT</li>
+                        <li><strong>Validación previa:</strong> Entender las relaciones antes de aplicar acciones</li>
+                    </ul>
+                </div>
+                
+                <div class="success-box">
+                    <h4>🎯 Próximos Pasos</h4>
+                    <p>En la siguiente clase realizaremos un <strong>ejercicio práctico integral</strong> que combine todos los conceptos vistos del comando CREATE TABLE, incluyendo restricciones, claves foráneas y acciones referenciales en un caso de uso real.</p>
+                </div>
+            </section>
+        </main>
+        
+        <footer class="footer">
+            <p>&copy; 2024 - Curso de Modelado en SAP HANA - Clase 051</p>
+            <p>Instructor: Daniel Rico | Acciones Referenciales: ON UPDATE y ON DELETE</p>
+        </footer>
+    </div>
+</body>
+</html>

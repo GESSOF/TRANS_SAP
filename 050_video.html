@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CLASE 050 - Restricciones a Nivel de Tabla y Claves Foráneas</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+        
+        .header .subtitle {
+            font-size: 1.3em;
+            opacity: 0.9;
+            font-weight: 300;
+        }
+        
+        .instructor-info {
+            background: #f8f9fa;
+            padding: 20px 40px;
+            border-left: 4px solid #007bff;
+            margin: 0;
+        }
+        
+        .instructor-info h3 {
+            color: #007bff;
+            margin-bottom: 10px;
+        }
+        
+        .content {
+            padding: 40px;
+        }
+        
+        .section {
+            margin-bottom: 40px;
+            padding: 30px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            border-left: 5px solid #007bff;
+        }
+        
+        .section h2 {
+            color: #1e3c72;
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #e9ecef;
+        }
+        
+        .section h3 {
+            color: #2a5298;
+            font-size: 1.4em;
+            margin: 25px 0 15px 0;
+        }
+        
+        .section h4 {
+            color: #495057;
+            font-size: 1.2em;
+            margin: 20px 0 10px 0;
+            font-weight: 600;
+        }
+        
+        .code-block {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+            overflow-x: auto;
+        }
+        
+        .code-block .keyword {
+            color: #63b3ed;
+            font-weight: bold;
+        }
+        
+        .code-block .string {
+            color: #68d391;
+        }
+        
+        .code-block .comment {
+            color: #a0aec0;
+            font-style: italic;
+        }
+        
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin: 30px 0;
+        }
+        
+        .sql-approach {
+            background: #e6f3ff;
+            padding: 25px;
+            border-radius: 10px;
+            border-left: 4px solid #007bff;
+        }
+        
+        .file-approach {
+            background: #f0f8e6;
+            padding: 25px;
+            border-radius: 10px;
+            border-left: 4px solid #28a745;
+        }
+        
+        .example-box {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            padding: 25px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+        
+        .example-box h4 {
+            color: #856404;
+            margin-bottom: 15px;
+        }
+        
+        .warning-box {
+            background: #ffe6e6;
+            border: 1px solid #ffcccc;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid #dc3545;
+        }
+        
+        .warning-box h4 {
+            color: #dc3545;
+            margin-bottom: 10px;
+        }
+        
+        .success-box {
+            background: #e6ffe6;
+            border: 1px solid #ccffcc;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid #28a745;
+        }
+        
+        .success-box h4 {
+            color: #28a745;
+            margin-bottom: 10px;
+        }
+        
+        .key-concepts {
+            background: #e3f2fd;
+            padding: 25px;
+            border-radius: 10px;
+            border-left: 4px solid #2196f3;
+            margin: 20px 0;
+        }
+        
+        .key-concepts ul {
+            list-style-type: none;
+            padding-left: 0;
+        }
+        
+        .key-concepts li {
+            padding: 8px 0;
+            padding-left: 25px;
+            position: relative;
+        }
+        
+        .key-concepts li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #2196f3;
+            font-weight: bold;
+        }
+        
+        .steps-list {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin: 20px 0;
+        }
+        
+        .steps-list ol {
+            counter-reset: step-counter;
+            list-style: none;
+            padding-left: 0;
+        }
+        
+        .steps-list ol li {
+            counter-increment: step-counter;
+            padding: 15px;
+            margin: 10px 0;
+            background: #f8f9fa;
+            border-radius: 5px;
+            border-left: 4px solid #007bff;
+            position: relative;
+            padding-left: 50px;
+        }
+        
+        .steps-list ol li:before {
+            content: counter(step-counter);
+            position: absolute;
+            left: 15px;
+            top: 15px;
+            background: #007bff;
+            color: white;
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 12px;
+        }
+        
+        .constraint-types {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+        
+        .constraint-card {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            border-top: 4px solid #28a745;
+        }
+        
+        .constraint-card h4 {
+            color: #28a745;
+            margin-bottom: 15px;
+        }
+        
+        .footer {
+            background: #343a40;
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+            
+            .header {
+                padding: 30px 20px;
+            }
+            
+            .content {
+                padding: 20px;
+            }
+            
+            .section {
+                padding: 20px;
+            }
+            
+            .header h1 {
+                font-size: 2em;
+            }
+            
+            .comparison-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .constraint-types {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>CLASE 050</h1>
+            <div class="subtitle">Restricciones a Nivel de Tabla y Claves Foráneas en SAP HANA</div>
+        </header>
+        
+        <div class="instructor-info">
+            <h3>🎯 Enfoque: Modelado Avanzado de Bases de Datos</h3>
+            <p><strong>Objetivo:</strong> Implementar restricciones a nivel de tabla y establecer relaciones entre entidades</p>
+        </div>
+        
+        <main class="content">
+            <section class="section">
+                <h2>🏗️ Restricciones a Nivel de Tabla</h2>
+                
+                <p>Las restricciones a nivel de tabla permiten aplicar reglas que afectan a múltiples columnas o al conjunto completo de datos de una tabla.</p>
+                
+                <div class="constraint-types">
+                    <div class="constraint-card">
+                        <h4>🔑 UNIQUE a Nivel de Tabla</h4>
+                        <p>Permite definir restricciones de unicidad sobre múltiples columnas combinadas o individualmente.</p>
+                        <ul>
+                            <li><strong>Combinadas:</strong> UNIQUE (campo1, campo2)</li>
+                            <li><strong>Individuales:</strong> UNIQUE (campo1), UNIQUE (campo2)</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="constraint-card">
+                        <h4>🗝️ PRIMARY KEY Compuesta</h4>
+                        <p>Establece una clave primaria formada por múltiples campos que juntos identifican unívocamente cada registro.</p>
+                        <ul>
+                            <li>Solo puede existir una clave primaria por tabla</li>
+                            <li>Combina automáticamente NOT NULL y UNIQUE</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="constraint-card">
+                        <h4>🔗 FOREIGN KEY</h4>
+                        <p>Establece relaciones entre tablas, garantizando integridad referencial.</p>
+                        <ul>
+                            <li>Referencia a clave primaria de otra tabla</li>
+                            <li>Controla la consistencia de datos relacionados</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+            
+            <section class="section">
+                <h2>💡 Ejemplos Prácticos con UNIQUE</h2>
+                
+                <h3>🔄 UNIQUE Combinado vs Individual</h3>
+                
+                <div class="example-box">
+                    <h4>📝 Ejemplo 1: UNIQUE Combinado</h4>
+                    <div class="code-block">
+<span class="keyword">CREATE TABLE</span> prueba_restricciones (
+    valor1 <span class="keyword">INTEGER</span>,
+    valor2 <span class="keyword">INTEGER</span>,
+    valor3 <span class="keyword">INTEGER</span>,
+    <span class="keyword">UNIQUE</span> (valor1, valor2)
+);
+                    </div>
+                    <p><strong>Comportamiento:</strong> El conjunto (valor1, valor2) debe ser único, pero cada valor individual puede repetirse.</p>
+                    
+                    <div class="success-box">
+                        <h4>✅ Insertions Permitidas</h4>
+                        <ul>
+                            <li>(1, 1, 1) ✓</li>
+                            <li>(1, 2, 1) ✓ - valor1 repetido pero conjunto diferente</li>
+                            <li>(2, 1, 1) ✓ - valor2 repetido pero conjunto diferente</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="warning-box">
+                        <h4>❌ Insertion Rechazada</h4>
+                        <ul>
+                            <li>(1, 1, 2) ❌ - conjunto (1, 1) ya existe</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="example-box">
+                    <h4>📝 Ejemplo 2: UNIQUE Individual</h4>
+                    <div class="code-block">
+<span class="keyword">CREATE TABLE</span> prueba_restricciones (
+    valor1 <span class="keyword">INTEGER</span>,
+    valor2 <span class="keyword">INTEGER</span>,
+    valor3 <span class="keyword">INTEGER</span>,
+    <span class="keyword">UNIQUE</span> (valor1),
+    <span class="keyword">UNIQUE</span> (valor2)
+);
+                    </div>
+                    <p><strong>Comportamiento:</strong> Cada campo debe ser único individualmente.</p>
+                </div>
+            </section>
+            
+            <section class="section">
+                <h2>🔗 Claves Foráneas (Foreign Keys)</h2>
+                
+                <h3>📚 Conceptos Fundamentales</h3>
+                <div class="key-concepts">
+                    <ul>
+                        <li><strong>Integridad Referencial:</strong> Garantiza que los valores en la tabla hija existan en la tabla padre</li>
+                        <li><strong>Relaciones:</strong> Establece vínculos lógicos entre entidades (ej: productos-proveedores)</li>
+                        <li><strong>Orden de Creación:</strong> La tabla referenciada debe existir antes que la que la referencia</li>
+                        <li><strong>Validación:</strong> No se pueden insertar valores que no existan en la tabla padre</li>
+                    </ul>
+                </div>
+                
+                <h3>🛠️ Implementación con SQL Directo</h3>
+                <div class="example-box">
+                    <h4>📝 Creación de Tablas Relacionadas</h4>
+                    <div class="code-block">
+<span class="comment">-- Tabla padre (debe crearse primero)</span>
+<span class="keyword">CREATE TABLE</span> primaria (
+    valor1 <span class="keyword">INTEGER PRIMARY KEY</span>,
+    valor2 <span class="keyword">INTEGER</span>
+);
+
+<span class="comment">-- Tabla hija con clave foránea</span>
+<span class="keyword">CREATE TABLE</span> foranea (
+    valor1 <span class="keyword">INTEGER</span>,
+    valor2 <span class="keyword">INTEGER</span>,
+    <span class="keyword">FOREIGN KEY</span> (valor2) <span class="keyword">REFERENCES</span> primaria(valor1)
+    <span class="keyword">ON DELETE CASCADE</span>
+);
+                    </div>
+                </div>
+                
+                <div class="steps-list">
+                    <h4>🔄 Proceso de Inserción</h4>
+                    <ol>
+                        <li><strong>Crear tabla primaria:</strong> Debe existir antes que la foránea</li>
+                        <li><strong>Insertar datos en primaria:</strong> Los valores deben existir primero</li>
+                        <li><strong>Insertar en foránea:</strong> Solo valores que existan en primaria</li>
+                        <li><strong>Validación automática:</strong> La BD verifica la existencia del valor</li>
+                    </ol>
+                </div>
+            </section>
+            
+            <section class="section">
+                <h2>📁 Implementación con Ficheros en SAP HANA</h2>
+                
+                <div class="comparison-grid">
+                    <div class="sql-approach">
+                        <h4>💻 Enfoque SQL Directo</h4>
+                        <ul>
+                            <li>Una sola sentencia CREATE TABLE</li>
+                            <li>Definición inline de la foreign key</li>
+                            <li>Rápido para pruebas y desarrollo</li>
+                            <li>Menos control de versiones</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="file-approach">
+                        <h4>📂 Enfoque con Ficheros</h4>
+                        <ul>
+                            <li>Tres ficheros separados</li>
+                            <li>Mejor organización del código</li>
+                            <li>Control de versiones granular</li>
+                            <li>Reutilización de componentes</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <h3>📋 Estructura de Ficheros Necesaria</h3>
+                <div class="steps-list">
+                    <ol>
+                        <li><strong>tabla_primaria.hdbtable</strong> - Define la tabla padre</li>
+                        <li><strong>tabla_foranea.hdbtable</strong> - Define la tabla hija (sin FK)</li>
+                        <li><strong>fk_relacion.hdbconstraint</strong> - Establece la clave foránea</li>
+                    </ol>
+                </div>
+                
+                <div class="example-box">
+                    <h4>📝 Fichero de Constraint (.hdbconstraint)</h4>
+                    <div class="code-block">
+<span class="keyword">CONSTRAINT</span> <span class="string">"BBDD_MODELADO"."DB"."CLAVE_FORANEA"::"FK_FORANEA"</span>
+<span class="keyword">ON</span> <span class="string">"BBDD_MODELADO"."DB"."CLAVE_FORANEA"::"FORANEA"</span>
+(valor2)
+<span class="keyword">REFERENCES</span> <span class="string">"BBDD_MODELADO"."DB"."CLAVE_FORANEA"::"PRIMARIA"</span>
+(valor1)
+<span class="keyword">ON DELETE CASCADE</span>;
+                    </div>
+                </div>
+            </section>
+            
+            <section class="section">
+                <h2>⚠️ Errores Comunes y Soluciones</h2>
+                
+                <div class="warning-box">
+                    <h4>🚫 Problemas Frecuentes</h4>
+                    <ul>
+                        <li><strong>Orden de creación:</strong> Intentar crear tabla foránea antes que la primaria</li>
+                        <li><strong>Valores inexistentes:</strong> Insertar en tabla hija sin el valor en tabla padre</li>
+                        <li><strong>Sintaxis de ficheros:</strong> Usar sintaxis SQL directa en ficheros .hdbtable</li>
+                        <li><strong>Mayúsculas/minúsculas:</strong> Inconsistencias en nombres con comillas dobles</li>
+                    </ul>
+                </div>
+                
+                <div class="success-box">
+                    <h4>✅ Mejores Prácticas</h4>
+                    <ul>
+                        <li><strong>Naming conventions:</strong> Mismo nombre para fichero y objeto</li>
+                        <li><strong>Namespaces consistentes:</strong> Verificar rutas completas</li>
+                        <li><strong>Construcción secuencial:</strong> Crear tablas padre antes que hijas</li>
+                        <li><strong>Validación de datos:</strong> Verificar existencia antes de insertar</li>
+                    </ul>
+                </div>
+            </section>
+            
+            <section class="section">
+                <h2>🔑 Conceptos Clave para Recordar</h2>
+                
+                <div class="key-concepts">
+                    <ul>
+                        <li><strong>UNIQUE Combinado:</strong> Evalúa el conjunto de campos como unidad</li>
+                        <li><strong>UNIQUE Individual:</strong> Cada campo debe ser único por separado</li>
+                        <li><strong>PRIMARY KEY:</strong> Solo una por tabla, puede ser compuesta</li>
+                        <li><strong>FOREIGN KEY:</strong> Establece relaciones y garantiza integridad</li>
+                        <li><strong>Orden de creación:</strong> Tabla padre antes que tabla hija</li>
+                        <li><strong>Ficheros separados:</strong> En SAP HANA usar .hdbconstraint para FK</li>
+                        <li><strong>ON DELETE CASCADE:</strong> Propagación automática de eliminaciones</li>
+                    </ul>
+                </div>
+                
+                <div class="warning-box">
+                    <h4>🎯 Próximos Pasos</h4>
+                    <p>En la siguiente clase se explicarán las <strong>acciones referenciales</strong> (ON DELETE CASCADE, ON UPDATE RESTRICT, etc.) que determinan el comportamiento automático cuando se modifican o eliminan registros relacionados.</p>
+                </div>
+            </section>
+        </main>
+        
+        <footer class="footer">
+            <p>&copy; 2024 - Curso de Modelado en SAP HANA - Clase 050</p>
+            <p>Instructor: Daniel Rico | Restricciones a Nivel de Tabla y Claves Foráneas</p>
+        </footer>
+    </div>
+</body>
+</html>
