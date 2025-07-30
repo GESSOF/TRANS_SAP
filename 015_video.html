@@ -3,108 +3,634 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>No Disponible - Portal Educativo</title>
+    <title>Clase 015 - Modelo Relacional | Material de Estudio</title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-
+        
         body {
-            font-family: 'Arial', sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+        
+        .nav {
+            background: #34495e;
+            padding: 20px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .nav ul {
+            list-style: none;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+        }
+        
+        .nav a {
+            color: #ecf0f1;
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            transition: all 0.3s;
+            font-weight: 500;
+        }
+        
+        .nav a:hover {
+            background: #3498db;
+            transform: translateY(-2px);
+        }
+        
+        .content {
+            padding: 40px;
+        }
+        
+        .section {
+            margin-bottom: 50px;
+            padding: 30px;
+            border-radius: 10px;
+            background: #f8f9fa;
+            border-left: 5px solid #3498db;
+        }
+        
+        .section h2 {
+            color: #2c3e50;
+            font-size: 2em;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+        }
+        
+        .section h3 {
+            color: #34495e;
+            font-size: 1.4em;
+            margin: 25px 0 15px 0;
+        }
+        
+        .highlight {
+            background: linear-gradient(120deg, #a8edea 0%, #fed6e3 100%);
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 4px solid #e74c3c;
+        }
+        
+        .key-concept {
+            background: #e8f6f3;
+            border: 1px solid #1abc9c;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        
+        .key-concept strong {
+            color: #16a085;
+        }
+        
+        .example {
+            background: #fff3cd;
+            border: 1px solid #ffc107;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        
+        .example h4 {
+            color: #856404;
+            margin-bottom: 10px;
+        }
+        
+        .table-container {
+            overflow-x: auto;
+            margin: 20px 0;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        th {
+            background: #3498db;
+            color: white;
+            font-weight: 600;
+        }
+        
+        tr:hover {
+            background: #f5f5f5;
+        }
+        
+        .steps {
+            counter-reset: step-counter;
+        }
+        
+        .step {
+            counter-increment: step-counter;
+            background: white;
+            margin: 15px 0;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #9b59b6;
+            position: relative;
+        }
+        
+        .step::before {
+            content: counter(step-counter);
+            position: absolute;
+            left: -20px;
+            top: 20px;
+            background: #9b59b6;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 20px;
-        }
-
-        .container {
-            text-align: center;
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
-            padding: 60px 40px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-            max-width: 600px;
-            width: 100%;
-            animation: fadeInUp 0.8s ease-out;
-        }
-
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .icon {
-            font-size: 80px;
-            margin-bottom: 30px;
-            animation: bounce 2s infinite;
-        }
-
-        @keyframes bounce {
-            0%, 20%, 50%, 80%, 100% {
-                transform: translateY(0);
-            }
-            40% {
-                transform: translateY(-10px);
-            }
-            60% {
-                transform: translateY(-5px);
-            }
-        }
-
-        .main-title {
-            font-size: 3.5rem;
             font-weight: bold;
-            color: #2d3748;
-            margin-bottom: 20px;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
-            letter-spacing: -1px;
         }
-
-        .subtitle {
-            font-size: 1.3rem;
-            color: #4a5568;
-            margin-bottom: 30px;
-            line-height: 1.6;
+        
+        .advantages {
+            background: #d4edda;
+            border-color: #28a745;
         }
-
-
-
+        
+        .disadvantages {
+            background: #f8d7da;
+            border-color: #dc3545;
+        }
+        
+        ul, ol {
+            margin: 15px 0;
+            padding-left: 30px;
+        }
+        
+        li {
+            margin: 8px 0;
+        }
+        
+        .footer {
+            background: #2c3e50;
+            color: white;
+            text-align: center;
+            padding: 30px;
+        }
+        
         @media (max-width: 768px) {
-            .container {
-                padding: 40px 20px;
+            .header h1 {
+                font-size: 2em;
             }
             
-            .main-title {
-                font-size: 2.5rem;
+            .nav ul {
+                flex-direction: column;
+                align-items: center;
             }
             
-            .subtitle {
-                font-size: 1.1rem;
+            .content {
+                padding: 20px;
+            }
+            
+            .section {
+                padding: 20px;
             }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="icon">📚</div>
+        <header class="header">
+            <h1>📊 Modelo Relacional</h1>
+            <p>Clase 015 - Curso de Modelado en SAP HANA</p>
+        </header>
         
-		<h1 class="main-title">CLASE 015</h1>
-        <h1 class="main-title">NO DISPONIBLE</h1>
+        <nav class="nav">
+            <ul>
+                <li><a href="#introduccion">Introducción</a></li>
+                <li><a href="#caracteristicas">Características</a></li>
+                <li><a href="#claves">Tipos de Claves</a></li>
+                <li><a href="#normalizacion">Normalización</a></li>
+                <li><a href="#integridad">Integridad Referencial</a></li>
+                <li><a href="#ventajas">Ventajas y Desventajas</a></li>
+                <li><a href="#conversion">Conversión ER → Relacional</a></li>
+            </ul>
+        </nav>
         
-        <p class="subtitle">Contenido temporalmente inaccesible</p>
+        <main class="content">
+            <section id="introduccion" class="section">
+                <h2>🎯 Introducción al Modelo Relacional</h2>
+                
+                <div class="highlight">
+                    <strong>Objetivo Principal:</strong> El modelo relacional conforma el modelo lógico o esquema de la base de datos a partir del cual se podrá realizar el modelado físico.
+                </div>
+                
+                <p>El modelo relacional es un paso necesario porque el diagrama entidad-relación es una representación conceptual que no permite su implementación directa en una base de datos.</p>
+                
+                <div class="key-concept">
+                    <strong>Niveles de Abstracción:</strong>
+                    <ul>
+                        <li><strong>Nivel Conceptual:</strong> Diagrama Entidad-Relación</li>
+                        <li><strong>Nivel Lógico:</strong> Modelo Relacional</li>
+                        <li><strong>Nivel Físico:</strong> Implementación en SGBD específico</li>
+                    </ul>
+                </div>
+                
+                <h3>¿Qué nos permite el Modelo Relacional?</h3>
+                <ul>
+                    <li>Incluir tipos de datos específicos</li>
+                    <li>Convertir la estructura en forma de tablas</li>
+                    <li>Marcar claves foráneas</li>
+                    <li>Añadir campos necesarios que no aparecían en el modelo ER</li>
+                </ul>
+                
+                <h3>Métodos de Construcción</h3>
+                <div class="example">
+                    <h4>Método 1: Construcción Directa</h4>
+                    <p>Crear tablas según criterio propio y aplicar normalización hasta obtener un esquema óptimo.</p>
+                </div>
+                
+                <div class="example">
+                    <h4>Método 2: Conversión desde ER (Recomendado)</h4>
+                    <p>Construir un esquema entidad-relación y aplicar reglas de conversión para transformarlo en modelo relacional.</p>
+                </div>
+            </section>
+            
+            <section id="caracteristicas" class="section">
+                <h2>🔧 Características del Modelo Relacional</h2>
+                
+                <div class="key-concept">
+                    <ul>
+                        <li><strong>Orientado a registros:</strong> Se representa en forma de tablas</li>
+                        <li><strong>Modelo más utilizado:</strong> En la actualidad</li>
+                        <li><strong>Evolutivo:</strong> Ha ido mejorando con los años</li>
+                        <li><strong>Flexible en representación:</strong> Tablas, texto o esquemas gráficos</li>
+                    </ul>
+                </div>
+                
+                <h3>Conceptos Fundamentales</h3>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Concepto</th>
+                                <th>Descripción</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Relación</strong></td>
+                                <td>Tabla con estructura definida</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Tupla</strong></td>
+                                <td>Fila o registro de la tabla</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Atributo</strong></td>
+                                <td>Columna de la tabla</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Dominio</strong></td>
+                                <td>Conjunto de valores válidos para un atributo</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Cardinalidad</strong></td>
+                                <td>Número de tuplas que soporta la tabla</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+            
+            <section id="claves" class="section">
+                <h2>🔑 Tipos de Claves</h2>
+                
+                <div class="key-concept">
+                    <strong>Clave Única</strong>
+                    <ul>
+                        <li>Evita que haya dos valores iguales</li>
+                        <li>Puede haber varias en una tabla</li>
+                        <li>Función: evitar redundancias</li>
+                        <li>Puede ser compuesta (varios campos)</li>
+                    </ul>
+                </div>
+                
+                <div class="key-concept">
+                    <strong>Clave Primaria</strong>
+                    <ul>
+                        <li>Clave única elegida para identificar el registro</li>
+                        <li>Solo puede haber una por tabla</li>
+                        <li>No permite valores duplicados ni nulos</li>
+                        <li>Participa en la creación de relaciones</li>
+                        <li>Identifica de forma unívoca cada registro</li>
+                    </ul>
+                </div>
+                
+                <div class="key-concept">
+                    <strong>Clave Foránea</strong>
+                    <ul>
+                        <li>Referencia a una clave de otra tabla</li>
+                        <li>Generalmente apunta a la clave primaria</li>
+                        <li>No requiere ser única</li>
+                        <li>Nace de las relaciones entre tablas</li>
+                    </ul>
+                </div>
+                
+                <div class="key-concept">
+                    <strong>Clave Índice</strong>
+                    <ul>
+                        <li>Acelera las consultas en esos campos</li>
+                        <li>Ocupa espacio adicional en memoria</li>
+                        <li>Debe crearse estratégicamente</li>
+                        <li>Analizar qué campos se consultan frecuentemente</li>
+                    </ul>
+                </div>
+            </section>
+            
+            <section id="normalizacion" class="section">
+                <h2>📏 Normalización</h2>
+                
+                <div class="highlight">
+                    <strong>Objetivo:</strong> Las formas normales buscan optimizar las estructuras de datos, eliminando la redundancia mediante dependencias funcionales.
+                </div>
+                
+                <div class="steps">
+                    <div class="step">
+                        <h3>Primera Forma Normal (1FN)</h3>
+                        <p><strong>Regla:</strong> Todos los dominios de los atributos contienen valores atómicos.</p>
+                        <ul>
+                            <li>No campos multivalorados</li>
+                            <li>Datos lo más granular posible</li>
+                            <li>Todos los registros con el mismo número de columnas</li>
+                        </ul>
+                        
+                        <div class="example">
+                            <h4>Ejemplo: Teléfonos</h4>
+                            <p><strong>❌ Incorrecto:</strong> Campo "Teléfono" con múltiples números</p>
+                            <p><strong>✅ Correcto:</strong> Campos separados: "Teléfono_Fijo", "Teléfono_Móvil", "Teléfono_Trabajo"</p>
+                        </div>
+                    </div>
+                    
+                    <div class="step">
+                        <h3>Segunda Forma Normal (2FN)</h3>
+                        <p><strong>Requisitos:</strong></p>
+                        <ul>
+                            <li>Cumplir 1FN</li>
+                            <li>Cada atributo no clave debe tener dependencia completa de la clave primaria</li>
+                            <li>Solo aplica si la clave primaria es compuesta</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="step">
+                        <h3>Tercera Forma Normal (3FN)</h3>
+                        <p><strong>Requisitos:</strong></p>
+                        <ul>
+                            <li>Cumplir 1FN y 2FN</li>
+                            <li>No debe haber dependencias funcionales entre atributos no clave</li>
+                            <li>Todos los campos deben depender directamente de la clave primaria</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="step">
+                        <h3>Forma Normal de Boyce-Codd (FNBC)</h3>
+                        <p><strong>Regla:</strong> Todo atributo del que dependa otro debe ser clave candidata.</p>
+                        
+                        <div class="example">
+                            <h4>Ejemplo: Claves Candidatas</h4>
+                            <p>En una tabla de empleados:</p>
+                            <ul>
+                                <li><strong>Clave Primaria:</strong> ID_Empleado</li>
+                                <li><strong>Clave Candidata:</strong> DNI (también identifica únicamente)</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="highlight">
+                    <strong>Nota:</strong> Con las tres primeras formas normales se considera una normalización adecuada. Existen 4FN y 5FN para casos muy complejos.
+                </div>
+            </section>
+            
+            <section id="integridad" class="section">
+                <h2>🔒 Integridad Referencial</h2>
+                
+                <div class="key-concept">
+                    <strong>Definición:</strong> Sistema de reglas que aseguran que los registros de tablas relacionadas son válidos y que no se borren o cambien datos relacionados accidentalmente.
+                </div>
+                
+                <h3>Reglas de Integridad</h3>
+                <ul>
+                    <li>Las claves foráneas pueden contener valor nulo o un valor existente en la tabla referenciada</li>
+                    <li>No se pueden asignar valores que no existen en la tabla principal</li>
+                    <li>Se activa automáticamente al crear claves foráneas</li>
+                </ul>
+                
+                <h3>Acciones Referenciales</h3>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Acción</th>
+                                <th>Descripción</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>RESTRICT</strong></td>
+                                <td>No permite borrar/modificar si existen referencias</td>
+                            </tr>
+                            <tr>
+                                <td><strong>SET DEFAULT</strong></td>
+                                <td>Asigna valor por defecto a las claves foráneas</td>
+                            </tr>
+                            <tr>
+                                <td><strong>SET NULL</strong></td>
+                                <td>Asigna NULL a las claves foráneas</td>
+                            </tr>
+                            <tr>
+                                <td><strong>CASCADE</strong></td>
+                                <td>Borra/modifica en cascada los registros dependientes</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+            
+            <section id="ventajas" class="section">
+                <h2>⚖️ Ventajas y Desventajas</h2>
+                
+                <div class="advantages section">
+                    <h3>✅ Ventajas</h3>
+                    <ul>
+                        <li><strong>Representación homogénea:</strong> Todo en forma de tablas, fácil interpretación</li>
+                        <li><strong>Modelo más utilizado:</strong> Gran cantidad de información y soporte disponible</li>
+                        <li><strong>Independencia del almacenamiento:</strong> Abstracto del SGBD específico</li>
+                        <li><strong>Consultas flexibles:</strong> Recuperación mediante SQL</li>
+                        <li><strong>Reducción de redundancias:</strong> Mediante normalización</li>
+                        <li><strong>Integridad de datos:</strong> Mediante restricciones</li>
+                        <li><strong>Acceso concurrente:</strong> Múltiples usuarios simultáneos</li>
+                        <li><strong>Adaptabilidad:</strong> Facilita modificaciones</li>
+                    </ul>
+                </div>
+                
+                <div class="disadvantages section">
+                    <h3>❌ Desventajas</h3>
+                    <ul>
+                        <li><strong>Sin representación de reglas:</strong> No puede expresar conocimiento como reglas</li>
+                        <li><strong>No hay herencia:</strong> A diferencia del modelo orientado a objetos</li>
+                        <li><strong>Sin jerarquías:</strong> Falta de poder expresivo para representarlas</li>
+                        <li><strong>Solo datos atómicos:</strong> Imposibilidad de gestionar datos no atómicos</li>
+                        <li><strong>Incompatibilidad de impedancia:</strong> Con estructuras de datos complejas</li>
+                    </ul>
+                </div>
+            </section>
+            
+            <section id="conversion" class="section">
+                <h2>🔄 Conversión de ER a Modelo Relacional</h2>
+                
+                <div class="steps">
+                    <div class="step">
+                        <h3>Entidades → Tablas</h3>
+                        <p>Cada entidad (rectángulo) del diagrama ER se convierte en una tabla.</p>
+                    </div>
+                    
+                    <div class="step">
+                        <h3>Atributos → Columnas</h3>
+                        <p>Los atributos (óvalos) se convierten en campos de la tabla correspondiente.</p>
+                    </div>
+                    
+                    <div class="step">
+                        <h3>Atributos Clave → Clave Primaria</h3>
+                        <p>Los atributos subrayados se convierten en la clave primaria de la tabla.</p>
+                    </div>
+                    
+                    <div class="step">
+                        <h3>Relaciones 1:N</h3>
+                        <p>La clave primaria del lado "1" se copia al lado "N" como clave foránea.</p>
+                        
+                        <div class="example">
+                            <h4>Ejemplo: Cliente - Pedido (1:N)</h4>
+                            <p><strong>Cliente:</strong> ID_Cliente (PK), Nombre, Email</p>
+                            <p><strong>Pedido:</strong> ID_Pedido (PK), Fecha, ID_Cliente (FK)</p>
+                        </div>
+                    </div>
+                    
+                    <div class="step">
+                        <h3>Relaciones N:M</h3>
+                        <p>Se crea una nueva tabla cuya clave primaria es la unión de las claves de las entidades relacionadas.</p>
+                        
+                        <div class="example">
+                            <h4>Ejemplo: Estudiante - Curso (N:M)</h4>
+                            <p><strong>Estudiante:</strong> ID_Estudiante (PK), Nombre</p>
+                            <p><strong>Curso:</strong> ID_Curso (PK), Nombre_Curso</p>
+                            <p><strong>Inscripción:</strong> ID_Estudiante (PK,FK), ID_Curso (PK,FK), Fecha_Inscripción</p>
+                        </div>
+                    </div>
+                    
+                    <div class="step">
+                        <h3>Relaciones con Atributos</h3>
+                        <p>Si una relación tiene atributos, se crea una nueva tabla obligatoriamente.</p>
+                    </div>
+                    
+                    <div class="step">
+                        <h3>Relaciones 1:1</h3>
+                        <p>Se puede trasladar la clave en cualquier dirección. Se recomienda hacerlo hacia la tabla dependiente.</p>
+                    </div>
+                </div>
+                
+                <div class="highlight">
+                    <strong>Regla Fundamental:</strong> Toda clave foránea debe hacer referencia a una clave primaria existente.
+                </div>
+            </section>
+        </main>
         
-
+        <footer class="footer">
+            <p>📚 Material de Estudio - Clase 015: Modelo Relacional</p>
+            <p>Curso de Modelado en SAP HANA</p>
+        </footer>
     </div>
+
+    <script>
+        // Smooth scrolling para la navegación
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Highlight current section in navigation
+        window.addEventListener('scroll', () => {
+            const sections = document.querySelectorAll('.section');
+            const navLinks = document.querySelectorAll('.nav a');
+            
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.clientHeight;
+                if (pageYOffset >= sectionTop - 200) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            navLinks.forEach(link => {
+                link.style.background = '';
+                if (link.getAttribute('href') === '#' + current) {
+                    link.style.background = '#3498db';
+                }
+            });
+        });
+    </script>
 </body>
 </html>
