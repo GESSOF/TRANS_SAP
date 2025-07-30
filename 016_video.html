@@ -3,108 +3,958 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>No Disponible - Portal Educativo</title>
+    <title>Clase 016 - Ejercicios Prácticos de Conversión ER → Relacional</title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-
+        
         body {
-            font-family: 'Arial', sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+        
+        .nav {
+            background: #2c3e50;
+            padding: 20px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .nav ul {
+            list-style: none;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
+        }
+        
+        .nav a {
+            color: #ecf0f1;
+            text-decoration: none;
+            padding: 10px 18px;
+            border-radius: 25px;
+            transition: all 0.3s;
+            font-weight: 500;
+            font-size: 0.9em;
+        }
+        
+        .nav a:hover {
+            background: #e74c3c;
+            transform: translateY(-2px);
+        }
+        
+        .content {
+            padding: 40px;
+        }
+        
+        .section {
+            margin-bottom: 50px;
+            padding: 30px;
+            border-radius: 10px;
+            background: #f8f9fa;
+            border-left: 5px solid #e74c3c;
+        }
+        
+        .section h2 {
+            color: #2c3e50;
+            font-size: 2em;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #e74c3c;
+            padding-bottom: 10px;
+        }
+        
+        .section h3 {
+            color: #34495e;
+            font-size: 1.4em;
+            margin: 25px 0 15px 0;
+        }
+        
+        .highlight {
+            background: linear-gradient(120deg, #ffd89b 0%, #19547b 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+        }
+        
+        .exercise {
+            background: #e8f6f3;
+            border: 2px solid #1abc9c;
+            border-radius: 12px;
+            padding: 25px;
+            margin: 25px 0;
+            position: relative;
+        }
+        
+        .exercise::before {
+            content: "🔨 EJERCICIO PRÁCTICO";
+            position: absolute;
+            top: -12px;
+            left: 20px;
+            background: #1abc9c;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 15px;
+            font-size: 0.8em;
+            font-weight: bold;
+        }
+        
+        .exercise h4 {
+            color: #16a085;
+            margin-bottom: 15px;
+            margin-top: 10px;
+        }
+        
+        .diagram {
+            background: white;
+            border: 2px dashed #3498db;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: center;
+            font-family: monospace;
+            font-size: 0.9em;
+        }
+        
+        .table-example {
+            background: #fff3cd;
+            border: 1px solid #ffc107;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        
+        .table-example h5 {
+            color: #856404;
+            margin-bottom: 15px;
+            font-size: 1.1em;
+        }
+        
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            margin: 15px 0;
+        }
+        
+        .data-table th, .data-table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        .data-table th {
+            background: #3498db;
+            color: white;
+            font-weight: 600;
+        }
+        
+        .data-table .pk {
+            background: #e8f5e8;
+            font-weight: bold;
+            text-decoration: underline;
+        }
+        
+        .data-table .fk {
+            background: #fff8e1;
+            font-style: italic;
+        }
+        
+        .data-table tr:hover {
+            background: #f5f5f5;
+        }
+        
+        .steps {
+            counter-reset: step-counter;
+        }
+        
+        .step {
+            counter-increment: step-counter;
+            background: white;
+            margin: 15px 0;
+            padding: 25px;
+            border-radius: 8px;
+            border-left: 4px solid #9b59b6;
+            position: relative;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .step::before {
+            content: counter(step-counter);
+            position: absolute;
+            left: -20px;
+            top: 25px;
+            background: #9b59b6;
+            color: white;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 20px;
-        }
-
-        .container {
-            text-align: center;
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
-            padding: 60px 40px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-            max-width: 600px;
-            width: 100%;
-            animation: fadeInUp 0.8s ease-out;
-        }
-
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .icon {
-            font-size: 80px;
-            margin-bottom: 30px;
-            animation: bounce 2s infinite;
-        }
-
-        @keyframes bounce {
-            0%, 20%, 50%, 80%, 100% {
-                transform: translateY(0);
-            }
-            40% {
-                transform: translateY(-10px);
-            }
-            60% {
-                transform: translateY(-5px);
-            }
-        }
-
-        .main-title {
-            font-size: 3.5rem;
             font-weight: bold;
-            color: #2d3748;
-            margin-bottom: 20px;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
-            letter-spacing: -1px;
+            font-size: 1.1em;
         }
-
-        .subtitle {
-            font-size: 1.3rem;
-            color: #4a5568;
-            margin-bottom: 30px;
-            line-height: 1.6;
+        
+        .conversion-flow {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin: 30px 0;
+            flex-wrap: wrap;
+            gap: 20px;
         }
-
-
-
+        
+        .flow-item {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            text-align: center;
+            min-width: 200px;
+            border: 2px solid #3498db;
+        }
+        
+        .flow-arrow {
+            font-size: 2em;
+            color: #e74c3c;
+            font-weight: bold;
+        }
+        
+        .normalization {
+            background: #f0f8ff;
+            border: 2px solid #4169e1;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        
+        .normalization h4 {
+            color: #4169e1;
+            margin-bottom: 10px;
+        }
+        
+        .check-list {
+            background: #f9f9f9;
+            border-left: 4px solid #27ae60;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        
+        .check-list ul {
+            list-style: none;
+            padding-left: 0;
+        }
+        
+        .check-list li {
+            padding: 5px 0;
+            position: relative;
+            padding-left: 25px;
+        }
+        
+        .check-list li::before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #27ae60;
+            font-weight: bold;
+        }
+        
+        .warning {
+            background: #ffeaa7;
+            border: 1px solid #fdcb6e;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        
+        .warning::before {
+            content: "⚠️ ";
+            font-weight: bold;
+        }
+        
+        .code-block {
+            background: #2c3e50;
+            color: #ecf0f1;
+            padding: 20px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            margin: 15px 0;
+            overflow-x: auto;
+        }
+        
+        .footer {
+            background: #2c3e50;
+            color: white;
+            text-align: center;
+            padding: 30px;
+        }
+        
         @media (max-width: 768px) {
-            .container {
-                padding: 40px 20px;
+            .conversion-flow {
+                flex-direction: column;
             }
             
-            .main-title {
-                font-size: 2.5rem;
+            .flow-arrow {
+                transform: rotate(90deg);
             }
             
-            .subtitle {
-                font-size: 1.1rem;
+            .content {
+                padding: 20px;
+            }
+            
+            .section {
+                padding: 20px;
             }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="icon">📚</div>
+        <header class="header">
+            <h1>🛠️ Ejercicios Prácticos</h1>
+            <p>Clase 016 - Conversión de ER a Modelo Relacional</p>
+        </header>
         
-		<h1 class="main-title">CLASE 016</h1>
-        <h1 class="main-title">NO DISPONIBLE</h1>
+        <nav class="nav">
+            <ul>
+                <li><a href="#introduccion">Introducción</a></li>
+                <li><a href="#ejercicio1">Ejercicio 1: 1:N</a></li>
+                <li><a href="#ejercicio2">Ejercicio 2: N:M</a></li>
+                <li><a href="#normalizacion">Normalización</a></li>
+                <li><a href="#proceso">Proceso Completo</a></li>
+                <li><a href="#consejos">Consejos Prácticos</a></li>
+            </ul>
+        </nav>
         
-        <p class="subtitle">Contenido temporalmente inaccesible</p>
+        <main class="content">
+            <section id="introduccion" class="section">
+                <h2>🎯 Introducción a los Ejercicios Prácticos</h2>
+                
+                <div class="highlight">
+                    <strong>Objetivo:</strong> Aplicar los conocimientos teóricos del modelo relacional mediante ejercicios prácticos de conversión desde diagramas ER.
+                </div>
+                
+                <div class="conversion-flow">
+                    <div class="flow-item">
+                        <h4>🗂️ Diagrama ER</h4>
+                        <p>Entidades, atributos y relaciones conceptuales</p>
+                    </div>
+                    
+                    <div class="flow-arrow">→</div>
+                    
+                    <div class="flow-item">
+                        <h4>📝 Modelo Textual</h4>
+                        <p>Tablas y campos definidos</p>
+                    </div>
+                    
+                    <div class="flow-arrow">→</div>
+                    
+                    <div class="flow-item">
+                        <h4>📊 Tablas Físicas</h4>
+                        <p>Estructura final con tipos de datos</p>
+                    </div>
+                </div>
+                
+                <h3>Pasos del Proceso de Conversión</h3>
+                <div class="steps">
+                    <div class="step">
+                        <h4>Identificar Entidades</h4>
+                        <p>Cada entidad (rectángulo) se convierte en una tabla</p>
+                    </div>
+                    
+                    <div class="step">
+                        <h4>Convertir Atributos</h4>
+                        <p>Los atributos (óvalos) se convierten en columnas</p>
+                    </div>
+                    
+                    <div class="step">
+                        <h4>Definir Claves Primarias</h4>
+                        <p>Atributos subrayados → Claves primarias</p>
+                    </div>
+                    
+                    <div class="step">
+                        <h4>Gestionar Relaciones</h4>
+                        <p>Aplicar reglas según cardinalidad (1:1, 1:N, N:M)</p>
+                    </div>
+                    
+                    <div class="step">
+                        <h4>Verificar Normalización</h4>
+                        <p>Comprobar formas normales (1FN, 2FN, 3FN)</p>
+                    </div>
+                </div>
+            </section>
+            
+            <section id="ejercicio1" class="section">
+                <h2>📝 Ejercicio 1: Relación 1:N (Categorías-Productos)</h2>
+                
+                <div class="exercise">
+                    <h4>Diagrama ER Inicial</h4>
+                    <div class="diagram">
+                        [CATEGORÍAS] ----&lt; CONTIENEN &gt;---- [PRODUCTOS]<br>
+                        |                                        |<br>
+                        • ID (PK)                               • ID (PK)<br>
+                        • Nombre                                • Nombre<br>
+                                                               • Cantidad<br><br>
+                        Cardinalidad: 1:N (Una categoría contiene N productos)
+                    </div>
+                </div>
+                
+                <h3>Paso 1: Conversión a Modelo Textual</h3>
+                <div class="code-block">
+CATEGORÍAS (ID_Categoría, Nombre)
+PRODUCTOS (ID_Producto, Nombre, Cantidad, ID_Categoría)
+                </div>
+                
+                <div class="warning">
+                    <strong>Recomendación:</strong> Cambiar nombres genéricos como "ID" por nombres específicos como "ID_Categoría" para mayor claridad.
+                </div>
+                
+                <h3>Paso 2: Definición de Tablas con Tipos de Datos</h3>
+                
+                <div class="table-example">
+                    <h5>Tabla: CATEGORÍAS</h5>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Tipo Clave</th>
+                                <th>Nombre Campo</th>
+                                <th>Tipo Dato</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="pk">
+                                <td>PK</td>
+                                <td>ID_Categoría</td>
+                                <td>TINYINT (0-255)</td>
+                            </tr>
+                            <tr>
+                                <td>-</td>
+                                <td>Nombre</td>
+                                <td>VARCHAR(50)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="table-example">
+                    <h5>Tabla: PRODUCTOS</h5>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Tipo Clave</th>
+                                <th>Nombre Campo</th>
+                                <th>Tipo Dato</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="pk">
+                                <td>PK</td>
+                                <td>ID_Producto</td>
+                                <td>INTEGER</td>
+                            </tr>
+                            <tr>
+                                <td>-</td>
+                                <td>Nombre</td>
+                                <td>VARCHAR(50)</td>
+                            </tr>
+                            <tr>
+                                <td>-</td>
+                                <td>Cantidad</td>
+                                <td>INTEGER</td>
+                            </tr>
+                            <tr class="fk">
+                                <td>FK</td>
+                                <td>ID_Categoría</td>
+                                <td>TINYINT</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <h3>Paso 3: Datos de Ejemplo</h3>
+                <div class="table-example">
+                    <h5>Datos: CATEGORÍAS</h5>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>ID_Categoría</th>
+                                <th>Nombre</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>1</td>
+                                <td>Carnes</td>
+                            </tr>
+                            <tr>
+                                <td>2</td>
+                                <td>Pescados</td>
+                            </tr>
+                            <tr>
+                                <td>3</td>
+                                <td>Electrónica</td>
+                            </tr>
+                            <tr>
+                                <td>4</td>
+                                <td>Bebidas</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="table-example">
+                    <h5>Datos: PRODUCTOS</h5>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>ID_Producto</th>
+                                <th>Nombre</th>
+                                <th>Cantidad</th>
+                                <th>ID_Categoría</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>1</td>
+                                <td>Entrecot de Ternera</td>
+                                <td>7</td>
+                                <td>1</td>
+                            </tr>
+                            <tr>
+                                <td>2</td>
+                                <td>Chuletón de Buey</td>
+                                <td>3</td>
+                                <td>1</td>
+                            </tr>
+                            <tr>
+                                <td>3</td>
+                                <td>Cerveza Mahou</td>
+                                <td>24</td>
+                                <td>4</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+            
+            <section id="ejercicio2" class="section">
+                <h2>📝 Ejercicio 2: Relación N:M (Profesores-Alumnos)</h2>
+                
+                <div class="exercise">
+                    <h4>Diagrama ER Inicial</h4>
+                    <div class="diagram">
+                        [PROFESORES] ----&lt; IMPARTEN CLASE &gt;---- [ALUMNOS]<br>
+                        |                                            |<br>
+                        • ID (PK)                                   • ID (PK)<br>
+                        • Nombre                                    • Nombre<br>
+                        • Asignatura                               • Curso<br><br>
+                        Cardinalidad: N:M (Un profesor puede enseñar a varios alumnos,<br>
+                        un alumno puede tener varios profesores)
+                    </div>
+                </div>
+                
+                <h3>Paso 1: Conversión a Modelo Textual</h3>
+                <div class="code-block">
+PROFESORES (ID_Profesor, Nombre, Asignatura)
+ALUMNOS (ID_Alumno, Nombre, Curso)
+IMPARTEN (ID_Profesor, ID_Alumno)
+                </div>
+                
+                <div class="warning">
+                    <strong>Regla N:M:</strong> Se crea una nueva tabla cuya clave primaria es la unión de las claves primarias de las entidades relacionadas.
+                </div>
+                
+                <h3>Paso 2: Definición de Tablas</h3>
+                
+                <div class="table-example">
+                    <h5>Tabla: PROFESORES</h5>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Tipo Clave</th>
+                                <th>Nombre Campo</th>
+                                <th>Tipo Dato</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="pk">
+                                <td>PK</td>
+                                <td>ID_Profesor</td>
+                                <td>INTEGER</td>
+                            </tr>
+                            <tr>
+                                <td>-</td>
+                                <td>Nombre</td>
+                                <td>VARCHAR(50)</td>
+                            </tr>
+                            <tr>
+                                <td>-</td>
+                                <td>Asignatura</td>
+                                <td>VARCHAR(50)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="table-example">
+                    <h5>Tabla: ALUMNOS</h5>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Tipo Clave</th>
+                                <th>Nombre Campo</th>
+                                <th>Tipo Dato</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="pk">
+                                <td>PK</td>
+                                <td>ID_Alumno</td>
+                                <td>INTEGER</td>
+                            </tr>
+                            <tr>
+                                <td>-</td>
+                                <td>Nombre</td>
+                                <td>VARCHAR(50)</td>
+                            </tr>
+                            <tr>
+                                <td>-</td>
+                                <td>Curso</td>
+                                <td>VARCHAR(10)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="table-example">
+                    <h5>Tabla: IMPARTEN (Tabla de Relación)</h5>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Tipo Clave</th>
+                                <th>Nombre Campo</th>
+                                <th>Tipo Dato</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="pk fk">
+                                <td>PK/FK</td>
+                                <td>ID_Profesor</td>
+                                <td>INTEGER</td>
+                            </tr>
+                            <tr class="pk fk">
+                                <td>PK/FK</td>
+                                <td>ID_Alumno</td>
+                                <td>INTEGER</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <h3>Alternativa: Clave Primaria Separada</h3>
+                <div class="warning">
+                    <strong>Opción alternativa:</strong> Crear un ID_Imparten como clave primaria única y dejar ID_Profesor e ID_Alumno solo como claves foráneas. Esto es útil cuando la misma combinación puede repetirse (ej: diferentes semestres).
+                </div>
+                
+                <div class="table-example">
+                    <h5>Tabla: IMPARTEN (Alternativa)</h5>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Tipo Clave</th>
+                                <th>Nombre Campo</th>
+                                <th>Tipo Dato</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="pk">
+                                <td>PK</td>
+                                <td>ID_Imparten</td>
+                                <td>INTEGER</td>
+                            </tr>
+                            <tr class="fk">
+                                <td>FK</td>
+                                <td>ID_Profesor</td>
+                                <td>INTEGER</td>
+                            </tr>
+                            <tr class="fk">
+                                <td>FK</td>
+                                <td>ID_Alumno</td>
+                                <td>INTEGER</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+            
+            <section id="normalizacion" class="section">
+                <h2>✅ Verificación de Normalización</h2>
+                
+                <div class="normalization">
+                    <h4>🔍 Primera Forma Normal (1FN)</h4>
+                    <div class="check-list">
+                        <ul>
+                            <li><strong>Valores atómicos:</strong> Cada campo contiene un solo valor</li>
+                            <li><strong>Granularidad:</strong> Datos lo más específicos posible</li>
+                            <li><strong>Consistencia:</strong> Mismo número de columnas en todos los registros</li>
+                        </ul>
+                    </div>
+                    
+                    <p><strong>Ejemplo de optimización:</strong> En lugar de un campo "Dirección" completo, separar en "Calle", "Número", "Ciudad", "Código_Postal".</p>
+                </div>
+                
+                <div class="normalization">
+                    <h4>🔍 Segunda Forma Normal (2FN)</h4>
+                    <div class="check-list">
+                        <ul>
+                            <li><strong>Cumple 1FN</strong></li>
+                            <li><strong>Dependencia completa:</strong> Atributos no clave dependen completamente de la clave primaria</li>
+                            <li><strong>Solo aplica:</strong> A tablas con clave primaria compuesta</li>
+                        </ul>
+                    </div>
+                    
+                    <p><strong>Problema común:</strong> Si la clave compuesta permite duplicados, considerar crear una clave primaria simple adicional.</p>
+                </div>
+                
+                <div class="normalization">
+                    <h4>🔍 Tercera Forma Normal (3FN)</h4>
+                    <div class="check-list">
+                        <ul>
+                            <li><strong>Cumple 1FN y 2FN</strong></li>
+                            <li><strong>Sin dependencias transitivas:</strong> Los campos no clave no dependen entre sí</li>
+                            <li><strong>Dependencia directa:</strong> Todo campo depende directamente de la clave primaria</li>
+                        </ul>
+                    </div>
+                    
+                    <p><strong>Verificación:</strong> Asegurar que el nombre del profesor no depende de la asignatura, sino del ID_Profesor.</p>
+                </div>
+                
+                <h3>Ejemplo de Optimización: Campos Repetitivos</h3>
+                <div class="exercise">
+                    <h4>Problema: Campo "País" Repetitivo</h4>
+                    <p>Si en la tabla ALUMNOS muchos registros repiten "España", "Francia", etc., optimizar creando:</p>
+                    
+                    <div class="table-example">
+                        <h5>Nueva Tabla: PAÍSES</h5>
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>ID_País</th>
+                                    <th>Nombre_País</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>1</td>
+                                    <td>España</td>
+                                </tr>
+                                <tr>
+                                    <td>2</td>
+                                    <td>Francia</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <p>Y en la tabla ALUMNOS, usar ID_País (INTEGER) en lugar de Nombre_País (VARCHAR).</p>
+                    
+                    <div class="highlight">
+                        <strong>Beneficio:</strong> En Big Data, ahorrar caracteres por millones de registros supone gigabytes de espacio.
+                    </div>
+                </div>
+            </section>
+            
+            <section id="proceso" class="section">
+                <h2>🔄 Proceso Completo de Conversión</h2>
+                
+                <div class="steps">
+                    <div class="step">
+                        <h4>Análisis del Texto</h4>
+                        <p>Identificar entidades, atributos y relaciones a partir del enunciado del problema.</p>
+                    </div>
+                    
+                    <div class="step">
+                        <h4>Diagrama ER</h4>
+                        <p>Dibujar entidades (rectángulos), atributos (óvalos), relaciones (rombos) y cardinalidades.</p>
+                    </div>
+                    
+                    <div class="step">
+                        <h4>Conversión a Modelo Textual</h4>
+                        <p>Aplicar reglas de conversión según tipos de relación (1:1, 1:N, N:M).</p>
+                    </div>
+                    
+                    <div class="step">
+                        <h4>Definición de Tablas</h4>
+                        <p>Especificar tipos de datos, claves primarias y foráneas.</p>
+                    </div>
+                    
+                    <div class="step">
+                        <h4>Verificación de Normalización</h4>
+                        <p>Comprobar cumplimiento de formas normales (1FN, 2FN, 3FN).</p>
+                    </div>
+                    
+                    <div class="step">
+                        <h4>Datos de Ejemplo</h4>
+                        <p>Incluir registros de muestra para validar el diseño.</p>
+                    </div>
+                    
+                    <div class="step">
+                        <h4>Documentación Adicional</h4>
+                        <p>Añadir restricciones, jerarquías u otras reglas no representables en el modelo.</p>
+                    </div>
+                </div>
+            </section>
+            
+            <section id="consejos" class="section">
+                <h2>💡 Consejos Prácticos</h2>
+                
+                <h3>🎯 Nomenclatura</h3>
+                <div class="check-list">
+                    <ul>
+                        <li>Usar nombres descriptivos: ID_Cliente en lugar de ID</li>
+                        <li>Mantener consistencia en los nombres entre tablas</li>
+                        <li>Las claves foráneas deben coincidir con las primarias que referencian</li>
+                    </ul>
+                </div>
+                
+                <h3>🔧 Tipos de Datos</h3>
+                <div class="check-list">
+                    <ul>
+                        <li><strong>TINYINT:</strong> Para catálogos pequeños (0-255)</li>
+                        <li><strong>INTEGER:</strong> Para identificadores generales</li>
+                        <li><strong>VARCHAR(n):</strong> Para textos con longitud máxima estimada</li>
+                        <li><strong>Análisis previo:</strong> Estimar volúmenes y longitudes máximas</li>
+                    </ul>
+                </div>
+                
+                <h3>⚡ Optimización</h3>
+                <div class="check-list">
+                    <ul>
+                        <li>Identificar campos repetitivos para crear tablas de catálogo</li>
+                        <li>Separar campos compuestos (dirección, nombre completo)</li>
+                        <li>Considerar la frecuencia de consultas para índices futuros</li>
+                    </ul>
+                </div>
+                
+                <h3>🚨 Errores Comunes</h3>
+                <div class="warning">
+                    <strong>Relaciones N:M sin tabla intermedia:</strong> Siempre crear tabla de relación
+                </div>
+                
+                <div class="warning">
+                    <strong>Claves foráneas con tipos diferentes:</strong> Deben coincidir exactamente
+                </div>
+                
+                <div class="warning">
+                    <strong>Campos multivalor:</strong> Violan 1FN, separar en campos individuales
+                </div>
+                
+                <h3>📋 Documentación Extra</h3>
+                <div class="table-example">
+                    <h5>Ejemplo de Restricciones Adicionales</h5>
+                    <div class="code-block">
+• Jerarquía: Profesores Senior > Profesores Junior
+• Validación: Campo 'Cantidad' no puede ser negativo  
+• Control: Tabla PRODUCTOS no permite campos en blanco
+• Índices: Crear índice en 'Nombre' para búsquedas frecuentes
+                    </div>
+                </div>
+            </section>
+        </main>
         
-
+        <footer class="footer">
+            <p>🛠️ Material de Estudio - Clase 016: Ejercicios Prácticos de Conversión</p>
+            <p>Curso de Modelado en SAP HANA</p>
+        </footer>
     </div>
+
+    <script>
+        // Smooth scrolling para la navegación
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Highlight current section in navigation
+        window.addEventListener('scroll', () => {
+            const sections = document.querySelectorAll('.section');
+            const navLinks = document.querySelectorAll('.nav a');
+            
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                if (pageYOffset >= sectionTop - 200) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            navLinks.forEach(link => {
+                link.style.background = '';
+                if (link.getAttribute('href') === '#' + current) {
+                    link.style.background = '#e74c3c';
+                }
+            });
+        });
+
+        // Animación para las tablas al hacer hover
+        document.querySelectorAll('.data-table tr').forEach(row => {
+            row.addEventListener('mouseenter', function() {
+                this.style.transform = 'scale(1.02)';
+                this.style.transition = 'transform 0.2s ease';
+            });
+            
+            row.addEventListener('mouseleave', function() {
+                this.style.transform = 'scale(1)';
+            });
+        });
+    </script>
 </body>
 </html>
